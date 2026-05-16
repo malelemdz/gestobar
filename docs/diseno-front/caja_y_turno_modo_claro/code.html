@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e1e3e4",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#00d9fc",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#fbbc00",
+                    "on-secondary-container": "#00716b",
+                    "on-primary-container": "#6d5000",
+                    "on-primary-fixed-variant": "#5c4300",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#6ff7ee",
+                    "primary-fixed-dim": "#fbbc00",
+                    "outline-variant": "#d4c5ab",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#191c1d",
+                    "background": "#f8f9fa",
+                    "on-secondary-fixed": "#00201e",
+                    "tertiary-container": "#04dcff",
+                    "surface-container": "#edeeef",
+                    "outline": "#827660",
+                    "inverse-surface": "#2e3132",
+                    "secondary": "#006a65",
+                    "surface-tint": "#795900",
+                    "on-primary-fixed": "#261a00",
+                    "on-tertiary-fixed": "#001f26",
+                    "on-surface-variant": "#504532",
+                    "primary-fixed": "#ffdfa0",
+                    "tertiary": "#006879",
+                    "on-tertiary-container": "#005d6d",
+                    "on-secondary-fixed-variant": "#00504c",
+                    "secondary-container": "#6ff7ee",
+                    "primary-container": "#ffbf00",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#4edbd2",
+                    "surface-bright": "#f8f9fa",
+                    "surface-container-high": "#e7e8e9",
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-error-container": "#93000a",
+                    "primary": "#795900",
+                    "surface": "#f8f9fa",
+                    "surface-container-low": "#f3f4f5",
+                    "surface-dim": "#d9dadb",
+                    "on-background": "#191c1d",
+                    "surface-container-highest": "#e1e3e4",
+                    "tertiary-fixed": "#aaedff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#004e5c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "lg": "40px",
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "xl": "64px",
+                    "md": "24px",
+                    "margin-desktop": "32px",
+                    "base": "8px",
+                    "sm": "12px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-surface-variant flex justify-between items-center px-margin-mobile h-16 w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="hospitality">hotel</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Gestobar</h1>
+</div>
+<div class="flex items-center">
+<span class="bg-primary-container/20 text-on-primary-container px-3 py-1 rounded-full font-label-sm text-label-sm border border-primary-container">
+                Shift: Open
+            </span>
+</div>
+</header>
+<!-- Navigation Drawer (Desktop Only) -->
+<nav class="hidden md:flex flex-col pt-20 h-full w-64 fixed left-0 top-0 z-40 bg-surface border-r border-outline-variant">
+<div class="px-4 py-2 mb-4">
+<h2 class="font-headline-md text-headline-md font-bold text-primary">Gestobar</h2>
+</div>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 mx-2 my-1 hover:bg-surface-container transition-colors duration-150 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-label-md text-label-md">POS</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 mx-2 my-1 hover:bg-surface-container transition-colors duration-150 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-label-md text-label-md">Menu</span>
+</a>
+<a class="flex items-center gap-4 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 mx-2 my-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-label-md text-label-md">Cash</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 mx-2 my-1 hover:bg-surface-container transition-colors duration-150 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Users</span>
+</a>
+</nav>
+<!-- Main Canvas -->
+<main class="pt-20 pb-24 px-margin-mobile md:ml-64 md:px-margin-desktop md:pt-24 max-w-screen-xl mx-auto">
+<!-- Header Section -->
+<section class="mb-gutter">
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Control de Turno</span>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">Resumen de Caja</h2>
+</div>
+</section>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Cash Balance Card (Bento Focus) -->
+<div class="md:col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm">
+<div class="flex justify-between items-start mb-base">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Efectivo Actual en Caja</p>
+<h3 class="font-display-lg text-display-lg text-primary mt-1">$1,245.50</h3>
+</div>
+<div class="bg-primary-container p-2 rounded-lg">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span class="font-label-sm text-label-sm">+12% vs. turno anterior</span>
+</div>
+</div>
+<!-- Total Sales Card with Micro-Chart -->
+<div class="md:col-span-12 lg:col-span-4 bg-surface-container-lowest rounded-xl border border-outline-variant p-md shadow-sm overflow-hidden relative">
+<p class="font-label-md text-label-md text-on-surface-variant">Ventas Totales</p>
+<div class="flex items-baseline gap-2 mt-1">
+<h3 class="font-headline-lg text-headline-lg text-on-surface">$3,842.00</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">42 tickets</span>
+</div>
+<!-- Mini Trend Chart SVG -->
+<div class="mt-md h-16 w-full opacity-60">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 400 100">
+<path class="text-secondary" d="M0,80 Q50,70 100,50 T200,60 T300,20 T400,10" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-secondary/10" d="M0,80 Q50,70 100,50 T200,60 T300,20 T400,10 V100 H0 Z" fill="currentColor"></path>
+</svg>
+</div>
+</div>
+<!-- Breakdown Section -->
+<div class="md:col-span-12 grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Payment Methods List -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+<div class="p-md border-b border-surface-variant bg-surface-container-low">
+<h4 class="font-label-md text-label-md font-bold text-on-surface">Desglose por Método</h4>
+</div>
+<ul class="divide-y divide-surface-variant">
+<li class="flex items-center justify-between p-md hover:bg-surface-bright transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="payments">payments</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Efectivo</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">18 transacciones</p>
+</div>
+</div>
+<span class="font-body-md text-body-md font-bold text-on-surface">$1,150.00</span>
+</li>
+<li class="flex items-center justify-between p-md hover:bg-surface-bright transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="credit_card">credit_card</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Tarjeta</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">24 transacciones</p>
+</div>
+</div>
+<span class="font-body-md text-body-md font-bold text-on-surface">$2,692.00</span>
+</li>
+</ul>
+</div>
+<!-- Recent Transactions / Logs -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+<div class="p-md border-b border-surface-variant bg-surface-container-low flex justify-between items-center">
+<h4 class="font-label-md text-label-md font-bold text-on-surface">Últimos Movimientos</h4>
+<span class="font-label-sm text-label-sm text-primary cursor-pointer hover:underline">Ver todos</span>
+</div>
+<div class="p-md">
+<div class="space-y-4">
+<div class="flex justify-between items-center border-l-4 border-primary pl-3">
+<div>
+<p class="font-label-md text-label-md font-bold text-on-surface">Apertura de Caja</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Hace 4 horas • Admin</p>
+</div>
+<span class="font-label-md text-label-md text-secondary">+$300.00</span>
+</div>
+<div class="flex justify-between items-center border-l-4 border-error pl-3">
+<div>
+<p class="font-label-md text-label-md font-bold text-on-surface">Salida: Proveedor Pan</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Hace 2 horas • Juan M.</p>
+</div>
+<span class="font-label-md text-label-md text-error">-$45.00</span>
+</div>
+<div class="flex justify-between items-center border-l-4 border-secondary pl-3">
+<div>
+<p class="font-label-md text-label-md font-bold text-on-surface">Venta Ticket #1240</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Hace 15 min • Juan M.</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-bold">+$82.50</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Button (Mobile Pinned Logic Style) -->
+<div class="mt-xl flex flex-col gap-4">
+<button class="w-full bg-primary-container text-on-primary-container font-headline-md text-headline-md py-4 rounded-xl shadow-md active:scale-95 transition-transform duration-150 flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" data-icon="lock_open">lock_open</span>
+                Cerrar Turno
+            </button>
+<button class="w-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md py-3 rounded-lg flex items-center justify-center gap-2 border border-outline-variant hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="print">print</span>
+                Imprimir X de Caja
+            </button>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe md:hidden bg-surface-container shadow-sm">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-label-sm text-label-sm">POS</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-label-sm text-label-sm">Menu</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="payments" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-label-sm text-label-sm">Cash</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-sm text-label-sm">Users</span>
+</a>
+</nav>
+</body></html>

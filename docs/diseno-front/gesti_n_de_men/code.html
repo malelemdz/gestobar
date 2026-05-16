@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestobar - Menu Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#241f14",
+                        "background": "#181309",
+                        "outline": "#9c8f78",
+                        "primary-fixed-dim": "#fbbc00",
+                        "surface-variant": "#3a3428",
+                        "on-secondary-container": "#00494d",
+                        "inverse-surface": "#ede1d0",
+                        "inverse-primary": "#795900",
+                        "on-background": "#ede1d0",
+                        "on-secondary": "#003739",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#001f26",
+                        "surface-bright": "#3f382d",
+                        "surface-dim": "#181309",
+                        "surface": "#181309",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#fbbc00",
+                        "on-primary-fixed-variant": "#5c4300",
+                        "on-tertiary-container": "#005d6d",
+                        "surface-container-highest": "#3a3428",
+                        "tertiary": "#b4efff",
+                        "on-primary-container": "#6d5000",
+                        "tertiary-fixed-dim": "#00d9fc",
+                        "primary-fixed": "#ffdfa0",
+                        "surface-container-lowest": "#120e05",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed": "#6bf6ff",
+                        "on-surface-variant": "#d4c5ab",
+                        "on-surface": "#ede1d0",
+                        "error-container": "#93000a",
+                        "secondary-fixed-dim": "#3edae3",
+                        "tertiary-container": "#04dcff",
+                        "on-secondary-fixed": "#002022",
+                        "on-secondary-fixed-variant": "#004f53",
+                        "secondary": "#43dde6",
+                        "tertiary-fixed": "#aaedff",
+                        "secondary-container": "#00c1ca",
+                        "surface-container-high": "#2f291e",
+                        "on-primary-fixed": "#261a00",
+                        "on-primary": "#402d00",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "primary-container": "#ffbf00",
+                        "primary": "#ffe2ab",
+                        "outline-variant": "#504532",
+                        "surface-container-low": "#201b11",
+                        "inverse-on-surface": "#363024",
+                        "on-tertiary": "#003640"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "container-padding": "16px",
+                        "touch-target-min": "48px",
+                        "sm": "12px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "numeral-xl": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                        "numeral-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "26px", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #121212;
+            color: #ede1d0;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-active {
+            box-shadow: inset 0 0 0 2px #fbbc00;
+        }
+        .item-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+        @media (min-width: 768px) {
+            .item-card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-[100px] pt-[64px]">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center h-[64px] px-container-padding bg-surface-container border-b border-outline-variant">
+<div class="flex items-center gap-base">
+<button class="material-symbols-outlined text-primary-fixed-dim hover:bg-surface-variant p-base rounded-full active:scale-95 transition-transform" data-icon="menu">menu</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary-fixed-dim">Gestobar</h1>
+</div>
+<button class="bg-primary-container text-on-primary-container px-md py-base rounded-lg font-label-lg text-label-lg font-bold active:scale-95 transition-transform">
+            SHIFT ACTIVE
+        </button>
+</header>
+<main class="px-container-padding py-lg max-w-7xl mx-auto">
+<!-- Category Selector Section -->
+<section class="mb-xl">
+<div class="flex items-center justify-between mb-md">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Categories</h2>
+<button class="text-secondary font-label-lg text-label-lg flex items-center gap-xs hover:bg-surface-variant p-base rounded-xl transition-all">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                    New Category
+                </button>
+</div>
+<div class="flex gap-base overflow-x-auto pb-base scrollbar-hide">
+<button class="bg-primary-container text-on-primary-container flex-shrink-0 px-lg h-[48px] rounded-xl font-label-lg text-label-lg flex items-center gap-sm glow-active">
+                    Bebidas Espirituosas
+                    <span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="bg-surface-container-high text-on-surface-variant flex-shrink-0 px-lg h-[48px] rounded-xl font-label-lg text-label-lg flex items-center gap-sm hover:bg-surface-bright">
+                    Cervezas Artesanales
+                    <span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="bg-surface-container-high text-on-surface-variant flex-shrink-0 px-lg h-[48px] rounded-xl font-label-lg text-label-lg flex items-center gap-sm hover:bg-surface-bright">
+                    Vinos &amp; Cavas
+                    <span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="bg-surface-container-high text-on-surface-variant flex-shrink-0 px-lg h-[48px] rounded-xl font-label-lg text-label-lg flex items-center gap-sm hover:bg-surface-bright">
+                    Soft Drinks
+                    <span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+</div>
+</section>
+<!-- Menu Items Content Area -->
+<section>
+<div class="flex items-center justify-between mb-lg">
+<div class="flex flex-col">
+<span class="text-on-surface font-headline-md text-headline-md">Bebidas Espirituosas</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">12 Items in category</span>
+</div>
+<div class="flex items-center gap-base">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="bg-[#000000] border border-outline-variant rounded-xl pl-[44px] pr-md h-[48px] text-body-md focus:border-secondary focus:ring-0 w-[240px]" placeholder="Search items..." type="text"/>
+</div>
+<button class="bg-surface-container-high p-base rounded-xl border border-outline-variant hover:bg-surface-bright h-[48px] w-[48px] flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Bento Grid of Menu Items -->
+<div class="item-card-grid">
+<!-- Item Card 1 -->
+<div class="bg-surface-container-high p-md rounded-xl border border-outline-variant flex flex-col justify-between min-h-[200px] relative group overflow-hidden">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface max-w-[70%]">Old Fashioned Classic</span>
+<span class="text-primary-fixed-dim font-bold font-headline-sm text-headline-sm">$12.50</span>
+</div>
+<div class="flex-grow">
+<img alt="Old Fashioned" class="w-full h-[100px] object-cover rounded-lg mb-base" data-alt="A moody, high-contrast close-up of a classic Old Fashioned cocktail in a crystal tumbler. The drink has a large clear ice sphere, an orange peel twist, and a dark cherry. The background is a dark, sophisticated bar setting with warm amber lighting reflecting off the glass. Professional photography style with deep shadows and vibrant highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeNAEhmu4IOZLrnL0KXLdjtFSRseXWnTwAsDgL7EXEFc2CO42KVx2CpdIk0rVFz-R9ErXgizZX3tuYE0LxViID62jhpszlJrvMj0WlzSqlIBpo42g_Yb3xxiph4GlZV-N4s1MeJWPJKlRXFm3AnD2Fs3KBDrhjSIZXX5jO7cjVZLKxFoL6nk5FYHgTaFebSSSf8V6nYacI_JmF6wrUUgcQumzSmD6i-XBOIPgXyW0oeSqpi6Gp2J-w9KoagZ8ddJ1xWlnEYR8MCKs"/>
+</div>
+<div class="flex items-center justify-between mt-md pt-md border-t border-outline-variant">
+<span class="text-secondary font-label-lg text-label-lg">Available</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</div>
+</div>
+<button class="absolute top-md right-md opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 backdrop-blur-md p-xs rounded-full">
+<span class="material-symbols-outlined text-white" data-icon="edit">edit</span>
+</button>
+</div>
+<!-- Item Card 2 -->
+<div class="bg-surface-container-high p-md rounded-xl border border-outline-variant flex flex-col justify-between min-h-[200px] relative group">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface max-w-[70%]">Smoky Mezcal Sour</span>
+<span class="text-primary-fixed-dim font-bold font-headline-sm text-headline-sm">$14.00</span>
+</div>
+<div class="flex-grow">
+<img alt="Mezcal Sour" class="w-full h-[100px] object-cover rounded-lg mb-base" data-alt="A sophisticated Mezcal Sour cocktail served in a coupe glass with a dense white foam head and a dash of bitters on top. The scene is a luxury dark bar environment with high-contrast neon teal accents in the background. The lighting is focused and dramatic, highlighting the texture of the foam and the clarity of the glassware." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa6WGKY_kOo4mrAuOyLWBZgIMc2EB_R6pZh9DNj_lm_V_-xNy_ERFN24TbwNonMYyX8RKmCWpne4Cn7VYv-StO5msClzq8TVPs2mp8wt1mUvWOEbCAUxZOF5H419W1wMxKlbRqpCxOEvX9JDTuXn216-Zr9n9wgadTXMwVmEkG1qMU-36D6DNtbS1ovT-KvSFDKhncZ_oHbWMNQOzx37oEBsLP98EyC76u51EfljUwnmN1q0yPIiN5NT5xcuQCnZyJwPo0-FkNxyE"/>
+</div>
+<div class="flex items-center justify-between mt-md pt-md border-t border-outline-variant">
+<span class="text-secondary font-label-lg text-label-lg">Available</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</div>
+</div>
+</div>
+<!-- Item Card 3 (Out of Stock State) -->
+<div class="bg-surface-container-high p-md rounded-xl border border-outline-variant flex flex-col justify-between min-h-[200px] relative group opacity-60">
+<div class="absolute inset-0 pointer-events-none opacity-20" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 11px);"></div>
+<div class="flex justify-between items-start mb-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface max-w-[70%]">Premium Dry Gin</span>
+<span class="text-primary-fixed-dim font-bold font-headline-sm text-headline-sm">$9.00</span>
+</div>
+<div class="flex-grow">
+<img alt="Premium Gin" class="w-full h-[100px] object-cover rounded-lg mb-base" data-alt="A premium bottle of dry gin with a sleek label design, standing on a dark reflective surface. The bottle is backlit by soft amber light, creating a halo effect. The surroundings are dark and minimalist, emphasizing the bottle's elegant silhouette. Cinematic lighting and a high-end corporate modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmbr97wU09EbDvHVLhKDInSi4XQpOBvMuvPB92dqEfXtK7CmNCpXrsctyolKnpjLplvOOgygADfajErwLbxtejsjqqEQnduSr-XoMqWhDEH3sihRpzZx3AhRs0AMQjMsvPX_uUHrhUmo1o7UilFsozzEh_9wQgqW7CmqQGSnWfaSOTkhlhXEQCNZU-J6nkMnMFdA8R4Pb_5OY1v7hkYx18hTSIctDztmcS2U4oX1_5uzkVTgs2CrGFggpAqNT_HDDEOn2Qzad3JBw"/>
+</div>
+<div class="flex items-center justify-between mt-md pt-md border-t border-outline-variant relative z-10">
+<span class="text-error font-label-lg text-label-lg">Out of Stock</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</div>
+</div>
+</div>
+<!-- Item Card 4 -->
+<div class="bg-surface-container-high p-md rounded-xl border border-outline-variant flex flex-col justify-between min-h-[200px] relative group">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface max-w-[70%]">Aged Rum Reserva</span>
+<span class="text-primary-fixed-dim font-bold font-headline-sm text-headline-sm">$16.00</span>
+</div>
+<div class="flex-grow">
+<img alt="Aged Rum" class="w-full h-[100px] object-cover rounded-lg mb-base" data-alt="A glass of aged amber rum resting on a rustic wooden bar counter. The liquid glows with warm golden tones under a single spotlight. Wisps of smoke curl in the background, adding to the moody and atmospheric nightlife vibe. Deep blacks and rich amber colors dominate the composition, presenting a premium and exclusive feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhdKJ_e3l0w6ZJs26Jr6SE1V7vdhf2QDoutQ8Cb1bd6W4wiq8KXL8IgrXZZhiA98-tEtO1yCsE0OpW5d_2gR8s7q9h9nvwDI3P4KxH6XOYLHXCSPbLQ0PnpF6qPwU6Y8J2c8HoWCUMPaaB7LDRpuMfRqI2M5PXsoW005_lzcPcd0zkZz7UE8WUiBrGX5b6GDi_-Cc0nuMhZnUJSoVPWyFMoacHf8p752XtZ8IjPhfayLaYQ34rr8Ab783xGflY9Xhl0-7wPb9v1Z8"/>
+</div>
+<div class="flex items-center justify-between mt-md pt-md border-t border-outline-variant">
+<span class="text-secondary font-label-lg text-label-lg">Available</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</div>
+</div>
+</div>
+<!-- Add New Item Card (Ghost State) -->
+<button class="border-2 border-dashed border-outline-variant p-md rounded-xl flex flex-col items-center justify-center min-h-[200px] hover:border-secondary hover:bg-surface-container-low transition-all group">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center mb-base group-hover:bg-secondary/20 transition-colors">
+<span class="material-symbols-outlined text-outline group-hover:text-secondary" data-icon="add">add</span>
+</div>
+<span class="font-label-lg text-label-lg text-outline group-hover:text-secondary">Add New Item</span>
+</button>
+</div>
+</section>
+</main>
+<!-- FAB: Floating Action Button -->
+<button class="fixed bottom-[100px] right-container-padding bg-primary-container text-on-primary-container w-[56px] h-[56px] rounded-2xl flex items-center justify-center shadow-2xl active:scale-90 transition-all z-50">
+<span class="material-symbols-outlined font-bold text-[32px]" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 h-[80px] bg-surface-container-high border-t border-outline-variant flex justify-around items-center px-base">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-bright p-xs rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-label-lg text-label-lg">POS</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl w-16 h-12 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-label-lg text-label-lg">Menu</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-bright p-xs rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-lg text-label-lg">Cash</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-bright p-xs rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-lg text-label-lg">Users</span>
+</a>
+</nav>
+</body></html>

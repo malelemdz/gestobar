@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#241f14",
+                    "background": "#181309",
+                    "outline": "#9c8f78",
+                    "primary-fixed-dim": "#fbbc00",
+                    "surface-variant": "#3a3428",
+                    "on-secondary-container": "#00494d",
+                    "inverse-surface": "#ede1d0",
+                    "inverse-primary": "#795900",
+                    "on-background": "#ede1d0",
+                    "on-secondary": "#003739",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed": "#001f26",
+                    "surface-bright": "#3f382d",
+                    "surface-dim": "#181309",
+                    "surface": "#181309",
+                    "error": "#ffb4ab",
+                    "surface-tint": "#fbbc00",
+                    "on-primary-fixed-variant": "#5c4300",
+                    "on-tertiary-container": "#005d6d",
+                    "surface-container-highest": "#3a3428",
+                    "tertiary": "#b4efff",
+                    "on-primary-container": "#6d5000",
+                    "tertiary-fixed-dim": "#00d9fc",
+                    "primary-fixed": "#ffdfa0",
+                    "surface-container-lowest": "#120e05",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed": "#6bf6ff",
+                    "on-surface-variant": "#d4c5ab",
+                    "on-surface": "#ede1d0",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#3edae3",
+                    "tertiary-container": "#04dcff",
+                    "on-secondary-fixed": "#002022",
+                    "on-secondary-fixed-variant": "#004f53",
+                    "secondary": "#43dde6",
+                    "tertiary-fixed": "#aaedff",
+                    "secondary-container": "#00c1ca",
+                    "surface-container-high": "#2f291e",
+                    "on-primary-fixed": "#261a00",
+                    "on-primary": "#402d00",
+                    "on-tertiary-fixed-variant": "#004e5c",
+                    "primary-container": "#ffbf00",
+                    "primary": "#ffe2ab",
+                    "outline-variant": "#504532",
+                    "surface-container-low": "#201b11",
+                    "inverse-on-surface": "#363024",
+                    "on-tertiary": "#003640"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "container-padding": "16px",
+                    "touch-target-min": "48px",
+                    "sm": "12px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "numeral-xl": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                    "numeral-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "26px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #121212;
+            color: #ede1d0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .item-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+        }
+        .category-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .glow-active {
+            box-shadow: inset 0 0 0 2px #fbbc00;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body-md text-body-md select-none overflow-hidden">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center h-[64px] px-container-padding w-full bg-surface-container border-b border-outline-variant shadow-none">
+<div class="flex items-center gap-md">
+<button class="active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary-fixed-dim">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary-fixed-dim">Gestobar</h1>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-label-lg text-label-lg text-secondary">TABLE 12</span>
+<button class="active:scale-95 transition-transform bg-surface-variant px-sm py-xs rounded text-primary-fixed-dim font-label-lg">
+                SHIFT ACTIVE
+            </button>
+</div>
+</header>
+<main class="pt-[64px] pb-[80px] h-screen flex flex-col">
+<!-- Categories Section -->
+<section class="bg-surface-container-low px-container-padding py-base overflow-x-auto category-scroll flex gap-base whitespace-nowrap">
+<button class="px-lg h-touch-target-min flex items-center justify-center rounded-xl bg-primary-container text-on-primary-container font-label-lg">Beers</button>
+<button class="px-lg h-touch-target-min flex items-center justify-center rounded-xl bg-surface-variant text-on-surface-variant font-label-lg hover:bg-surface-bright">Cocktails</button>
+<button class="px-lg h-touch-target-min flex items-center justify-center rounded-xl bg-surface-variant text-on-surface-variant font-label-lg hover:bg-surface-bright">Shots</button>
+<button class="px-lg h-touch-target-min flex items-center justify-center rounded-xl bg-surface-variant text-on-surface-variant font-label-lg hover:bg-surface-bright">Sodas</button>
+<button class="px-lg h-touch-target-min flex items-center justify-center rounded-xl bg-surface-variant text-on-surface-variant font-label-lg hover:bg-surface-bright">Wine</button>
+</section>
+<!-- Product Grid Section -->
+<section class="flex-1 overflow-y-auto px-container-padding pt-base pb-xl">
+<div class="item-card-grid">
+<!-- Product Card -->
+<button class="flex flex-col bg-surface-container-high rounded-xl text-left h-[120px] relative overflow-hidden active:scale-95 transition-all duration-100 group"><img alt="Cerveza Lager" class="absolute inset-0 w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8nC-SVbf4k0VLuVcI18Ewm-mZfG6DllFQk1taRcMw8zy66oJOvzJlmjbhdmPxj9Ud6e_t60wiij4ADzW8tHIcJt0plGQXPt9iSdmFyKUKZka0lnrZXvIj3nqCdoi8bdyEhgNHtu2IoHIl36zxvWY3XrH7ZTQLlV_xGVJh45-Ty33bIAylCgfmcHsOlAbTx-NHuP2qxGiiO_9ErAyKavBxjjR_DXcbhi04tLlVLarAESFfQSa__xk9_XVKyJgx9eyR1Ua1WH9i7uo"/><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div><span class="font-label-lg text-primary-fixed-dim absolute top-2 right-2 drop-shadow-md">$5</span><div class="mt-auto p-2 relative z-10"><span class="block font-headline-sm text-headline-sm leading-tight text-white">Cerveza Lager</span><span class="block font-label-sm text-white/80">330ml bottle</span></div></button>
+<button class="flex flex-col bg-surface-container-high rounded-xl text-left h-[120px] relative overflow-hidden active:scale-95 transition-all duration-100 glow-active"><img alt="Margarita" class="absolute inset-0 w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_VjRVp-Yt3xJ_7uhbDemn4TfDToZgmVkiVpuIhPzWzhiMT_BjeosEU9OQ2RccdPzzB8Sw6hrouQiy3mwMn4HCw5CEKsLqyHJCoW0eqiM1ogloV3BYdIPGide7UB3yHRCkucm5rqxh0h8OxMRhThMv_UWXDPCUghpo0lIP3M5p_j0RobiQJtihd3SDFpnbAW8EX6BDqZ03HOhv0rulFc07tY6AEZ7_JAKm8CzYzYyAFNEmDIH6A4V-mZEPAn15kjQWt5J9RxFn7Ic"/><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div><span class="font-label-lg text-primary-fixed-dim absolute top-2 right-2 drop-shadow-md">$8</span><div class="mt-auto p-2 relative z-10"><span class="block font-headline-sm text-headline-sm leading-tight text-white">Margarita</span><span class="block font-label-sm text-white/80">Classic Lime</span></div></button>
+<button class="flex flex-col bg-surface-container-high rounded-xl text-left h-[120px] relative overflow-hidden active:scale-95 transition-all duration-100"><img alt="Tequila Shot" class="absolute inset-0 w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAP9zfmCHKA_wEbDljkOdcMGd3V4Wu3YT77NXy8JPYb1Gmrz8MpNYjEgWz2y7fh25SzpSYrb7yalm58mLFP6IkvwY0vrkSNjOH0Ex_EnC3HuU1FBzUxEz7UAS5dyDAAmiGCUhjBDHqliyCPVK3N7zFVdUWuvy1CoqceuJeyVATnLxTYSNiCbmcy7d47yz9jdDqawgRf9Gx1oJBsrjiCg6cGJfvmynXlquHZNsso79xn3pSxcm34CZwknrVRRkICjXsPobAdAYPMWs"/><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div><span class="font-label-lg text-primary-fixed-dim absolute top-2 right-2 drop-shadow-md">$4</span><div class="mt-auto p-2 relative z-10"><span class="block font-headline-sm text-headline-sm leading-tight text-white">Tequila Shot</span><span class="block font-label-sm text-white/80">Silver</span></div></button>
+<button class="flex flex-col bg-surface-container-high rounded-xl text-left h-[120px] relative overflow-hidden active:scale-95 transition-all duration-100"><img alt="Coca Cola" class="absolute inset-0 w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFvd-Xej_D-cr1wixuyD4mwEcpbvdcqgZurB8ebUXjozaF9jmMTzVUsgxKCKdCtvDYgWK1TaTPjaJl10yF_K2TseISkphhjm2ncslEejIKTq-Ct7UyGfcw8she7epWBVR2ktuWvqhaZIJ5tlyJnksWubOfXL8u8u75YjV2VdkA81sghnBnYMt8fQ_Ulx1LGy_yMSgK4BXnhzgg3wcyHwHxK6g5HTHGn4jDM55yiOzjrFDjj-FgVYLUBFhQeDxMp48kaqf6N5ZBjDk"/><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div><span class="font-label-lg text-primary-fixed-dim absolute top-2 right-2 drop-shadow-md">$3</span><div class="mt-auto p-2 relative z-10"><span class="block font-headline-sm text-headline-sm leading-tight text-white">Coca Cola</span><span class="block font-label-sm text-white/80">Glass Bottle</span></div></button>
+<button class="flex flex-col bg-surface-container-high rounded-xl text-left h-[120px] relative overflow-hidden active:scale-95 transition-all duration-100"><img alt="IPA Craft" class="absolute inset-0 w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQ3qXsJwIinuEcRxO3oat5DscZimmvEVxH6kYAJT1zs6ZKx1R_qCPoolURTp1o1HRM0BnppcP00icpd51b8Y545jXh0GK0HxxE7X5N0d14Qs1DwJaRDap6fZhs9tQy7KKZ9IbcEC7j6xBR8ynQnL7tU-s7cUYwvbcpXBEXZFfGhrajN6B9zrnm0Hd7Xn6jNR9xJ_mskw7cqyaqZSxzadn8B3qpnjkRejwllJbprJsa1k4siq7zXKV8G0Je0CzxwxPM162PGBGbUAM"/><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div><span class="font-label-lg text-primary-fixed-dim absolute top-2 right-2 drop-shadow-md">$6</span><div class="mt-auto p-2 relative z-10"><span class="block font-headline-sm text-headline-sm leading-tight text-white">IPA Craft</span><span class="block font-label-sm text-white/80">Draft Pint</span></div></button>
+<button class="flex flex-col p-base bg-surface-container-high rounded-xl text-left h-[120px] relative opacity-40">
+<div class="absolute inset-0 rounded-xl bg-surface-variant/20" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20px);"></div>
+<span class="font-label-lg text-primary-fixed-dim absolute top-base right-base">$7</span>
+<div class="mt-auto">
+<span class="block font-headline-sm text-headline-sm leading-tight text-on-surface">Gin Tonic</span>
+<span class="block font-label-sm text-on-surface-variant">OUT OF STOCK</span>
+</div>
+</button>
+<button class="flex flex-col bg-surface-container-high rounded-xl text-left h-[120px] relative overflow-hidden active:scale-95 transition-all duration-100"><img alt="Old Fashioned" class="absolute inset-0 w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf6GbGJo2NZLcWwqRG4fnYVkJ0B7osXMDb_prHwdkNWAsH-gW6NvxFBiloSLxWK5tjb4Fk5_PlDgJQiAGzLo1WiqXwRiUH3gWA9u-ftCv8P25xFDh48e37GZx17SVE812f48LDtcWrYvmNSoA2TxbXzonOGl8AAoP9IDMNdpnLwszJWLVAtd_eVfhwV2v9CfwVkB6UHSe_FuEpEih9OfX3PD43Ok2HT3fBq9ejg4IMcTAwbMxjUCulkACcvJFDjp_PNWP765TOxKs"/><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div><span class="font-label-lg text-primary-fixed-dim absolute top-2 right-2 drop-shadow-md">$12</span><div class="mt-auto p-2 relative z-10"><span class="block font-headline-sm text-headline-sm leading-tight text-white">Old Fashioned</span><span class="block font-label-sm text-white/80">Premium Bourbon</span></div></button>
+<button class="flex flex-col bg-surface-container-high rounded-xl text-left h-[120px] relative overflow-hidden active:scale-95 transition-all duration-100"><img alt="Espresso" class="absolute inset-0 w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD03qrRKefCtijlubdB8rdbEL0TjhCkZOIC4WwA1w6YvtwLUymb4whKTyUt6oVrAGd7p4XDqCYzSQf09HIjR7RvIw2WDvqNRntDoDQY0hhs3sXJhH5RIC3Ck11PJtb9Qf5OcrlNRvwkff69i0lnhRULoXW6fzbD6mX5P9nAlVDYPhZ_ADZofSssBndvnnqON5hqBch_UvU48zb7k5sNkNryIo0B-pH19wi7X4nu3XYAfsLTzXERi1GWG-TOncdPAeueG6Ia1EiDrcs"/><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div><span class="font-label-lg text-primary-fixed-dim absolute top-2 right-2 drop-shadow-md">$4</span><div class="mt-auto p-2 relative z-10"><span class="block font-headline-sm text-headline-sm leading-tight text-white">Espresso</span><span class="block font-label-sm text-white/80">Double Shot</span></div></button>
+<button class="flex flex-col p-base bg-surface-container-high rounded-xl text-left h-[120px] relative active:scale-95 transition-all duration-100">
+<span class="font-label-lg text-primary-fixed-dim absolute top-base right-base">$5</span>
+<div class="mt-auto">
+<span class="block font-headline-sm text-headline-sm leading-tight text-on-surface">Heineken</span>
+<span class="block font-label-sm text-on-surface-variant">Bottle</span>
+</div>
+</button>
+<button class="flex flex-col p-base bg-surface-container-high rounded-xl text-left h-[120px] relative active:scale-95 transition-all duration-100">
+<span class="font-label-lg text-primary-fixed-dim absolute top-base right-base">$9</span>
+<div class="mt-auto">
+<span class="block font-headline-sm text-headline-sm leading-tight text-on-surface">Mojito</span>
+<span class="block font-label-sm text-on-surface-variant">Fresh Mint</span>
+</div>
+</button>
+</div>
+</section>
+<!-- Floating Order Summary -->
+<div class="fixed bottom-[100px] right-container-padding left-container-padding z-40">
+<div class="bg-surface-container-highest rounded-xl p-md shadow-2xl border border-outline-variant flex items-center justify-between">
+<div class="flex gap-md items-center overflow-hidden">
+<div class="bg-primary-container text-on-primary-container w-10 h-10 rounded-lg flex items-center justify-center font-bold">2</div>
+<div>
+<p class="font-label-lg text-on-surface truncate max-w-[150px]">Margarita, Lager</p>
+<p class="font-headline-sm text-headline-sm text-primary-fixed-dim">$13.00</p>
+</div>
+</div>
+<button class="bg-primary-fixed-dim text-on-primary-fixed h-touch-target-min px-lg rounded-xl font-bold active:scale-95 transition-all shadow-lg flex items-center gap-xs">
+<span class="material-symbols-outlined">payments</span>
+                    PAY &amp; FINISH
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 w-full z-50 h-[80px] flex justify-around items-center w-full px-base bg-surface-container-high border-t border-outline-variant shadow-none">
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl w-16 h-12 active:scale-90 transition-all duration-100">
+<span class="material-symbols-outlined">point_of_sale</span>
+<span class="font-label-sm text-label-sm">POS</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-bright active:scale-90 transition-all duration-100">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-label-sm text-label-sm">Menu</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-bright active:scale-90 transition-all duration-100">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-sm text-label-sm">Cash</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-bright active:scale-90 transition-all duration-100">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm">Users</span>
+</button>
+</nav>
+</body></html>
