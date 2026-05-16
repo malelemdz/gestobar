@@ -20,15 +20,15 @@ export class UsersService {
       throw new ConflictException('El nombre de usuario ya existe');
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const { password, ...userData } = createUserDto;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
     const user = this.userRepository.create({
-      ...createUserDto,
+      ...userData,
       password: hashedPassword,
     });
 
-    const savedUser = await this.userRepository.save(user);
-    delete savedUser.password;
-    return savedUser;
+    return await this.userRepository.save(user);
   }
 
   async findAll(): Promise<User[]> {
@@ -36,14 +36,17 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ 
+      where: { id },
+      relations: ['rol']
+    });
     if (!user) {
       throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
     }
     return user;
   }
 
-  async findByUsername(username: string): Promise<User | undefined> {
+  async findByUsername(username: string): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { username },
       select: ['id', 'username', 'password', 'rol_id', 'bar_id'],
