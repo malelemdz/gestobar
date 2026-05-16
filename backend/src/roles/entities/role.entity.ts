@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Bar } from '../../bars/entities/bar.entity';
+import { Permission } from './permission.entity';
 
 @Entity('roles')
 export class Role {
@@ -15,4 +16,12 @@ export class Role {
   @ManyToOne(() => Bar, { nullable: true })
   @JoinColumn({ name: 'bar_id' })
   bar: Bar;
+
+  @ManyToMany(() => Permission, (permission) => permission.roles)
+  @JoinTable({
+    name: 'rol_permisos',
+    joinColumn: { name: 'rol_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'permiso_id', referencedColumnName: 'id' },
+  })
+  permisos: Permission[];
 }
