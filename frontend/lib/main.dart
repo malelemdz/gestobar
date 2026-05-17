@@ -1247,17 +1247,13 @@ class MainDashboardView extends ConsumerWidget {
                 ),
               ],
             )
-          : Padding(
-              padding: const EdgeInsets.only(bottom: 2.0), // alineación óptica perfecta con el menú de hamburguesa
-              child: Text(
-                pageLabel,
-                style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20.0,
-                  color: const Color(0xFF00F0FF),
-                  letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
-                  height: 1.1,
-                ),
+          : Text(
+              pageLabel,
+              style: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.w800,
+                fontSize: 20.0,
+                color: const Color(0xFF00F0FF),
+                letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
               ),
             ),
       titleSpacing: isTablet ? null : 0.0, // reduce la separación horizontal del icono
