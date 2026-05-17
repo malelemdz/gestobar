@@ -33,10 +33,10 @@ export class Auditoria {
   @Column({ type: 'jsonb', nullable: true })
   detalles: any;
 
-  @Column({ length: 45, nullable: true })
+  @Column({ type: 'varchar', length: 45, nullable: true })
   ip_address: string | null;
 
-  @Column({ length: 150, nullable: true })
+  @Column({ type: 'varchar', length: 150, nullable: true })
   dispositivo: string | null;
 
   @CreateDateColumn({ type: 'timestamp' })
