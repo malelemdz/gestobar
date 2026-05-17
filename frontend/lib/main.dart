@@ -1193,10 +1193,36 @@ class MainDashboardView extends ConsumerWidget {
     }
 
     return AppBar(
-      leading: isTablet ? leadingWidget : null,
-      leadingWidth: isTablet ? 64.0 : 0.0,
+      leading: isTablet
+          ? leadingWidget
+          : Builder(
+              builder: (context) => InkWell(
+                onTap: () {
+                  final bool isDeepView = activeView == 'perfil' || activeView == 'config';
+                  if (isDeepView) {
+                    ref.read(activeViewProvider.notifier).state = _getDefaultViewForRole(role);
+                  } else {
+                    Scaffold.of(context).openDrawer();
+                  }
+                },
+                borderRadius: BorderRadius.circular(100.0),
+                child: Container(
+                  width: 56.0,
+                  height: 56.0,
+                  alignment: Alignment.center,
+                  child: Icon(
+                    (activeView == 'perfil' || activeView == 'config')
+                        ? Icons.arrow_back
+                        : Icons.menu,
+                    color: const Color(0xFF00F0FF),
+                    size: 24.0,
+                  ),
+                ),
+              ),
+            ),
+      leadingWidth: isTablet ? 64.0 : 56.0,
       automaticallyImplyLeading: false,
-      titleSpacing: isTablet ? 16.0 : 8.0, // perfect optical alignment spacing for the custom Row
+      titleSpacing: isTablet ? 16.0 : 0.0, // starts exactly where leading widget ends, making horizontal gap perfect
       title: isTablet
           ? Row(
               children: [
@@ -1248,49 +1274,15 @@ class MainDashboardView extends ConsumerWidget {
                 ),
               ],
             )
-          : Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Hamburger Menu or Back button mathematically aligned perfectly!
-                Builder(
-                  builder: (context) => InkWell(
-                    onTap: () {
-                      final bool isDeepView = activeView == 'perfil' || activeView == 'config';
-                      if (isDeepView) {
-                        ref.read(activeViewProvider.notifier).state = _getDefaultViewForRole(role);
-                      } else {
-                        Scaffold.of(context).openDrawer();
-                      }
-                    },
-                    borderRadius: BorderRadius.circular(100.0),
-                    child: Container(
-                      width: 40.0,
-                      height: 40.0,
-                      alignment: Alignment.center,
-                      child: Icon(
-                        (activeView == 'perfil' || activeView == 'config')
-                            ? Icons.arrow_back
-                            : Icons.menu,
-                        color: const Color(0xFF00F0FF),
-                        size: 24.0,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: Text(
-                    pageLabel,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 20.0,
-                      color: const Color(0xFF00F0FF),
-                      letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
-                      height: 1.0, // force baseline alignment to eliminate all font ascender/descender margins!
-                    ),
-                  ),
-                ),
-              ],
+          : Text(
+              pageLabel,
+              style: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.w800,
+                fontSize: 20.0,
+                color: const Color(0xFF00F0FF),
+                letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
+                height: 1.0, // perfect vertical baseline centering
+              ),
             ),
       actions: actionsList,
       elevation: 0,
