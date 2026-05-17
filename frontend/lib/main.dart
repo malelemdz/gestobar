@@ -954,7 +954,7 @@ class MainDashboardView extends ConsumerWidget {
       final bool isDeepView = activeView == 'perfil' || activeView == 'config';
       if (isDeepView) {
         leadingWidget = IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF00F0FF)),
           onPressed: () {
             ref.read(activeViewProvider.notifier).state = _getDefaultViewForRole(role);
           },
@@ -963,7 +963,7 @@ class MainDashboardView extends ConsumerWidget {
         // Hamburger Menu para abrir el Mobile Drawer
         leadingWidget = Builder(
           builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
+            icon: const Icon(Icons.menu, color: Color(0xFF00F0FF)),
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         );
@@ -1252,7 +1252,7 @@ class MainDashboardView extends ConsumerWidget {
               style: GoogleFonts.plusJakartaSans(
                 fontWeight: FontWeight.w800,
                 fontSize: 20.0,
-                color: pageLabel == 'Gestobar' ? const Color(0xFF00F0FF) : const Color(0xFFDBFCFF),
+                color: const Color(0xFF00F0FF),
                 letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
               ),
             ),
