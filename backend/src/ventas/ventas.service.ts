@@ -26,7 +26,12 @@ export class VentasService {
     private readonly auditoriaService: AuditoriaService,
   ) {}
 
-  async create(createVentaDto: CreateVentaDto, barId: string, user: UserPayload): Promise<Venta> {
+  async create(
+    createVentaDto: CreateVentaDto,
+    barId: string,
+    user: UserPayload,
+    ipAndUa?: { ipAddress?: string; userAgent?: string },
+  ): Promise<Venta> {
     // 1. Bloqueo de ventas si la caja no está abierta (Regla de negocio)
     const activeCaja = await this.cajasService.getActiveCaja(barId);
 
@@ -122,6 +127,8 @@ export class VentasService {
         metodo_pago: savedVenta.metodo_pago,
         cantidad_items: savedVenta.detalles.length,
       },
+      ipAddress: ipAndUa?.ipAddress,
+      userAgent: ipAndUa?.userAgent,
     });
 
     // 5. Notificar en tiempo real por WebSockets a las Damas

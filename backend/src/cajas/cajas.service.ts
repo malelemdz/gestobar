@@ -36,7 +36,12 @@ export class CajasService {
     };
   }
 
-  async apertura(aperturaCajaDto: AperturaCajaDto, barId: string, user: UserPayload): Promise<Caja> {
+  async apertura(
+    aperturaCajaDto: AperturaCajaDto,
+    barId: string,
+    user: UserPayload,
+    ipAndUa?: { ipAddress?: string; userAgent?: string },
+  ): Promise<Caja> {
     // Verificar si ya existe una caja abierta para este bar
     const activeState = await this.getEstado(barId);
     if (activeState.abierta) {
@@ -63,12 +68,19 @@ export class CajasService {
         caja_id: savedCaja.id,
         monto_inicial: savedCaja.monto_inicial,
       },
+      ipAddress: ipAndUa?.ipAddress,
+      userAgent: ipAndUa?.userAgent,
     });
 
     return savedCaja;
   }
 
-  async cierre(cierreCajaDto: CierreCajaDto, barId: string, user: UserPayload): Promise<any> {
+  async cierre(
+    cierreCajaDto: CierreCajaDto,
+    barId: string,
+    user: UserPayload,
+    ipAndUa?: { ipAddress?: string; userAgent?: string },
+  ): Promise<any> {
     // Obtener la caja activa
     const caja = await this.getActiveCaja(barId);
 
@@ -134,6 +146,8 @@ export class CajasService {
         balance_esperado: balanceEsperado,
         diferencia: diferencia,
       },
+      ipAddress: ipAndUa?.ipAddress,
+      userAgent: ipAndUa?.userAgent,
     });
 
     return {

@@ -36,6 +36,9 @@ export class Auditoria {
   @Column({ length: 45, nullable: true })
   ip_address: string | null;
 
+  @Column({ length: 150, nullable: true })
+  dispositivo: string | null;
+
   @CreateDateColumn({ type: 'timestamp' })
   fecha: Date;
 }

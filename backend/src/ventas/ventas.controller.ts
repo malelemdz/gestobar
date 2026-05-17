@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, ParseUUIDPipe, Req } from '@nestjs/common';
 import { VentasService } from './ventas.service';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -20,8 +20,11 @@ export class VentasController {
     @Body() createVentaDto: CreateVentaDto,
     @ActiveBarId() barId: string,
     @ActiveUser() user: UserPayload,
+    @Req() req: any,
   ) {
-    return this.ventasService.create(createVentaDto, barId, user);
+    const ipAddress = req.ip || req.connection?.remoteAddress;
+    const userAgent = req.headers['user-agent'];
+    return this.ventasService.create(createVentaDto, barId, user, { ipAddress, userAgent });
   }
 
   @Get('comisiones')

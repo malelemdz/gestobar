@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, ParseUUIDPipe, Req } from '@nestjs/common';
 import { CajasService } from './cajas.service';
 import { AperturaCajaDto } from './dto/apertura-caja.dto';
 import { CierreCajaDto } from './dto/cierre-caja.dto';
@@ -25,8 +25,11 @@ export class CajasController {
     @Body() aperturaCajaDto: AperturaCajaDto,
     @ActiveBarId() barId: string,
     @ActiveUser() user: UserPayload,
+    @Req() req: any,
   ) {
-    return this.cajasService.apertura(aperturaCajaDto, barId, user);
+    const ipAddress = req.ip || req.connection?.remoteAddress;
+    const userAgent = req.headers['user-agent'];
+    return this.cajasService.apertura(aperturaCajaDto, barId, user, { ipAddress, userAgent });
   }
 
   @Post('cierre')
@@ -35,8 +38,11 @@ export class CajasController {
     @Body() cierreCajaDto: CierreCajaDto,
     @ActiveBarId() barId: string,
     @ActiveUser() user: UserPayload,
+    @Req() req: any,
   ) {
-    return this.cajasService.cierre(cierreCajaDto, barId, user);
+    const ipAddress = req.ip || req.connection?.remoteAddress;
+    const userAgent = req.headers['user-agent'];
+    return this.cajasService.cierre(cierreCajaDto, barId, user, { ipAddress, userAgent });
   }
 
   @Get()

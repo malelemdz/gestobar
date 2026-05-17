@@ -19,7 +19,10 @@ export class AuditoriaService {
     modulo: string;
     detalles: any;
     ipAddress?: string;
+    userAgent?: string;
   }): Promise<Auditoria> {
+    const dispositivoParsed = this.parseUserAgent(logData.userAgent);
+
     const log = this.auditoriaRepository.create({
       bar_id: logData.barId,
       usuario_id: logData.usuarioId,
@@ -28,9 +31,55 @@ export class AuditoriaService {
       modulo: logData.modulo,
       detalles: logData.detalles,
       ip_address: logData.ipAddress || null,
+      dispositivo: dispositivoParsed,
     });
 
     return await this.auditoriaRepository.save(log);
+  }
+
+  private parseUserAgent(userAgent: string | undefined): string | null {
+    if (!userAgent) return null;
+
+    const ua = userAgent.toLowerCase();
+    let os = 'Desconocido';
+    let browser = 'Desconocido';
+    let device = 'Web';
+
+    // Detectar OS / Dispositivo
+    if (ua.includes('ipad')) {
+      os = 'iOS';
+      device = 'iPad / Tablet';
+    } else if (ua.includes('iphone')) {
+      os = 'iOS';
+      device = 'iPhone';
+    } else if (ua.includes('android')) {
+      os = 'Android';
+      device = ua.includes('mobile') ? 'Móvil' : 'Tablet';
+    } else if (ua.includes('windows')) {
+      os = 'Windows';
+      device = 'Escritorio';
+    } else if (ua.includes('macintosh') || ua.includes('mac os')) {
+      os = 'macOS';
+      device = 'Escritorio';
+    } else if (ua.includes('linux')) {
+      os = 'Linux';
+      device = 'Escritorio';
+    }
+
+    // Detectar Navegador
+    if (ua.includes('chrome') || ua.includes('crios')) {
+      browser = 'Chrome';
+    } else if (ua.includes('safari') && !ua.includes('chrome') && !ua.includes('crios')) {
+      browser = 'Safari';
+    } else if (ua.includes('firefox') || ua.includes('fxios')) {
+      browser = 'Firefox';
+    } else if (ua.includes('edge') || ua.includes('edg')) {
+      browser = 'Edge';
+    } else if (ua.includes('opera') || ua.includes('opr')) {
+      browser = 'Opera';
+    }
+
+    return `${device} (${os}) - ${browser}`;
   }
 
   async findAll(barId: string, query: QueryAuditoriaDto): Promise<Auditoria[]> {
