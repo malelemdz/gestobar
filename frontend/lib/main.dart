@@ -1161,10 +1161,10 @@ class MainDashboardView extends ConsumerWidget {
           children: [
             Text(
               'ESTADO: ',
-              style: GoogleFonts.jetBrainsMono(
+              style: GoogleFonts.plusJakartaSans(
                 color: theme.colorScheme.onSurfaceVariant,
                 fontSize: 10.0,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
               ),
             ),
@@ -1745,7 +1745,7 @@ class DashboardPage extends ConsumerWidget {
                           children: [
                             Text(
                               'SESIÓN ACTIVA',
-                              style: GoogleFonts.jetBrainsMono(
+                              style: GoogleFonts.plusJakartaSans(
                                 fontSize: 10.0,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1.0,
@@ -1781,7 +1781,7 @@ class DashboardPage extends ConsumerWidget {
                         children: [
                           Text(
                             'ROL OPERATIVO',
-                            style: GoogleFonts.jetBrainsMono(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 9.5,
                               fontWeight: FontWeight.bold,
                               color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
@@ -1812,7 +1812,7 @@ class DashboardPage extends ConsumerWidget {
                         children: [
                           Text(
                             'SUCURSAL ACTIVA',
-                            style: GoogleFonts.jetBrainsMono(
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 9.5,
                               fontWeight: FontWeight.bold,
                               color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),

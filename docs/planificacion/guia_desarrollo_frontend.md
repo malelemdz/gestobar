@@ -28,9 +28,8 @@ Para ofrecer una experiencia inmersiva y de alto impacto estético que responda 
 *   **Controles e Inputs**: `BorderRadius.circular(100.0)` (Cápsulas y pastillas perfectas para botones de acción, campos de búsqueda y badges de estado).
 
 ### Sistema Tipográfico (Tipografías y Jerarquías)
-*   **Plus Jakarta Sans** (Google Fonts): Utilizado para grandes números, títulos de Bento y encabezados principales. Otorga un carácter tecnológico e innovador.
-*   **Inter** (Google Fonts): Utilizado para textos descriptivos, etiquetas secundarias de Bento y cuerpos de texto fluidos.
-*   **JetBrains Mono** (Google Fonts): Utilizado para badges de estado (`EN VIVO`, `SESIÓN ACTIVA`, `REALTIME`), códigos de identificación y elementos que requieran mono-espaciado estricto.
+*   **Plus Jakarta Sans** (Google Fonts): Utilizado para grandes números, títulos de Bento, badges de estado (`EN VIVO`, `SESIÓN ACTIVA`), encabezados principales, botones de acción de tipo cápsula y logotipos de branding. Otorga un carácter tecnológico, moderno e innovador.
+*   **Inter** (Google Fonts): Utilizado para textos descriptivos, etiquetas secundarias de Bento, cuerpos de texto fluidos, formularios, inputs y metadatos generales de lectura.
 
 ### Comportamiento del Scroll (Liquid Scroll)
 *   Se elimina permanentemente el efecto de estiramiento elástico (`Overscroll Stretch`) nativo en Android e iOS mediante una clase customizada de `ScrollBehavior` que fuerza `ClampingScrollPhysics` globalmente. Esto previene que los Bento grids y listas se estiren innecesariamente durante el scroll continuo.

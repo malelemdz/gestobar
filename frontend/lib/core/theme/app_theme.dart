@@ -80,14 +80,14 @@ class AppTheme {
           fontWeight: FontWeight.w400,
           color: liquidOnSurface,
         ),
-        // label-caps (JetBrains Mono para etiquetas y metadatos)
-        labelLarge: GoogleFonts.jetBrainsMono(
+        // label-caps (Inter para etiquetas y metadatos)
+        labelLarge: GoogleFonts.inter(
           fontSize: 12.0,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.1,
           color: liquidOnSurface,
         ),
-        labelSmall: GoogleFonts.jetBrainsMono(
+        labelSmall: GoogleFonts.inter(
           fontSize: 10.0,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.1,
