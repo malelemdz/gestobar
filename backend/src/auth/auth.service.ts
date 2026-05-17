@@ -34,8 +34,12 @@ export class AuthService {
       user: {
         id: user.id,
         username: user.username,
-        rolId: user.rol_id,
-        barId: user.bar_id,
+        rol_id: user.rol_id,
+        bar_id: user.bar_id,
+        nombre: user.nombre,
+        rol_nombre: user.rol?.nombre || 'STAFF',
+        foto_url: user.foto_url,
+        celular: user.celular,
       },
     };
   }

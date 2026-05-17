@@ -428,7 +428,9 @@ class MainDashboardView extends ConsumerWidget {
                               : null,
                           child: user.fotoUrl == null || user.fotoUrl!.isEmpty
                               ? Text(
-                                  user.nombre[0].toUpperCase(),
+                                  user.nombre.isNotEmpty
+                                      ? user.nombre[0].toUpperCase()
+                                      : 'U',
                                   style: theme.textTheme.headlineMedium?.copyWith(
                                     color: theme.colorScheme.primary,
                                   ),
