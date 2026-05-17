@@ -214,3 +214,24 @@ backend/src/
 >
 > Sin embargo, **ninguna de las funcionalidades ha sido probada aún en vivo (producción o integración end-to-end con cliente)**. Todo el sistema está en un estado *funcional puro en código*, listo para ser sometido a pruebas de integración con el cliente Flutter y pruebas unitarias/E2E avanzadas en el transcurso del desarrollo. Esto es una práctica habitual de desarrollo backend-first, donde la maduración de la API ocurrirá progresivamente a medida que el cliente frontend la consuma y detectemos pequeños ajustes finos.
 
+---
+
+## Inicialización e Hitos del Frontend (Liquid Modernist)
+
+### 12. Hito 1: Identidad, UI Móvil y Adaptabilidad Base
+*   **Tema Liquid Modernist Dark Configurado:**
+    *   Definición en `app_theme.dart` de la paleta oscura de alta gama: fondo en `#111317`, tarjetas en `#1E2024` y el acento cian eléctrico `#00F0FF`.
+    *   **Extirpación de JetBrains Mono:** Decisión de diseño estratégica para reducir el ruido tipográfico. Simplificación a un **sistema estricto de 2 fuentes**: **Plus Jakarta Sans** (títulos, logo, badges de estado realtime e importes) e **Inter** (cuerpos de texto, inputs de formulario y metadatos generales).
+*   **AppBar Móvil de Alta Gama (Slim 56px):**
+    *   Redefinición de la altura del AppBar móvil a un estándar nativo de `56.0` para garantizar fluidez visual.
+    *   Centrado vertical matemático en `28.0px` (eje horizontal medio) para el icono de hamburguesa de leading, el nombre de módulo estilizado (con `height: 1.0` para evitar baseline drift), y el avatar de perfil en el extremo derecho reducido a un peso visual balanceado de `32.0 x 32.0`.
+    *   Eliminación del chip de caja abierta en el encabezado móvil para evitar sobrecargas y distracciones.
+*   **Refactorización y "Respiro Visual" del Sidebar Móvil:**
+    *   Redefinición del padding general del encabezado lateral a `EdgeInsets.fromLTRB(24.0, 80.0, 24.0, 36.0)` y separación horizontal de `18.0` entre el logotipo y el texto, ofreciendo un amplio y lujoso "respiro visual" debajo de la barra de estado.
+    *   Reubicación del nombre real del bar activo (`activeBarName`) en color cian directamente debajo de "Gestobar" en reemplazo del texto genérico anterior.
+    *   Eliminación de la fila secundaria duplicada de metadatos (Usuario, Rol y Bar) en la sección media baja del cajón.
+    *   **Cápsula de Desconexión Rápida:** Reproporcionamiento del botón principal de tipo cápsula cian sólido inferior. Su etiqueta ahora es **"CERRAR SESIÓN"** (conservando el elegante contraste oscuro) y ejecuta de forma inmediata `ref.read(authProvider.notifier).logout();` al ser pulsado, limpiando de paso el ítem secundario gris duplicado al fondo.
+*   **Estado del Hito:**
+    *   **Listo para Continuar el Desarrollo Móvil:** El esqueleto visual, el sistema de navegación adaptativo y la barra/cajón de control en móviles están completamente finalizados, probados y validados libre de warnings/errores de compilación.
+    *   **Tablet Pendiente:** Queda agendada y pendiente la revisión e implementación exhaustiva de la adaptabilidad y layouts para pantallas grandes y Tablets.
+
