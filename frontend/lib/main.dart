@@ -1086,8 +1086,8 @@ class MainDashboardView extends ConsumerWidget {
               },
               borderRadius: BorderRadius.circular(100.0),
               child: Container(
-                width: 40.0,
-                height: 40.0,
+                width: 32.0,
+                height: 32.0,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -1101,7 +1101,7 @@ class MainDashboardView extends ConsumerWidget {
                     'https://lh3.googleusercontent.com/aida-public/AB6AXuBZZ4F3uxeKXlMSjT5dTb1O4_BTJuDlobMGJCsqzM_uclGpddIG1PoFe-ii5WY95o6-UbkutIhovD6rNMn-Yeq0BH9OJUet_BXiwV0AICeKlwpujiO_XFxYnVuCfNdrk1lasqCUyWhonZnODKafZDkpzxmUNyGoKPyZo7zMxLqhcaNnRIgINDnP5WjuhxdbwpvaiPVSK842ts9aS8GphuRhQB4reNSPcZLIz4YV4c_HPg-0Cj5n50esRHFSYrRtQQucvQXq2pCKA1c', // exact URL from code.html mockup!
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.person, color: Color(0xFF00F0FF), size: 20.0);
+                      return const Icon(Icons.person, color: Color(0xFF00F0FF), size: 16.0);
                     },
                   ),
                 ),
@@ -1193,9 +1193,10 @@ class MainDashboardView extends ConsumerWidget {
     }
 
     return AppBar(
-      leading: leadingWidget,
-      leadingWidth: isTablet ? 64.0 : null,
-      automaticallyImplyLeading: !isTablet,
+      leading: isTablet ? leadingWidget : null,
+      leadingWidth: isTablet ? 64.0 : 0.0,
+      automaticallyImplyLeading: false,
+      titleSpacing: isTablet ? 16.0 : 8.0, // perfect optical alignment spacing for the custom Row
       title: isTablet
           ? Row(
               children: [
@@ -1247,16 +1248,50 @@ class MainDashboardView extends ConsumerWidget {
                 ),
               ],
             )
-          : Text(
-              pageLabel,
-              style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.w800,
-                fontSize: 20.0,
-                color: const Color(0xFF00F0FF),
-                letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
-              ),
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Hamburger Menu or Back button mathematically aligned perfectly!
+                Builder(
+                  builder: (context) => InkWell(
+                    onTap: () {
+                      final bool isDeepView = activeView == 'perfil' || activeView == 'config';
+                      if (isDeepView) {
+                        ref.read(activeViewProvider.notifier).state = _getDefaultViewForRole(role);
+                      } else {
+                        Scaffold.of(context).openDrawer();
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(100.0),
+                    child: Container(
+                      width: 40.0,
+                      height: 40.0,
+                      alignment: Alignment.center,
+                      child: Icon(
+                        (activeView == 'perfil' || activeView == 'config')
+                            ? Icons.arrow_back
+                            : Icons.menu,
+                        color: const Color(0xFF00F0FF),
+                        size: 24.0,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: Text(
+                    pageLabel,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 20.0,
+                      color: const Color(0xFF00F0FF),
+                      letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
+                      height: 1.0, // force baseline alignment to eliminate all font ascender/descender margins!
+                    ),
+                  ),
+                ),
+              ],
             ),
-      titleSpacing: isTablet ? null : 0.0, // reduce la separación horizontal del icono
       actions: actionsList,
       elevation: 0,
       toolbarHeight: isTablet ? 72.0 : 56.0,
