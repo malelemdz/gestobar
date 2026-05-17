@@ -11,6 +11,7 @@ import { SeedModule } from './seed/seed.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { CajasModule } from './cajas/cajas.module';
+import { VentasModule } from './ventas/ventas.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { CajasModule } from './cajas/cajas.module';
     CategoriesModule,
     ProductsModule,
     CajasModule,
+    VentasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

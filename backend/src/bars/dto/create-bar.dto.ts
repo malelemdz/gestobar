@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsUrl, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsUrl, IsUUID, IsNumber, Min, Max } from 'class-validator';
 
 export class CreateBarDto {
   @IsString()
@@ -60,4 +60,10 @@ export class CreateBarDto {
   @IsBoolean()
   @IsOptional()
   estado?: boolean;
+
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  @IsOptional()
+  comision_porcentaje?: number;
 }

@@ -77,15 +77,15 @@ Este documento sirve como guía de desarrollo y checklist de progreso. Los módu
 ## Módulo 5: Motor de Ventas y Comisiones
 *Lógica central del negocio: Venta rápida y pagos a damas.*
 
-- [ ] **Proceso de Venta (Backend)**
-  - [ ] Registro de venta atómica (Items, cantidades, precios aplicados).
-  - [ ] Validación: Si se usa Precio B, el `dama_id` es obligatorio.
-  - [ ] Cálculo automático de comisión (50% del Precio B del cliente).
-- [ ] **Lógica de "Invitaciones"**
-  - [ ] Si la venta es para la Dama, se aplica Precio A y comisión 0.
-- [ ] **Sincronización Real-time**
-  - [ ] Integración de WebSockets (Socket.io).
-  - [ ] Notificación instantánea a la Dama cuando se registra una comisión a su nombre.
+- [x] **Proceso de Venta (Backend)**
+  - [x] Registro de venta atómica (Items, cantidades, precios aplicados).
+  - [x] Validación: Si se usa Precio B, el `dama_id` es obligatorio.
+  - [x] Cálculo automático de comisión (Configurable por bar, default 50% del Precio B).
+- [x] **Lógica de "Invitaciones"**
+  - [x] Si la venta es para la Dama, se aplica Precio A y comisión 0.
+- [x] **Sincronización Real-time**
+  - [x] Integración de WebSockets (Socket.io).
+  - [x] Notificación instantánea a la Dama cuando se registra una comisión a su nombre.
 
 ---
 

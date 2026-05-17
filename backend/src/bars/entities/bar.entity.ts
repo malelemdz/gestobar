@@ -48,6 +48,18 @@ export class Bar {
   @Column({ default: true })
   estado: boolean;
 
+  @Column({
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    default: 50.00,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value),
+    },
+  })
+  comision_porcentaje: number;
+
   @Column()
   owner_id: string;
 

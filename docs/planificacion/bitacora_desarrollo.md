@@ -83,6 +83,24 @@ El backend está construido con **NestJS (TypeScript)**, utilizando **TypeORM** 
 *   **Decorador `@ActiveUserId()` y `@ActiveBarId()`:**
     *   Se implementó el decorador en `src/auth/decorators/active-user-id.decorator.ts` para extraer con facilidad y total seguridad el ID del usuario actual firmante desde el payload JWT (empleado para registrar a los responsables de apertura y cierre de caja).
 
+### 8. Módulo 5: Motor de Ventas y Comisiones
+*   **Entidades Venta y Detalle (`src/ventas/entities/`):**
+    *   `Venta`: Registra el `total`, `metodo_pago`, `fecha`, y está vinculada a `bar_id`, `caja_id` (del turno activo) y `usuario_id` (cajero). Relación OneToMany cascada con detalles.
+    *   `DetalleVenta`: Almacena variantes individuales vendidas, cantidades, `precio_unitario`, flag de `es_precio_b`, relación opcional con la Dama (`dama_id`), comisión calculada `comision_dama` y flag `es_invitacion`.
+*   **Validaciones y Flujos de Negocio de Ventas:**
+    *   **Bloqueo de Ventas:** Si la caja de ese bar no está en estado `ABIERTA`, la transacción se rechaza de inmediato.
+    *   **Regla de Precios y Comisiones:**
+        *   *Normal:* Se cobra `Precio A` y comisión de Dama es 0.
+        *   *Compañía (Precio B):* Se cobra `Precio B` y es mandatorio enviar un `dama_id`.
+        *   *Invitaciones:* Se cobra `Precio A` a la cuenta del cliente, la comisión es 0, y es obligatorio mandar `dama_id` para auditar a quién se le dio la bebida.
+*   **Comisión Configurable por Bar:**
+    *   Añadida la columna `comision_porcentaje` en la entidad `Bar` (con valor por defecto de 50.00% y rango de 0% a 100%).
+    *   Al calcular comisiones en tiempo de venta, el sistema consulta dinámicamente el valor actual `bar.comision_porcentaje` y calcula la comisión exacta: `precio_b * (bar.comision_porcentaje / 100)`.
+*   **Sincronización Real-time por WebSockets (`ventas.gateway.ts`):**
+    *   Integrado **socket.io** mediante `@nestjs/websockets`.
+    *   **Canales Privados de Damas:** Al conectarse, una Dama se suscribe a su propio canal privado (`suscribir_dama` uniendo el socket a la sala del `damaId`).
+    *   **Notificación Instantánea:** En el momento exacto en que se graba la venta atómica, el gateway emite de forma asíncrona notificaciones privadas a los canales de las Damas involucradas informando detalles de su nueva comisión o bebida invitada.
+
 ---
 
 ## Archivos Clave del Backend
@@ -116,6 +134,13 @@ backend/src/
 │   ├── entities/caja.entity.ts
 │   ├── cajas.service.ts
 │   └── cajas.controller.ts
+├── ventas/                    # Módulo de Ventas y Comisiones (Módulo 5)
+│   ├── entities/venta.entity.ts
+│   ├── entities/detalle-venta.entity.ts
+│   ├── dto/create-venta.dto.ts
+│   ├── ventas.service.ts
+│   ├── ventas.controller.ts
+│   └── ventas.gateway.ts
 ├── roles/                     # Roles y Permisos (RBAC)
 │   ├── entities/role.entity.ts
 │   ├── entities/permission.entity.ts
