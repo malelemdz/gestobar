@@ -194,7 +194,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                           ),
                           const SizedBox(height: 6.0),
                           Text(
-                            'Inicia sesión en tu bar asignado',
+                            'Inicia sesión para comenzar',
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),
@@ -388,7 +388,10 @@ class _LoginViewState extends ConsumerState<LoginView> {
   }
 }
 
-/// 📋 3. Main Dashboard View (Temporal)
+/// Provider para controlar el índice de navegación activo en el Shell
+final navIndexProvider = StateProvider<int>((ref) => 0);
+
+/// 📋 3. Main Dashboard View - Caparazón de Navegación Adaptativa y Responsiva
 class MainDashboardView extends ConsumerWidget {
   const MainDashboardView({super.key});
 
@@ -397,159 +400,510 @@ class MainDashboardView extends ConsumerWidget {
     final theme = Theme.of(context);
     final authState = ref.watch(authProvider) as AuthAuthenticated;
     final user = authState.user;
+    final selectedIndex = ref.watch(navIndexProvider);
+
+    // 1. Definir los destinos de navegación dinámicamente según el Rol del usuario
+    final List<Map<String, dynamic>> navItems = _getNavItemsForRole(user.rolNombre);
+
+    // Si el índice seleccionado quedó fuera de rango por cambio de rol, reiniciarlo
+    if (selectedIndex >= navItems.length) {
+      Future.microtask(() => ref.read(navIndexProvider.notifier).state = 0);
+      return const PremiumSplashScreen();
+    }
+
+    final activeItem = navItems[selectedIndex];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gestobar'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Cerrar Sesión',
-            onPressed: () {
-              ref.read(authProvider.notifier).logout();
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Cabecera de bienvenida con Bento Grid Card
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 28.0,
-                          backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
-                          backgroundImage: user.fotoUrl != null && user.fotoUrl!.isNotEmpty
-                              ? NetworkImage(user.fotoUrl!)
-                              : null,
-                          child: user.fotoUrl == null || user.fotoUrl!.isEmpty
-                              ? Text(
-                                  user.nombre.isNotEmpty
-                                      ? user.nombre[0].toUpperCase()
-                                      : 'U',
-                                  style: theme.textTheme.headlineMedium?.copyWith(
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                )
-                              : null,
-                        ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Bienvenido de nuevo,',
-                                style: theme.textTheme.labelSmall,
-                              ),
-                              Text(
-                                user.nombre,
-                                style: theme.textTheme.headlineMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // CONTROL DE PANTALLA: Pantallas >= 800px se consideran Tablets / PCs
+          final bool isTablet = constraints.maxWidth >= 800;
+
+          if (isTablet) {
+            // ==========================================
+            // LAYOUT TABLET / PC: Sidebar Lateral Fijo
+            // ==========================================
+            return Row(
+              children: [
+                // SIDEBAR PREMIUM CUSTOM (Midnight Gold)
+                Container(
+                  width: 260.0,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    border: Border(
+                      right: BorderSide(
+                        color: theme.colorScheme.outlineVariant.withOpacity(0.3),
+                        width: 1.0,
+                      ),
                     ),
-                    const Divider(height: 32.0),
-                    // Información del Rol y del Bar Tenant
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Rol Asignado', style: theme.textTheme.labelSmall),
-                            const SizedBox(height: 4.0),
-                            Chip(
-                              label: Text(user.rolNombre.toUpperCase()),
-                              backgroundColor: theme.colorScheme.secondary.withOpacity(0.1),
-                              labelStyle: theme.textTheme.labelSmall?.copyWith(
-                                color: theme.colorScheme.secondary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text('Tenant (Bar ID)', style: theme.textTheme.labelSmall),
-                            const SizedBox(height: 4.0),
-                            Text(
-                              authState.activeBarId != null
-                                  ? authState.activeBarId!.substring(0, 8) + '...'
-                                  : 'GLOBAL / SUPERADMIN',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: theme.colorScheme.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24.0),
-            
-            // Bento Grid de ejemplo
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                children: [
-                  // Tarjeta Caja
-                  _buildDashboardItem(
-                    context: context,
-                    icon: Icons.payments,
-                    title: 'Control de Caja',
-                    subtitle: 'Aperturas y cierres',
-                    color: AppTheme.colorWarning,
                   ),
-                  // Tarjeta POS Ventas
-                  _buildDashboardItem(
-                    context: context,
-                    icon: Icons.point_of_sale,
-                    title: 'Punto de Venta',
-                    subtitle: 'Registrar ventas rápidas',
-                    color: AppTheme.colorSuccess,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Cabecera del Sidebar: Logo y Marca
+                      Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Icon(
+                                Icons.local_bar,
+                                color: theme.colorScheme.primary,
+                                size: 24.0,
+                              ),
+                            ),
+                            const SizedBox(width: 12.0),
+                            Text(
+                              'Gestobar',
+                              style: theme.textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: theme.colorScheme.primary,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(height: 1.0),
+                      const SizedBox(height: 16.0),
+
+                      // Lista de Navegación del Sidebar
+                      Expanded(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          itemCount: navItems.length,
+                          itemBuilder: (context, index) {
+                            final item = navItems[index];
+                            final bool isSelected = index == selectedIndex;
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4.0),
+                              child: ListTile(
+                                selected: isSelected,
+                                selectedTileColor: theme.colorScheme.primary.withOpacity(0.08),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                leading: Icon(
+                                  isSelected ? item['icon_active'] as IconData : item['icon'] as IconData,
+                                  color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+                                ),
+                                title: Text(
+                                  item['label'] as String,
+                                  style: theme.textTheme.labelLarge?.copyWith(
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                    color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
+                                  ),
+                                ),
+                                onTap: () {
+                                  ref.read(navIndexProvider.notifier).state = index;
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+
+                      // Perfil del Usuario en el pie del Sidebar
+                      const Divider(height: 1.0),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 20.0,
+                                  backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
+                                  child: Text(
+                                    user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
+                                    style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                const SizedBox(width: 12.0),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        user.nombre,
+                                        style: theme.textTheme.labelMedium?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        user.rolNombre.toUpperCase(),
+                                        style: theme.textTheme.labelSmall?.copyWith(
+                                          fontSize: 10.0,
+                                          color: theme.colorScheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16.0),
+                            // Botones de acción rápida en el Sidebar
+                            Row(
+                              children: [
+                                if (user.rolNombre == 'SUPERADMIN')
+                                  Expanded(
+                                    child: OutlinedButton.icon(
+                                      icon: const Icon(Icons.swap_horiz, size: 16.0),
+                                      label: const Text('Cambiar Bar', style: TextStyle(fontSize: 11.0)),
+                                      style: OutlinedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      ),
+                                      onPressed: () {
+                                        ref.read(authProvider.notifier).selectBar(null);
+                                      },
+                                    ),
+                                  )
+                                else
+                                  const Spacer(),
+                                const SizedBox(width: 8.0),
+                                IconButton(
+                                  icon: const Icon(Icons.logout, size: 20.0),
+                                  tooltip: 'Cerrar Sesión',
+                                  onPressed: () {
+                                    ref.read(authProvider.notifier).logout();
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // CUERPO CENTRAL DE LA PÁGINA
+                Expanded(
+                  child: Scaffold(
+                    appBar: AppBar(
+                      title: Text(activeItem['label'] as String),
+                      elevation: 0,
+                    ),
+                    body: activeItem['view'] as Widget,
+                  ),
+                ),
+              ],
+            );
+          } else {
+            // ==========================================
+            // LAYOUT MÓVIL: Translúcido Bottom Bar / Drawer
+            // ==========================================
+            final showBottomBar = navItems.length > 1;
+
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(activeItem['label'] as String),
+                actions: [
+                  if (user.rolNombre == 'SUPERADMIN')
+                    IconButton(
+                      icon: const Icon(Icons.swap_horiz),
+                      tooltip: 'Cambiar de Sucursal',
+                      onPressed: () {
+                        ref.read(authProvider.notifier).selectBar(null);
+                      },
+                    ),
+                  IconButton(
+                    icon: const Icon(Icons.logout),
+                    tooltip: 'Cerrar Sesión',
+                    onPressed: () {
+                      ref.read(authProvider.notifier).logout();
+                    },
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
+              body: activeItem['view'] as Widget,
+              bottomNavigationBar: showBottomBar
+                  ? Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(
+                            color: theme.colorScheme.outlineVariant.withOpacity(0.3),
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                      child: BottomNavigationBar(
+                        currentIndex: selectedIndex,
+                        onTap: (index) {
+                          ref.read(navIndexProvider.notifier).state = index;
+                        },
+                        type: BottomNavigationBarType.fixed,
+                        backgroundColor: theme.colorScheme.surface,
+                        selectedItemColor: theme.colorScheme.primary,
+                        unselectedItemColor: theme.colorScheme.onSurfaceVariant,
+                        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                        items: navItems.map((item) {
+                          return BottomNavigationBarItem(
+                            icon: Icon(item['icon'] as IconData),
+                            activeIcon: Icon(item['icon_active'] as IconData),
+                            label: item['label'] as String,
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  : null,
+            );
+          }
+        },
       ),
     );
   }
 
-  Widget _buildDashboardItem({
+  // Genera el listado de páginas dinámicas según el rol autenticado
+  List<Map<String, dynamic>> _getNavItemsForRole(String roleName) {
+    switch (roleName.toUpperCase()) {
+      case 'SUPERADMIN':
+      case 'ADMIN':
+        return [
+          {
+            'label': 'Dashboard',
+            'icon': Icons.dashboard_outlined,
+            'icon_active': Icons.dashboard,
+            'view': const DashboardPage(),
+          },
+          {
+            'label': 'Punto de Venta',
+            'icon': Icons.point_of_sale_outlined,
+            'icon_active': Icons.point_of_sale,
+            'view': const PosPage(),
+          },
+          {
+            'label': 'Caja y Turnos',
+            'icon': Icons.payments_outlined,
+            'icon_active': Icons.payments,
+            'view': const CajaPage(),
+          },
+          {
+            'label': 'Auditoría',
+            'icon': Icons.security_outlined,
+            'icon_active': Icons.security,
+            'view': const AuditoriaPage(),
+          },
+        ];
+      case 'BARMAN':
+        return [
+          {
+            'label': 'Punto de Venta',
+            'icon': Icons.point_of_sale_outlined,
+            'icon_active': Icons.point_of_sale,
+            'view': const PosPage(),
+          },
+          {
+            'label': 'Caja y Turnos',
+            'icon': Icons.payments_outlined,
+            'icon_active': Icons.payments,
+            'view': const CajaPage(),
+          },
+        ];
+      case 'DAMA':
+        return [
+          {
+            'label': 'Mis Comisiones',
+            'icon': Icons.star_outline,
+            'icon_active': Icons.star,
+            'view': const DamaPage(),
+          },
+        ];
+      default:
+        return [
+          {
+            'label': 'Dashboard',
+            'icon': Icons.dashboard_outlined,
+            'icon_active': Icons.dashboard,
+            'view': const DashboardPage(),
+          },
+        ];
+    }
+  }
+}
+
+// =========================================================================
+// 🌟 SUB-VISTAS PRINCIPALES DEL SISTEMA (Contenedores Modulares)
+// =========================================================================
+
+/// 📊 VISTA 1: Panel de Control / Dashboard Gerencial (Bento Grid)
+class DashboardPage extends ConsumerWidget {
+  const DashboardPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final authState = ref.watch(authProvider) as AuthAuthenticated;
+    final user = authState.user;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Tarjeta Bento Principal: Información del Usuario y Local
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+              side: BorderSide(color: theme.colorScheme.outlineVariant.withOpacity(0.3)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 26.0,
+                        backgroundColor: theme.colorScheme.primary.withOpacity(0.15),
+                        child: Text(
+                          user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
+                          style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 20.0),
+                        ),
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('SESIÓN ACTIVA', style: theme.textTheme.labelSmall?.copyWith(letterSpacing: 1.0)),
+                            Text(
+                              user.nombre,
+                              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 32.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('ROL OPERATIVO', style: theme.textTheme.labelSmall),
+                          const SizedBox(height: 4.0),
+                          Chip(
+                            label: Text(user.rolNombre.toUpperCase()),
+                            backgroundColor: theme.colorScheme.secondary.withOpacity(0.1),
+                            labelStyle: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text('SUCURSAL ACTIVA', style: theme.textTheme.labelSmall),
+                          const SizedBox(height: 4.0),
+                          Text(
+                            authState.activeBarId != null
+                                ? authState.activeBarId!.substring(0, 8) + '...'
+                                : 'GLOBAL',
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24.0),
+
+          // Grilla Bento de Accesos Rápidos
+          GridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: MediaQuery.of(context).size.width >= 600 ? 4 : 2,
+            crossAxisSpacing: 16.0,
+            mainAxisSpacing: 16.0,
+            childAspectRatio: 1.25,
+            children: [
+              _buildBentoItem(
+                context: context,
+                icon: Icons.point_of_sale,
+                title: 'POS Ventas',
+                subtitle: 'Ir a facturación',
+                color: AppTheme.colorSuccess,
+                onTap: () {
+                  ref.read(navIndexProvider.notifier).state = 1;
+                },
+              ),
+              _buildBentoItem(
+                context: context,
+                icon: Icons.payments,
+                title: 'Caja',
+                subtitle: 'Control de turnos',
+                color: AppTheme.colorWarning,
+                onTap: () {
+                  ref.read(navIndexProvider.notifier).state = 2;
+                },
+              ),
+              _buildBentoItem(
+                context: context,
+                icon: Icons.security,
+                title: 'Auditoría',
+                subtitle: 'Registro de logs',
+                color: theme.colorScheme.secondary,
+                onTap: () {
+                  ref.read(navIndexProvider.notifier).state = 3;
+                },
+              ),
+              _buildBentoItem(
+                context: context,
+                icon: Icons.storefront,
+                title: 'Sucursales',
+                subtitle: 'Gestionar bares',
+                color: theme.colorScheme.primary,
+                onTap: () {
+                  if (user.rolNombre == 'SUPERADMIN') {
+                    ref.read(authProvider.notifier).selectBar(null);
+                  }
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBentoItem({
     required BuildContext context,
     required IconData icon,
     required String title,
     required String subtitle,
     required Color color,
+    required VoidCallback onTap,
   }) {
     final theme = Theme.of(context);
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        side: BorderSide(color: theme.colorScheme.outlineVariant.withOpacity(0.3)),
+      ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12.0),
-        onTap: () {},
+        borderRadius: BorderRadius.circular(16.0),
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -562,30 +916,141 @@ class MainDashboardView extends ConsumerWidget {
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Icon(icon, color: color, size: 28.0),
+                child: Icon(icon, color: color, size: 24.0),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 14.0),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4.0),
+                  const SizedBox(height: 2.0),
                   Text(
                     subtitle,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      fontSize: 11.0,
-                    ),
+                    style: theme.textTheme.labelSmall?.copyWith(fontSize: 10.0),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// 🛒 VISTA 2: Punto de Venta (POS) Placeholder
+class PosPage extends StatelessWidget {
+  const PosPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.point_of_sale, size: 64.0, color: theme.colorScheme.primary.withOpacity(0.5)),
+          const SizedBox(height: 16.0),
+          Text(
+            'Módulo POS y Facturación',
+            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8.0),
+          Text(
+            'Disponible en la Fase 2: Venta Rápida y Selección de Damas.',
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 💵 VISTA 3: Caja y Turnos Placeholder
+class CajaPage extends StatelessWidget {
+  const CajaPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.payments, size: 64.0, color: theme.colorScheme.secondary.withOpacity(0.5)),
+          const SizedBox(height: 16.0),
+          Text(
+            'Módulo de Control de Caja',
+            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8.0),
+          Text(
+            'Disponible en la Fase 3: Aperturas, Cierres y Billeteo.',
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 🔒 VISTA 4: Auditoría y Logs Placeholder
+class AuditoriaPage extends StatelessWidget {
+  const AuditoriaPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.security, size: 64.0, color: AppTheme.colorWarning.withOpacity(0.5)),
+          const SizedBox(height: 16.0),
+          Text(
+            'Módulo de Auditoría de Sistemas',
+            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8.0),
+          Text(
+            'Registro completo de trazabilidad multi-tenant en tiempo real.',
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 💃 VISTA 5: Panel de Dama de Compañía Placeholder
+class DamaPage extends StatelessWidget {
+  const DamaPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.star, size: 64.0, color: theme.colorScheme.primary.withOpacity(0.5)),
+          const SizedBox(height: 16.0),
+          Text(
+            'Panel de Comisiones e Invitaciones',
+            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8.0),
+          Text(
+            'Consulta tus comisiones acumuladas del turno actual en tiempo real.',
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ],
       ),
     );
   }
