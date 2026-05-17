@@ -45,7 +45,7 @@ class AppTheme {
         error: colorDanger,
       ),
       textTheme: _buildTextTheme(darkOnSurface, darkOnSurfaceVariant),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: darkSurfaceCard,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -92,7 +92,7 @@ class AppTheme {
         error: colorDanger,
       ),
       textTheme: _buildTextTheme(lightOnSurface, lightOnSurfaceVariant),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: lightSurfaceCard,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),

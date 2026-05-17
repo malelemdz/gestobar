@@ -454,7 +454,7 @@ class MainDashboardView extends ConsumerWidget {
                     const Divider(height: 32.0),
                     // Información del Rol y del Bar Tenant
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.between,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
