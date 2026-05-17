@@ -6,43 +6,34 @@ Este documento sirve como plano de ingeniería para trasladar y relocalizar los 
 
 ---
 
-## 🎨 1. Sistema de Diseño Adaptativo y Paleta de Colores
+## 🎨 1. Sistema de Diseño Liquid Modernist (10/10) - Tema Oscuro Unificado
 
-Para responder al entorno del bar y a las preferencias de los administradores, la interfaz implementa un **Doble Tema** (Claro y Oscuro) optimizado para pantallas táctiles de móviles y tablets, mapeando píxel por píxel la configuración estética del bar.
+Para ofrecer una experiencia inmersiva y de alto impacto estético que responda a entornos de hostelería exigentes, Gestobar implementa un **Tema Oscuro Único (Liquid Modernist Dark)**. Este estilo es idéntico tanto en interfaces móviles como en tablets, eliminando el tema claro para garantizar consistencia visual y máxima legibilidad en ambientes nocturnos.
 
-### Paletas de Colores Armonizadas (Extracto HTML de Referencia)
+### Paleta de Colores de Referencia de Alta Gama
 
-| Elemento | 🌙 Modo Oscuro (Midnight Gold - Default Bar Night) | ☀️ Modo Claro (Golden Slate - Turno de Día) |
+| Elemento | 🌟 Valor Hexadecimal / Flutter Color | Descripción Estética |
 | :--- | :--- | :--- |
-| **Fondo de la App** | `#181309` (Negro dorado medianoche / `background`) | `#F8F9FA` (Gris slate claro / `background`) |
-| **Fondo de Contenedor** | `#241F14` (`surface-container`) | `#EDEEEF` (`surface-container`) |
-| **Superficie de Tarjetas (Cards)** | `#2F291E` (`surface-container-high`) | `#FFFFFF` (`surface-container-lowest`) |
-| **Bordes y Contornos** | `#504532` (`outline-variant`) | `#D4C5AB` (`outline-variant`) |
-| **Color Primario (Accent)** | `#FBBC00` (Oro ámbar brillante / `primary-fixed-dim`) | `#795900` (Ámbar oscuro / `primary`) |
-| **Color Secundario** | `#43DDE6` (Cian neón / `secondary`) | `#006A65` (Verde azulado / `secondary`) |
-| **Texto Principal** | `#EDE1D0` (Crema cálido / `on-surface`) | `#191C1D` (Carbono oscuro / `on-surface`) |
-| **Texto Secundario** | `#D4C5AB` (Gris arena / `on-surface-variant`) | `#504532` (Marrón suave / `on-surface-variant`) |
-| **Caja Abierta (Éxito)** | `#10B981` (Verde esmeralda) | `#059669` (Verde oscuro) |
-| **Caja Cerrada (Peligro)** | `#EF4444` (Rojo carmesí) | `#DC2626` (Rojo intenso) |
+| **Fondo de la App** | `#111317` (`const Color(0xFF111317)`) | Negro profundo unificado |
+| **Contenedores y Bento Cards** | `#1E2024` (`const Color(0xFF1E2024)`) | Gris carbono de superficie premium |
+| **Bordes y Contornos** | `Colors.white.withOpacity(0.05)` | Micro-líneas de división ultra sutiles |
+| **Color Primario (Accent)** | `#00F0FF` (`const Color(0xFF00F0FF)`) | Cian eléctrico neón para acciones y estados en vivo |
+| **Color Secundario** | `#7000FF` (`const Color(0xFF7000FF)`) | Violeta vibrante para branding, avatares y roles |
+| **Color Terciario** | `#FFB1C3` (`const Color(0xFFFFB1C3)`) | Rosa cálido para invitaciones, comisiones y badges secundarios |
+| **Texto Principal** | `#DBFCFF` (`const Color(0xFFDBFCFF)`) | Crema cian brillante para títulos principales |
+| **Texto Secundario** | `onSurfaceVariant.withOpacity(0.6)` | Gris ceniza para descripciones y metadata |
 
-### Sistema Tipográfico (Tipografías y Tamaños)
-*   **Fuentes del Sistema**:
-    *   `Plus Jakarta Sans` (Google Fonts): Para títulos y encabezados de alta jerarquía, otorgando un carácter distintivo e innovador.
-    *   `Inter` (Google Fonts): Para textos descriptivos, etiquetas de botones y números/denominaciones del POS.
-*   **Escalas y Pesos en Flutter (`TextStyle`)**:
-    *   **`display-lg`**: `48.0` logical pixels (lineHeight `1.16` (`56.0/48.0`), letterSpacing `-0.02`, `FontWeight.w700`) - Usado para montos de dinero principales y totales de caja.
-    *   **`headline-lg`**: `32.0` logical pixels (lineHeight `1.25`, letterSpacing `-0.02`, `FontWeight.w700` / `w600`) - Títulos de páginas principales.
-    *   **`headline-md`**: `24.0` logical pixels (lineHeight `1.33`, letterSpacing `-0.01`, `FontWeight.w600`) - Títulos de componentes y widgets bento.
-    *   **`headline-sm`**: `20.0` logical pixels (lineHeight `1.40`, `FontWeight.w600`) - Nombres de tragos y productos en tarjetas.
-    *   **`body-lg`**: `18.0` logical pixels (lineHeight `1.55` (`28.0/18.0`), `FontWeight.w400`) - Texto de cuerpo extendido.
-    *   **`body-md`**: `16.0` logical pixels (lineHeight `1.50` (`24.0/16.0`), `FontWeight.w400`) - Textos estándar generales.
-    *   **`label-lg`**: `14.0` logical pixels (lineHeight `1.42` (`20.0/14.0`), letterSpacing `0.02`, `FontWeight.w600`) - Botones e indicadores rápidos.
-    *   **`label-sm`**: `12.0` logical pixels (lineHeight `1.33` (`16.0/12.0`), letterSpacing `0.04`, `FontWeight.w600`) - Badges de estado e información secundaria.
+### Esquinas Redondeadas Modernistas (Corner Radii)
+*   **Bento Cards / Tarjetas de Sesión**: `BorderRadius.circular(32.0)` (Esquinas redondas de 32px que otorgan una fisonomía premium y suavizada).
+*   **Controles e Inputs**: `BorderRadius.circular(100.0)` (Cápsulas y pastillas perfectas para botones de acción, campos de búsqueda y badges de estado).
 
-### Espaciados y Grid Layout
-*   **`xs`**: `4.0` px | **`base`**: `8.0` px | **`sm`**: `12.0` px | **`margin-mobile` / `gutter`**: `16.0` px.
-*   **`md`**: `24.0` px | **`lg`**: `40.0` px | **`xl`**: `64.0` px.
-*   **Área de Toque Mínima (Touch Target)**: Mínimo `48.0` px de altura/anchura para asegurar operatividad táctil impecable en barras oscuras y con movimiento continuo.
+### Sistema Tipográfico (Tipografías y Jerarquías)
+*   **Plus Jakarta Sans** (Google Fonts): Utilizado para grandes números, títulos de Bento y encabezados principales. Otorga un carácter tecnológico e innovador.
+*   **Inter** (Google Fonts): Utilizado para textos descriptivos, etiquetas secundarias de Bento y cuerpos de texto fluidos.
+*   **JetBrains Mono** (Google Fonts): Utilizado para badges de estado (`EN VIVO`, `SESIÓN ACTIVA`, `REALTIME`), códigos de identificación y elementos que requieran mono-espaciado estricto.
+
+### Comportamiento del Scroll (Liquid Scroll)
+*   Se elimina permanentemente el efecto de estiramiento elástico (`Overscroll Stretch`) nativo en Android e iOS mediante una clase customizada de `ScrollBehavior` que fuerza `ClampingScrollPhysics` globalmente. Esto previene que los Bento grids y listas se estiren innecesariamente durante el scroll continuo.
 
 ---
 

@@ -878,15 +878,15 @@ class MainDashboardView extends ConsumerWidget {
     Widget leadingWidget;
     if (isTablet) {
       leadingWidget = const Padding(
-        padding: EdgeInsets.only(left: 16.0),
-        child: Icon(Icons.blur_on, color: Colors.amber, size: 28.0),
+        padding: EdgeInsets.only(left: 24.0),
+        child: Icon(Icons.blur_on, color: Color(0xFF00F0FF), size: 28.0),
       );
     } else {
       // En móvil, si estamos en una pantalla profunda (Perfil/Config), mostramos botón Atrás
       final bool isDeepView = activeView == 'perfil' || activeView == 'config';
       if (isDeepView) {
         leadingWidget = IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             ref.read(activeViewProvider.notifier).state = _getDefaultViewForRole(role);
           },
@@ -895,7 +895,7 @@ class MainDashboardView extends ConsumerWidget {
         // Hamburger Menu para abrir el Mobile Drawer
         leadingWidget = Builder(
           builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
+            icon: const Icon(Icons.menu, color: Colors.white),
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         );
@@ -908,23 +908,23 @@ class MainDashboardView extends ConsumerWidget {
     if (role != 'DAMA' && activeView != 'perfil' && activeView != 'config') {
       actionsList.add(
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: InkWell(
             onTap: () {
               ref.read(activeViewProvider.notifier).state = 'caja';
             },
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(100.0),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+              padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 4.0),
               decoration: BoxDecoration(
                 color: isCajaAbierta
-                    ? AppTheme.colorSuccess.withOpacity(0.12)
-                    : AppTheme.colorWarning.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(30.0),
+                    ? const Color(0x1A00F0FF) // primary container with 10% opacity
+                    : const Color(0x1AFFB4AB), // error variant with 10% opacity
+                borderRadius: BorderRadius.circular(100.0),
                 border: Border.all(
                   color: isCajaAbierta
-                      ? AppTheme.colorSuccess.withOpacity(0.4)
-                      : AppTheme.colorWarning.withOpacity(0.4),
+                      ? const Color(0x3300F0FF)
+                      : const Color(0x33FFB4AB),
                   width: 1.0,
                 ),
               ),
@@ -933,17 +933,17 @@ class MainDashboardView extends ConsumerWidget {
                 children: [
                   Icon(
                     isCajaAbierta ? Icons.check_circle_outline : Icons.warning_amber_rounded,
-                    size: 14.0,
-                    color: isCajaAbierta ? AppTheme.colorSuccess : AppTheme.colorWarning,
+                    size: 13.0,
+                    color: isCajaAbierta ? const Color(0xFF00F0FF) : const Color(0xFFFFB4AB),
                   ),
                   const SizedBox(width: 6.0),
                   Text(
-                    isCajaAbierta ? 'Caja Abierta' : 'Caja Cerrada',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: isCajaAbierta ? AppTheme.colorSuccess : AppTheme.colorWarning,
+                    isCajaAbierta ? 'CAJA ABIERTA' : 'CAJA CERRADA',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: isCajaAbierta ? const Color(0xFF00F0FF) : const Color(0xFFFFB4AB),
                       fontWeight: FontWeight.w800,
-                      fontSize: 10.0,
-                      letterSpacing: 0.1,
+                      fontSize: 9.0,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ],
@@ -960,13 +960,13 @@ class MainDashboardView extends ConsumerWidget {
       // Indicador WebSocket
       actionsList.add(
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             decoration: BoxDecoration(
-              color: const Color(0xFF00ADB5).withOpacity(0.15),
-              borderRadius: BorderRadius.circular(20.0),
-              border: Border.all(color: const Color(0xFF00ADB5).withOpacity(0.3)),
+              color: const Color(0x1A00F0FF),
+              borderRadius: BorderRadius.circular(100.0),
+              border: Border.all(color: const Color(0x3300F0FF)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -976,16 +976,17 @@ class MainDashboardView extends ConsumerWidget {
                   height: 6.0,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFF00ADB5),
+                    color: Color(0xFF00F0FF),
                   ),
                 ),
                 const SizedBox(width: 6.0),
-                const Text(
-                  'Realtime',
-                  style: TextStyle(
-                    color: Color(0xFF00ADB5),
+                Text(
+                  'REALTIME',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: const Color(0xFF00F0FF),
                     fontWeight: FontWeight.bold,
-                    fontSize: 9.0,
+                    fontSize: 8.5,
+                    letterSpacing: 0.5,
                   ),
                 ),
               ],
@@ -998,25 +999,25 @@ class MainDashboardView extends ConsumerWidget {
       // Indicador de Ganancias Acumuladas
       actionsList.add(
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             decoration: BoxDecoration(
-              color: Colors.amber.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(20.0),
-              border: Border.all(color: Colors.amber.withOpacity(0.3)),
+              color: const Color(0x1AFFB1C3), // tertiary fixed dim with 10% opacity
+              borderRadius: BorderRadius.circular(100.0),
+              border: Border.all(color: const Color(0x33FFB1C3)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.payments_outlined, color: Colors.amber, size: 14.0),
+                const Icon(Icons.payments_outlined, color: Color(0xFFFFB1C3), size: 13.0),
                 const SizedBox(width: 6.0),
                 Text(
                   '150.00 Bs',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: Colors.amber,
+                  style: GoogleFonts.plusJakartaSans(
+                    color: const Color(0xFFFFB1C3),
                     fontWeight: FontWeight.bold,
-                    fontSize: 10.0,
+                    fontSize: 9.0,
                   ),
                 ),
               ],
@@ -1031,18 +1032,23 @@ class MainDashboardView extends ConsumerWidget {
     if (role == 'SUPERADMIN') {
       actionsList.add(
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          padding: const EdgeInsets.symmetric(vertical: 18.0),
           child: OutlinedButton.icon(
-            icon: const Icon(Icons.swap_horiz, size: 14.0),
+            icon: const Icon(Icons.swap_horiz, size: 14.0, color: Color(0xFF00F0FF)),
             label: Text(
-              activeBarId != null ? 'Cambiar Bar' : 'Bares',
-              style: const TextStyle(fontSize: 10.0),
+              activeBarId != null ? 'CAMBIAR BAR' : 'BARES',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 9.0,
+                color: const Color(0xFF00F0FF),
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
             ),
             style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              side: BorderSide(color: theme.colorScheme.primary.withOpacity(0.4)),
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              side: const BorderSide(color: Color(0x4D00F0FF)),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
+                borderRadius: BorderRadius.circular(100.0),
               ),
             ),
             onPressed: () {
@@ -1054,22 +1060,156 @@ class MainDashboardView extends ConsumerWidget {
       actionsList.add(const SizedBox(width: 12.0));
     }
 
+    // Add static notifications/sync elements in Tablet to match code.html
+    if (isTablet) {
+      actionsList.add(
+        IconButton(
+          icon: const Icon(Icons.sync, size: 20.0),
+          color: theme.colorScheme.onSurfaceVariant,
+          onPressed: () {},
+        ),
+      );
+      actionsList.add(
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.notifications_outlined, size: 20.0),
+              color: theme.colorScheme.onSurfaceVariant,
+              onPressed: () {},
+            ),
+            Positioned(
+              top: 12.0,
+              right: 12.0,
+              child: Container(
+                width: 7.0,
+                height: 7.0,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFB4AB),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      actionsList.add(const SizedBox(width: 8.0));
+      actionsList.add(
+        Container(
+          width: 1.0,
+          height: 24.0,
+          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+          color: Colors.white.withOpacity(0.08),
+        ),
+      );
+      actionsList.add(const SizedBox(width: 8.0));
+      actionsList.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'ESTADO: ',
+              style: GoogleFonts.jetBrainsMono(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontSize: 10.0,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(width: 6.0),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+              decoration: BoxDecoration(
+                color: const Color(0x1A00F0FF),
+                borderRadius: BorderRadius.circular(100.0),
+                border: Border.all(color: const Color(0x3300F0FF)),
+              ),
+              child: Text(
+                'EN VIVO',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFF00F0FF),
+                  fontSize: 9.0,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      actionsList.add(const SizedBox(width: 24.0));
+    }
+
     return AppBar(
       leading: leadingWidget,
-      title: Text(
-        pageLabel,
-        style: theme.textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w900,
-          color: theme.colorScheme.primary,
-          letterSpacing: 0.5,
-        ),
-      ),
+      leadingWidth: isTablet ? 64.0 : null,
+      automaticallyImplyLeading: !isTablet,
+      title: isTablet
+          ? Row(
+              children: [
+                Text(
+                  'Neon Management',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 22.0,
+                    color: const Color(0xFFDBFCFF),
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(width: 24.0),
+                // Search Input Bar to match code.html
+                Container(
+                  height: 38.0,
+                  width: 240.0,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E2024),
+                    borderRadius: BorderRadius.circular(100.0),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.05),
+                      width: 1.0,
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.search, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6), size: 16.0),
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Buscar mesas, pedidos...',
+                            hintStyle: TextStyle(
+                              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.4),
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                          style: const TextStyle(color: Colors.white, fontSize: 12.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : Text(
+              pageLabel,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: theme.colorScheme.primary,
+                letterSpacing: 0.3,
+              ),
+            ),
       actions: actionsList,
       elevation: 0,
-      backgroundColor: theme.colorScheme.surface,
+      toolbarHeight: 80.0,
+      backgroundColor: const Color(0xFF111317), // unified dark theme background
       shape: Border(
         bottom: BorderSide(
-          color: theme.colorScheme.outline.withOpacity(0.15),
+          color: Colors.white.withOpacity(0.06),
           width: 1.0,
         ),
       ),
@@ -1401,434 +1541,199 @@ class DashboardPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final authState = ref.watch(authProvider) as AuthAuthenticated;
+    final user = authState.user;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final bool isTablet = constraints.maxWidth >= 800;
-
-        return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 1. Grilla Bento de Tarjetas Métricas
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: isTablet ? 4 : (constraints.maxWidth >= 550 ? 2 : 1),
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                childAspectRatio: isTablet ? 1.4 : 1.6,
-                children: [
-                  _buildMetricCard(
-                    context: context,
-                    label: 'Venta Bruta Diaria',
-                    value: '€12.450',
-                    subtext: '+12% vs ayer',
-                    icon: Icons.trending_up,
-                    accentColor: theme.colorScheme.primaryContainer, // Cyan
-                  ),
-                  _buildMetricCard(
-                    context: context,
-                    label: 'Mesas Activas',
-                    value: '24 / 30',
-                    subtext: '80% Ocupación',
-                    icon: Icons.grid_view,
-                    accentColor: theme.colorScheme.secondary, // Violeta
-                  ),
-                  _buildMetricCard(
-                    context: context,
-                    label: 'Rotación Media',
-                    value: '52 min',
-                    subtext: '-4 min vs media',
-                    icon: Icons.timer,
-                    accentColor: const Color(0xFFFFB1C3), // Rosado/Terciario fijo dim
-                  ),
-                  _buildMetricCard(
-                    context: context,
-                    label: 'Anulaciones Abiertas',
-                    value: '03',
-                    subtext: 'Requiere atención',
-                    icon: Icons.assignment_late_outlined,
-                    accentColor: theme.colorScheme.error, // Rojo
-                  ),
-                ],
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 1. Tarjeta Premium de Sesión Activa (Liquid Modernist Style)
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E2024), // surface-container
+              borderRadius: BorderRadius.circular(32.0), // Extreme rounded modernist corners!
+              border: Border.all(
+                color: Colors.white.withOpacity(0.05),
+                width: 1.0,
               ),
-              const SizedBox(height: 24.0),
-
-              // 2. Sección Media: Gráfico de Velocidad de Ingresos & Feed de Actividad en Vivo
-              if (isTablet) ...[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Gráfico de Velocidad (Span 8 equivalent)
-                    Expanded(
-                      flex: 8,
-                      child: Container(
-                        height: 380.0,
-                        padding: const EdgeInsets.all(24.0),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1E2024),
-                          borderRadius: BorderRadius.circular(24.0),
-                          border: Border.all(
-                            color: theme.colorScheme.outlineVariant.withOpacity(0.08),
-                            width: 1.0,
-                          ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(28.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      // Avatar circular con iniciales
+                      Container(
+                        width: 54.0,
+                        height: 54.0,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF7000FF), // Violeta/Secondary
+                          shape: BoxShape.circle,
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Velocidad de Ingresos',
-                                      style: theme.textTheme.headlineSmall?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2.0),
-                                    Text(
-                                      'Flujo de ventas en tiempo real por hora',
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: theme.colorScheme.onSurfaceVariant,
-                                        fontSize: 12.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF282A2E),
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    border: Border.all(color: theme.colorScheme.outlineVariant.withOpacity(0.1)),
-                                  ),
-                                  child: Text(
-                                    'HOY',
-                                    style: theme.textTheme.labelSmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 9.0,
-                                      color: theme.colorScheme.primaryContainer,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                        child: Center(
+                          child: Text(
+                            user.nombre.isNotEmpty ? user.nombre.substring(0, 1).toUpperCase() : 'G',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 24.0),
-                            Expanded(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: const [
-                                  _BarWidget(label: '18:00', heightPercentage: 0.66),
-                                  SizedBox(width: 8.0),
-                                  _BarWidget(label: '19:00', heightPercentage: 0.50),
-                                  SizedBox(width: 8.0),
-                                  _BarWidget(label: '20:00', heightPercentage: 0.80),
-                                  SizedBox(width: 8.0),
-                                  _BarWidget(label: 'AHORA', heightPercentage: 1.0, isNow: true),
-                                  SizedBox(width: 8.0),
-                                  _BarWidget(label: '22:00', heightPercentage: 0.0),
-                                  SizedBox(width: 8.0),
-                                  _BarWidget(label: '23:00', heightPercentage: 0.0),
-                                ],
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 24.0),
-
-                    // Actividad en Vivo (Span 4 equivalent)
-                    Expanded(
-                      flex: 4,
-                      child: Container(
-                        height: 380.0,
-                        padding: const EdgeInsets.all(24.0),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1E2024),
-                          borderRadius: BorderRadius.circular(24.0),
-                          border: Border.all(
-                            color: theme.colorScheme.outlineVariant.withOpacity(0.08),
-                            width: 1.0,
-                          ),
-                        ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Actividad en Vivo',
-                              style: theme.textTheme.headlineSmall?.copyWith(
+                              'SESIÓN ACTIVA',
+                              style: GoogleFonts.jetBrainsMono(
+                                fontSize: 10.0,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18.0,
+                                letterSpacing: 1.0,
+                                color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
                               ),
                             ),
-                            const SizedBox(height: 16.0),
-                            Expanded(
-                              child: ListView(
-                                children: [
-                                  _buildActivityTile(
-                                    context: context,
-                                    title: 'Mesa 12 cerrada',
-                                    subtitle: 'Total pagado: €142,50',
-                                    icon: Icons.payments,
-                                    iconColor: theme.colorScheme.secondary,
-                                    time: '2m',
-                                  ),
-                                  _buildActivityTile(
-                                    context: context,
-                                    title: 'Anulación: Mesa 4',
-                                    subtitle: 'Item: Negroni (Error entrada)',
-                                    icon: Icons.block,
-                                    iconColor: theme.colorScheme.error,
-                                    time: '8m',
-                                  ),
-                                  _buildActivityTile(
-                                    context: context,
-                                    title: 'Nueva Reseña 5★',
-                                    subtitle: '"Cócteles increíbles, servicio 10"',
-                                    icon: Icons.star,
-                                    iconColor: theme.colorScheme.primaryContainer,
-                                    time: '15m',
-                                  ),
-                                  _buildActivityTile(
-                                    context: context,
-                                    title: 'Staff: Entrada',
-                                    subtitle: 'Marta Ruiz ha iniciado turno',
-                                    icon: Icons.person_add,
-                                    iconColor: theme.colorScheme.onSurfaceVariant,
-                                    time: '22m',
-                                  ),
-                                ],
+                            const SizedBox(height: 2.0),
+                            Text(
+                              user.nombre,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFFDBFCFF),
+                                letterSpacing: -0.5,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ] else ...[
-                // En móvil, apilados verticalmente
-                Container(
-                  height: 280.0,
-                  padding: const EdgeInsets.all(20.0),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1E2024),
-                    borderRadius: BorderRadius.circular(24.0),
-                    border: Border.all(
-                      color: theme.colorScheme.outlineVariant.withOpacity(0.08),
-                      width: 1.0,
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Velocidad de Ingresos',
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                      const SizedBox(height: 16.0),
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: const [
-                            _BarWidget(label: '18:00', heightPercentage: 0.66),
-                            SizedBox(width: 6.0),
-                            _BarWidget(label: '19:00', heightPercentage: 0.50),
-                            SizedBox(width: 6.0),
-                            _BarWidget(label: '20:00', heightPercentage: 0.80),
-                            SizedBox(width: 6.0),
-                            _BarWidget(label: 'AHORA', heightPercentage: 1.0, isNow: true),
-                            SizedBox(width: 6.0),
-                            _BarWidget(label: '22:00', heightPercentage: 0.0),
-                            SizedBox(width: 6.0),
-                            _BarWidget(label: '23:00', heightPercentage: 0.0),
                           ],
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                Container(
-                  padding: const EdgeInsets.all(20.0),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1E2024),
-                    borderRadius: BorderRadius.circular(24.0),
-                    border: Border.all(
-                      color: theme.colorScheme.outlineVariant.withOpacity(0.08),
-                      width: 1.0,
-                    ),
+                  const SizedBox(height: 24.0),
+                  Container(
+                    height: 1.0,
+                    color: Colors.white.withOpacity(0.06),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(height: 24.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Actividad en Vivo',
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                      const SizedBox(height: 12.0),
-                      ListView(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildActivityTile(
-                            context: context,
-                            title: 'Mesa 12 cerrada',
-                            subtitle: 'Total pagado: €142,50',
-                            icon: Icons.payments,
-                            iconColor: theme.colorScheme.secondary,
-                            time: '2m',
+                          Text(
+                            'ROL OPERATIVO',
+                            style: GoogleFonts.jetBrainsMono(
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                            ),
                           ),
-                          _buildActivityTile(
-                            context: context,
-                            title: 'Anulación: Mesa 4',
-                            subtitle: 'Item: Negroni (Error entrada)',
-                            icon: Icons.block,
-                            iconColor: theme.colorScheme.error,
-                            time: '8m',
+                          const SizedBox(height: 6.0),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 6.0),
+                            decoration: BoxDecoration(
+                              color: const Color(0x1A7000FF), // violet with 10% opacity
+                              borderRadius: BorderRadius.circular(100.0),
+                              border: Border.all(color: const Color(0x337000FF)),
+                            ),
+                            child: Text(
+                              user.rolNombre.toUpperCase(),
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFFD1BCFF),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 9.5,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'SUCURSAL ACTIVA',
+                            style: GoogleFonts.jetBrainsMono(
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                            ),
+                          ),
+                          const SizedBox(height: 6.0),
+                          Text(
+                            authState.activeBarId != null
+                                ? 'El Templo del Oro'
+                                : 'CONSOLA GLOBAL',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 16.0,
+                              color: const Color(0xFF00F0FF), // electric cyan
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                ),
-              ],
-              const SizedBox(height: 24.0),
-
-              // 3. Sección Inferior: Próximas Reservas Carousel Horizontal
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Próximas Reservas',
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  const SizedBox(height: 14.0),
-                  SizedBox(
-                    height: 120.0,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        _buildReservationCard(
-                          context: context,
-                          name: 'Familia García',
-                          details: 'Mesa 8 • 4 Personas',
-                          time: '21:00',
-                          icon: Icons.celebration_outlined,
-                          badgeText: 'Aniversario',
-                        ),
-                        _buildReservationCard(
-                          context: context,
-                          name: 'Marcos Sánchez',
-                          details: 'Bar • 2 Personas',
-                          time: '21:15',
-                          icon: Icons.local_bar_outlined,
-                          badgeText: 'Primera visita',
-                        ),
-                        _buildReservationCard(
-                          context: context,
-                          name: 'Elena Portillo',
-                          details: 'VIP • 6 Personas',
-                          time: '21:30',
-                          icon: Icons.star_outline,
-                          badgeText: 'Cliente VIP Gold',
-                          isVIP: true,
-                        ),
-                        _buildReservationCard(
-                          context: context,
-                          name: 'Jorge Luis',
-                          details: 'Mesa 15 • 3 Personas',
-                          time: '22:00',
-                          icon: Icons.event_seat_outlined,
-                          badgeText: 'Mesa preferida',
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
-            ],
+            ),
           ),
-        );
-      },
-    );
-  }
+          const SizedBox(height: 24.0),
 
-  // 🛠️ Bento metric card builder
-  Widget _buildMetricCard({
-    required BuildContext context,
-    required String label,
-    required String value,
-    required String subtext,
-    required IconData icon,
-    required Color accentColor,
-  }) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E2024), // surface-container
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: theme.colorScheme.outlineVariant.withOpacity(0.08),
-          width: 1.0,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // 2. Grilla Bento de Accesos Rápidos
+          GridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: MediaQuery.of(context).size.width >= 750 ? 4 : 2,
+            crossAxisSpacing: 16.0,
+            mainAxisSpacing: 16.0,
+            childAspectRatio: MediaQuery.of(context).size.width >= 750 ? 1.4 : 1.3,
             children: [
-              Text(
-                label.toUpperCase(),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  fontSize: 10.0,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
+              _buildBentoItem(
+                context: context,
+                icon: Icons.point_of_sale,
+                title: 'POS Ventas',
+                subtitle: 'Ir a facturación',
+                color: const Color(0xFF00F0FF), // electric cyan
+                onTap: () {
+                  ref.read(activeViewProvider.notifier).state = 'pos';
+                },
               ),
-              Icon(icon, color: accentColor, size: 20.0),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontSize: 26.0,
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.onSurface,
-                  letterSpacing: -0.5,
-                ),
+              _buildBentoItem(
+                context: context,
+                icon: Icons.payments,
+                title: 'Caja',
+                subtitle: 'Control de turnos',
+                color: const Color(0xFFFFB1C3), // warm rose
+                onTap: () {
+                  ref.read(activeViewProvider.notifier).state = 'caja';
+                },
               ),
-              const SizedBox(height: 2.0),
-              Text(
-                subtext,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 11.0,
-                  color: accentColor.withOpacity(0.95),
-                  fontWeight: FontWeight.w500,
-                ),
+              _buildBentoItem(
+                context: context,
+                icon: Icons.local_bar,
+                title: 'Menú',
+                subtitle: 'Editar catálogo',
+                color: const Color(0xFF7000FF), // vibrant violet
+                onTap: () {
+                  ref.read(activeViewProvider.notifier).state = 'menu';
+                },
+              ),
+              _buildBentoItem(
+                context: context,
+                icon: Icons.people_alt,
+                title: 'Staff',
+                subtitle: 'Personal y roles',
+                color: const Color(0xFFDBFCFF), // mint/cyan fixed dim
+                onTap: () {
+                  ref.read(activeViewProvider.notifier).state = 'staff';
+                },
               ),
             ],
           ),
@@ -1837,226 +1742,84 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  // 🛠️ Live activity list tile builder
-  Widget _buildActivityTile({
+  Widget _buildBentoItem({
     required BuildContext context,
+    required IconData icon,
     required String title,
     required String subtitle,
-    required IconData icon,
-    required Color iconColor,
-    required String time,
+    required Color color,
+    required VoidCallback onTap,
   }) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.08),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: iconColor, size: 16.0),
-          ),
-          const SizedBox(width: 12.0),
-          Expanded(
+
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024), // surface-container
+        borderRadius: BorderRadius.circular(32.0), // 32px rounded corners!
+        border: Border.all(
+          color: Colors.white.withOpacity(0.05),
+          width: 1.0,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(32.0),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      title,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13.5,
-                        color: theme.colorScheme.onSurface,
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
+                      child: Icon(icon, color: color, size: 20.0),
                     ),
-                    Text(
-                      time,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        fontSize: 10.0,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
+                    Icon(
+                      Icons.arrow_forward,
+                      size: 16.0,
+                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.4),
                     ),
                   ],
                 ),
-                const SizedBox(height: 2.0),
-                Text(
-                  subtitle,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontSize: 11.5,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 🛠️ Upcoming reservations carousel card builder
-  Widget _buildReservationCard({
-    required BuildContext context,
-    required String name,
-    required String details,
-    required String time,
-    required IconData icon,
-    required String badgeText,
-    bool isVIP = false,
-  }) {
-    final theme = Theme.of(context);
-    return Container(
-      width: 280.0,
-      margin: const EdgeInsets.only(right: 16.0),
-      padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E2024),
-        borderRadius: BorderRadius.circular(24.0),
-        border: isVIP 
-            ? Border.all(color: theme.colorScheme.primaryContainer.withOpacity(0.5), width: 1.5)
-            : Border.all(color: theme.colorScheme.outlineVariant.withOpacity(0.08), width: 1.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
+                const SizedBox(height: 12.0),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name,
-                      style: theme.textTheme.bodyMedium?.copyWith(
+                      title,
+                      style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.bold,
-                        fontSize: 14.5,
-                        color: theme.colorScheme.onSurface,
+                        fontSize: 15.0,
+                        color: Colors.white,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2.0),
                     Text(
-                      details,
+                      subtitle,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        fontSize: 12.0,
-                        color: theme.colorScheme.onSurfaceVariant,
+                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
+                        fontSize: 11.0,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-                decoration: BoxDecoration(
-                  color: isVIP ? theme.colorScheme.primaryContainer : theme.colorScheme.surfaceVariant.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(100.0),
-                ),
-                child: Text(
-                  time,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10.0,
-                    color: isVIP ? theme.colorScheme.onPrimaryContainer : theme.colorScheme.onSurface,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12.0),
-          Row(
-            children: [
-              Icon(
-                icon,
-                size: 14.0,
-                color: isVIP ? theme.colorScheme.primaryContainer : theme.colorScheme.onSurfaceVariant,
-              ),
-              const SizedBox(width: 6.0),
-              Text(
-                badgeText,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 11.5,
-                  fontWeight: isVIP ? FontWeight.bold : FontWeight.normal,
-                  color: isVIP ? theme.colorScheme.primaryContainer : theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// 📊 Componente de barra individual para el gráfico Bento simulador de velocidad
-class _BarWidget extends StatelessWidget {
-  final String label;
-  final double heightPercentage;
-  final bool isNow;
-
-  const _BarWidget({
-    required this.label,
-    required this.heightPercentage,
-    this.isNow = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final barColor = isNow ? theme.colorScheme.primaryContainer : theme.colorScheme.primaryContainer.withOpacity(0.2);
-
-    return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                // Track de fondo sutil
-                Container(
-                  width: 32.0,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceVariant.withOpacity(0.04),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-                // Barra llena
-                FractionallySizedBox(
-                  heightFactor: heightPercentage > 0 ? heightPercentage : 0.05,
-                  child: Container(
-                    width: 32.0,
-                    decoration: BoxDecoration(
-                      color: barColor,
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(8.0)),
-                      border: isNow ? Border.all(color: Colors.white, width: 1.5) : null,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
-          const SizedBox(height: 8.0),
-          Text(
-            label,
-            style: theme.textTheme.labelSmall?.copyWith(
-              fontSize: 10.0,
-              fontWeight: isNow ? FontWeight.bold : FontWeight.normal,
-              color: isNow ? theme.colorScheme.primaryContainer : theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
