@@ -58,7 +58,7 @@ class AppTheme {
         // headline-md (Títulos de componentes y Bento widgets)
         headlineMedium: GoogleFonts.plusJakartaSans(
           fontSize: 24.0,
-          fontWeight: FontWeight.w750,
+          fontWeight: FontWeight.w700,
           letterSpacing: -0.01,
           color: liquidOnSurface,
         ),
@@ -81,13 +81,13 @@ class AppTheme {
           color: liquidOnSurface,
         ),
         // label-caps (JetBrains Mono para etiquetas y metadatos)
-        labelLarge: GoogleFonts.jetbrainsMono(
+        labelLarge: GoogleFonts.jetBrainsMono(
           fontSize: 12.0,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.1,
           color: liquidOnSurface,
         ),
-        labelSmall: GoogleFonts.jetbrainsMono(
+        labelSmall: GoogleFonts.jetBrainsMono(
           fontSize: 10.0,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.1,
