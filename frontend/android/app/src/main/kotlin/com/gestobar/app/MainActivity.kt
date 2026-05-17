@@ -1,4 +1,4 @@
-package com.gestobar.app.gestobar
+package com.gestobar.app
 
 import io.flutter.embedding.android.FlutterActivity
 
