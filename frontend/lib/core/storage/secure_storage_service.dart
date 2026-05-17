@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class SecureStorageService {
   final _storage = const FlutterSecureStorage(
     aOptions: AndroidOptions(
-      encryptedSharedPreferences: true,
+      encryptedSharedPreferences: false, // Desactivado en desarrollo para evitar cierres inesperados por desincronización de Keystore en Emuladores
     ),
     iOptions: IOSOptions(
       accessibility: KeychainAccessibility.first_unlock,

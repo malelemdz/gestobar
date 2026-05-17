@@ -6,6 +6,10 @@ import 'features/auth/providers/auth_provider.dart';
 import 'features/auth/providers/auth_state.dart';
 
 void main() {
+  // Asegura que las llamadas a canales nativos de Flutter (como Secure Storage)
+  // estén inicializadas antes de que se dibuje el árbol de widgets.
+  WidgetsFlutterBinding.ensureInitialized();
+  
   runApp(
     // Requerido por Riverpod para inicializar el contenedor de estados
     const ProviderScope(
