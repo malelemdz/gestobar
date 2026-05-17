@@ -1313,7 +1313,7 @@ class MainDashboardView extends ConsumerWidget {
         children: [
           // Sleek Drawer Header with premium Logo Box and branding
           Padding(
-            padding: const EdgeInsets.fromLTRB(24.0, 56.0, 24.0, 24.0),
+            padding: const EdgeInsets.fromLTRB(24.0, 80.0, 24.0, 36.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1336,7 +1336,7 @@ class MainDashboardView extends ConsumerWidget {
                         size: 24.0,
                       ),
                     ),
-                    const SizedBox(width: 14.0),
+                    const SizedBox(width: 18.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -1349,6 +1349,7 @@ class MainDashboardView extends ConsumerWidget {
                             letterSpacing: -0.5,
                           ),
                         ),
+                        const SizedBox(height: 3.0),
                         Text(
                           activeBarName,
                           style: theme.textTheme.labelSmall?.copyWith(
