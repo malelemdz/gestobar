@@ -1,29 +1,34 @@
 # Guía de Desarrollo Frontend (Flutter) - Gestobar POS & SaaS
 
-Esta guía detalla la arquitectura, el diseño de la interfaz de usuario, la navegación por roles y la integración con nuestro backend multi-tenant para la aplicación Flutter de **Gestobar**. 
+Esta guía detalla la arquitectura, el diseño de la interfaz de usuario, la navegación adaptativa y la integración con nuestro backend multi-tenant para la aplicación Flutter de **Gestobar**. 
 
-Dado que el backend y el frontend madurarán juntos, este documento sirve como plano de ingeniería inicial para guiar el desarrollo incremental del cliente móvil y PWA.
+Este documento sirve como plano de ingeniería para trasladar y relocalizar los diseños HTML interactivos existentes en la carpeta `docs/diseno-front` a un sistema modular y moderno en Flutter.
 
 ---
 
-## 🎨 1. Sistema de Diseño y Estética Premium
+## 🎨 1. Sistema de Diseño Adaptativo y Paleta de Colores
 
-Para un entorno nocturno y dinámico como un bar, la interfaz debe sentirse sumamente premium, viva y táctil.
+Para responder al entorno del bar y a las preferencias de los administradores, la interfaz implementa un **Doble Tema** (Claro y Oscuro) optimizado para pantallas táctiles de móviles y tablets.
 
-### Paleta de Colores (Aesthetic Dark Mode)
-*   **Fondo de la App (`Background`)**: `#0F0C1B` (Negro medianoche con un sutil matiz violeta).
-*   **Superficies (`Cards/Modals`)**: `#17132B` (Violeta oscuro traslúcido, estilo glassmorphism).
-*   **Color Primario (`Accent`)**: `#FFB800` (Oro ámbar vibrante para botones de acción principal, dinero y comisiones).
-*   **Color Secundario**: `#A855F7` (Púrpura neón para detalles de entretenimiento, damas e invitaciones).
-*   **Alertas / Estados**:
-    *   *Éxito / Caja Abierta*: `#10B981` (Verde esmeralda).
-    *   *Peligro / Caja Cerrada*: `#EF4444` (Rojo carmesí).
-    *   *Advertencia / Descuadre*: `#F59E0B` (Naranja ámbar).
+### Paletas de Colores Armonizadas
+
+| Elemento | 🌙 Modo Oscuro (Default - Bar Night) | ☀️ Modo Claro (Administrativo / Día) |
+| :--- | :--- | :--- |
+| **Fondo de la App** | `#0F0C1B` (Negro medianoche violeta) | `#F8FAFC` (Gris Slate ultra claro) |
+| **Superficies (Cards/Modals)** | `#17132B` (Violeta oscuro / Glassmorphic) | `#FFFFFF` (Blanco puro satinado) |
+| **Bordes y Divisores** | `#2A244D` (Violeta medio) | `#E2E8F0` (Gris borde suave) |
+| **Color Primario (Accent)** | `#FFB800` (Oro ámbar brillante) | `#D97706` (Ámbar tostado de alta visibilidad) |
+| **Color Secundario** | `#A855F7` (Púrpura neón) | `#7C3AED` (Violeta real profundo) |
+| **Texto Principal** | `#FFFFFF` (Blanco absoluto) | `#0F172A` (Gris pizarra oscuro) |
+| **Texto Secundario** | `#9CA3AF` (Gris frío) | `#475569` (Gris medio) |
+| **Caja Abierta (Éxito)** | `#10B981` (Verde esmeralda) | `#059669` (Verde oscuro) |
+| **Caja Cerrada (Peligro)** | `#EF4444` (Rojo carmesí) | `#DC2626` (Rojo intenso) |
+| **Descuadre (Alerta)** | `#F59E0B` (Naranja ámbar) | `#D97706` (Naranja medio) |
 
 ### Tipografía y Componentes Táctiles
-*   **Fuente Principal**: `Outfit` o `Space Grotesk` (Google Fonts) para un estilo moderno, audaz y geométrico.
-*   **Micro-animaciones**: Utilización de transiciones fluidas de escala al hacer clic en productos, y partículas animadas cuando una Dama recibe una comisión en tiempo real.
-*   **Teclado Numérico Tactil (POS & Billeteo)**: Botones grandes y redondos con feedback háptico en dispositivos móviles para minimizar errores humanos del cajero.
+*   **Fuente Principal**: `Outfit` o `Space Grotesk` (Google Fonts) para un estilo moderno, limpio y geométrico.
+*   **Micro-animaciones**: Transiciones de escala fluidas (`AnimatedContainer`, `Hero`) al tocar productos, y partículas animadas cuando una Dama recibe una comisión.
+*   **Teclado Numérico Tactil**: Botones redondos de gran formato con vibración háptica (`HapticFeedback.lightImpact`) para evitar errores humanos del cajero al registrar billetes.
 
 ---
 
@@ -37,11 +42,11 @@ Recomendamos utilizar una arquitectura limpia dividida por características (**F
 lib/
 ├── core/
 │   ├── constants/         # URLs de API, claves de almacenamiento local
-│   ├── theme/             # Paleta de colores, estilos de texto, inputs
-│   ├── network/           # Cliente HTTP (Dio) con interceptores multi-tenant (JWT + Bar-ID)
+│   ├── theme/             # Doble tema (DarkTheme/LightTheme), inputs y bordes
+│   ├── network/           # Cliente HTTP (Dio) con interceptores de Tenant (Bar-ID + JWT)
 │   ├── websocket/         # Cliente WebSockets (socket_io_client) y StreamProviders
 │   ├── storage/           # Almacenamiento seguro de credenciales (Flutter Secure Storage)
-│   └── utils/             # Formateadores de moneda, helpers de dispositivos
+│   └── utils/             # Helpers de dispositivos, formatos de moneda local
 ├── features/
 │   ├── auth/              # Login, Splash Screen, Selección de Bar (Tenant)
 │   ├── menu_publico/      # Visualizador de Menú QR (Público, sin login, optimizado para Web)
@@ -53,80 +58,75 @@ lib/
 
 ---
 
-## 👥 3. Flujos de Pantalla y Navegación por Roles
+## 🗺️ 3. Estrategia de Navegación Adaptativa (Sidebar vs. Bottom AppBar)
 
-La aplicación de Flutter cargará dinámicamente el panel de inicio correspondiente según el rol decodificado en el payload del JWT tras el login exitoso.
+Para maximizar la experiencia táctil, la navegación se reestructura dinámicamente según el tamaño de la pantalla (Móvil vs. Tablet/Escritorio) y la cantidad de opciones del rol, mapeando directamente las interfaces HTML del folder `docs/diseno-front`.
 
 ```
-                  +-----------------------+
-                  |   Pantalla de Login   |
-                  +-----------+-----------+
-                              | (JWT Decoded)
-                              v
-                  +-----------+-----------+
-                  |  Enrutador por Rol    |
-                  +-----+-----+-----+-----+
-                        |     |     |
-      +-----------------+     |     +-----------------+
-      | (CLIENTE / QR)        | (CAJERO)              | (DAMA)
-      v                       v                       v
-+-----+---------------+ +-----+---------------+ +-----+---------------+
-|  Menú QR Público    | |   Terminal POS      | | Panel Real-Time de  |
-|  (Web/PWA)          | |   y Turnos de Caja  | | Comisiones (Móvil)  |
-+---------------------+ +---------------------+ +---------------------+
-                                                      ^
-                                                      | (ADMIN / SUPERADMIN)
-                                                      v
-                                                +-----+---------------+
-                                                |  Estadísticas BI,   |
-                                                |  Users & Auditoría  |
-                                                +---------------------+
+                  +---------------------------+
+                  |     Pantalla de Login     |
+                  +-------------+-------------+
+                                | (JWT Decoded)
+                                v
+                  +-------------+-------------+
+                  |    Enrutador de Layout    |
+                  +------+-------------+------+
+                         |             |
+        (Pantalla < 600px - Móvil)     (Pantalla >= 600px - Tablet/PC)
+                         v             v
+        +-----------------------+     +-----------------------+
+        |   Layout Móvil        |     |   Layout Tablet/PC    |
+        |   - Pocas Opciones:   |     |   - Sidebar Fijo      |
+        |     Bottom Navigation |     |     Colapsable Izq.   |
+        |   - Muchas Opciones:  |     |   - Panel Multicolumna|
+        |     Drawer Lateral    |     |     Sincronizado      |
+        +-----------------------+     +-----------------------+
 ```
+
+### Reglas de Implementación en Flutter
+
+1.  **Móvil (Mobile - Teléfono)**:
+    *   **Pocas Opciones (≤ 4 ítems, ej: Rol Dama o Cliente QR)**: Implementar un **Bottom Navigation Bar** minimalista con efecto glassmorphic translúcido.
+    *   **Muchas Opciones (Cajeros o Administradores)**: Evitar saturar la barra inferior. En su lugar, se implementará un **Drawer Lateral Colapsable** para navegación general y **Bottom Sheets Contextuales** emergentes para acciones rápidas (ej. seleccionar métodos de pago o buscar damas).
+2.  **Tablet & Escritorio (Tablet/Large Screens - ≥ 600px)**:
+    *   La navegación muta automáticamente a una **Sidebar Lateral Fija Colapsable** en el lado izquierdo.
+    *   Esto permite aprovechar el espacio horizontal, mostrando la navegación a la izquierda y el espacio de trabajo principal a la derecha, en concordancia directa con los mockups del folder `_tablet` (ej. `punto_de_venta_tablet` o `administracion_de_usuarios_tablet`).
+    *   Se utilizará el widget `NavigationRail` de Flutter o un custom widget sidebar responsive basado en `LayoutBuilder`.
 
 ---
 
-## 📱 4. Mapeo de Módulos (Backend ➡️ Frontend)
+## 📱 4. Reubicación del Diseño HTML (`docs/diseno-front` ➡️ Flutter)
 
-### 📌 Módulo A: El Menú QR Público (`/menu/:slug`)
-*   **Objetivo**: PWA ultra-ligera y responsive para clientes de la mesa del bar.
-*   **Rutas Backend Consumidas**: `GET /menu/:slug/productos` y `GET /menu/:slug/bar-info`.
-*   **Características Clave**:
-    *   **Cero Login**: Acceso inmediato al escanear el QR.
-    *   **Sanitización Absoluta**: Oculta por completo el precio de compañía (`precio_b`), mostrando únicamente el `precio_a` como el precio general del producto.
-    *   **Diseño Visual**: Tarjetas visuales de tragos y botellas, filtros por categorías con desplazamiento horizontal fluido.
+Cada carpeta de diseño HTML tiene un mapeo de correspondencia directa en Flutter, aplicando adaptabilidad móvil y tablet:
 
-### 📌 Módulo B: Terminal POS y Flujo de Cajas (`/cajas` y `/ventas`)
-*   **Objetivo**: El centro de control operativo del cajero del bar.
-*   **Rutas Backend Consumidas**: `GET /cajas/estado`, `POST /cajas/apertura`, `POST /cajas/cierre`, `POST /ventas`.
-*   **Pantallas del Flujo**:
-    1.  **Pantalla de Control de Turno**:
-        *   Muestra el estado de la caja ("Abierta" o "Cerrada").
-        *   *Apertura*: Calculadora táctil de denominación de billetes para registrar el `monto_inicial`.
-        *   *Cierre*: Formulario de arqueo físico. Al cerrar, despliega en tiempo real la comparativa de ingresos por método de pago y el **descuadre / diferencia monetaria** exacta antes de confirmar.
-    2.  **Parrilla de Ventas (POS)**:
-        *   Grilla de productos categorizados. Al tocar una botella/trago, se despliega una modal rápida para elegir la **Variante** ("Copa", "Botella", "Media Botella").
-        *   **Selector de Tipo de Venta**:
-            *   *Venta Normal*: Botón estándar de checkout.
-            *   *Compañía (Precio B)*: Selector de Dama de compañía obligatorio (`dama_id`). Calcula automáticamente la comisión correspondiente parametrizada en el bar.
-            *   *Invitación*: Selector de Dama obligatorio. Establece precio en A y comisión en 0 de forma blindada.
-        *   **Método de Pago**: Botones rápidos (Efectivo, Tarjeta, QR, Transferencia).
+### 📌 A. Módulo Menú QR Público (`gesti_n_de_men` y `_tablet`)
+*   **Página HTML de Referencia**: `docs/diseno-front/gesti_n_de_men/`
+*   **Mapeo Flutter**: PWA optimizada para navegadores móviles.
+*   **Adaptabilidad**:
+    *   *Móvil*: Tarjetas de producto en grid vertical de 1 columna con scrolling vertical fluido.
+    *   *Tablet*: Grid de productos de 2 o 3 columnas con sidebar derecho de visualización de información del bar.
+    *   **Seguridad**: El frontend lee la respuesta sanitizada del backend para asegurar que el `precio_b` (damas) no exista en la carta del cliente.
 
-### 📌 Módulo C: Panel en Tiempo Real para Damas
-*   **Objetivo**: Aplicación móvil para que el personal de entretenimiento consulte sus ingresos al instante sin tener que interrumpir al cajero.
-*   **Rutas Backend Consumidas**: `GET /ventas/comisiones`.
-*   **Canal WebSockets (Socket.IO)**: Escucha el evento `comision_notificar` canalizado al ID de la dama activa.
-*   **Características Clave**:
-    *   **Notificación Push / Pop-up In-App**: *"¡Te han invitado una copa de Tequila!"* o *"¡Has ganado 50 USD de comisión!"*.
-    *   **Historial de Comisiones**: Tarjetas interactivas que detallan la hora, el producto vendido, el tipo (comisión o invitación) y la moneda local configurada.
-    *   **Contador Acumulado**: Indicador gigante y brillante en la parte superior con el saldo total ganado durante el turno actual de la caja.
+### 📌 B. Terminal POS, Billeteo y Turnos (`caja_y_turno` y `punto_de_venta_con_fotos_mobile` / `_tablet`)
+*   **Páginas HTML de Referencia**: `caja_y_turno/`, `caja_y_turno_modo_claro/`, `punto_de_venta_con_fotos_mobile/` y `punto_de_venta_tablet/` (claro/oscuro).
+*   **Mapeo Flutter**: Panel del Cajero POS.
+*   **Estrategia de Pantalla Dividida (Split Screen en Tablet)**:
+    *   *Móvil*: Pantallas secuenciales. Pantalla 1: Grilla de productos. Al seleccionar productos y dar "Pagar", navega a la Pantalla 2 (Carrito y selección de Dama / Invitación).
+    *   *Tablet*: **Una sola vista unificada (Split Screen)**. La mitad izquierda muestra la grilla interactiva de botellas/bebidas categorizadas; la mitad derecha muestra el carrito de venta con botones táctiles para asignar la Dama (`dama_id`) y seleccionar el método de pago instantáneo.
+*   **Billeteo (Cash Count)**: Teclado táctil adaptado para ingresar cantidades físicas de billetes de forma rápida en la apertura y cierre de caja.
 
-### 📌 Módulo D: Consola de Administración y Business Intelligence
-*   **Objetivo**: Tablero gerencial para el dueño del bar o administradores generales.
-*   **Rutas Backend Consumidas**: `GET /estadisticas/resumen`, `GET /estadisticas/ranking-productos`, `GET /estadisticas/ranking-damas`, `GET /estadisticas/caja/:id`, `GET /auditoria`.
-*   **Características Clave**:
-    *   **Filtro de Calendario**: Selector interactivo de rangos de fechas (últimos 7 días, este mes, personalizado).
-    *   **Métricas BI Visuales**: Gráficos circulares de métodos de pago y de ingresos vs comisiones pagadas.
-    *   **Monitoreo Ojo de Halcón**: Visor de logs con barra de búsqueda rápida y filtros por usuario, rol y acción. Permite verificar las IP de conexión y el tipo de dispositivo de cada cajero (ej. *"Cajero 1 abrió caja desde Chrome en Windows en IP 192.168.1.100"*).
+### 📌 C. Panel Real-Time de Damas
+*   **Mapeo Flutter**: Pantalla de consulta de ingresos para damas (diseño móvil premium).
+*   **Métrica Principal**: Gran indicador luminoso en la parte superior con el saldo acumulado de comisiones de la noche.
+*   **WebSockets**: Escucha en tiempo real. Cuando el backend emite `comision_notificar`, Flutter reproduce un sonido sutil, activa una micro-vibración y despliega un banner pop-up animado con la copa o botella invitada.
+
+### 📌 D. Panel Admin, Gestión de Usuarios y BI (`administraci_n_de_usuarios` y `_tablet`)
+*   **Páginas HTML de Referencia**: `administraci_n_de_usuarios/` y `administraci_n_de_usuarios_tablet/`.
+*   **Mapeo Flutter**: Consola administrativa.
+*   **Adaptabilidad**:
+    *   *Móvil*: Listados colapsables con tarjetas de usuarios.
+    *   *Tablet*: Tabla interactiva con ordenación, barra de búsqueda en cabecera y panel derecho flotante de detalles y edición rápida al seleccionar una fila.
+    *   **Gráficos**: Uso de librerías nativas (`fl_chart`) para renderizar gráficos de líneas de ingresos y círculos de métodos de pago en modo claro u oscuro según la preferencia del administrador.
 
 ---
 
@@ -144,8 +144,9 @@ Dado que las redes en locales nocturnos pueden ser inestables, el frontend en Fl
 
 Para avanzar de forma ágil y coordinada, dividiremos el frontend en fases incrementales de desarrollo:
 
-*   [ ] **Fase 1: Core & Auth**: Configuración del cliente Dio, interceptores de Tenant, Splash Screen, almacenamiento seguro y pantalla de login.
-*   [ ] **Fase 2: Menú QR Público**: PWA optimizada para navegador móvil que consuma la carta digital sanitizada.
-*   [ ] **Fase 3: Terminal POS e Inyección de Cajas**: Pantalla de apertura/cierre de turnos y grilla interactiva de registro de ventas con selector de Damas.
-*   [ ] **Fase 4: Panel Real-Time Damas**: Integración de WebSockets para notificaciones y visor de comisiones acumuladas.
-*   [ ] **Fase 5: Dashboard BI & Auditoría**: Gráficos interactivos de analíticas de negocio y visor de logs del Módulo de Auditoría.
+*   [ ] **Fase 1: Core, Temas y Auth**: Configuración del cliente Dio, interceptor de Tenant, almacenamiento seguro (Credenciales), y definición del Doble Tema (Claro/Oscuro) en Flutter.
+*   [ ] **Fase 2: Menú QR Público**: PWA responsive optimizada para móvil y tablet (Sanitizada).
+*   [ ] **Fase 3: Terminal POS e Inyección de Cajas (Layout Adaptativo)**: Layout de Split Screen para tablets e interactivo secuencial para móvil. Flujo de arqueo y billeteo.
+*   [ ] **Fase 4: Panel Real-Time Damas**: Integración de WebSockets, banners de comisiones e invitaciones en tiempo real con micro-vibración y sonidos.
+*   [ ] **Fase 5: Dashboard BI & Auditoría**: Integración de gráficos interactivos adaptados a claro/oscuro y visor Ojo de Halcón.
+
