@@ -1233,7 +1233,7 @@ class MainDashboardView extends ConsumerWidget {
     );
   }
 
-  // 🌟 Botón de navegación del Sidebar: Ultra-compacto, plano y minimalista (Estilo macOS)
+  // 🌟 Botón de navegación del Sidebar: Diseño premium de control táctil con estados activo/inactivo (10/10)
   Widget _buildSidebarNavItem({
     required BuildContext context,
     required IconData icon,
@@ -1244,37 +1244,46 @@ class MainDashboardView extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Material(
         color: isSelected 
-            ? theme.colorScheme.primary.withOpacity(0.09) 
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(6.0),
+            ? theme.colorScheme.primary 
+            : theme.colorScheme.surfaceVariant.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(8.0),
         child: InkWell(
-          borderRadius: BorderRadius.circular(6.0),
+          borderRadius: BorderRadius.circular(8.0),
           onTap: onTap,
           child: Container(
-            height: 38.0,
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            height: 42.0, // Altura táctil sumamente cómoda
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(
+                color: isSelected 
+                    ? theme.colorScheme.primary 
+                    : theme.colorScheme.outlineVariant.withOpacity(0.18),
+                width: 1.0,
+              ),
+            ),
             child: Row(
               children: [
                 Icon(
                   icon,
                   size: 16.0,
                   color: isSelected 
-                      ? theme.colorScheme.primary 
-                      : theme.colorScheme.onSurfaceVariant.withOpacity(0.75),
+                      ? theme.colorScheme.onPrimary 
+                      : theme.colorScheme.onSurfaceVariant.withOpacity(0.85),
                 ),
-                const SizedBox(width: 8.0),
+                const SizedBox(width: 10.0),
                 Expanded(
                   child: Text(
                     label,
                     style: theme.textTheme.labelMedium?.copyWith(
-                      fontSize: 12.0,
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                      fontSize: 12.5,
+                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                       color: isSelected 
-                          ? theme.colorScheme.primary 
-                          : theme.colorScheme.onSurfaceVariant.withOpacity(0.85),
+                          ? theme.colorScheme.onPrimary 
+                          : theme.colorScheme.onSurfaceVariant.withOpacity(0.95),
                       letterSpacing: 0.1,
                     ),
                   ),
@@ -1282,8 +1291,8 @@ class MainDashboardView extends ConsumerWidget {
                 if (isSelected)
                   Icon(
                     Icons.circle,
-                    size: 5.0,
-                    color: theme.colorScheme.primary,
+                    size: 6.0,
+                    color: theme.colorScheme.onPrimary,
                   ),
               ],
             ),
@@ -1293,7 +1302,7 @@ class MainDashboardView extends ConsumerWidget {
     );
   }
 
-  // 🛠️ Botón inferior del Sidebar: Ultra-compacto, plano y minimalista (Estilo macOS)
+  // 🛠️ Botón inferior del Sidebar: Diseño premium de control táctil con estados activo/inactivo (10/10)
   Widget _buildSidebarBottomItem({
     required BuildContext context,
     required IconData icon,
@@ -1303,38 +1312,62 @@ class MainDashboardView extends ConsumerWidget {
     bool isDanger = false,
   }) {
     final theme = Theme.of(context);
-    final Color itemColor = isDanger
-        ? AppTheme.colorDanger
-        : (isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant.withOpacity(0.8));
+
+    final Color inactiveBg = isDanger 
+        ? AppTheme.colorDanger.withOpacity(0.08) 
+        : theme.colorScheme.surfaceVariant.withOpacity(0.15);
+        
+    final Color activeBg = isDanger 
+        ? AppTheme.colorDanger 
+        : theme.colorScheme.primary;
+
+    final Color activeText = isDanger 
+        ? Colors.white 
+        : theme.colorScheme.onPrimary;
+
+    final Color inactiveText = isDanger 
+        ? AppTheme.colorDanger 
+        : theme.colorScheme.onSurfaceVariant.withOpacity(0.9);
+
+    final Color borderColor = isSelected 
+        ? activeBg 
+        : (isDanger 
+            ? AppTheme.colorDanger.withOpacity(0.25) 
+            : theme.colorScheme.outlineVariant.withOpacity(0.18));
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Material(
-        color: isSelected 
-            ? theme.colorScheme.primary.withOpacity(0.09) 
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(6.0),
+        color: isSelected ? activeBg : inactiveBg,
+        borderRadius: BorderRadius.circular(8.0),
         child: InkWell(
-          borderRadius: BorderRadius.circular(6.0),
+          borderRadius: BorderRadius.circular(8.0),
           onTap: onTap,
           child: Container(
-            height: 36.0,
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            height: 38.0,
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(
+                color: borderColor,
+                width: 1.0,
+              ),
+            ),
             child: Row(
               children: [
                 Icon(
                   icon,
                   size: 15.0,
-                  color: itemColor,
+                  color: isSelected ? activeText : inactiveText,
                 ),
-                const SizedBox(width: 8.0),
+                const SizedBox(width: 10.0),
                 Expanded(
                   child: Text(
                     label,
                     style: theme.textTheme.labelMedium?.copyWith(
                       fontSize: 11.5,
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                      color: itemColor,
+                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                      color: isSelected ? activeText : inactiveText,
                       letterSpacing: 0.1,
                     ),
                   ),
@@ -1525,17 +1558,57 @@ class DashboardPage extends ConsumerWidget {
             crossAxisCount: MediaQuery.of(context).size.width >= 600 ? 4 : 2,
             crossAxisSpacing: 12.0,
             mainAxisSpacing: 12.0,
-            childAspectRatio: 1.4,
+            childAspectRatio: 1.15, // Más alto para acomodar las métricas con elegancia
             children: [
               _buildBentoItem(
                 context: context,
                 icon: Icons.point_of_sale,
                 title: 'POS Ventas',
-                subtitle: 'Ir a facturación',
+                subtitle: 'Factura rápida',
                 color: AppTheme.colorSuccess,
                 onTap: () {
                   ref.read(activeViewProvider.notifier).state = 'pos';
                 },
+                trailingBadge: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+                  decoration: BoxDecoration(
+                    color: AppTheme.colorSuccess.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Text(
+                    '3 ACT.',
+                    style: TextStyle(
+                      color: AppTheme.colorSuccess,
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                richBottom: Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(right: 4.0),
+                      width: 6.0,
+                      height: 6.0,
+                      decoration: BoxDecoration(
+                        color: AppTheme.colorSuccess,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Mesa 4, 8, 12 ocupadas',
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
+                          fontSize: 9.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               _buildBentoItem(
                 context: context,
@@ -1546,6 +1619,30 @@ class DashboardPage extends ConsumerWidget {
                 onTap: () {
                   ref.read(activeViewProvider.notifier).state = 'caja';
                 },
+                trailingBadge: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+                  decoration: BoxDecoration(
+                    color: AppTheme.colorSuccess.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Text(
+                    'ABIERTA',
+                    style: TextStyle(
+                      color: AppTheme.colorSuccess,
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                richBottom: Text(
+                  '\$14,580.00',
+                  style: TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w900,
+                    color: theme.colorScheme.onSurface,
+                    letterSpacing: 0.2,
+                  ),
+                ),
               ),
               _buildBentoItem(
                 context: context,
@@ -1556,6 +1653,29 @@ class DashboardPage extends ConsumerWidget {
                 onTap: () {
                   ref.read(activeViewProvider.notifier).state = 'menu';
                 },
+                trailingBadge: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Text(
+                    '84 BEB.',
+                    style: TextStyle(
+                      color: theme.colorScheme.primary,
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                richBottom: Text(
+                  '3 insumos agotados hoy',
+                  style: TextStyle(
+                    color: AppTheme.colorDanger,
+                    fontSize: 9.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               _buildBentoItem(
                 context: context,
@@ -1566,6 +1686,37 @@ class DashboardPage extends ConsumerWidget {
                 onTap: () {
                   ref.read(activeViewProvider.notifier).state = 'staff';
                 },
+                trailingBadge: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.secondary.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Text(
+                    '4 ACT.',
+                    style: TextStyle(
+                      color: theme.colorScheme.secondary,
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                richBottom: Row(
+                  children: [
+                    _buildMiniAvatar('JD', Colors.blue),
+                    _buildMiniAvatar('AM', Colors.orange),
+                    _buildMiniAvatar('LC', Colors.purple),
+                    const SizedBox(width: 2.0),
+                    Text(
+                      '+1',
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
+                        fontSize: 9.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -1581,6 +1732,8 @@ class DashboardPage extends ConsumerWidget {
     required String subtitle,
     required Color color,
     required VoidCallback onTap,
+    Widget? trailingBadge,
+    Widget? richBottom,
   }) {
     final theme = Theme.of(context);
 
@@ -1616,42 +1769,72 @@ class DashboardPage extends ConsumerWidget {
                       ),
                       child: Icon(icon, color: color, size: 18.0),
                     ),
-                    // Indicador de navegación simple
-                    Icon(
+                    // Indicador de navegación simple o badge personalizado
+                    trailingBadge ?? Icon(
                       Icons.chevron_right,
                       size: 14.0,
                       color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 13.0,
-                        color: theme.colorScheme.onSurface,
+                const SizedBox(height: 6.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13.0,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 1.0),
-                    Text(
-                      subtitle,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
-                        fontSize: 9.0,
+                      const SizedBox(height: 1.0),
+                      Text(
+                        subtitle,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
+                          fontSize: 9.0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                if (richBottom != null) ...[
+                  const SizedBox(height: 4.0),
+                  richBottom,
+                ],
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMiniAvatar(String initials, Color color) {
+    return Container(
+      margin: const EdgeInsets.only(right: 4.0),
+      width: 18.0,
+      height: 18.0,
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.18),
+        shape: BoxShape.circle,
+        border: Border.all(color: color.withOpacity(0.35), width: 0.8),
+      ),
+      child: Center(
+        child: Text(
+          initials,
+          style: TextStyle(
+            color: color,
+            fontSize: 7.5,
+            fontWeight: FontWeight.w900,
           ),
         ),
       ),
