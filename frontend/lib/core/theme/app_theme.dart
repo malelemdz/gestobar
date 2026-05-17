@@ -2,188 +2,129 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // Midnight Gold (Modo Oscuro - Default Bar Night)
-  static final Color darkBackground = const Color(0xFF181309);
-  static final Color darkSurface = const Color(0xFF241F14); // Container
-  static final Color darkSurfaceCard = const Color(0xFF2F291E); // Card / Product
-  static final Color darkPrimary = const Color(0xFFFBBC00); // Oro Ámbar
-  static final Color darkSecondary = const Color(0xFF43DDE6); // Cian Neón
-  static final Color darkOnSurface = const Color(0xFFEDE1D0); // Crema Cálido
-  static final Color darkOnSurfaceVariant = const Color(0xFFD4C5AB); // Gris Arena
-  static final Color darkOutline = const Color(0xFF504532);
+  // Colores de la paleta Liquid Modernist
+  static final Color liquidBg = const Color(0xFF111317);
+  static final Color liquidSurface = const Color(0xFF1E2024); // level 1 surface / cards
+  static final Color liquidSurfaceContainerLow = const Color(0xFF1A1C20);
+  static final Color liquidSurfaceContainerHigh = const Color(0xFF282A2E);
+  
+  static final Color liquidPrimary = const Color(0xFF00F0FF); // electric cyan
+  static final Color liquidSecondary = const Color(0xFF7000FF); // deep violet
+  static final Color liquidTertiary = const Color(0xFFFF007A); // vibrant magenta
+  
+  static final Color liquidOnSurface = const Color(0xFFE2E2E8); // light grey-white
+  static final Color liquidOnSurfaceVariant = const Color(0xFFB9CACB);
+  static final Color liquidOutline = const Color(0xFF3B494B); // outline variant
 
-  // Golden Slate (Modo Claro - Turno de Día)
-  static final Color lightBackground = const Color(0xFFF8F9FA);
-  static final Color lightSurface = const Color(0xFFEDEEEF); // Container
-  static final Color lightSurfaceCard = const Color(0xFFFFFFFF); // Card
-  static final Color lightPrimary = const Color(0xFF795900); // Ámbar Oscuro
-  static final Color lightSecondary = const Color(0xFF006A65); // Verde Azulado
-  static final Color lightOnSurface = const Color(0xFF191C1D); // Carbono Oscuro
-  static final Color lightOnSurfaceVariant = const Color(0xFF504532); // Marrón Suave
-  static final Color lightOutline = const Color(0xFFD4C5AB);
-
-  // Color de Estados Comunes
+  // Colores de Estados Comunes
   static final Color colorSuccess = const Color(0xFF10B981);
   static final Color colorDanger = const Color(0xFFEF4444);
   static final Color colorWarning = const Color(0xFFF59E0B);
 
-  static ThemeData get darkTheme {
+  // 🌟 Diseño Unificado Liquid Modernist (Dark por Defecto - Sin diferencias Claro/Oscuro)
+  static ThemeData get liquidTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: darkBackground,
+      scaffoldBackgroundColor: liquidBg,
       colorScheme: ColorScheme.dark(
-        background: darkBackground,
-        surface: darkSurface,
-        surfaceVariant: darkSurfaceCard,
-        primary: darkPrimary,
-        secondary: darkSecondary,
-        onBackground: darkOnSurface,
-        onSurface: darkOnSurface,
-        onSurfaceVariant: darkOnSurfaceVariant,
-        outline: darkOutline,
+        background: liquidBg,
+        surface: liquidBg,
+        surfaceVariant: liquidSurface,
+        primary: liquidPrimary,
+        secondary: liquidSecondary,
+        tertiary: liquidTertiary,
+        onBackground: liquidOnSurface,
+        onSurface: liquidOnSurface,
+        onSurfaceVariant: liquidOnSurfaceVariant,
+        outline: liquidOutline,
         error: colorDanger,
       ),
-      textTheme: _buildTextTheme(darkOnSurface, darkOnSurfaceVariant),
+      textTheme: TextTheme(
+        // display-lg (Montos y métricas en Bento Grid)
+        displayLarge: GoogleFonts.plusJakartaSans(
+          fontSize: 48.0,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.04,
+          color: liquidOnSurface,
+        ),
+        // headline-lg (Títulos primarios de páginas)
+        headlineLarge: GoogleFonts.plusJakartaSans(
+          fontSize: 32.0,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.02,
+          color: liquidOnSurface,
+        ),
+        // headline-md (Títulos de componentes y Bento widgets)
+        headlineMedium: GoogleFonts.plusJakartaSans(
+          fontSize: 24.0,
+          fontWeight: FontWeight.w750,
+          letterSpacing: -0.01,
+          color: liquidOnSurface,
+        ),
+        // headline-sm (Nombres de productos / tragos en tarjetas)
+        headlineSmall: GoogleFonts.plusJakartaSans(
+          fontSize: 20.0,
+          fontWeight: FontWeight.w700,
+          color: liquidOnSurface,
+        ),
+        // body-lg (Texto de cuerpo extendido)
+        bodyLarge: GoogleFonts.inter(
+          fontSize: 16.0,
+          fontWeight: FontWeight.w400,
+          color: liquidOnSurface,
+        ),
+        // body-md (Textos estándar generales / body-sm)
+        bodyMedium: GoogleFonts.inter(
+          fontSize: 14.0,
+          fontWeight: FontWeight.w400,
+          color: liquidOnSurface,
+        ),
+        // label-caps (JetBrains Mono para etiquetas y metadatos)
+        labelLarge: GoogleFonts.jetbrainsMono(
+          fontSize: 12.0,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.1,
+          color: liquidOnSurface,
+        ),
+        labelSmall: GoogleFonts.jetbrainsMono(
+          fontSize: 10.0,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.1,
+          color: liquidOnSurfaceVariant,
+        ),
+      ),
       cardTheme: CardThemeData(
-        color: darkSurfaceCard,
+        color: liquidSurface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          side: BorderSide(color: darkOutline, width: 1.0),
+          borderRadius: BorderRadius.circular(24.0), // Esquinas extremas redondeadas (24px a 32px)
+          side: BorderSide(color: liquidOutline.withOpacity(0.4), width: 1.0), // Borde interior sutil de 1px
         ),
         elevation: 0,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: darkBackground,
+        backgroundColor: liquidBg,
         elevation: 0,
         centerTitle: false,
         titleTextStyle: GoogleFonts.plusJakartaSans(
-          color: darkPrimary,
-          fontSize: 24.0,
-          fontWeight: FontWeight.w700,
+          color: liquidPrimary,
+          fontSize: 22.0,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.02,
         ),
-        iconTheme: IconThemeData(color: darkPrimary),
+        iconTheme: IconThemeData(color: liquidPrimary),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: darkSurface,
-        selectedItemColor: darkPrimary,
-        unselectedItemColor: darkOnSurfaceVariant,
+        backgroundColor: liquidSurface,
+        selectedItemColor: liquidPrimary,
+        unselectedItemColor: liquidOnSurfaceVariant,
         selectedLabelStyle: GoogleFonts.inter(fontSize: 12.0, fontWeight: FontWeight.w600),
         unselectedLabelStyle: GoogleFonts.inter(fontSize: 12.0, fontWeight: FontWeight.w500),
       ),
     );
   }
 
-  static ThemeData get lightTheme {
-    return ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.light,
-      scaffoldBackgroundColor: lightBackground,
-      colorScheme: ColorScheme.light(
-        background: lightBackground,
-        surface: lightSurface,
-        surfaceVariant: lightSurfaceCard,
-        primary: lightPrimary,
-        secondary: lightSecondary,
-        onBackground: lightOnSurface,
-        onSurface: lightOnSurface,
-        onSurfaceVariant: lightOnSurfaceVariant,
-        outline: lightOutline,
-        error: colorDanger,
-      ),
-      textTheme: _buildTextTheme(lightOnSurface, lightOnSurfaceVariant),
-      cardTheme: CardThemeData(
-        color: lightSurfaceCard,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          side: BorderSide(color: lightOutline, width: 1.0),
-        ),
-        elevation: 1,
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: lightBackground,
-        elevation: 0,
-        centerTitle: false,
-        titleTextStyle: GoogleFonts.plusJakartaSans(
-          color: lightPrimary,
-          fontSize: 24.0,
-          fontWeight: FontWeight.w700,
-        ),
-        iconTheme: IconThemeData(color: lightPrimary),
-      ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: lightSurface,
-        selectedItemColor: lightPrimary,
-        unselectedItemColor: lightOnSurfaceVariant,
-        selectedLabelStyle: GoogleFonts.inter(fontSize: 12.0, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: GoogleFonts.inter(fontSize: 12.0, fontWeight: FontWeight.w500),
-      ),
-    );
-  }
-
-  static TextTheme _buildTextTheme(Color mainColor, Color secondaryColor) {
-    return TextTheme(
-      // display-lg (Montos de dinero en Bento Grid)
-      displayLarge: GoogleFonts.plusJakartaSans(
-        fontSize: 48.0,
-        height: 1.16,
-        letterSpacing: -0.02,
-        fontWeight: FontWeight.w700,
-        color: mainColor,
-      ),
-      // headline-lg (Títulos de páginas primarias)
-      headlineLarge: GoogleFonts.plusJakartaSans(
-        fontSize: 32.0,
-        height: 1.25,
-        letterSpacing: -0.02,
-        fontWeight: FontWeight.w700,
-        color: mainColor,
-      ),
-      // headline-md (Títulos de componentes y Bento widgets)
-      headlineMedium: GoogleFonts.plusJakartaSans(
-        fontSize: 24.0,
-        height: 1.33,
-        letterSpacing: -0.01,
-        fontWeight: FontWeight.w600,
-        color: mainColor,
-      ),
-      // headline-sm (Nombres de productos / tragos en tarjetas)
-      headlineSmall: GoogleFonts.plusJakartaSans(
-        fontSize: 20.0,
-        height: 1.40,
-        fontWeight: FontWeight.w600,
-        color: mainColor,
-      ),
-      // body-lg (Texto de cuerpo extendido)
-      bodyLarge: GoogleFonts.inter(
-        fontSize: 18.0,
-        height: 1.55,
-        fontWeight: FontWeight.w400,
-        color: mainColor,
-      ),
-      // body-md (Textos estándar generales)
-      bodyMedium: GoogleFonts.inter(
-        fontSize: 16.0,
-        height: 1.50,
-        fontWeight: FontWeight.w400,
-        color: mainColor,
-      ),
-      // label-lg (Botones e indicadores rápidos)
-      labelLarge: GoogleFonts.inter(
-        fontSize: 14.0,
-        height: 1.42,
-        letterSpacing: 0.02,
-        fontWeight: FontWeight.w600,
-        color: mainColor,
-      ),
-      // label-sm (Badges de estado, información secundaria)
-      labelSmall: GoogleFonts.inter(
-        fontSize: 12.0,
-        height: 1.33,
-        letterSpacing: 0.04,
-        fontWeight: FontWeight.w600,
-        color: secondaryColor,
-      ),
-    );
-  }
+  // Ambos retornan exactamente el mismo estilo unificado Liquid Modernist
+  static ThemeData get darkTheme => liquidTheme;
+  static ThemeData get lightTheme => liquidTheme;
 }
