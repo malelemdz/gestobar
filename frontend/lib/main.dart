@@ -682,28 +682,96 @@ class MainDashboardView extends ConsumerWidget {
               bottomNavigationBar: showBottomBar && navItems.length > 1
                   ? Container(
                       decoration: BoxDecoration(
+                        color: const Color(0xFF1E2024), // Modernist surface-container
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)), // Beautiful curves!
                         border: Border(
                           top: BorderSide(
-                            color: theme.colorScheme.outlineVariant.withOpacity(0.3),
+                            color: Colors.white.withOpacity(0.05), // subtle top divider
                             width: 1.0,
                           ),
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.25),
+                            blurRadius: 16.0,
+                            offset: const Offset(0, -4),
+                          ),
+                        ],
                       ),
-                      child: BottomNavigationBar(
-                        currentIndex: navItems.indexWhere((item) => item['view'] == activeView),
-                        onTap: (index) {
-                          ref.read(activeViewProvider.notifier).state = navItems[index]['view'] as String;
-                        },
-                        type: BottomNavigationBarType.fixed,
-                        backgroundColor: theme.colorScheme.surface,
-                        selectedItemColor: theme.colorScheme.primary,
-                        unselectedItemColor: theme.colorScheme.onSurfaceVariant,
-                        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                        items: navItems.map((item) {
-                          return BottomNavigationBarItem(
-                            icon: Icon(item['icon'] as IconData),
-                            activeIcon: Icon(item['icon_active'] as IconData),
-                            label: item['label'] as String,
+                      padding: EdgeInsets.only(
+                        left: 12.0,
+                        right: 12.0,
+                        top: 12.0,
+                        bottom: MediaQuery.of(context).padding.bottom + 12.0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: navItems.map((item) {
+                          final String viewId = item['view'] as String;
+                          final bool isSelected = activeView == viewId;
+                          final IconData icon = isSelected ? item['icon_active'] as IconData : item['icon'] as IconData;
+                          final String label = item['label'] as String;
+
+                          if (isSelected) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0x2600F0FF), // 15% opacity Electric Cyan
+                                borderRadius: BorderRadius.circular(100.0), // Capsule!
+                                border: Border.all(
+                                  color: const Color(0x3300F0FF), // 20% opacity Electric Cyan border
+                                  width: 1.0,
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    icon,
+                                    color: const Color(0xFF00F0FF),
+                                    size: 18.0,
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Text(
+                                    label,
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: const Color(0xFF00F0FF),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          return InkWell(
+                            borderRadius: BorderRadius.circular(100.0),
+                            onTap: () {
+                              ref.read(activeViewProvider.notifier).state = viewId;
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    icon,
+                                    color: Colors.white.withOpacity(0.4),
+                                    size: 20.0,
+                                  ),
+                                  const SizedBox(height: 4.0),
+                                  Text(
+                                    label,
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: Colors.white.withOpacity(0.4),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 10.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           );
                         }).toList(),
                       ),
@@ -1222,61 +1290,57 @@ class MainDashboardView extends ConsumerWidget {
     final authState = ref.watch(authProvider) as AuthAuthenticated;
     final activeBarId = authState.activeBarId;
     final String activeBarName = activeBarId != null ? 'El Templo del Oro' : 'Consola Global';
+    final List<Map<String, dynamic>> navItems = _getNavItemsForRole(role);
+    final activeView = ref.watch(activeViewProvider);
 
     return Drawer(
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: const Color(0xFF1E2024), // Modernist surface-container
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Cabecera del Drawer con degradado premium Midnight Gold
-          DrawerHeader(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  theme.colorScheme.surface,
-                  theme.colorScheme.primary.withOpacity(0.12),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              border: Border(
-                bottom: BorderSide(
-                  color: theme.colorScheme.outlineVariant.withOpacity(0.3),
-                ),
-              ),
-            ),
+          // Sleek Drawer Header with premium Logo Box and branding
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24.0, 56.0, 24.0, 24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8.0),
+                      width: 48.0,
+                      height: 48.0,
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(10.0),
-                        border: Border.all(color: theme.colorScheme.primary.withOpacity(0.2)),
+                        color: const Color(0x2600F0FF), // 15% opacity Electric Cyan
+                        borderRadius: BorderRadius.circular(12.0),
+                        border: Border.all(
+                          color: const Color(0x3300F0FF), // 20% opacity Electric Cyan border
+                          width: 1.0,
+                        ),
                       ),
-                      child: Icon(Icons.local_bar, color: theme.colorScheme.primary, size: 24.0),
+                      child: const Icon(
+                        Icons.restaurant, // restaurant icon from html mockup!
+                        color: Color(0xFF00F0FF),
+                        size: 24.0,
+                      ),
                     ),
-                    const SizedBox(width: 12.0),
+                    const SizedBox(width: 14.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'Gestobar',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w900,
-                            color: theme.colorScheme.primary,
-                            letterSpacing: 1.0,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 24.0,
+                            color: const Color(0xFFDBFCFF), // primary text
+                            letterSpacing: -0.5,
                           ),
                         ),
                         Text(
-                          'SaaS Hospitality',
+                          'Administración Pro',
                           style: theme.textTheme.labelSmall?.copyWith(
-                            fontSize: 9.0,
-                            color: theme.colorScheme.secondary,
+                            fontSize: 10.0,
+                            color: const Color(0xFF00F0FF).withOpacity(0.8),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -1284,63 +1348,168 @@ class MainDashboardView extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 20.0),
                 Text(
-                  activeBarName,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onSurface,
+                  activeBarName.toUpperCase(),
+                  style: GoogleFonts.jetBrainsMono(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 11.0,
+                    color: const Color(0xFF00F0FF),
+                    letterSpacing: 0.5,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
+                const SizedBox(height: 2.0),
                 Text(
                   'Usuario: ${user.nombre} (${user.rolNombre.toUpperCase()})',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    fontSize: 10.0,
-                    color: theme.colorScheme.onSurfaceVariant,
+                    fontSize: 10.5,
+                    color: Colors.white.withOpacity(0.4),
                   ),
                 ),
               ],
             ),
           ),
-          // Links de navegación interna profunda
-          ListTile(
-            leading: const Icon(Icons.person_outline),
-            title: const Text('Mi Perfil'),
-            onTap: () {
-              Navigator.pop(context); // Cierra drawer
-              ref.read(activeViewProvider.notifier).state = 'perfil';
-            },
-          ),
-          if (role == 'SUPERADMIN' || role == 'ADMIN')
-            ListTile(
-              leading: const Icon(Icons.settings_outlined),
-              title: const Text('Configuración'),
-              onTap: () {
-                Navigator.pop(context);
-                ref.read(activeViewProvider.notifier).state = 'config';
+          
+          Divider(color: Colors.white.withOpacity(0.06), height: 1.0),
+          const SizedBox(height: 16.0),
+
+          // Dynamic operational pages list
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              itemCount: navItems.length,
+              itemBuilder: (context, index) {
+                final item = navItems[index];
+                final String viewId = item['view'] as String;
+                final bool isSelected = activeView == viewId;
+
+                return _buildSidebarNavItem(
+                  context: context,
+                  icon: isSelected ? item['icon_active'] as IconData : item['icon'] as IconData,
+                  label: item['label'] as String,
+                  isSelected: isSelected,
+                  onTap: () {
+                    Navigator.pop(context); // close drawer
+                    ref.read(activeViewProvider.notifier).state = viewId;
+                  },
+                );
               },
             ),
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text('Acerca de'),
-            onTap: () {
-              Navigator.pop(context);
-              _showAboutDialog(context, theme);
-            },
           ),
-          const Spacer(),
-          const Divider(height: 1.0),
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.redAccent),
-            title: const Text('Cerrar Sesión', style: TextStyle(color: Colors.redAccent)),
-            onTap: () {
-              Navigator.pop(context);
-              ref.read(authProvider.notifier).logout();
-            },
+
+          // Secondary and support actions
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+            child: Column(
+              children: [
+                Divider(color: Colors.white.withOpacity(0.06), height: 1.0),
+                const SizedBox(height: 8.0),
+                
+                // Profile internal page link
+                _buildSidebarBottomItem(
+                  context: context,
+                  icon: Icons.person_outline,
+                  label: 'Mi Perfil',
+                  isSelected: activeView == 'perfil',
+                  onTap: () {
+                    Navigator.pop(context);
+                    ref.read(activeViewProvider.notifier).state = 'perfil';
+                  },
+                ),
+                
+                // Config page link for admins
+                if (role == 'SUPERADMIN' || role == 'ADMIN')
+                  _buildSidebarBottomItem(
+                    context: context,
+                    icon: Icons.settings_outlined,
+                    label: 'Configuración',
+                    isSelected: activeView == 'config',
+                    onTap: () {
+                      Navigator.pop(context);
+                      ref.read(activeViewProvider.notifier).state = 'config';
+                    },
+                  ),
+
+                // Support modal trigger
+                _buildSidebarBottomItem(
+                  context: context,
+                  icon: Icons.info_outline,
+                  label: 'Acerca de',
+                  isSelected: false,
+                  onTap: () {
+                    Navigator.pop(context);
+                    _showAboutDialog(context, theme);
+                  },
+                ),
+
+                // Logout danger option
+                _buildSidebarBottomItem(
+                  context: context,
+                  icon: Icons.logout,
+                  label: 'Cerrar Sesión',
+                  isSelected: false,
+                  isDanger: true,
+                  onTap: () {
+                    Navigator.pop(context);
+                    ref.read(authProvider.notifier).logout();
+                  },
+                ),
+
+                const SizedBox(height: 12.0),
+
+                // Modernist primary CTA Button matching "Cerrar Turno" in mockups
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  child: Container(
+                    height: 48.0,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF00F0FF), // Solid Electric Cyan
+                      borderRadius: BorderRadius.circular(100.0), // Capsule!
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF00F0FF).withOpacity(0.15),
+                          blurRadius: 16.0,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(100.0),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(100.0),
+                        onTap: () {
+                          Navigator.pop(context);
+                          // Prototype action: show feedback
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Operación de Cierre de Turno Iniciada.'),
+                              backgroundColor: Color(0xFF1E2024),
+                            ),
+                          );
+                        },
+                        child: Center(
+                          child: Text(
+                            'CERRAR TURNO',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFF00363A), // Dark contrast color
+                              fontWeight: FontWeight.w800,
+                              fontSize: 11.5,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+              ],
+            ),
           ),
-          const SizedBox(height: 24.0),
         ],
       ),
     );
@@ -1354,44 +1523,50 @@ class MainDashboardView extends ConsumerWidget {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    final theme = Theme.of(context);
-
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 8.0),
-      child: Material(
-        color: isSelected 
-            ? theme.colorScheme.secondary 
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(100.0), // fully rounded pill
-        child: InkWell(
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0x2600F0FF) : Colors.transparent, // 15% opacity Electric Cyan
+          borderRadius: BorderRadius.circular(100.0), // fully rounded modernist capsule
+          border: Border.all(
+            color: isSelected ? const Color(0x3300F0FF) : Colors.transparent, // 20% opacity Electric Cyan border
+            width: 1.0,
+          ),
+        ),
+        child: Material(
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(100.0),
-          onTap: onTap,
-          child: Container(
-            height: 48.0, // Altura táctil según guía
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Row(
-              children: [
-                Icon(
-                  icon,
-                  size: 20.0,
-                  color: isSelected 
-                      ? theme.colorScheme.onSurface 
-                      : theme.colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(width: 14.0),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 14.0,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                      color: isSelected 
-                          ? theme.colorScheme.onSurface 
-                          : theme.colorScheme.onSurfaceVariant,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(100.0),
+            onTap: onTap,
+            child: Container(
+              height: 48.0, // Altura táctil ergonómica
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Row(
+                children: [
+                  Icon(
+                    icon,
+                    size: 20.0,
+                    color: isSelected 
+                        ? const Color(0xFF00F0FF) // Electric Cyan active
+                        : Colors.white.withOpacity(0.4), // Muted inactive
+                  ),
+                  const SizedBox(width: 14.0),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13.5,
+                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                        color: isSelected 
+                            ? const Color(0xFF00F0FF) 
+                            : Colors.white.withOpacity(0.4),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -1408,48 +1583,51 @@ class MainDashboardView extends ConsumerWidget {
     required VoidCallback onTap,
     bool isDanger = false,
   }) {
-    final theme = Theme.of(context);
-
-    final Color inactiveBg = Colors.transparent;
-    final Color activeBg = isDanger 
-        ? AppTheme.colorDanger 
-        : theme.colorScheme.secondary;
-
-    final Color activeText = Colors.white;
-    final Color inactiveText = isDanger 
-        ? AppTheme.colorDanger 
-        : theme.colorScheme.onSurfaceVariant;
+    final Color activeColor = isDanger ? const Color(0xFFFFB4AB) : const Color(0xFF00F0FF);
+    final Color activeBg = isDanger ? const Color(0x26FFB4AB) : const Color(0x2600F0FF);
+    final Color activeBorder = isDanger ? const Color(0x33FFB4AB) : const Color(0x3300F0FF);
+    final Color inactiveColor = isDanger ? const Color(0xFFFFB4AB).withOpacity(0.8) : Colors.white.withOpacity(0.4);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
-      child: Material(
-        color: isSelected ? activeBg : inactiveBg,
-        borderRadius: BorderRadius.circular(100.0),
-        child: InkWell(
+      padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected ? activeBg : Colors.transparent,
           borderRadius: BorderRadius.circular(100.0),
-          onTap: onTap,
-          child: Container(
-            height: 44.0,
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Row(
-              children: [
-                Icon(
-                  icon,
-                  size: 18.0,
-                  color: isSelected ? activeText : inactiveText,
-                ),
-                const SizedBox(width: 14.0),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 13.0,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                      color: isSelected ? activeText : inactiveText,
+          border: Border.all(
+            color: isSelected ? activeBorder : Colors.transparent,
+            width: 1.0,
+          ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(100.0),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(100.0),
+            onTap: onTap,
+            child: Container(
+              height: 44.0,
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Row(
+                children: [
+                  Icon(
+                    icon,
+                    size: 18.0,
+                    color: isSelected ? activeColor : inactiveColor,
+                  ),
+                  const SizedBox(width: 14.0),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13.0,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                        color: isSelected ? activeColor : inactiveColor,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
