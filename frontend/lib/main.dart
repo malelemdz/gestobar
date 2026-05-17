@@ -34,7 +34,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark, // Midnight Gold por defecto para la noche del bar
+      themeMode: ThemeMode.system, // Detecta y respeta automáticamente el tema del sistema (Modo Claro/Oscuro)
       home: _resolveHomeScreen(authState),
     );
   }
@@ -389,8 +389,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
   }
 }
 
-/// Provider para controlar el índice de navegación activo en el Shell
-final navIndexProvider = StateProvider<int>((ref) => 0);
+/// Provider global para controlar la vista activa del sistema (Soporta navegación ilimitada y profunda)
+final activeViewProvider = StateProvider<String>((ref) => 'dash');
 
 /// 📋 3. Main Dashboard View - Caparazón de Navegación Adaptativa y Responsiva
 class MainDashboardView extends ConsumerWidget {
@@ -401,23 +401,26 @@ class MainDashboardView extends ConsumerWidget {
     final theme = Theme.of(context);
     final authState = ref.watch(authProvider) as AuthAuthenticated;
     final user = authState.user;
-    final selectedIndex = ref.watch(navIndexProvider);
+    final activeView = ref.watch(activeViewProvider);
+    final activeBarId = authState.activeBarId;
+    final String activeBarName = activeBarId != null ? 'El Templo del Oro' : 'Consola Global';
 
-    // 1. Definir los destinos de navegación dinámicamente según el Rol del usuario
-    final List<Map<String, dynamic>> navItems = _getNavItemsForRole(user.rolNombre);
+    final String role = user.rolNombre.toUpperCase();
 
-    // Si el índice seleccionado quedó fuera de rango por cambio de rol, reiniciarlo
-    if (selectedIndex >= navItems.length) {
-      Future.microtask(() => ref.read(navIndexProvider.notifier).state = 0);
+    // auto-corrección: asegurar que la vista seleccionada sea permitida para el rol
+    final List<String> allowedViews = _getAllowedViewsForRole(role);
+    if (!allowedViews.contains(activeView)) {
+      final String defaultView = _getDefaultViewForRole(role);
+      Future.microtask(() => ref.read(activeViewProvider.notifier).state = defaultView);
       return const PremiumSplashScreen();
     }
 
-    final activeItem = navItems[selectedIndex];
+    // 1. Obtener ítems de navegación principales (menú diario operativo)
+    final List<Map<String, dynamic>> navItems = _getNavItemsForRole(role);
 
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
-          // CONTROL DE PANTALLA: Pantallas >= 800px se consideran Tablets / PCs
           final bool isTablet = constraints.maxWidth >= 800;
 
           if (isTablet) {
@@ -441,37 +444,103 @@ class MainDashboardView extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Cabecera del Sidebar: Logo y Marca
+                      // Cabecera del Sidebar: Espacio de Logo, Título y Nombre del Bar
                       Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Row(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.primary.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: Icon(
-                                Icons.local_bar,
-                                color: theme.colorScheme.primary,
-                                size: 24.0,
-                              ),
+                            Row(
+                              children: [
+                                // 🌟 Contenedor/Slot para el futuro logo oficial
+                                Container(
+                                  width: 44.0,
+                                  height: 44.0,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: theme.colorScheme.primary.withOpacity(0.3),
+                                      width: 1.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    color: theme.colorScheme.primary.withOpacity(0.05),
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.local_bar,
+                                      color: theme.colorScheme.primary,
+                                      size: 24.0,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12.0),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Gestobar',
+                                        style: theme.textTheme.titleLarge?.copyWith(
+                                          fontWeight: FontWeight.w900,
+                                          color: theme.colorScheme.primary,
+                                          letterSpacing: 1.5,
+                                          fontSize: 20.0,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2.0),
+                                      // Píldora del Sistema
+                                      Text(
+                                        'SaaS Hospitality',
+                                        style: theme.textTheme.labelSmall?.copyWith(
+                                          fontSize: 9.0,
+                                          color: theme.colorScheme.secondary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 12.0),
-                            Text(
-                              'Gestobar',
-                              style: theme.textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                color: theme.colorScheme.primary,
-                                letterSpacing: 1.0,
+                            const SizedBox(height: 16.0),
+                            // Nombre de la Sucursal / Bar asignado
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.onSurface.withOpacity(0.03),
+                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(
+                                  color: theme.colorScheme.outline.withOpacity(0.1),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.storefront_outlined,
+                                    size: 14.0,
+                                    color: theme.colorScheme.primary.withOpacity(0.7),
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Expanded(
+                                    child: Text(
+                                      activeBarName,
+                                      style: theme.textTheme.labelSmall?.copyWith(
+                                        color: theme.colorScheme.onSurface,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 11.0,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
                       const Divider(height: 1.0),
-                      const SizedBox(height: 16.0),
+                      const SizedBox(height: 12.0),
 
                       // Lista de Navegación del Sidebar
                       Expanded(
@@ -480,7 +549,8 @@ class MainDashboardView extends ConsumerWidget {
                           itemCount: navItems.length,
                           itemBuilder: (context, index) {
                             final item = navItems[index];
-                            final bool isSelected = index == selectedIndex;
+                            final String viewId = item['view'] as String;
+                            final bool isSelected = activeView == viewId;
 
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -502,7 +572,7 @@ class MainDashboardView extends ConsumerWidget {
                                   ),
                                 ),
                                 onTap: () {
-                                  ref.read(navIndexProvider.notifier).state = index;
+                                  ref.read(activeViewProvider.notifier).state = viewId;
                                 },
                               ),
                             );
@@ -510,75 +580,58 @@ class MainDashboardView extends ConsumerWidget {
                         ),
                       ),
 
-                      // Perfil del Usuario en el pie del Sidebar
+                      // MENÚ DE OPCIONES DE CONFIGURACIÓN Y SOPORTE (SIDEBAR BOTTOM)
                       const Divider(height: 1.0),
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20.0,
-                                  backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
-                                  child: Text(
-                                    user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
-                                    style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                const SizedBox(width: 12.0),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        user.nombre,
-                                        style: theme.textTheme.labelMedium?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        user.rolNombre.toUpperCase(),
-                                        style: theme.textTheme.labelSmall?.copyWith(
-                                          fontSize: 10.0,
-                                          color: theme.colorScheme.primary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                            // Opción 1: Mi Perfil
+                            _buildSidebarBottomItem(
+                              context: context,
+                              icon: Icons.person_outline,
+                              label: 'Mi Perfil',
+                              isSelected: activeView == 'perfil',
+                              onTap: () {
+                                ref.read(activeViewProvider.notifier).state = 'perfil';
+                              },
                             ),
-                            const SizedBox(height: 16.0),
-                            // Botones de acción rápida en el Sidebar
-                            Row(
-                              children: [
-                                if (user.rolNombre == 'SUPERADMIN')
-                                  Expanded(
-                                    child: OutlinedButton.icon(
-                                      icon: const Icon(Icons.swap_horiz, size: 16.0),
-                                      label: const Text('Cambiar Bar', style: TextStyle(fontSize: 11.0)),
-                                      style: OutlinedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                      ),
-                                      onPressed: () {
-                                        ref.read(authProvider.notifier).selectBar(null);
-                                      },
-                                    ),
-                                  )
-                                else
-                                  const Spacer(),
-                                const SizedBox(width: 8.0),
-                                IconButton(
-                                  icon: const Icon(Icons.logout, size: 20.0),
-                                  tooltip: 'Cerrar Sesión',
-                                  onPressed: () {
-                                    ref.read(authProvider.notifier).logout();
-                                  },
-                                ),
-                              ],
+                            const SizedBox(height: 4.0),
+                            // Opción 2: Configuración (Admin / Superadmin)
+                            if (role == 'SUPERADMIN' || role == 'ADMIN') ...[
+                              _buildSidebarBottomItem(
+                                context: context,
+                                icon: Icons.settings_outlined,
+                                label: 'Configuración',
+                                isSelected: activeView == 'config',
+                                onTap: () {
+                                  ref.read(activeViewProvider.notifier).state = 'config';
+                                },
+                              ),
+                              const SizedBox(height: 4.0),
+                            ],
+                            // Opción 3: Acerca de (Nueva opción)
+                            _buildSidebarBottomItem(
+                              context: context,
+                              icon: Icons.info_outline,
+                              label: 'Acerca de',
+                              isSelected: false,
+                              onTap: () {
+                                _showAboutDialog(context, theme);
+                              },
+                            ),
+                            const Divider(height: 16.0),
+                            // Opción 4: Cerrar Sesión
+                            _buildSidebarBottomItem(
+                              context: context,
+                              icon: Icons.logout,
+                              label: 'Cerrar Sesión',
+                              isSelected: false,
+                              isDanger: true,
+                              onTap: () {
+                                ref.read(authProvider.notifier).logout();
+                              },
                             ),
                           ],
                         ),
@@ -594,32 +647,35 @@ class MainDashboardView extends ConsumerWidget {
                       context: context,
                       ref: ref,
                       user: user,
-                      pageLabel: activeItem['label'] as String,
+                      pageLabel: _getTitleForView(activeView),
                       isTablet: true,
                       activeBarId: authState.activeBarId,
+                      activeView: activeView,
                     ),
-                    body: activeItem['view'] as Widget,
+                    body: _buildBodyForView(activeView),
                   ),
                 ),
               ],
             );
           } else {
             // ==========================================
-            // LAYOUT MÓVIL: Translúcido Bottom Bar / Drawer
+            // LAYOUT MÓVIL: Translúcido Bottom Bar + Drawer
             // ==========================================
-            final showBottomBar = navItems.length > 1;
+            final showBottomBar = navItems.any((item) => item['view'] == activeView);
 
             return Scaffold(
+              drawer: _buildMobileDrawer(context, ref, user, theme),
               appBar: _buildCustomAppBar(
                 context: context,
                 ref: ref,
                 user: user,
-                pageLabel: activeItem['label'] as String,
+                pageLabel: _getTitleForView(activeView),
                 isTablet: false,
                 activeBarId: authState.activeBarId,
+                activeView: activeView,
               ),
-              body: activeItem['view'] as Widget,
-              bottomNavigationBar: showBottomBar
+              body: _buildBodyForView(activeView),
+              bottomNavigationBar: showBottomBar && navItems.length > 1
                   ? Container(
                       decoration: BoxDecoration(
                         border: Border(
@@ -630,9 +686,9 @@ class MainDashboardView extends ConsumerWidget {
                         ),
                       ),
                       child: BottomNavigationBar(
-                        currentIndex: selectedIndex,
+                        currentIndex: navItems.indexWhere((item) => item['view'] == activeView),
                         onTap: (index) {
-                          ref.read(navIndexProvider.notifier).state = index;
+                          ref.read(activeViewProvider.notifier).state = navItems[index]['view'] as String;
                         },
                         type: BottomNavigationBarType.fixed,
                         backgroundColor: theme.colorScheme.surface,
@@ -656,70 +712,148 @@ class MainDashboardView extends ConsumerWidget {
     );
   }
 
-  // Genera el listado de páginas dinámicas según el rol autenticado con nombres cortos
+  // Define las vistas permitidas por cada rol
+  List<String> _getAllowedViewsForRole(String role) {
+    switch (role) {
+      case 'SUPERADMIN':
+      case 'ADMIN':
+        return ['dash', 'pos', 'caja', 'menu', 'staff', 'audit', 'config', 'perfil'];
+      case 'BARMAN':
+        return ['pos', 'caja', 'perfil'];
+      case 'DAMA':
+        return ['comis', 'perfil'];
+      default:
+        return ['dash', 'perfil'];
+    }
+  }
+
+  // Vista por defecto al arrancar o reestablecer rol
+  String _getDefaultViewForRole(String role) {
+    switch (role) {
+      case 'SUPERADMIN':
+      case 'ADMIN':
+        return 'dash';
+      case 'BARMAN':
+        return 'pos';
+      case 'DAMA':
+        return 'comis';
+      default:
+        return 'dash';
+    }
+  }
+
+  // Genera el listado de páginas dinámicas del menú operativo diario
   List<Map<String, dynamic>> _getNavItemsForRole(String roleName) {
     switch (roleName.toUpperCase()) {
       case 'SUPERADMIN':
       case 'ADMIN':
         return [
           {
+            'view': 'dash',
             'label': 'Dash',
             'icon': Icons.dashboard_outlined,
             'icon_active': Icons.dashboard,
-            'view': const DashboardPage(),
           },
           {
+            'view': 'pos',
             'label': 'POS',
             'icon': Icons.point_of_sale_outlined,
             'icon_active': Icons.point_of_sale,
-            'view': const PosPage(),
           },
           {
+            'view': 'caja',
             'label': 'Caja',
             'icon': Icons.payments_outlined,
             'icon_active': Icons.payments,
-            'view': const CajaPage(),
           },
           {
-            'label': 'Audit',
-            'icon': Icons.security_outlined,
-            'icon_active': Icons.security,
-            'view': const AuditoriaPage(),
+            'view': 'menu',
+            'label': 'Menú',
+            'icon': Icons.local_bar_outlined,
+            'icon_active': Icons.local_bar,
+          },
+          {
+            'view': 'staff',
+            'label': 'Staff',
+            'icon': Icons.people_alt_outlined,
+            'icon_active': Icons.people,
           },
         ];
       case 'BARMAN':
         return [
           {
+            'view': 'pos',
             'label': 'POS',
             'icon': Icons.point_of_sale_outlined,
             'icon_active': Icons.point_of_sale,
-            'view': const PosPage(),
           },
           {
+            'view': 'caja',
             'label': 'Caja',
             'icon': Icons.payments_outlined,
             'icon_active': Icons.payments,
-            'view': const CajaPage(),
           },
         ];
       case 'DAMA':
         return [
           {
+            'view': 'comis',
             'label': 'Comis',
             'icon': Icons.star_outline,
             'icon_active': Icons.star,
-            'view': const DamaPage(),
           },
         ];
       default:
         return [
           {
+            'view': 'dash',
             'label': 'Dash',
             'icon': Icons.dashboard_outlined,
             'icon_active': Icons.dashboard,
-            'view': const DashboardPage(),
           },
         ];
+    }
+  }
+
+  // Mapea la vista activa a su correspondiente Widget modular
+  Widget _buildBodyForView(String activeView) {
+    switch (activeView) {
+      case 'dash':
+        return const DashboardPage();
+      case 'pos':
+        return const PosPage();
+      case 'caja':
+        return const CajaPage();
+      case 'menu':
+        return const MenuPage();
+      case 'staff':
+        return const StaffPage();
+      case 'audit':
+        return const AuditoriaPage();
+      case 'config':
+        return const ConfigPage();
+      case 'perfil':
+        return const PerfilPage();
+      case 'comis':
+        return const DamaPage();
+      default:
+        return const DashboardPage();
+    }
+  }
+
+  // Obtiene el título legible para la AppBar
+  String _getTitleForView(String activeView) {
+    switch (activeView) {
+      case 'dash': return 'Dash';
+      case 'pos': return 'POS';
+      case 'caja': return 'Caja';
+      case 'menu': return 'Menú';
+      case 'staff': return 'Staff';
+      case 'audit': return 'Audit';
+      case 'config': return 'Config';
+      case 'perfil': return 'Mi Perfil';
+      case 'comis': return 'Comis';
+      default: return 'Gestobar';
     }
   }
 
@@ -731,9 +865,9 @@ class MainDashboardView extends ConsumerWidget {
     required String pageLabel,
     required bool isTablet,
     required String? activeBarId,
+    required String activeView,
   }) {
     final theme = Theme.of(context);
-    final String activeBarName = activeBarId != null ? 'El Templo del Oro' : 'Consola Global';
     final String role = user.rolNombre.toUpperCase();
     final bool isCajaAbierta = true; // Simulación para el prototipo visual
 
@@ -744,65 +878,68 @@ class MainDashboardView extends ConsumerWidget {
         child: Icon(Icons.blur_on, color: Colors.amber, size: 28.0),
       );
     } else {
-      leadingWidget = Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: theme.colorScheme.primary.withOpacity(0.1),
+      // En móvil, si estamos en una pantalla profunda (Perfil/Config), mostramos botón Atrás
+      final bool isDeepView = activeView == 'perfil' || activeView == 'config';
+      if (isDeepView) {
+        leadingWidget = IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            ref.read(activeViewProvider.notifier).state = _getDefaultViewForRole(role);
+          },
+        );
+      } else {
+        // Hamburger Menu para abrir el Mobile Drawer
+        leadingWidget = Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
           ),
-          child: Icon(Icons.local_bar, color: theme.colorScheme.primary, size: 20.0),
-        ),
-      );
+        );
+      }
     }
 
     List<Widget> actionsList = [];
 
     // Acción 1: Estado de Caja dinámico (Redirige al tocarlo al módulo de Caja)
-    if (role != 'DAMA') {
+    if (role != 'DAMA' && activeView != 'perfil' && activeView != 'config') {
       actionsList.add(
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0),
           child: InkWell(
             onTap: () {
-              if (role == 'SUPERADMIN' || role == 'ADMIN') {
-                ref.read(navIndexProvider.notifier).state = 2; // Salta a Caja
-              } else if (role == 'BARMAN') {
-                ref.read(navIndexProvider.notifier).state = 1; // Salta a Caja
-              }
+              ref.read(activeViewProvider.notifier).state = 'caja';
             },
-            borderRadius: BorderRadius.circular(20.0),
+            borderRadius: BorderRadius.circular(30.0),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
               decoration: BoxDecoration(
                 color: isCajaAbierta
-                    ? AppTheme.colorSuccess.withOpacity(0.1)
-                    : AppTheme.colorWarning.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20.0),
+                    ? AppTheme.colorSuccess.withOpacity(0.12)
+                    : AppTheme.colorWarning.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(30.0),
                 border: Border.all(
                   color: isCajaAbierta
-                      ? AppTheme.colorSuccess.withOpacity(0.3)
-                      : AppTheme.colorWarning.withOpacity(0.3),
+                      ? AppTheme.colorSuccess.withOpacity(0.4)
+                      : AppTheme.colorWarning.withOpacity(0.4),
+                  width: 1.0,
                 ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 6.0,
-                    height: 6.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isCajaAbierta ? AppTheme.colorSuccess : AppTheme.colorWarning,
-                    ),
+                  Icon(
+                    isCajaAbierta ? Icons.check_circle_outline : Icons.warning_amber_rounded,
+                    size: 14.0,
+                    color: isCajaAbierta ? AppTheme.colorSuccess : AppTheme.colorWarning,
                   ),
                   const SizedBox(width: 6.0),
                   Text(
                     isCajaAbierta ? 'Caja Abierta' : 'Caja Cerrada',
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: isCajaAbierta ? AppTheme.colorSuccess : AppTheme.colorWarning,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w800,
                       fontSize: 10.0,
+                      letterSpacing: 0.1,
                     ),
                   ),
                 ],
@@ -815,7 +952,7 @@ class MainDashboardView extends ConsumerWidget {
     }
 
     // Acción 2: Monitoreo en vivo de comisiones acumuladas y WebSocket para Damas
-    if (role == 'DAMA') {
+    if (role == 'DAMA' && activeView == 'comis') {
       // Indicador WebSocket
       actionsList.add(
         Padding(
@@ -913,44 +1050,274 @@ class MainDashboardView extends ConsumerWidget {
       actionsList.add(const SizedBox(width: 12.0));
     }
 
-    // Acción 4: Logout (Solo en móviles)
-    if (!isTablet) {
-      actionsList.add(
-        IconButton(
-          icon: const Icon(Icons.logout, size: 20.0),
-          tooltip: 'Salir',
-          onPressed: () {
-            ref.read(authProvider.notifier).logout();
-          },
-        ),
-      );
-      actionsList.add(const SizedBox(width: 8.0));
-    }
-
     return AppBar(
       leading: leadingWidget,
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            pageLabel,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-          Text(
-            activeBarName,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
-              fontSize: 10.0,
-            ),
-          ),
-        ],
+      title: Text(
+        pageLabel,
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w900,
+          color: theme.colorScheme.primary,
+          letterSpacing: 0.5,
+        ),
       ),
       actions: actionsList,
       elevation: 0,
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
+      shape: Border(
+        bottom: BorderSide(
+          color: theme.colorScheme.outline.withOpacity(0.15),
+          width: 1.0,
+        ),
+      ),
+    );
+  }
+
+  // 🚪 Diseña el cajón de navegación lateral móvil para Perfil y Configuración
+  Widget _buildMobileDrawer(BuildContext context, WidgetRef ref, UserModel user, ThemeData theme) {
+    final String role = user.rolNombre.toUpperCase();
+    final authState = ref.watch(authProvider) as AuthAuthenticated;
+    final activeBarId = authState.activeBarId;
+    final String activeBarName = activeBarId != null ? 'El Templo del Oro' : 'Consola Global';
+
+    return Drawer(
+      backgroundColor: theme.colorScheme.surface,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Cabecera del Drawer con degradado premium Midnight Gold
+          DrawerHeader(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  theme.colorScheme.surface,
+                  theme.colorScheme.primary.withOpacity(0.12),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              border: Border(
+                bottom: BorderSide(
+                  color: theme.colorScheme.outlineVariant.withOpacity(0.3),
+                ),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(color: theme.colorScheme.primary.withOpacity(0.2)),
+                      ),
+                      child: Icon(Icons.local_bar, color: theme.colorScheme.primary, size: 24.0),
+                    ),
+                    const SizedBox(width: 12.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Gestobar',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w900,
+                            color: theme.colorScheme.primary,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                        Text(
+                          'SaaS Hospitality',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontSize: 9.0,
+                            color: theme.colorScheme.secondary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  activeBarName,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  'Usuario: ${user.nombre} (${user.rolNombre.toUpperCase()})',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontSize: 10.0,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Links de navegación interna profunda
+          ListTile(
+            leading: const Icon(Icons.person_outline),
+            title: const Text('Mi Perfil'),
+            onTap: () {
+              Navigator.pop(context); // Cierra drawer
+              ref.read(activeViewProvider.notifier).state = 'perfil';
+            },
+          ),
+          if (role == 'SUPERADMIN' || role == 'ADMIN')
+            ListTile(
+              leading: const Icon(Icons.settings_outlined),
+              title: const Text('Configuración'),
+              onTap: () {
+                Navigator.pop(context);
+                ref.read(activeViewProvider.notifier).state = 'config';
+              },
+            ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('Acerca de'),
+            onTap: () {
+              Navigator.pop(context);
+              _showAboutDialog(context, theme);
+            },
+          ),
+          const Spacer(),
+          const Divider(height: 1.0),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.redAccent),
+            title: const Text('Cerrar Sesión', style: TextStyle(color: Colors.redAccent)),
+            onTap: () {
+              Navigator.pop(context);
+              ref.read(authProvider.notifier).logout();
+            },
+          ),
+          const SizedBox(height: 24.0),
+        ],
+      ),
+    );
+  }
+
+  // 🛠️ Diseña un botón de menú inferior estilizado para el Sidebar
+  Widget _buildSidebarBottomItem({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+    bool isDanger = false,
+  }) {
+    final theme = Theme.of(context);
+    final Color itemColor = isDanger
+        ? AppTheme.colorDanger
+        : (isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant);
+
+    return Material(
+      color: isSelected ? theme.colorScheme.primary.withOpacity(0.08) : Colors.transparent,
+      borderRadius: BorderRadius.circular(8.0),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8.0),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 18.0,
+                color: itemColor,
+              ),
+              const SizedBox(width: 12.0),
+              Expanded(
+                child: Text(
+                  label,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                    color: itemColor,
+                    fontSize: 13.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ℹ️ Muestra un modal premium "Acerca de"
+  void _showAboutDialog(BuildContext context, ThemeData theme) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: theme.colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+            side: BorderSide(color: theme.colorScheme.outline.withOpacity(0.2)),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.info_outline, color: theme.colorScheme.primary),
+              const SizedBox(width: 10.0),
+              const Text('Acerca de Gestobar'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.local_bar, size: 40.0, color: theme.colorScheme.primary),
+                    ),
+                    const SizedBox(height: 12.0),
+                    Text(
+                      'Gestobar SaaS v1.0.0',
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      'Plataforma de Alta Velocidad para Hostelería',
+                      style: theme.textTheme.labelSmall?.copyWith(fontSize: 10.0),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 24.0),
+              Text(
+                'Desarrollado con dedicación para ofrecer el máximo rendimiento en flujos de trabajo de bares, pubs y discotecas bajo entornos de alta exigencia.',
+                style: theme.textTheme.bodyMedium?.copyWith(fontSize: 13.0),
+              ),
+              const SizedBox(height: 16.0),
+              Text(
+                '© 2026 Antigravity Labs. Todos los derechos reservados.',
+                style: theme.textTheme.labelSmall?.copyWith(fontSize: 9.0, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7)),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Entendido',
+                style: TextStyle(color: theme.colorScheme.primary),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -1051,16 +1418,16 @@ class DashboardPage extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: 16.0),
 
           // Grilla Bento de Accesos Rápidos
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: MediaQuery.of(context).size.width >= 600 ? 4 : 2,
-            crossAxisSpacing: 16.0,
-            mainAxisSpacing: 16.0,
-            childAspectRatio: 1.25,
+            crossAxisSpacing: 12.0,
+            mainAxisSpacing: 12.0,
+            childAspectRatio: 1.4,
             children: [
               _buildBentoItem(
                 context: context,
@@ -1069,7 +1436,7 @@ class DashboardPage extends ConsumerWidget {
                 subtitle: 'Ir a facturación',
                 color: AppTheme.colorSuccess,
                 onTap: () {
-                  ref.read(navIndexProvider.notifier).state = 1;
+                  ref.read(activeViewProvider.notifier).state = 'pos';
                 },
               ),
               _buildBentoItem(
@@ -1079,29 +1446,27 @@ class DashboardPage extends ConsumerWidget {
                 subtitle: 'Control de turnos',
                 color: AppTheme.colorWarning,
                 onTap: () {
-                  ref.read(navIndexProvider.notifier).state = 2;
+                  ref.read(activeViewProvider.notifier).state = 'caja';
                 },
               ),
               _buildBentoItem(
                 context: context,
-                icon: Icons.security,
-                title: 'Auditoría',
-                subtitle: 'Registro de logs',
-                color: theme.colorScheme.secondary,
-                onTap: () {
-                  ref.read(navIndexProvider.notifier).state = 3;
-                },
-              ),
-              _buildBentoItem(
-                context: context,
-                icon: Icons.storefront,
-                title: 'Sucursales',
-                subtitle: 'Gestionar bares',
+                icon: Icons.local_bar,
+                title: 'Menú',
+                subtitle: 'Editar catálogo',
                 color: theme.colorScheme.primary,
                 onTap: () {
-                  if (user.rolNombre == 'SUPERADMIN') {
-                    ref.read(authProvider.notifier).selectBar(null);
-                  }
+                  ref.read(activeViewProvider.notifier).state = 'menu';
+                },
+              ),
+              _buildBentoItem(
+                context: context,
+                icon: Icons.people_alt,
+                title: 'Staff',
+                subtitle: 'Personal y roles',
+                color: theme.colorScheme.secondary,
+                onTap: () {
+                  ref.read(activeViewProvider.notifier).state = 'staff';
                 },
               ),
             ],
@@ -1129,7 +1494,7 @@ class DashboardPage extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16.0),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1501,6 +1866,209 @@ class BarSelectorView extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// =========================================================================
+// 🌟 SUB-VISTAS ADICIONALES (Configuración, Menú, Personal, Perfil)
+// =========================================================================
+
+/// 🍔 VISTA: Gestión de Menú / Catálogo
+class MenuPage extends StatelessWidget {
+  const MenuPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.local_bar, size: 64.0, color: theme.colorScheme.primary.withOpacity(0.5)),
+            const SizedBox(height: 16.0),
+            Text(
+              'Gestión del Menú',
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              'Fase 4: Catálogo de productos, variantes, categorías y doble precio.',
+              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 👥 VISTA: Staff y Administración de Personal
+class StaffPage extends StatelessWidget {
+  const StaffPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.people_alt_outlined, size: 64.0, color: theme.colorScheme.secondary.withOpacity(0.5)),
+            const SizedBox(height: 16.0),
+            Text(
+              'Personal y Permisos',
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              'Fase 2: Administración de empleados, asignación de roles y permisos de acceso.',
+              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// ⚙️ VISTA: Configuración de la Sucursal / Bar
+class ConfigPage extends StatelessWidget {
+  const ConfigPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.settings_outlined, size: 64.0, color: AppTheme.colorWarning.withOpacity(0.5)),
+            const SizedBox(height: 16.0),
+            Text(
+              'Configuración del Bar',
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              'Fase 1: Configuración de datos de facturación, redes sociales y geolocalización de la sucursal.',
+              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 👤 VISTA: Perfil Personal del Usuario Logueado
+class PerfilPage extends ConsumerWidget {
+  const PerfilPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final authState = ref.watch(authProvider) as AuthAuthenticated;
+    final user = authState.user;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 16.0),
+          CircleAvatar(
+            radius: 50.0,
+            backgroundColor: theme.colorScheme.primary.withOpacity(0.15),
+            child: Text(
+              user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
+              style: TextStyle(
+                color: theme.colorScheme.primary,
+                fontSize: 36.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            user.nombre,
+            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4.0),
+          Chip(
+            label: Text(user.rolNombre.toUpperCase()),
+            backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
+            labelStyle: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const Divider(height: 40.0),
+          _buildProfileItem(context, Icons.phone_android, 'Celular', (user.celular != null && user.celular!.isNotEmpty) ? user.celular! : 'No registrado'),
+          _buildProfileItem(context, Icons.badge_outlined, 'DNI / Documento', 'No registrado'),
+          _buildProfileItem(context, Icons.flag_outlined, 'País / Región', 'Bolivia'),
+          const SizedBox(height: 32.0),
+          OutlinedButton.icon(
+            icon: const Icon(Icons.lock_reset),
+            label: const Text('Restablecer Contraseña'),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Acción disponible en la siguiente fase de desarrollo.')),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileItem(BuildContext context, IconData icon, String title, String value) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.onSurface.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Icon(icon, color: theme.colorScheme.onSurfaceVariant, size: 20.0),
+          ),
+          const SizedBox(width: 16.0),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 2.0),
+              Text(
+                value,
+                style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
