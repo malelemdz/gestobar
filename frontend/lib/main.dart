@@ -941,7 +941,7 @@ class MainDashboardView extends ConsumerWidget {
   }) {
     final theme = Theme.of(context);
     final String role = user.rolNombre.toUpperCase();
-    final bool isCajaAbierta = true; // Simulación para el prototipo visual
+
 
     Widget leadingWidget;
     if (isTablet) {
@@ -972,65 +972,13 @@ class MainDashboardView extends ConsumerWidget {
 
     List<Widget> actionsList = [];
 
-    // Acción 1: Estado de Caja dinámico (Redirige al tocarlo al módulo de Caja)
-    if (role != 'DAMA' && activeView != 'perfil' && activeView != 'config') {
-      actionsList.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
-          child: InkWell(
-            onTap: () {
-              ref.read(activeViewProvider.notifier).state = 'caja';
-            },
-            borderRadius: BorderRadius.circular(100.0),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 4.0),
-              decoration: BoxDecoration(
-                color: isCajaAbierta
-                    ? const Color(0x1A00F0FF) // primary container with 10% opacity
-                    : const Color(0x1AFFB4AB), // error variant with 10% opacity
-                borderRadius: BorderRadius.circular(100.0),
-                border: Border.all(
-                  color: isCajaAbierta
-                      ? const Color(0x3300F0FF)
-                      : const Color(0x33FFB4AB),
-                  width: 1.0,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    isCajaAbierta ? Icons.check_circle_outline : Icons.warning_amber_rounded,
-                    size: 13.0,
-                    color: isCajaAbierta ? const Color(0xFF00F0FF) : const Color(0xFFFFB4AB),
-                  ),
-                  const SizedBox(width: 6.0),
-                  Text(
-                    isCajaAbierta ? 'CAJA ABIERTA' : 'CAJA CERRADA',
-                    style: GoogleFonts.plusJakartaSans(
-                      color: isCajaAbierta ? const Color(0xFF00F0FF) : const Color(0xFFFFB4AB),
-                      fontWeight: FontWeight.w800,
-                      fontSize: 9.0,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-      actionsList.add(const SizedBox(width: 12.0));
-    }
-
     // Acción 2: Monitoreo en vivo de comisiones acumuladas y WebSocket para Damas
     if (role == 'DAMA' && activeView == 'comis') {
       // Indicador WebSocket
       actionsList.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
+        Center(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
             decoration: BoxDecoration(
               color: const Color(0x1A00F0FF),
               borderRadius: BorderRadius.circular(100.0),
@@ -1066,10 +1014,9 @@ class MainDashboardView extends ConsumerWidget {
 
       // Indicador de Ganancias Acumuladas
       actionsList.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
+        Center(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
             decoration: BoxDecoration(
               color: const Color(0x1AFFB1C3), // tertiary fixed dim with 10% opacity
               borderRadius: BorderRadius.circular(100.0),
@@ -1099,8 +1046,7 @@ class MainDashboardView extends ConsumerWidget {
     // Acción 3: Botón de cambio rápido de sucursal para SuperAdmins
     if (role == 'SUPERADMIN') {
       actionsList.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18.0),
+        Center(
           child: OutlinedButton.icon(
             icon: const Icon(Icons.swap_horiz, size: 14.0, color: Color(0xFF00F0FF)),
             label: Text(
@@ -1113,7 +1059,7 @@ class MainDashboardView extends ConsumerWidget {
               ),
             ),
             style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               side: const BorderSide(color: Color(0x4D00F0FF)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100.0),
@@ -1312,7 +1258,7 @@ class MainDashboardView extends ConsumerWidget {
             ),
       actions: actionsList,
       elevation: 0,
-      toolbarHeight: 80.0,
+      toolbarHeight: isTablet ? 72.0 : 56.0,
       backgroundColor: const Color(0xFF111317), // unified dark theme background
       shape: Border(
         bottom: BorderSide(
