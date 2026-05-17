@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestobar - Dashboard Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #111317;
+            color: #e2e2e8;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#e9ddff",
+                        "primary": "#dbfcff",
+                        "on-tertiary-fixed-variant": "#8f0041",
+                        "on-secondary-container": "#ddcdff",
+                        "inverse-primary": "#006970",
+                        "on-secondary-fixed-variant": "#5700c9",
+                        "surface-container-highest": "#333539",
+                        "on-primary-fixed-variant": "#004f54",
+                        "primary-fixed": "#7df4ff",
+                        "on-tertiary-container": "#bb0058",
+                        "on-primary-container": "#006970",
+                        "secondary": "#d1bcff",
+                        "on-primary": "#00363a",
+                        "tertiary-container": "#ffccd6",
+                        "on-tertiary": "#66002c",
+                        "inverse-surface": "#e2e2e8",
+                        "surface-container": "#1e2024",
+                        "inverse-on-surface": "#2f3035",
+                        "tertiary-fixed": "#ffd9e0",
+                        "surface-container-lowest": "#0c0e12",
+                        "on-background": "#e2e2e8",
+                        "secondary-container": "#7000ff",
+                        "error-container": "#93000a",
+                        "surface-container-low": "#1a1c20",
+                        "surface": "#111317",
+                        "on-surface": "#e2e2e8",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-primary-fixed": "#002022",
+                        "background": "#111317",
+                        "outline": "#849495",
+                        "surface-dim": "#111317",
+                        "tertiary-fixed-dim": "#ffb1c3",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#282a2e",
+                        "on-tertiary-fixed": "#3f0019",
+                        "on-secondary": "#3c0090",
+                        "surface-variant": "#333539",
+                        "on-error": "#690005",
+                        "surface-tint": "#00dbe9",
+                        "outline-variant": "#3b494b",
+                        "error": "#ffb4ab",
+                        "primary-container": "#00f0ff",
+                        "on-surface-variant": "#b9cacb",
+                        "on-secondary-fixed": "#23005b",
+                        "secondary-fixed-dim": "#d1bcff",
+                        "tertiary": "#fff3f4",
+                        "surface-bright": "#37393e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "24px",
+                        "gutter": "16px",
+                        "base": "8px",
+                        "element-gap": "12px",
+                        "section-gap": "48px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-caps": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="flex min-h-screen">
+<!-- Persistent SideNavBar -->
+<aside class="bg-surface-container border-r border-outline-variant/10 shadow-xl shadow-black/40 h-screen w-72 fixed left-0 top-0 overflow-y-auto hidden lg:flex flex-col py-8 z-50">
+<div class="px-6 mb-10">
+<h1 class="font-display-lg text-primary text-[32px] tracking-tighter leading-none mb-1">Gestobar</h1>
+<p class="font-body-md text-on-surface-variant text-[14px]">Administración Pro</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active Tab: Dashboard -->
+<a class="flex items-center gap-element-gap text-on-surface-variant px-4 py-3 mx-4 my-1 hover:bg-surface-container-highest hover:text-on-surface transition-all duration-300 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-body-md">Punto de Venta</span>
+</a>
+<a class="flex items-center gap-element-gap bg-secondary-container text-on-secondary-container rounded-lg px-4 py-3 mx-4 my-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-element-gap text-on-surface-variant px-4 py-3 mx-4 my-1 hover:bg-surface-container-highest hover:text-on-surface transition-all duration-300 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-body-md">Gestión de Menú</span>
+</a>
+<a class="flex items-center gap-element-gap text-on-surface-variant px-4 py-3 mx-4 my-1 hover:bg-surface-container-highest hover:text-on-surface transition-all duration-300 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md">Usuarios</span>
+</a>
+</nav>
+<div class="mt-auto px-4 space-y-4">
+<button class="w-full py-4 bg-primary text-on-primary font-bold rounded-lg active:scale-95 transition-transform">
+                Cerrar Turno
+            </button>
+<div class="pt-4 border-t border-outline-variant/10">
+<a class="flex items-center gap-element-gap text-on-surface-variant px-4 py-3 hover:bg-surface-container-highest hover:text-on-surface transition-all duration-300 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Ajustes</span>
+</a>
+<a class="flex items-center gap-element-gap text-error px-4 py-3 hover:bg-error-container/20 transition-all duration-300 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-md">Cerrar Sesión</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-72 bg-background min-h-screen">
+<!-- Top Header -->
+<header class="h-20 px-container-padding flex justify-between items-center bg-surface/80 backdrop-blur-xl sticky top-0 z-40 border-b border-outline-variant/10">
+<h2 class="font-headline-lg text-headline-lg text-primary">Dashboard de Gestión</h2>
+<div class="flex items-center gap-gutter">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</header>
+<div class="p-container-padding max-w-7xl mx-auto space-y-section-gap">
+<!-- Summary Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</div>
+<span class="text-primary text-[14px] font-bold">+12.5%</span>
+</div>
+<p class="text-on-surface-variant font-body-sm mb-1">Ventas Hoy</p>
+<h3 class="text-on-surface font-headline-lg font-bold">$2,450.00</h3>
+</div>
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-secondary-container/20 rounded-lg text-secondary">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</div>
+<span class="text-secondary text-[14px] font-bold">+5.2%</span>
+</div>
+<p class="text-on-surface-variant font-body-sm mb-1">Pedidos Totales</p>
+<h3 class="text-on-surface font-headline-lg font-bold">142</h3>
+</div>
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-tertiary-container/10 rounded-lg text-tertiary-fixed-dim">
+<span class="material-symbols-outlined" data-icon="avg_time">avg_time</span>
+</div>
+<span class="text-error text-[14px] font-bold">-2.1%</span>
+</div>
+<p class="text-on-surface-variant font-body-sm mb-1">Tiempo de Servicio</p>
+<h3 class="text-on-surface font-headline-lg font-bold">18 min</h3>
+</div>
+</section>
+<!-- Main Dashboard Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Sales Activity Chart Placeholder -->
+<section class="md:col-span-8 bg-surface-container rounded-lg p-6 border border-outline-variant/10">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h4 class="text-on-surface font-headline-lg-mobile text-[20px] mb-1">Actividad Semanal</h4>
+<p class="text-on-surface-variant text-[14px]">Ingresos comparados por hora punta</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-surface-container-highest text-on-surface rounded-full text-[12px] font-bold">7D</button>
+<button class="px-4 py-2 text-on-surface-variant rounded-full text-[12px]">30D</button>
+</div>
+</div>
+<!-- Visual Chart Placeholder (Stylized CSS/SVG) -->
+<div class="h-64 w-full flex items-end gap-2 px-2 pb-4 border-b border-outline-variant/20">
+<div class="flex-1 bg-primary/20 rounded-t-md h-[40%] transition-all hover:bg-primary/40"></div>
+<div class="flex-1 bg-primary/20 rounded-t-md h-[65%] transition-all hover:bg-primary/40"></div>
+<div class="flex-1 bg-primary/40 rounded-t-md h-[85%] transition-all hover:bg-primary/60 border-t-2 border-primary"></div>
+<div class="flex-1 bg-primary/20 rounded-t-md h-[55%] transition-all hover:bg-primary/40"></div>
+<div class="flex-1 bg-primary/20 rounded-t-md h-[70%] transition-all hover:bg-primary/40"></div>
+<div class="flex-1 bg-primary/20 rounded-t-md h-[95%] transition-all hover:bg-primary/40 border-t-2 border-primary"></div>
+<div class="flex-1 bg-primary/20 rounded-t-md h-[60%] transition-all hover:bg-primary/40"></div>
+</div>
+<div class="flex justify-between mt-4 px-2">
+<span class="text-on-surface-variant text-[12px] font-label-caps">LUN</span>
+<span class="text-on-surface-variant text-[12px] font-label-caps">MAR</span>
+<span class="text-on-surface-variant text-[12px] font-label-caps">MIE</span>
+<span class="text-on-surface-variant text-[12px] font-label-caps">JUE</span>
+<span class="text-on-surface-variant text-[12px] font-label-caps">VIE</span>
+<span class="text-on-surface-variant text-[12px] font-label-caps">SAB</span>
+<span class="text-on-surface-variant text-[12px] font-label-caps">DOM</span>
+</div>
+</section>
+<!-- Recent Activity Feed -->
+<section class="md:col-span-4 bg-surface-container rounded-lg border border-outline-variant/10 overflow-hidden">
+<div class="p-6 border-b border-outline-variant/10">
+<h4 class="text-on-surface font-headline-lg-mobile text-[20px]">Actividad Reciente</h4>
+</div>
+<div class="p-2">
+<div class="flex items-center gap-4 p-4 hover:bg-surface-container-high rounded-lg transition-colors">
+<div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+<img alt="Usuario" class="w-full h-full object-cover" data-alt="A professional headshot of a restaurant staff member in a clean, modern kitchen environment. The lighting is soft and natural, emphasizing a high-end service aesthetic. The overall mood is professional and efficient, with a palette of deep grays and subtle primary cyan highlights reflecting the brand's digital identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4So3DXc1xkbQ0vkPvAQyo3bkCVJv9kn3OB3QRKOpPVlv9HKAaDPtdLKS-ad8b6BtTEKdW5NrAl9lwGnTRXE_K7FjGHj5Lj8AmRdryvux8c-jlqs__GlKf-_T0_nWVxy21imopXq734wVaYZ5PxuowEc3sbj7zjzBu3y2DryXyyxLELX1imqr2DWwxRBctOeLT9TTRj90Qq31B3q8fZqPLtBKAJapzaH1_YFcaLPUdVgZlRoWBmJA37qoYg1zKjCg3yUxw0QhcqPI"/>
+</div>
+<div class="flex-1">
+<p class="text-[14px] font-bold text-on-surface">Mesa 4 cerrada</p>
+<p class="text-[12px] text-on-surface-variant">Por Elena R. • hace 2 min</p>
+</div>
+<span class="text-primary font-bold text-[14px]">$120</span>
+</div>
+<div class="flex items-center gap-4 p-4 hover:bg-surface-container-high rounded-lg transition-colors">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]" data-icon="restaurant">restaurant</span>
+</div>
+<div class="flex-1">
+<p class="text-[14px] font-bold text-on-surface">Nuevo Pedido</p>
+<p class="text-[12px] text-on-surface-variant">Mesa 12 • hace 5 min</p>
+</div>
+<span class="text-on-surface-variant text-[14px]">Pend.</span>
+</div>
+<div class="flex items-center gap-4 p-4 hover:bg-surface-container-high rounded-lg transition-colors">
+<div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+<img alt="Usuario" class="w-full h-full object-cover" data-alt="A close-up portrait of a male floor manager in a sophisticated restaurant setting. The background is a beautifully blurred dark-themed dining area with minimalist furniture. The color scheme is dominated by deep charcoal and electric blue accents, conveying a sense of precision and modern luxury hospitality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsv8Qi3l0WZYjpZ9-15_oABmQa_90BbKk4m_qgIod2rFH00xWZ9KJnM2jW_RA-9JfgCwfFVEcazUiz-aKuskvQJALREzTTGCIgCpeNiVTA-eqcZ6kNYzi1QP18I3qC0DXNG_FNLNL7jxkgYwFM49KNNnMzawCF4QFw5RNlRDYsv-sFF2GwGmD1LeGnpG4Ca5uGKog2V_85pDgkjSNambacURRRZosyKsuNTngA-oqiOvIKyrHHcRXkVHZQZ6wgjwwwa0MveEp7Ckc"/>
+</div>
+<div class="flex-1">
+<p class="text-[14px] font-bold text-on-surface">Cierre Parcial</p>
+<p class="text-[12px] text-on-surface-variant">Por Marco A. • hace 15 min</p>
+</div>
+<span class="text-on-surface-variant text-[14px]">Ok</span>
+</div>
+</div>
+<button class="w-full p-4 text-[14px] text-primary font-bold hover:bg-primary/5 transition-colors">Ver historial completo</button>
+</section>
+</div>
+<!-- Inventory Alerts & Staff Table -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Stock Alerts -->
+<section class="bg-surface-container rounded-lg p-6 border border-outline-variant/10">
+<div class="flex justify-between items-center mb-6">
+<h4 class="text-on-surface font-headline-lg-mobile text-[20px]">Alertas de Inventario</h4>
+<span class="bg-error-container/20 text-error px-3 py-1 rounded-full text-[12px] font-bold">3 Críticos</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="text-on-surface font-body-md">Vino Tinto Malbec</span>
+</div>
+<span class="text-on-surface-variant text-[14px]">2 botellas rest.</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="text-on-surface font-body-md">Café en Grano (Arábica)</span>
+</div>
+<span class="text-on-surface-variant text-[14px]">0.5 kg rest.</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-on-tertiary-container"></div>
+<span class="text-on-surface font-body-md">Aceite de Oliva Virgen</span>
+</div>
+<span class="text-on-surface-variant text-[14px]">5 lt rest.</span>
+</div>
+</div>
+</section>
+<!-- Top Sellers Card -->
+<section class="bg-surface-container rounded-lg p-6 border border-outline-variant/10">
+<h4 class="text-on-surface font-headline-lg-mobile text-[20px] mb-6">Platos más vendidos</h4>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-lg bg-surface-container-highest flex-shrink-0 overflow-hidden">
+<img alt="Dish" class="w-full h-full object-cover" data-alt="Exquisite food photography of a high-end Mediterranean salad bowl in a dark ceramic plate. The image features vibrant greens and reds, set against a dark, moody background with sharp focus. Soft, overhead studio lighting creates a professional, appetizing aesthetic that matches the Liquid Modernist UI palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNtF7r7tk5LB1gsqQ_IwOR2hWnon4dOgn7njMum0roNzkVPqyqKfJq1RafO_hD_tuGlYPeEJCG0KM8USiABrjM98C8Sb7SsxIRsa_CqGbpdHARmHOx_IdwXtTtmhbCqXNR5GFs0XcIXql9ardAIvqt-CgNQr3AKuP2eQMsQzdKaLFjDVgSISTOtvDrOrThLD45J_20yzlKV0zAtF7EqhtlycjbCR1qNGCFATlJj12cv0VaMVo3TbTJSFzr1VzN50CTOpRW_qUNBdE"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="text-on-surface font-bold text-[14px]">Ensalada Mediterránea</span>
+<span class="text-primary font-label-caps">42 vtas</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[85%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-lg bg-surface-container-highest flex-shrink-0 overflow-hidden">
+<img alt="Dish" class="w-full h-full object-cover" data-alt="A gourmet wood-fired pizza with fresh basil and melted mozzarella on a dark slate background. The photography is sharp, utilizing high contrast between the golden crust and the deep black background. The lighting is focused, creating a clean and modern presentation suitable for a premium restaurant management dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvwLIDlgzMabFe6pG3S2eFDLZMAn3HKinNG1IE18_Zf0USLVEAda9XFm1Afbf_6Vaxoy1stZUmiH4dzscLXzzGQUszE5LmOYuaMzCTPpWTF3sBCTZ2uoNtvnoFVRLlpXR90myA8W2jzkwbG-3ykpUWQsrKL-szG8jdumuKXloYPs1FpkUjYi0qZMhprZin7kZdiupUbCP5C7tqPnidPP6pZotr1n41A4dBALGTd_m01sofPLxYVEvW17CNDyON6iz27bQrX-DISDE"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="text-on-surface font-bold text-[14px]">Pizza Margherita Pro</span>
+<span class="text-primary font-label-caps">38 vtas</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[72%]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Floating Action Button (Contextual for Dashboard) -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary-container text-on-primary-container rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-[32px]" data-icon="add">add</span>
+</button>
+</main>
+</body></html>

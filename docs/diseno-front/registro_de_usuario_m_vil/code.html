@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestobar - User Registration</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@600&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#0c0e12",
+                        "on-secondary-fixed": "#23005b",
+                        "surface-variant": "#333539",
+                        "primary-container": "#00f0ff",
+                        "surface-container-low": "#1a1c20",
+                        "surface-container": "#1e2024",
+                        "outline": "#849495",
+                        "secondary-fixed": "#e9ddff",
+                        "on-primary-fixed": "#002022",
+                        "on-background": "#e2e2e8",
+                        "primary-fixed": "#7df4ff",
+                        "on-primary-fixed-variant": "#004f54",
+                        "outline-variant": "#3b494b",
+                        "primary-fixed-dim": "#00dbe9",
+                        "inverse-on-surface": "#2f3035",
+                        "inverse-primary": "#006970",
+                        "surface-dim": "#111317",
+                        "error-container": "#93000a",
+                        "tertiary-container": "#ffccd6",
+                        "on-tertiary-fixed-variant": "#8f0041",
+                        "secondary-fixed-dim": "#d1bcff",
+                        "surface-container-high": "#282a2e",
+                        "on-tertiary": "#66002c",
+                        "on-primary": "#00363a",
+                        "secondary": "#d1bcff",
+                        "on-surface-variant": "#b9cacb",
+                        "on-tertiary-container": "#bb0058",
+                        "on-secondary": "#3c0090",
+                        "on-tertiary-fixed": "#3f0019",
+                        "on-secondary-container": "#ddcdff",
+                        "error": "#ffb4ab",
+                        "on-surface": "#e2e2e8",
+                        "tertiary-fixed": "#ffd9e0",
+                        "surface-tint": "#00dbe9",
+                        "surface-container-highest": "#333539",
+                        "tertiary": "#fff3f4",
+                        "on-error": "#690005",
+                        "on-secondary-fixed-variant": "#5700c9",
+                        "inverse-surface": "#e2e2e8",
+                        "primary": "#dbfcff",
+                        "on-error-container": "#ffdad6",
+                        "surface": "#111317",
+                        "surface-bright": "#37393e",
+                        "background": "#111317",
+                        "tertiary-fixed-dim": "#ffb1c3",
+                        "secondary-container": "#7000ff",
+                        "on-primary-container": "#006970"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "container-padding": "24px",
+                        "section-gap": "48px",
+                        "element-gap": "12px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-caps": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(26, 28, 32, 0.7);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(132, 148, 149, 0.1);
+        }
+        .liquid-shadow {
+            box-shadow: 0 10px 40px -10px rgba(0, 240, 255, 0.15);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen font-body-md overflow-x-hidden">
+<!-- Navigation Shell (Suppressed sidebar because this is a Transactional Page, but keeping menu icon in TopAppBar as requested) -->
+<header class="fixed top-0 w-full z-50 h-20 flex items-center px-container-padding justify-between bg-surface/80 backdrop-blur-xl">
+<div class="flex items-center gap-element-gap">
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors duration-200 active:scale-95">
+<span class="material-symbols-outlined text-primary-fixed dark:text-primary-fixed-dim" data-icon="menu">menu</span>
+</button>
+<span class="font-display-lg text-[24px] tracking-tighter text-primary-container">Gestobar</span>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20">
+<img alt="Manager Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a hospitality manager in a dark, sophisticated setting. The lighting is moody and dramatic with subtle cyan rim lighting reflecting off a tailored suit. The aesthetic is clean, modern, and high-end, matching a dark-mode user interface palette with deep blacks and cool tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZZ4F3uxeKXlMSjT5dTb1O4_BTJuDlobMGJCsqzM_uclGpddIG1PoFe-ii5WY95o6-UbkutIhovD6rNMn-Yeq0BH9OJUet_BXiwV0AICeKlwpujiO_XFxYnVuCfNdrk1lasqCUyWhonZnODKafZDkpzxmUNyGoKPyZo7zMxLqhcaNnRIgINDnP5WjuhxdbwpvaiPVSK842ts9aS8GphuRhQB4reNSPcZLIz4YV4c_HPg-0Cj5n50esRHFSYrRtQQucvQXq2pCKA1c"/>
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="pt-32 pb-24 px-container-padding max-w-lg mx-auto">
+<section class="flex flex-col gap-section-gap">
+<!-- Hero Heading -->
+<div class="flex flex-col gap-element-gap">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Nuevo Usuario</h1>
+<p class="text-on-surface-variant font-body-sm max-w-[280px]">Configura las credenciales y el acceso para el nuevo miembro del equipo.</p>
+</div>
+<!-- Registration Form Card -->
+<div class="glass-panel p-container-padding rounded-lg flex flex-col gap-gutter liquid-shadow">
+<!-- Avatar Upload Section -->
+<div class="flex flex-col items-center gap-element-gap mb-4">
+<div class="w-24 h-24 rounded-full bg-surface-container-highest flex items-center justify-center border-2 border-dashed border-outline-variant/50 relative overflow-hidden group cursor-pointer">
+<span class="material-symbols-outlined text-outline text-3xl" data-icon="add_a_photo">add_a_photo</span>
+<div class="absolute inset-0 bg-primary-container/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<span class="font-label-caps text-label-caps text-primary-fixed">SUBIR AVATAR</span>
+</div>
+<!-- Form Fields -->
+<form class="flex flex-col gap-gutter">
+<!-- Name Input -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant px-1">Nombre Completo</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded-full px-6 py-4 focus:ring-2 focus:ring-primary-container focus:border-transparent outline-none transition-all placeholder:text-outline/50 text-body-md" placeholder="Ej. Carlos Mendoza" type="text"/>
+</div>
+</div>
+<!-- Role Dropdown -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant px-1">Rol del Sistema</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-low border border-outline-variant/30 rounded-full px-6 py-4 focus:ring-2 focus:ring-primary-container focus:border-transparent outline-none transition-all text-body-md text-on-surface">
+<option disabled="" selected="" value="">Seleccionar rol...</option>
+<option>Camarero</option>
+<option>Bartender</option>
+<option>Cocinero</option>
+<option>Supervisor</option>
+</select>
+<span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-outline" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- PIN/Password Input -->
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant px-1">PIN de Acceso</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded-full px-6 py-4 focus:ring-2 focus:ring-primary-container focus:border-transparent outline-none transition-all placeholder:text-outline/50 text-body-md tracking-[1em]" maxlength="4" placeholder="****" type="password"/>
+<span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-outline cursor-pointer" data-icon="visibility">visibility</span>
+</div>
+<p class="text-[10px] text-outline px-1">Mínimo 4 dígitos para terminales POS.</p>
+</div>
+<!-- Submit Button -->
+<button class="mt-4 w-full bg-gradient-to-r from-primary-container to-secondary-fixed-dim text-on-primary-fixed font-bold py-4 rounded-full hover:shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all active:scale-95 flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined" data-icon="how_to_reg">how_to_reg</span>
+                        Registrar Usuario
+                    </button>
+</form>
+</div>
+<!-- Footer Meta -->
+<div class="flex justify-center items-center gap-gutter opacity-40">
+<div class="h-[1px] flex-1 bg-gradient-to-r from-transparent to-outline-variant"></div>
+<span class="font-label-caps text-label-caps text-[10px]">GESTOBAR SECURE SYSTEM</span>
+<div class="h-[1px] flex-1 bg-gradient-to-l from-transparent to-outline-variant"></div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation (Contextual Suppression Check: Active as this is a creation flow but TopAppBar is primary) -->
+<!-- Navigation Drawer placeholder logic - Hidden by default on mobile view unless menu clicked -->
+<div class="hidden fixed inset-0 z-[60] bg-background/80 backdrop-blur-md">
+<aside class="fixed left-0 top-0 h-full w-[280px] z-[70] p-container-padding flex flex-col gap-section-gap bg-surface-container-low border-r border-outline-variant/10 shadow-sm rounded-r-lg">
+<div class="flex flex-col gap-element-gap">
+<span class="font-display-lg text-display-lg text-primary-container">Gestobar</span>
+<div class="flex items-center gap-element-gap mt-4">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="Close-up portrait of a bar manager with a professional and friendly expression. The lighting is vibrant with cyan and violet accents hitting the side of their face, creating a modern tech-forward atmosphere. The background is a blurred high-end bar interior with sleek glass shelving." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6aVi8T8O42Kp5TvjONmgPTZgTzCa-MpZDiGv7HurXlEdyg6kavlb-xlGqdYB2TgfYANIrDkUXI-JzM-28Pb4koRPKSnu8XPXLSP2eFfMRePiqJbH-AXIqlcrdKOqDgDyZX19cxGL7nM-pZz0fH-2NtonsDu5coEXl4BM5bLcGFbTgdkS1YqtNJs-Fc7XovgMJI8a-vN_bOyEVIOnLDCh1g0dlzhoPVOBJX2tRG4laGHgbX0ClReHIvXG5vi0X3CLpSWkd9v-9Vqk"/>
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Bar Manager</span>
+<span class="text-xs text-on-surface-variant">Gestobar HQ</span>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<div class="flex items-center gap-element-gap text-on-surface-variant hover:text-on-surface px-4 py-3 cursor-pointer transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</div>
+<div class="flex items-center gap-element-gap text-on-surface-variant hover:text-on-surface px-4 py-3 cursor-pointer transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-caps text-label-caps">Inventory</span>
+</div>
+<div class="flex items-center gap-element-gap text-on-surface-variant hover:text-on-surface px-4 py-3 cursor-pointer transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-caps text-label-caps">Orders</span>
+</div>
+<div class="flex items-center gap-element-gap bg-secondary-container text-on-secondary-container rounded-full px-4 py-3 font-bold cursor-pointer transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-caps text-label-caps">Staff</span>
+</div>
+<div class="flex items-center gap-element-gap text-on-surface-variant hover:text-on-surface px-4 py-3 cursor-pointer transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</div>
+</nav>
+<div class="mt-auto">
+<span class="font-label-caps text-[10px] text-outline">v1.0.4</span>
+</div>
+</aside>
+</div>
+</body></html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #111317;
+            color: #e2e2e8;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Custom scrollbar for compact feel */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b494b;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#e9ddff",
+                    "primary": "#dbfcff",
+                    "on-tertiary-fixed-variant": "#8f0041",
+                    "on-secondary-container": "#ddcdff",
+                    "inverse-primary": "#006970",
+                    "on-secondary-fixed-variant": "#5700c9",
+                    "surface-container-highest": "#333539",
+                    "on-primary-fixed-variant": "#004f54",
+                    "primary-fixed": "#7df4ff",
+                    "on-tertiary-container": "#bb0058",
+                    "on-primary-container": "#006970",
+                    "secondary": "#d1bcff",
+                    "on-primary": "#00363a",
+                    "tertiary-container": "#ffccd6",
+                    "on-tertiary": "#66002c",
+                    "inverse-surface": "#e2e2e8",
+                    "surface-container": "#1e2024",
+                    "inverse-on-surface": "#2f3035",
+                    "tertiary-fixed": "#ffd9e0",
+                    "surface-container-lowest": "#0c0e12",
+                    "on-background": "#e2e2e8",
+                    "secondary-container": "#7000ff",
+                    "error-container": "#93000a",
+                    "surface-container-low": "#1a1c20",
+                    "surface": "#111317",
+                    "on-surface": "#e2e2e8",
+                    "primary-fixed-dim": "#00dbe9",
+                    "on-primary-fixed": "#002022",
+                    "background": "#111317",
+                    "outline": "#849495",
+                    "surface-dim": "#111317",
+                    "tertiary-fixed-dim": "#ffb1c3",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-high": "#282a2e",
+                    "on-tertiary-fixed": "#3f0019",
+                    "on-secondary": "#3c0090",
+                    "surface-variant": "#333539",
+                    "on-error": "#690005",
+                    "surface-tint": "#00dbe9",
+                    "outline-variant": "#3b494b",
+                    "error": "#ffb4ab",
+                    "primary-container": "#00f0ff",
+                    "on-surface-variant": "#b9cacb",
+                    "on-secondary-fixed": "#23005b",
+                    "secondary-fixed-dim": "#d1bcff",
+                    "tertiary": "#fff3f4",
+                    "surface-bright": "#37393e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-padding": "24px",
+                    "gutter": "16px",
+                    "base": "8px",
+                    "element-gap": "12px",
+                    "section-gap": "48px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "body-sm": ["Inter"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "label-caps": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface/80 backdrop-blur-xl dark:bg-surface/80 text-primary dark:text-primary-fixed docked full-width top-0 z-50 bg-surface/80 border-b border-outline-variant/10 shadow-sm shadow-primary/5 flex justify-between items-center h-20 px-container-padding w-full sticky top-0">
+<div class="flex items-center gap-element-gap">
+<button aria-label="Open Menu" class="p-base active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">menu</span>
+</button>
+<span class="font-display-lg text-[24px] leading-tight text-primary tracking-tighter">Gestobar</span>
+</div>
+<div class="flex items-center gap-base">
+<button class="p-base hover:bg-surface-container-high transition-colors duration-200 rounded-full active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-base hover:bg-surface-container-high transition-colors duration-200 rounded-full active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="p-container-padding space-y-gutter pb-32">
+<!-- Welcome Section -->
+<section>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Dashboard</h1>
+<p class="text-on-surface-variant font-body-sm">Resumen de hoy en tiempo real</p>
+</section>
+<!-- KPI Bento Grid (Compact) -->
+<div class="grid grid-cols-2 gap-base">
+<div class="bg-surface-container p-base rounded-lg border border-outline-variant/10 flex flex-col justify-between aspect-square">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary">payments</span>
+<span class="text-label-caps font-label-caps text-on-surface-variant">+12%</span>
+</div>
+<div>
+<span class="text-label-caps font-label-caps text-on-surface-variant block">Ventas</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary">$1.4k</span>
+</div>
+</div>
+<div class="bg-surface-container p-base rounded-lg border border-outline-variant/10 flex flex-col justify-between aspect-square">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-secondary">confirmation_number</span>
+<span class="text-label-caps font-label-caps text-on-surface-variant">42 hoy</span>
+</div>
+<div>
+<span class="text-label-caps font-label-caps text-on-surface-variant block">Tickets</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-secondary">158</span>
+</div>
+</div>
+</div>
+<!-- Main Analytics Card (Glassmorphism inspired) -->
+<div class="bg-surface-container p-container-padding rounded-lg border border-outline-variant/10 space-y-base">
+<div class="flex justify-between items-center">
+<h3 class="font-body-md font-bold text-on-surface">Flujo de Clientes</h3>
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</div>
+<div class="h-32 w-full bg-surface-container-low rounded-lg relative overflow-hidden flex items-end px-2 pb-2 gap-1">
+<!-- Simple bar representation -->
+<div class="w-full bg-primary/20 h-[40%] rounded-sm"></div>
+<div class="w-full bg-primary/20 h-[65%] rounded-sm"></div>
+<div class="w-full bg-primary/40 h-[90%] rounded-sm"></div>
+<div class="w-full bg-primary h-[75%] rounded-sm"></div>
+<div class="w-full bg-primary/60 h-[50%] rounded-sm"></div>
+<div class="w-full bg-primary/30 h-[35%] rounded-sm"></div>
+<div class="w-full bg-primary/20 h-[20%] rounded-sm"></div>
+</div>
+</div>
+<!-- List Section: Active Tables -->
+<section class="space-y-base">
+<div class="flex justify-between items-center">
+<h3 class="font-body-md font-bold text-on-surface">Mesas Activas</h3>
+<button class="text-primary text-body-sm font-semibold">Ver todas</button>
+</div>
+<div class="space-y-base">
+<!-- Table Item -->
+<div class="bg-surface-container-high p-base rounded-lg flex items-center justify-between border border-outline-variant/5">
+<div class="flex items-center gap-element-gap">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="text-primary font-bold">M4</span>
+</div>
+<div>
+<p class="font-body-md font-semibold text-on-surface">Mesa 4 - Central</p>
+<p class="text-[12px] text-on-surface-variant">3 personas · 12 min</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-body-md font-bold text-primary">$45.50</p>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant px-2 py-0.5 bg-surface-container rounded-full">Pedido</span>
+</div>
+</div>
+<!-- Table Item -->
+<div class="bg-surface-container-high p-base rounded-lg flex items-center justify-between border border-outline-variant/5">
+<div class="flex items-center gap-element-gap">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="text-secondary font-bold">M2</span>
+</div>
+<div>
+<p class="font-body-md font-semibold text-on-surface">Mesa 2 - Terraza</p>
+<p class="text-[12px] text-on-surface-variant">2 personas · 45 min</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-body-md font-bold text-secondary">$128.00</p>
+<span class="text-[10px] uppercase font-bold text-on-secondary-container px-2 py-0.5 bg-secondary-container/30 rounded-full">Cuenta</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- SideNavBar (Drawer Overlay) -->
+<!-- Note: In a real app, this would be toggled via JS. I'm showing it in a standard layout state. -->
+<aside class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm pointer-events-none opacity-0 invisible lg:hidden transition-all duration-300">
+<!-- Drawer Container -->
+<div class="bg-surface-container border-r border-outline-variant/10 h-screen w-72 fixed left-0 top-0 overflow-y-auto shadow-xl shadow-black/40 flex flex-col py-8 translate-x-[-100%] transition-transform duration-300 pointer-events-auto">
+<div class="px-container-padding mb-8">
+<div class="w-12 h-12 bg-primary rounded-lg mb-4 flex items-center justify-center">
+<span class="material-symbols-outlined text-background text-3xl font-bold">restaurant</span>
+</div>
+<h2 class="font-display-lg text-[28px] text-primary">Gestobar</h2>
+<p class="text-on-surface-variant font-body-sm">Administración Pro</p>
+</div>
+<nav class="flex-1">
+<!-- Punto de Venta -->
+<a class="flex items-center gap-element-gap text-on-surface-variant px-4 py-3 mx-2 my-1 hover:bg-surface-container-highest hover:text-on-surface transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-body-md">Punto de Venta</span>
+</a>
+<!-- Dashboard (ACTIVE) -->
+<a class="flex items-center gap-element-gap bg-secondary-container text-on-secondary-container rounded-lg px-4 py-3 mx-2 my-1 transition-transform ease-out translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md font-bold">Dashboard</span>
+</a>
+<!-- Gestión de Menú -->
+<a class="flex items-center gap-element-gap text-on-surface-variant px-4 py-3 mx-2 my-1 hover:bg-surface-container-highest hover:text-on-surface transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-body-md">Gestión de Menú</span>
+</a>
+<!-- Usuarios -->
+<a class="flex items-center gap-element-gap text-on-surface-variant px-4 py-3 mx-2 my-1 hover:bg-surface-container-highest hover:text-on-surface transition-all duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md">Usuarios</span>
+</a>
+</nav>
+<div class="px-2 pt-8 mt-auto border-t border-outline-variant/10 space-y-2">
+<button class="w-full flex items-center gap-element-gap text-on-surface-variant px-4 py-3 hover:bg-surface-container-highest rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Ajustes</span>
+</button>
+<div class="px-4 py-2">
+<button class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg active:scale-95 transition-transform text-sm">
+                        Cerrar Turno
+                    </button>
+</div>
+<button class="w-full flex items-center gap-element-gap text-error px-4 py-3 hover:bg-error-container/10 rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-md">Cerrar Sesión</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- FAB for quick action (contextual to Dashboard/POS) -->
+<button class="fixed bottom-6 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20 flex items-center justify-center active:scale-90 transition-transform z-40">
+<span class="material-symbols-outlined text-3xl font-bold">add</span>
+</button>
+</body></html>

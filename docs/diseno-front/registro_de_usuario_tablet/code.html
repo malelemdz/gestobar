@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#0c0e12",
+                      "on-secondary-fixed": "#23005b",
+                      "surface-variant": "#333539",
+                      "primary-container": "#00f0ff",
+                      "surface-container-low": "#1a1c20",
+                      "surface-container": "#1e2024",
+                      "outline": "#849495",
+                      "secondary-fixed": "#e9ddff",
+                      "on-primary-fixed": "#002022",
+                      "on-background": "#e2e2e8",
+                      "primary-fixed": "#7df4ff",
+                      "on-primary-fixed-variant": "#004f54",
+                      "outline-variant": "#3b494b",
+                      "primary-fixed-dim": "#00dbe9",
+                      "inverse-on-surface": "#2f3035",
+                      "inverse-primary": "#006970",
+                      "surface-dim": "#111317",
+                      "error-container": "#93000a",
+                      "tertiary-container": "#ffccd6",
+                      "on-tertiary-fixed-variant": "#8f0041",
+                      "secondary-fixed-dim": "#d1bcff",
+                      "surface-container-high": "#282a2e",
+                      "on-tertiary": "#66002c",
+                      "on-primary": "#00363a",
+                      "secondary": "#d1bcff",
+                      "on-surface-variant": "#b9cacb",
+                      "on-tertiary-container": "#bb0058",
+                      "on-secondary": "#3c0090",
+                      "on-tertiary-fixed": "#3f0019",
+                      "on-secondary-container": "#ddcdff",
+                      "error": "#ffb4ab",
+                      "on-surface": "#e2e2e8",
+                      "tertiary-fixed": "#ffd9e0",
+                      "surface-tint": "#00dbe9",
+                      "surface-container-highest": "#333539",
+                      "tertiary": "#fff3f4",
+                      "on-error": "#690005",
+                      "on-secondary-fixed-variant": "#5700c9",
+                      "inverse-surface": "#e2e2e8",
+                      "primary": "#dbfcff",
+                      "on-error-container": "#ffdad6",
+                      "surface": "#111317",
+                      "surface-bright": "#37393e",
+                      "background": "#111317",
+                      "tertiary-fixed-dim": "#ffb1c3",
+                      "secondary-container": "#7000ff",
+                      "on-primary-container": "#006970"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "container-padding": "24px",
+                      "section-gap": "48px",
+                      "element-gap": "12px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Plus Jakarta Sans"],
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "label-caps": ["JetBrains Mono"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-container/30">
+<div class="flex min-h-screen">
+<!-- SideNavBar: Authority from Shared Components JSON -->
+<aside class="fixed left-0 top-0 h-screen w-72 bg-surface-container-low border-r border-outline-variant/10 shadow-2xl shadow-primary-container/5 flex flex-col p-6 space-y-4 z-50">
+<div class="mb-8 px-2">
+<h1 class="font-display-lg text-headline-lg text-primary-fixed dark:text-primary-fixed-dim">Gestobar Pro</h1>
+<p class="font-label-caps text-label-caps tracking-widest uppercase opacity-60">Terminal #01</p>
+</div>
+<nav class="flex-grow space-y-2">
+<div class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant/50 rounded-DEFAULT p-3 mb-2 transition-all duration-300 cursor-pointer active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Overview</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant/50 rounded-DEFAULT p-3 mb-2 transition-all duration-300 cursor-pointer active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Live Tables</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant/50 rounded-DEFAULT p-3 mb-2 transition-all duration-300 cursor-pointer active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Stock Control</span>
+</div>
+<div class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-DEFAULT p-3 mb-2 transition-all duration-300 cursor-pointer active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Staff</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant/50 rounded-DEFAULT p-3 mb-2 transition-all duration-300 cursor-pointer active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Reports</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant/50 rounded-DEFAULT p-3 mb-2 transition-all duration-300 cursor-pointer active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Security</span>
+</div>
+</nav>
+<div class="pt-6 border-t border-outline-variant/10 space-y-2">
+<div class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant/50 rounded-DEFAULT p-3 transition-all duration-300 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Help</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant/50 rounded-DEFAULT p-3 transition-all duration-300 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Logout</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-72 flex-grow min-h-screen relative overflow-hidden flex items-center justify-center bg-surface-dim">
+<!-- Background Decoration (Liquid Modernist Aesthetic) -->
+<div class="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary-container/10 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-secondary-container/5 rounded-full blur-[100px]"></div>
+<!-- Registration Form Card -->
+<div class="relative w-full max-w-xl z-10 mx-container-padding">
+<div class="bg-surface-container/60 backdrop-blur-xl rounded-lg p-container-padding border border-outline-variant/10 shadow-2xl shadow-primary-container/5">
+<header class="mb-10 text-center">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-container/10 text-primary-fixed mb-4">
+<span class="material-symbols-outlined text-[32px]" data-icon="person_add">person_add</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Register New User</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Add a new team member to Gestobar Pro terminal.</p>
+</header>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Full Name -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps tracking-widest uppercase text-on-surface-variant ml-1">Full Name</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-high border border-outline-variant/20 rounded-DEFAULT px-4 py-3 font-body-md text-on-surface placeholder:text-on-surface-variant/30 focus:ring-2 focus:ring-primary-container/20 focus:border-primary-container outline-none transition-all duration-300" placeholder="Enter name" type="text"/>
+</div>
+</div>
+<!-- Role -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps tracking-widest uppercase text-on-surface-variant ml-1">Role</label>
+<div class="relative group">
+<select class="w-full bg-surface-container-high border border-outline-variant/20 rounded-DEFAULT px-4 py-3 font-body-md text-on-surface focus:ring-2 focus:ring-primary-container/20 focus:border-primary-container outline-none appearance-none transition-all duration-300">
+<option value="waiter">Floor Waiter</option>
+<option value="chef">Kitchen Staff</option>
+<option value="manager">Shift Manager</option>
+<option value="admin">System Admin</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Email -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps tracking-widest uppercase text-on-surface-variant ml-1">Email Address</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-high border border-outline-variant/20 rounded-DEFAULT px-4 py-3 font-body-md text-on-surface placeholder:text-on-surface-variant/30 focus:ring-2 focus:ring-primary-container/20 focus:border-primary-container outline-none transition-all duration-300" placeholder="name@gestobar.com" type="email"/>
+</div>
+</div>
+<!-- Access PIN -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps tracking-widest uppercase text-on-surface-variant ml-1">Access PIN</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-high border border-outline-variant/20 rounded-DEFAULT px-4 py-3 font-body-md text-on-surface tracking-[0.5em] placeholder:tracking-normal placeholder:text-on-surface-variant/30 focus:ring-2 focus:ring-primary-container/20 focus:border-primary-container outline-none transition-all duration-300" maxlength="4" placeholder="••••" type="password"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 opacity-40 cursor-pointer hover:opacity-100 transition-opacity" data-icon="visibility">visibility</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/60 italic px-1">Must be 4 digits for POS login.</p>
+</div>
+<!-- Action Button -->
+<div class="pt-6">
+<button class="w-full h-14 bg-primary-container hover:bg-primary-fixed-dim text-on-primary-container font-bold rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-primary-container/20" type="submit">
+<span class="font-body-md font-bold">Complete Registration</span>
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Profile Image / Brand Asset (Liquid Modernist Placeholder) -->
+<div class="mt-8 flex items-center justify-between p-4 bg-surface-container-highest/30 rounded-DEFAULT border border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-container/20">
+<img alt="Manager Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a restaurant shift manager in a modern, darkly lit interior with subtle blue accent lighting. The person is smiling confidently, dressed in a sleek charcoal uniform. High-end portrait photography style with a shallow depth of field, sharp details, and a cool, cinematic color grade that matches a premium tech dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1boONtDQ9hxAd0br0kEFzZ8sPaCv6cf9FtAunvbiDnQnGrR2LlZuhwqkl3KfLqBY3dI1gJ_G-JAd7bTbOee8E-1l0AvSkTuoF1iwpmMAY0VJIG9fsFnvBdIsf1_2xJpd3-izmpMhg1nV7la3aNjm65dCKnZLcQx9Gfl6NtUHUH3ZhtM6tSsLBt8cq4a2LP-mz2lhRu18U5MI08gGSfmuodZ90-ToeFili04CLW6s1CnL1vqpvGi287HCLrBaZqrdqGXJlCZqeWnE"/>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-on-surface font-semibold">Authorized by</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Alex Rivera (Manager)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary-container/40" data-icon="verified_user">verified_user</span>
+</div>
+</div>
+<!-- Footer Text -->
+<div class="mt-6 text-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant/40">
+                        © 2024 Gestobar POS Systems • Precision Engineering for Hospitality
+                    </p>
+</div>
+</div>
+</main>
+</div>
+</body></html>

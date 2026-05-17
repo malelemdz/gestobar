@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Neon Management POS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#1a1c20",
+                        "on-secondary": "#3c0090",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-fixed-variant": "#5700c9",
+                        "primary-container": "#00f0ff",
+                        "surface-dim": "#111317",
+                        "inverse-on-surface": "#2f3035",
+                        "on-tertiary": "#66002c",
+                        "error-container": "#93000a",
+                        "secondary": "#d1bcff",
+                        "background": "#111317",
+                        "surface-container": "#1e2024",
+                        "secondary-fixed": "#e9ddff",
+                        "inverse-surface": "#e2e2e8",
+                        "secondary-fixed-dim": "#d1bcff",
+                        "on-surface-variant": "#b9cacb",
+                        "surface-container-highest": "#333539",
+                        "on-tertiary-fixed-variant": "#8f0041",
+                        "on-tertiary-container": "#bb0058",
+                        "on-primary-fixed": "#002022",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#282a2e",
+                        "outline": "#849495",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed": "#ffd9e0",
+                        "tertiary": "#fff3f4",
+                        "on-secondary-fixed": "#23005b",
+                        "on-background": "#e2e2e8",
+                        "primary-fixed-dim": "#00dbe9",
+                        "primary": "#dbfcff",
+                        "surface-variant": "#333539",
+                        "surface-bright": "#37393e",
+                        "on-secondary-container": "#ddcdff",
+                        "on-tertiary-fixed": "#3f0019",
+                        "on-error": "#690005",
+                        "on-primary-container": "#006970",
+                        "tertiary-fixed-dim": "#ffb1c3",
+                        "secondary-container": "#7000ff",
+                        "on-surface": "#e2e2e8",
+                        "primary-fixed": "#7df4ff",
+                        "surface-container-lowest": "#0c0e12",
+                        "tertiary-container": "#ffccd6",
+                        "surface-tint": "#00dbe9",
+                        "on-primary": "#00363a",
+                        "inverse-primary": "#006970",
+                        "surface": "#111317",
+                        "outline-variant": "#3b494b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "container-padding": "24px",
+                        "element-gap": "12px",
+                        "section-gap": "48px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3b494b; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (JSON Derived) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-gutter h-screen w-72 rounded-r-lg bg-surface-container-low border-r border-outline-variant/10 shadow-sm z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-lg text-headline-lg text-primary-container tracking-tighter">Neon Lounge</h1>
+<p class="font-body-md text-body-sm text-on-surface-variant">Bar Management</p>
+</div>
+<nav class="flex-grow space-y-2">
+<div class="flex items-center gap-4 px-6 py-4 bg-secondary-container text-on-secondary-container rounded-full mx-2 active:scale-95 transition-transform cursor-pointer">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Sales</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all duration-300 mx-2 rounded-full cursor-pointer">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-body-md text-body-md">Menu</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all duration-300 mx-2 rounded-full cursor-pointer">
+<span class="material-symbols-outlined">schedule</span>
+<span class="font-body-md text-body-md">Shifts</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all duration-300 mx-2 rounded-full cursor-pointer">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md text-body-md">Staff</span>
+</div>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-4 bg-primary-container text-on-primary-container font-bold rounded-full shadow-lg active:scale-95 transition-transform">
+                New Order
+            </button>
+<div class="flex items-center gap-3 mt-8 p-3 bg-surface-container-high rounded-2xl">
+<img alt="Manager Profile Picture" class="w-10 h-10 rounded-full object-cover" data-alt="A professional close-up portrait of a bar manager in a modern, neon-lit lounge environment. He wears a clean black button-down shirt and has a focused, friendly expression. The background features blurred soft cyan and violet light bokeh from digital bar displays. The lighting is crisp and cool-toned, aligning with a high-end modernist UI aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAi3YdO8u8T1j4OH6gzTRB4rmu0Ptid_qK6tH-VWjKiIOsEs7fk2V764mgqu1lPh2_0Qv3uhQllrYcpvyAE4hYfbmSa7WCu1MjMjKqQCaxT7ld4PWlAvSvQKA2Rob6D2m5bUYFA9Cv5DhUR3bjqP5dOJisNvAPQZJGOcLfYZER0iAsG_jrAhiPLNh9chVV6A9TVMkrbpqKI1gvbQZXzPs2dUTRm_MXfpGnmRBo3NgmpuMbd7STQO-Rhf9Es8snvQCfwm1MBaM4YqaY"/>
+<div>
+<p class="font-bold text-body-sm leading-none">Admin</p>
+<p class="text-xs text-on-surface-variant">Shift Active</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar (JSON Derived) -->
+<header class="fixed top-0 right-0 left-72 z-40 flex items-center justify-between px-container-padding h-20 bg-background/80 backdrop-blur-xl">
+<div class="flex items-center gap-4 flex-grow max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container border-none rounded-full py-3 pl-12 pr-6 text-on-surface focus:ring-2 focus:ring-primary-container transition-all" placeholder="Buscar productos..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="p-3 rounded-full hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors active:opacity-80">
+<span class="material-symbols-outlined">sync</span>
+</button>
+<button class="p-3 rounded-full hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors active:opacity-80 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary-container rounded-full"></span>
+</button>
+</div>
+<div class="h-10 w-px bg-outline-variant/30"></div>
+<span class="font-label-caps text-label-caps text-primary">TERMINAL 01</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-72 pt-20 flex min-h-screen">
+<!-- Product Catalog Section -->
+<section class="flex-grow p-container-padding">
+<!-- Category Tabs -->
+<div class="flex gap-3 mb-8 overflow-x-auto pb-2">
+<button class="px-8 py-3 bg-primary-container text-on-primary-container font-bold rounded-full whitespace-nowrap">Todos</button>
+<button class="px-8 py-3 bg-surface-container-high text-on-surface-variant hover:text-on-surface rounded-full whitespace-nowrap transition-colors">Cócteles</button>
+<button class="px-8 py-3 bg-surface-container-high text-on-surface-variant hover:text-on-surface rounded-full whitespace-nowrap transition-colors">Cerveza</button>
+<button class="px-8 py-3 bg-surface-container-high text-on-surface-variant hover:text-on-surface rounded-full whitespace-nowrap transition-colors">Licores</button>
+<button class="px-8 py-3 bg-surface-container-high text-on-surface-variant hover:text-on-surface rounded-full whitespace-nowrap transition-colors">Vino</button>
+</div>
+<!-- Bento Grid of Products -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-gutter">
+<!-- Product 1 -->
+<div class="group bg-surface-container rounded-lg p-4 border border-outline-variant/10 hover:border-primary-container/40 transition-all duration-300">
+<div class="aspect-square rounded-lg overflow-hidden mb-4 relative">
+<img alt="Old Fashioned Cocktail" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A classic Old Fashioned cocktail in a crystal rocks glass with a large clear ice cube and an orange twist. The drink is served on a dark textured wood bar top. Cinematic lighting with vibrant amber tones and sharp reflections. The background is a moody, dark lounge with subtle cyan neon accents in the distance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-qhi_YMnvS1qV8xwApebIRJHY1cKJo_wcm0ds7Q_0H56P31jAqIbVsGIJp34igASaJPFaI92j5Qnxp1ZZp1dMmcCLjBRBbq8kGVPn0u7JBjGpMO5ttslFXFydDOrDdxvushjWSvgZQyo7H-WwIWEOM3ngYqqr7NNc2vD9fIxVk17HYJPTMkiFGgDagEIPBUrMCsTXN_VXXQY-K0r4JQdXQ16TGsKipQ9X88psfASiZX8GuJv7GyFukfmBWhOvDVe-62Fmq7TsMMs"/>
+<div class="absolute top-3 right-3 bg-background/60 backdrop-blur-md px-3 py-1 rounded-full text-primary font-bold">$18.00</div>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<h3 class="font-headline-lg text-body-md mb-1">Old Fashioned</h3>
+<p class="text-xs text-on-surface-variant">Bourbon, Angostura, Azúcar</p>
+</div>
+<button class="p-3 bg-secondary-container text-on-secondary-container rounded-full active:scale-90 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Product 2 -->
+<div class="group bg-surface-container rounded-lg p-4 border border-outline-variant/10 hover:border-primary-container/40 transition-all duration-300">
+<div class="aspect-square rounded-lg overflow-hidden mb-4 relative">
+<img alt="Margarita Cocktail" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A vibrant Margarita cocktail in a salt-rimmed glass with a fresh lime wheel. The liquid is a bright, clear greenish-gold. The setting is a clean, modern bar with a reflective black surface. High contrast lighting accentuates the salt crystals and the condensation on the glass. Palette includes sharp whites, limes, and deep shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBC6km8EIFNGx_SPSe-SFe92QUR2JYufsvi2lDkjS3iawrhakU-FK98CoigZkUloY3nWxkteZx0oKtM-6V89b4_PbPrCLgcGd6pFz7WKS7QUgaq0MYIOWmB3CwQBwNEahowNescl36KN1zVBQ4xh9HfFDofV5IZlBZnxkqGCKoYo7wj_OaM1sDAiDoYY42BDuro26tH4B7gh34tR-orfsvkZ4QiMUkSET7ifM5o-8MEGkJcEyZiAcQOX2C7CTAm7mOwHbOAzMVbsTM"/>
+<div class="absolute top-3 right-3 bg-background/60 backdrop-blur-md px-3 py-1 rounded-full text-primary font-bold">$16.00</div>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<h3 class="font-headline-lg text-body-md mb-1">Margarita</h3>
+<p class="text-xs text-on-surface-variant">Tequila, Triple Sec, Lima</p>
+</div>
+<button class="p-3 bg-secondary-container text-on-secondary-container rounded-full active:scale-90 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Product 3 -->
+<div class="group bg-surface-container rounded-lg p-4 border border-outline-variant/10 hover:border-primary-container/40 transition-all duration-300">
+<div class="aspect-square rounded-lg overflow-hidden mb-4 relative">
+<img alt="Cold Lager Beer" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A tall glass of ice-cold golden lager beer with a perfect thick white head and condensation droplets on the outside. Set against a dark, minimalist background with a single dramatic spotlight. The visual style is crisp and refreshing, emphasizing the liquid's clarity and carbonation. Tones of gold, white, and deep charcoal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBd8oUF4_5L9S8cOOse1zPazFst_eZW8yZD89IojuxZF1DJosVnwsFGvUwnxV5iBkzLS8ErgmHjD7d43PgpL3zoeraXMU-o9hgILF3AT-Phj3tDkvAef5v6oAYNt19WwfpnhKzAU4YsXRUVVJ5mXlexSC8uuZMQIYyK8x2fPMhbc_RS6obZ0s1dJ4qmpQMPGoOfsShoHVxjSZLFXax2Dg3eHSAztb6KLE9lBCJnn4jCBj8gA2CUO6FpGE0FxX482utFv1eb6CPL3Dw"/>
+<div class="absolute top-3 right-3 bg-background/60 backdrop-blur-md px-3 py-1 rounded-full text-primary font-bold">$9.00</div>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<h3 class="font-headline-lg text-body-md mb-1">Lager Premium</h3>
+<p class="text-xs text-on-surface-variant">400ml, Barril</p>
+</div>
+<button class="p-3 bg-secondary-container text-on-secondary-container rounded-full active:scale-90 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Product 4 -->
+<div class="group bg-surface-container rounded-lg p-4 border border-outline-variant/10 hover:border-primary-container/40 transition-all duration-300">
+<div class="aspect-square rounded-lg overflow-hidden mb-4 relative">
+<img alt="Negroni Cocktail" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A sophisticated Negroni cocktail in a heavy base glass with a large clear block of ice and an orange peel garnish. The drink's deep ruby red color glows under soft, warm lighting. The surface is a polished dark marble, reflecting the rich colors. The overall mood is luxurious and evening-oriented, with a high-end minimalist feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsmgWjuFoO83hdzmD95gV3fCUsUqkXvZTGFYyeSUCGMb0VTeHP5JS2oHBA_sb8C2Mmy9EtT1bR997Q3xahifioliPpOOnwO94JtUBTqmtnNS4hA4ZpH-JA5rCe-kqE-kUUtFtNGOfU5NL5ETnA8cGTUlrPdac8Ktbqdz3YmKQLDRFAbV21gjBOzr5q4fJYfzFROatQUeN4se9pVliFHYwKXgOqjnQPMj2J7njkIA9MCtE_9U1KZ497kqs_6fYF4VwqJ9kyBgFOMFQ"/>
+<div class="absolute top-3 right-3 bg-background/60 backdrop-blur-md px-3 py-1 rounded-full text-primary font-bold">$19.00</div>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<h3 class="font-headline-lg text-body-md mb-1">Negroni</h3>
+<p class="text-xs text-on-surface-variant">Gin, Campari, Vermouth</p>
+</div>
+<button class="p-3 bg-secondary-container text-on-secondary-container rounded-full active:scale-90 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Additional Product 5 (Bento Variation) -->
+<div class="group bg-surface-container rounded-lg p-4 border border-outline-variant/10 hover:border-primary-container/40 transition-all duration-300">
+<div class="aspect-square rounded-lg overflow-hidden mb-4 relative">
+<img alt="Red Wine" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A glass of rich red wine placed next to a dark wine bottle. The setting is intimate, with soft spotlighting creating a deep crimson glow through the glass. The background is a dark, moody wine cellar with textures of stone and wood. Elegance and depth are conveyed through the heavy shadows and high-saturation red tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRm3-zkcz3IenuHgcs2BOKYjKpZvzxEodEG__E11wDoie8tTmIyVHNps8KQGLONJ65-m48ma7el2uYIaGRaOow8sHn1zFDIpgvBuLE6nak0ne73v4RREf6GRBJeKIPx6w0IuNSmJcbtyCmnn2MGMK8y_Ei-IqYVg3ZMXCZWcr_w9sJ2ARKiIxPDSsPDYoUvsWvdfug_GSN3eW4gPZ7qgoMgeAc_PYZ-_tjXd8bgWC-8B6WbtZEQnMWpPINOpofQVXHuJpVLBQfwsE"/>
+<div class="absolute top-3 right-3 bg-background/60 backdrop-blur-md px-3 py-1 rounded-full text-primary font-bold">$14.00</div>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<h3 class="font-headline-lg text-body-md mb-1">Malbec Reserva</h3>
+<p class="text-xs text-on-surface-variant">Copa, Mendoza</p>
+</div>
+<button class="p-3 bg-secondary-container text-on-secondary-container rounded-full active:scale-90 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Sidebar: Order Summary -->
+<aside class="w-96 bg-surface-container-low border-l border-outline-variant/10 flex flex-col p-container-padding sticky top-20 h-[calc(100vh-80px)]">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline-lg text-headline-lg text-primary">Orden Actual</h2>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined">delete_sweep</span>
+</button>
+</div>
+<div class="flex-grow overflow-y-auto space-y-4 pr-2">
+<!-- Order Item -->
+<div class="flex items-center gap-4 bg-surface-container p-3 rounded-2xl">
+<div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Old Fashioned" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAENtCQAr8mJI3A9YubevRwVpL7HJ2BO0V0P4yjBC_ZmYJnwTI7Lex8l7LBUJ-uIlCGo00GGyN7hrC2YaEJ20PCndeMtsllD_UIdUHzCa-3ONW5LMwM82K1llIkcLqhjrht1MEfm3Y9F4lZiEfRokQe-fU3wpVH0pmVBSFFn27HzE5d46oZCkfaF36SfwwBSmx7Kn7lmMF2yOx7zRGXCIXcqy1mFkyHj_rMDb-RcwL8_dzfoVZRQLdKPw0ONWsP5b_VuzW_nU-bAbQ"/>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-body-sm">Old Fashioned</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-primary text-sm">$36.00</p>
+<div class="flex items-center gap-3 bg-surface-container-high px-3 py-1 rounded-full">
+<button class="text-xs">-</button>
+<span class="text-xs font-bold">2</span>
+<button class="text-xs">+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Order Item -->
+<div class="flex items-center gap-4 bg-surface-container p-3 rounded-2xl">
+<div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Negroni" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6iwYbb1X8YJ_5_aqtX6awMmTFMN1eStyfjSbf5_54aSzWnxQYQSnfBfrp_dBLgUNFY6yRDjMw3p7hw4a2RkNuQ4esoaS6mcOnb0bkU7X5KuBitOgUGQlCMF4c3qS-Nglz1xAUSX86mXlOeJiX7dTybYvcq6Y19jMLS83MUtMC5LeSSaMw4yBHRKLWWNanc2TOhMXLWQEFar3TzkTiP9XwJ5FK7lwCZhPXZpmmBuViEFn7iw6oeh2AmvJEbUpqiwoXl-8QloU52kM"/>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-body-sm">Negroni</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-primary text-sm">$38.00</p>
+<div class="flex items-center gap-3 bg-surface-container-high px-3 py-1 rounded-full">
+<button class="text-xs">-</button>
+<span class="text-xs font-bold">2</span>
+<button class="text-xs">+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Order Item -->
+<div class="flex items-center gap-4 bg-surface-container p-3 rounded-2xl">
+<div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Lager" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuXVn8SRFp5UK5wytrUf00yN9D8XNQZpB6y66f6SX6GzDpHbWJPhNcs1MNkZ7vuPkuIsUzwj6RJvOmP0fA_wXYNOWgtwKaMtoLuGIxrg9-iElRX9zi3aM2mshF30plnxxBDhz-NjniB1228NcNXI1tUDiPjqpjcovK0jcaaCfeUSiFRDKKuU03BOElHleQlXFudW3TdlJ8-dz2hAnwRL4pPZ3JjDkYg6z_E-QZzompB1gCfWwtkxOOLyXuCKAM_HHEAa5Z7TWUZ_w"/>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-body-sm">Lager Premium</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-primary text-sm">$9.00</p>
+<div class="flex items-center gap-3 bg-surface-container-high px-3 py-1 rounded-full">
+<button class="text-xs">-</button>
+<span class="text-xs font-bold">1</span>
+<button class="text-xs">+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/20">
+<div class="flex justify-between text-on-surface-variant mb-2">
+<span>Subtotal</span>
+<span>$75.00</span>
+</div>
+<div class="flex justify-between text-on-surface-variant mb-4">
+<span>Impuestos (8%)</span>
+<span>$6.00</span>
+</div>
+<div class="flex justify-between items-center mb-8">
+<span class="font-headline-lg text-body-md">Total</span>
+<span class="font-display-lg text-headline-lg text-primary-container tracking-tighter">$81.00</span>
+</div>
+<div class="grid grid-cols-2 gap-3 mb-4">
+<button class="py-4 border border-outline-variant rounded-2xl font-bold hover:bg-surface-container-high transition-colors">Propina</button>
+<button class="py-4 border border-outline-variant rounded-2xl font-bold hover:bg-surface-container-high transition-colors">Dividir</button>
+</div>
+<button class="w-full py-6 bg-secondary-container text-on-secondary-container text-xl font-extrabold rounded-2xl shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">payments</span>
+                    PAGAR AHORA
+                </button>
+</div>
+</aside>
+</main>
+</body></html>

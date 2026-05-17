@@ -429,126 +429,53 @@ class MainDashboardView extends ConsumerWidget {
             // ==========================================
             return Row(
               children: [
-                // SIDEBAR PREMIUM CUSTOM (Midnight Gold - Ultra-Compact Flat Minimalist)
+                // SIDEBAR PREMIUM CUSTOM (Mid                // SIDEBAR PREMIUM CUSTOM (Liquid Modernist - Neon Lounge Aesthetic)
                 Container(
-                  width: 220.0,
+                  width: 260.0,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.background,
+                    color: const Color(0xFF1A1C20), // surface-container-low según guía
                     border: Border(
                       right: BorderSide(
-                        color: theme.colorScheme.outlineVariant.withOpacity(0.12),
-                        width: 0.8,
+                        color: theme.colorScheme.outlineVariant.withOpacity(0.1),
+                        width: 1.0,
                       ),
                     ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Cabecera del Sidebar: Espacio de Logo, Título y Nombre del Bar
+                      // Cabecera del Sidebar: Logo y título Neon Lounge
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                        padding: const EdgeInsets.fromLTRB(24.0, 32.0, 24.0, 24.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                // 🌟 Logo Slot Compacto y Minimalista (32x32)
-                                Container(
-                                  width: 32.0,
-                                  height: 32.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.local_bar,
-                                      color: theme.colorScheme.onPrimary,
-                                      size: 18.0,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10.0),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Gestobar',
-                                        style: theme.textTheme.titleMedium?.copyWith(
-                                          fontWeight: FontWeight.w900,
-                                          color: theme.colorScheme.primary,
-                                          letterSpacing: 0.5,
-                                          fontSize: 15.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        'SaaS Hospitality',
-                                        style: theme.textTheme.labelSmall?.copyWith(
-                                          fontSize: 8.0,
-                                          color: theme.colorScheme.secondary,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12.0),
-                            // Nombre de la Sucursal / Bar asignado
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
-                                borderRadius: BorderRadius.circular(6.0),
+                            Text(
+                              activeBarId != null ? 'Neon Lounge' : 'Gestobar',
+                              style: theme.textTheme.headlineLarge?.copyWith(
+                                fontSize: 28.0,
+                                fontWeight: FontWeight.w800,
+                                color: theme.colorScheme.primaryContainer, // Electric Cyan (#00F0FF)
+                                letterSpacing: -1.0,
                               ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.storefront_outlined,
-                                    size: 12.0,
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                  const SizedBox(width: 6.0),
-                                  Expanded(
-                                    child: Text(
-                                      activeBarName,
-                                      style: theme.textTheme.labelSmall?.copyWith(
-                                        color: theme.colorScheme.onSurfaceVariant,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 11.0,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
+                            ),
+                            const SizedBox(height: 2.0),
+                            Text(
+                              activeBarId != null ? 'Bar Management' : 'Global Console',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: 13.0,
+                                color: theme.colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const Divider(height: 1.0),
-                      const SizedBox(height: 12.0),
-                      // Categoría: MÓDULOS
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
-                        child: Text(
-                          'MÓDULOS',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            fontSize: 9.0,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 1.2,
-                            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
-                          ),
-                        ),
-                      ),
-                      // Lista de Navegación del Sidebar
+
+                      // Lista de Módulos Operativos
                       Expanded(
                         child: ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           itemCount: navItems.length,
                           itemBuilder: (context, index) {
                             final item = navItems[index];
@@ -569,26 +496,57 @@ class MainDashboardView extends ConsumerWidget {
                       ),
 
                       // MENÚ DE OPCIONES DE CONFIGURACIÓN Y SOPORTE (SIDEBAR BOTTOM)
-                      const Divider(height: 1.0),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Categoría: AJUSTES Y SOPORTE
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 6.0),
-                              child: Text(
-                                'SOPORTE',
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  fontSize: 9.0,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 1.2,
-                                  color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                            // Botón de Acción Principal: Nueva Venta / Nueva Orden
+                            if (role == 'ADMIN' || role == 'SUPERADMIN' || role == 'BARMAN') ...[
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: Container(
+                                  height: 48.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100.0),
+                                    color: theme.colorScheme.primaryContainer, // Cyan
+                                  ),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(100.0),
+                                      onTap: () {
+                                        ref.read(activeViewProvider.notifier).state = 'pos';
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.add,
+                                            size: 20.0,
+                                            color: theme.colorScheme.onPrimaryContainer,
+                                          ),
+                                          const SizedBox(width: 8.0),
+                                          Text(
+                                            'NUEVA ORDEN',
+                                            style: theme.textTheme.labelLarge?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 12.0,
+                                              color: theme.colorScheme.onPrimaryContainer,
+                                              letterSpacing: 0.8,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                            // Opción 1: Mi Perfil
+                            ],
+                            const Divider(color: Color(0xFF282A2E), height: 1.0),
+                            const SizedBox(height: 12.0),
+
+                            // Opción: Soporte & Perfil
                             _buildSidebarBottomItem(
                               context: context,
                               icon: Icons.person_outline,
@@ -599,7 +557,7 @@ class MainDashboardView extends ConsumerWidget {
                               },
                             ),
                             const SizedBox(height: 4.0),
-                            // Opción 2: Configuración (Admin / Superadmin)
+
                             if (role == 'SUPERADMIN' || role == 'ADMIN') ...[
                               _buildSidebarBottomItem(
                                 context: context,
@@ -612,7 +570,7 @@ class MainDashboardView extends ConsumerWidget {
                               ),
                               const SizedBox(height: 4.0),
                             ],
-                            // Opción 3: Acerca de (Nueva opción)
+
                             _buildSidebarBottomItem(
                               context: context,
                               icon: Icons.info_outline,
@@ -622,46 +580,61 @@ class MainDashboardView extends ConsumerWidget {
                                 _showAboutDialog(context, theme);
                               },
                             ),
-                            const SizedBox(height: 16.0),
-                            // 🌟 BOTÓN REAL DE CERRAR SESIÓN ESTILIZADO (10/10 Premium Button)
-                            Material(
-                              color: AppTheme.colorDanger.withOpacity(0.08),
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(8.0),
-                                onTap: () {
-                                  ref.read(authProvider.notifier).logout();
-                                },
-                                child: Container(
-                                  height: 40.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    border: Border.all(
-                                      color: AppTheme.colorDanger.withOpacity(0.25),
-                                      width: 1.0,
+                            const SizedBox(height: 8.0),
+
+                            // Perfil de Usuario Premium Row (Exactamente como en la plantilla)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 18.0,
+                                    backgroundColor: theme.colorScheme.secondary.withOpacity(0.15),
+                                    child: Text(
+                                      user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
+                                      style: TextStyle(
+                                        color: theme.colorScheme.secondary,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13.0,
+                                      ),
                                     ),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.logout,
-                                        size: 15.0,
-                                        color: AppTheme.colorDanger,
-                                      ),
-                                      const SizedBox(width: 8.0),
-                                      Text(
-                                        'Cerrar Sesión',
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: AppTheme.colorDanger,
-                                          letterSpacing: 0.2,
+                                  const SizedBox(width: 10.0),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          user.nombre,
+                                          style: theme.textTheme.bodyMedium?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13.0,
+                                            color: theme.colorScheme.onSurface,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                      ),
-                                    ],
+                                        Text(
+                                          role,
+                                          style: theme.textTheme.labelSmall?.copyWith(
+                                            fontSize: 8.0,
+                                            color: theme.colorScheme.onSurfaceVariant,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
+                                  IconButton(
+                                    icon: Icon(Icons.logout, size: 16.0, color: AppTheme.colorDanger),
+                                    onPressed: () {
+                                      ref.read(authProvider.notifier).logout();
+                                    },
+                                    tooltip: 'Cerrar Sesión',
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -1244,56 +1217,40 @@ class MainDashboardView extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 8.0),
       child: Material(
         color: isSelected 
-            ? theme.colorScheme.primary 
-            : theme.colorScheme.surfaceVariant.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(8.0),
+            ? theme.colorScheme.secondary 
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(100.0), // fully rounded pill
         child: InkWell(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(100.0),
           onTap: onTap,
           child: Container(
-            height: 42.0, // Altura táctil sumamente cómoda
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(
-                color: isSelected 
-                    ? theme.colorScheme.primary 
-                    : theme.colorScheme.outlineVariant.withOpacity(0.18),
-                width: 1.0,
-              ),
-            ),
+            height: 48.0, // Altura táctil según guía
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Row(
               children: [
                 Icon(
                   icon,
-                  size: 16.0,
+                  size: 20.0,
                   color: isSelected 
-                      ? theme.colorScheme.onPrimary 
-                      : theme.colorScheme.onSurfaceVariant.withOpacity(0.85),
+                      ? theme.colorScheme.onSurface 
+                      : theme.colorScheme.onSurfaceVariant,
                 ),
-                const SizedBox(width: 10.0),
+                const SizedBox(width: 14.0),
                 Expanded(
                   child: Text(
                     label,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      fontSize: 12.5,
-                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 14.0,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                       color: isSelected 
-                          ? theme.colorScheme.onPrimary 
-                          : theme.colorScheme.onSurfaceVariant.withOpacity(0.95),
-                      letterSpacing: 0.1,
+                          ? theme.colorScheme.onSurface 
+                          : theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),
-                if (isSelected)
-                  Icon(
-                    Icons.circle,
-                    size: 6.0,
-                    color: theme.colorScheme.onPrimary,
-                  ),
               ],
             ),
           ),
@@ -1313,62 +1270,42 @@ class MainDashboardView extends ConsumerWidget {
   }) {
     final theme = Theme.of(context);
 
-    final Color inactiveBg = isDanger 
-        ? AppTheme.colorDanger.withOpacity(0.08) 
-        : theme.colorScheme.surfaceVariant.withOpacity(0.15);
-        
+    final Color inactiveBg = Colors.transparent;
     final Color activeBg = isDanger 
         ? AppTheme.colorDanger 
-        : theme.colorScheme.primary;
+        : theme.colorScheme.secondary;
 
-    final Color activeText = isDanger 
-        ? Colors.white 
-        : theme.colorScheme.onPrimary;
-
+    final Color activeText = Colors.white;
     final Color inactiveText = isDanger 
         ? AppTheme.colorDanger 
-        : theme.colorScheme.onSurfaceVariant.withOpacity(0.9);
-
-    final Color borderColor = isSelected 
-        ? activeBg 
-        : (isDanger 
-            ? AppTheme.colorDanger.withOpacity(0.25) 
-            : theme.colorScheme.outlineVariant.withOpacity(0.18));
+        : theme.colorScheme.onSurfaceVariant;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
       child: Material(
         color: isSelected ? activeBg : inactiveBg,
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(100.0),
         child: InkWell(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(100.0),
           onTap: onTap,
           child: Container(
-            height: 38.0,
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(
-                color: borderColor,
-                width: 1.0,
-              ),
-            ),
+            height: 44.0,
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Row(
               children: [
                 Icon(
                   icon,
-                  size: 15.0,
+                  size: 18.0,
                   color: isSelected ? activeText : inactiveText,
                 ),
-                const SizedBox(width: 10.0),
+                const SizedBox(width: 14.0),
                 Expanded(
                   child: Text(
                     label,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      fontSize: 11.5,
-                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 13.0,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                       color: isSelected ? activeText : inactiveText,
-                      letterSpacing: 0.1,
                     ),
                   ),
                 ),
@@ -1464,258 +1401,433 @@ class DashboardPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final authState = ref.watch(authProvider) as AuthAuthenticated;
-    final user = authState.user;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Tarjeta Bento Principal: Información del Usuario y Local
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
-              side: BorderSide(color: theme.colorScheme.outlineVariant.withOpacity(0.3)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool isTablet = constraints.maxWidth >= 800;
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 1. Grilla Bento de Tarjetas Métricas
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: isTablet ? 4 : (constraints.maxWidth >= 550 ? 2 : 1),
+                crossAxisSpacing: 16.0,
+                mainAxisSpacing: 16.0,
+                childAspectRatio: isTablet ? 1.4 : 1.6,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 26.0,
-                        backgroundColor: theme.colorScheme.primary.withOpacity(0.15),
-                        child: Text(
-                          user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
-                          style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 20.0),
+                  _buildMetricCard(
+                    context: context,
+                    label: 'Venta Bruta Diaria',
+                    value: '€12.450',
+                    subtext: '+12% vs ayer',
+                    icon: Icons.trending_up,
+                    accentColor: theme.colorScheme.primaryContainer, // Cyan
+                  ),
+                  _buildMetricCard(
+                    context: context,
+                    label: 'Mesas Activas',
+                    value: '24 / 30',
+                    subtext: '80% Ocupación',
+                    icon: Icons.grid_view,
+                    accentColor: theme.colorScheme.secondary, // Violeta
+                  ),
+                  _buildMetricCard(
+                    context: context,
+                    label: 'Rotación Media',
+                    value: '52 min',
+                    subtext: '-4 min vs media',
+                    icon: Icons.timer,
+                    accentColor: const Color(0xFFFFB1C3), // Rosado/Terciario fijo dim
+                  ),
+                  _buildMetricCard(
+                    context: context,
+                    label: 'Anulaciones Abiertas',
+                    value: '03',
+                    subtext: 'Requiere atención',
+                    icon: Icons.assignment_late_outlined,
+                    accentColor: theme.colorScheme.error, // Rojo
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24.0),
+
+              // 2. Sección Media: Gráfico de Velocidad de Ingresos & Feed de Actividad en Vivo
+              if (isTablet) ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Gráfico de Velocidad (Span 8 equivalent)
+                    Expanded(
+                      flex: 8,
+                      child: Container(
+                        height: 380.0,
+                        padding: const EdgeInsets.all(24.0),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1E2024),
+                          borderRadius: BorderRadius.circular(24.0),
+                          border: Border.all(
+                            color: theme.colorScheme.outlineVariant.withOpacity(0.08),
+                            width: 1.0,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 16.0),
-                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('SESIÓN ACTIVA', style: theme.textTheme.labelSmall?.copyWith(letterSpacing: 1.0)),
-                            Text(
-                              user.nombre,
-                              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Velocidad de Ingresos',
+                                      style: theme.textTheme.headlineSmall?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2.0),
+                                    Text(
+                                      'Flujo de ventas en tiempo real por hora',
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        color: theme.colorScheme.onSurfaceVariant,
+                                        fontSize: 12.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF282A2E),
+                                    borderRadius: BorderRadius.circular(100.0),
+                                    border: Border.all(color: theme.colorScheme.outlineVariant.withOpacity(0.1)),
+                                  ),
+                                  child: Text(
+                                    'HOY',
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 9.0,
+                                      color: theme.colorScheme.primaryContainer,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
+                            const SizedBox(height: 24.0),
+                            Expanded(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: const [
+                                  _BarWidget(label: '18:00', heightPercentage: 0.66),
+                                  SizedBox(width: 8.0),
+                                  _BarWidget(label: '19:00', heightPercentage: 0.50),
+                                  SizedBox(width: 8.0),
+                                  _BarWidget(label: '20:00', heightPercentage: 0.80),
+                                  SizedBox(width: 8.0),
+                                  _BarWidget(label: 'AHORA', heightPercentage: 1.0, isNow: true),
+                                  SizedBox(width: 8.0),
+                                  _BarWidget(label: '22:00', heightPercentage: 0.0),
+                                  SizedBox(width: 8.0),
+                                  _BarWidget(label: '23:00', heightPercentage: 0.0),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 24.0),
+
+                    // Actividad en Vivo (Span 4 equivalent)
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        height: 380.0,
+                        padding: const EdgeInsets.all(24.0),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1E2024),
+                          borderRadius: BorderRadius.circular(24.0),
+                          border: Border.all(
+                            color: theme.colorScheme.outlineVariant.withOpacity(0.08),
+                            width: 1.0,
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Actividad en Vivo',
+                              style: theme.textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                            const SizedBox(height: 16.0),
+                            Expanded(
+                              child: ListView(
+                                children: [
+                                  _buildActivityTile(
+                                    context: context,
+                                    title: 'Mesa 12 cerrada',
+                                    subtitle: 'Total pagado: €142,50',
+                                    icon: Icons.payments,
+                                    iconColor: theme.colorScheme.secondary,
+                                    time: '2m',
+                                  ),
+                                  _buildActivityTile(
+                                    context: context,
+                                    title: 'Anulación: Mesa 4',
+                                    subtitle: 'Item: Negroni (Error entrada)',
+                                    icon: Icons.block,
+                                    iconColor: theme.colorScheme.error,
+                                    time: '8m',
+                                  ),
+                                  _buildActivityTile(
+                                    context: context,
+                                    title: 'Nueva Reseña 5★',
+                                    subtitle: '"Cócteles increíbles, servicio 10"',
+                                    icon: Icons.star,
+                                    iconColor: theme.colorScheme.primaryContainer,
+                                    time: '15m',
+                                  ),
+                                  _buildActivityTile(
+                                    context: context,
+                                    title: 'Staff: Entrada',
+                                    subtitle: 'Marta Ruiz ha iniciado turno',
+                                    icon: Icons.person_add,
+                                    iconColor: theme.colorScheme.onSurfaceVariant,
+                                    time: '22m',
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ] else ...[
+                // En móvil, apilados verticalmente
+                Container(
+                  height: 280.0,
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E2024),
+                    borderRadius: BorderRadius.circular(24.0),
+                    border: Border.all(
+                      color: theme.colorScheme.outlineVariant.withOpacity(0.08),
+                      width: 1.0,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Velocidad de Ingresos',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: const [
+                            _BarWidget(label: '18:00', heightPercentage: 0.66),
+                            SizedBox(width: 6.0),
+                            _BarWidget(label: '19:00', heightPercentage: 0.50),
+                            SizedBox(width: 6.0),
+                            _BarWidget(label: '20:00', heightPercentage: 0.80),
+                            SizedBox(width: 6.0),
+                            _BarWidget(label: 'AHORA', heightPercentage: 1.0, isNow: true),
+                            SizedBox(width: 6.0),
+                            _BarWidget(label: '22:00', heightPercentage: 0.0),
+                            SizedBox(width: 6.0),
+                            _BarWidget(label: '23:00', heightPercentage: 0.0),
                           ],
                         ),
                       ),
                     ],
                   ),
-                  const Divider(height: 32.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+                const SizedBox(height: 16.0),
+                Container(
+                  padding: const EdgeInsets.all(20.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E2024),
+                    borderRadius: BorderRadius.circular(24.0),
+                    border: Border.all(
+                      color: theme.colorScheme.outlineVariant.withOpacity(0.08),
+                      width: 1.0,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('ROL OPERATIVO', style: theme.textTheme.labelSmall),
-                          const SizedBox(height: 4.0),
-                          Chip(
-                            label: Text(user.rolNombre.toUpperCase()),
-                            backgroundColor: theme.colorScheme.secondary.withOpacity(0.1),
-                            labelStyle: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.secondary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        'Actividad en Vivo',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      const SizedBox(height: 12.0),
+                      ListView(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         children: [
-                          Text('SUCURSAL ACTIVA', style: theme.textTheme.labelSmall),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            authState.activeBarId != null
-                                ? authState.activeBarId!.substring(0, 8) + '...'
-                                : 'GLOBAL',
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.primary,
-                            ),
+                          _buildActivityTile(
+                            context: context,
+                            title: 'Mesa 12 cerrada',
+                            subtitle: 'Total pagado: €142,50',
+                            icon: Icons.payments,
+                            iconColor: theme.colorScheme.secondary,
+                            time: '2m',
+                          ),
+                          _buildActivityTile(
+                            context: context,
+                            title: 'Anulación: Mesa 4',
+                            subtitle: 'Item: Negroni (Error entrada)',
+                            icon: Icons.block,
+                            iconColor: theme.colorScheme.error,
+                            time: '8m',
                           ),
                         ],
                       ),
                     ],
                   ),
+                ),
+              ],
+              const SizedBox(height: 24.0),
+
+              // 3. Sección Inferior: Próximas Reservas Carousel Horizontal
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Próximas Reservas',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  const SizedBox(height: 14.0),
+                  SizedBox(
+                    height: 120.0,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        _buildReservationCard(
+                          context: context,
+                          name: 'Familia García',
+                          details: 'Mesa 8 • 4 Personas',
+                          time: '21:00',
+                          icon: Icons.celebration_outlined,
+                          badgeText: 'Aniversario',
+                        ),
+                        _buildReservationCard(
+                          context: context,
+                          name: 'Marcos Sánchez',
+                          details: 'Bar • 2 Personas',
+                          time: '21:15',
+                          icon: Icons.local_bar_outlined,
+                          badgeText: 'Primera visita',
+                        ),
+                        _buildReservationCard(
+                          context: context,
+                          name: 'Elena Portillo',
+                          details: 'VIP • 6 Personas',
+                          time: '21:30',
+                          icon: Icons.star_outline,
+                          badgeText: 'Cliente VIP Gold',
+                          isVIP: true,
+                        ),
+                        _buildReservationCard(
+                          context: context,
+                          name: 'Jorge Luis',
+                          details: 'Mesa 15 • 3 Personas',
+                          time: '22:00',
+                          icon: Icons.event_seat_outlined,
+                          badgeText: 'Mesa preferida',
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
+            ],
           ),
-          const SizedBox(height: 16.0),
+        );
+      },
+    );
+  }
 
-          // Grilla Bento de Accesos Rápidos
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: MediaQuery.of(context).size.width >= 600 ? 4 : 2,
-            crossAxisSpacing: 12.0,
-            mainAxisSpacing: 12.0,
-            childAspectRatio: 1.15, // Más alto para acomodar las métricas con elegancia
+  // 🛠️ Bento metric card builder
+  Widget _buildMetricCard({
+    required BuildContext context,
+    required String label,
+    required String value,
+    required String subtext,
+    required IconData icon,
+    required Color accentColor,
+  }) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024), // surface-container
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: theme.colorScheme.outlineVariant.withOpacity(0.08),
+          width: 1.0,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildBentoItem(
-                context: context,
-                icon: Icons.point_of_sale,
-                title: 'POS Ventas',
-                subtitle: 'Factura rápida',
-                color: AppTheme.colorSuccess,
-                onTap: () {
-                  ref.read(activeViewProvider.notifier).state = 'pos';
-                },
-                trailingBadge: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
-                  decoration: BoxDecoration(
-                    color: AppTheme.colorSuccess.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                    '3 ACT.',
-                    style: TextStyle(
-                      color: AppTheme.colorSuccess,
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                richBottom: Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 4.0),
-                      width: 6.0,
-                      height: 6.0,
-                      decoration: BoxDecoration(
-                        color: AppTheme.colorSuccess,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Mesa 4, 8, 12 ocupadas',
-                        style: TextStyle(
-                          color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
-                          fontSize: 9.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
+              Text(
+                label.toUpperCase(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  fontSize: 10.0,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              _buildBentoItem(
-                context: context,
-                icon: Icons.payments,
-                title: 'Caja',
-                subtitle: 'Control de turnos',
-                color: AppTheme.colorWarning,
-                onTap: () {
-                  ref.read(activeViewProvider.notifier).state = 'caja';
-                },
-                trailingBadge: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
-                  decoration: BoxDecoration(
-                    color: AppTheme.colorSuccess.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                    'ABIERTA',
-                    style: TextStyle(
-                      color: AppTheme.colorSuccess,
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                richBottom: Text(
-                  '\$14,580.00',
-                  style: TextStyle(
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w900,
-                    color: theme.colorScheme.onSurface,
-                    letterSpacing: 0.2,
-                  ),
+              Icon(icon, color: accentColor, size: 20.0),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  fontSize: 26.0,
+                  fontWeight: FontWeight.w800,
+                  color: theme.colorScheme.onSurface,
+                  letterSpacing: -0.5,
                 ),
               ),
-              _buildBentoItem(
-                context: context,
-                icon: Icons.local_bar,
-                title: 'Menú',
-                subtitle: 'Editar catálogo',
-                color: theme.colorScheme.primary,
-                onTap: () {
-                  ref.read(activeViewProvider.notifier).state = 'menu';
-                },
-                trailingBadge: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                    '84 BEB.',
-                    style: TextStyle(
-                      color: theme.colorScheme.primary,
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                richBottom: Text(
-                  '3 insumos agotados hoy',
-                  style: TextStyle(
-                    color: AppTheme.colorDanger,
-                    fontSize: 9.0,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              _buildBentoItem(
-                context: context,
-                icon: Icons.people_alt,
-                title: 'Staff',
-                subtitle: 'Personal y roles',
-                color: theme.colorScheme.secondary,
-                onTap: () {
-                  ref.read(activeViewProvider.notifier).state = 'staff';
-                },
-                trailingBadge: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.secondary.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Text(
-                    '4 ACT.',
-                    style: TextStyle(
-                      color: theme.colorScheme.secondary,
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                richBottom: Row(
-                  children: [
-                    _buildMiniAvatar('JD', Colors.blue),
-                    _buildMiniAvatar('AM', Colors.orange),
-                    _buildMiniAvatar('LC', Colors.purple),
-                    const SizedBox(width: 2.0),
-                    Text(
-                      '+1',
-                      style: TextStyle(
-                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
-                        fontSize: 9.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 2.0),
+              Text(
+                subtext,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 11.0,
+                  color: accentColor.withOpacity(0.95),
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -1725,118 +1837,226 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildBentoItem({
+  // 🛠️ Live activity list tile builder
+  Widget _buildActivityTile({
     required BuildContext context,
-    required IconData icon,
     required String title,
     required String subtitle,
-    required Color color,
-    required VoidCallback onTap,
-    Widget? trailingBadge,
-    Widget? richBottom,
+    required IconData icon,
+    required Color iconColor,
+    required String time,
   }) {
     final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(12.0),
-        border: Border.all(
-          color: theme.colorScheme.outlineVariant.withOpacity(0.25),
-          width: 0.8,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12.0),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: iconColor.withOpacity(0.08),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: iconColor, size: 16.0),
+          ),
+          const SizedBox(width: 12.0),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Icono con contenedor de color SÓLIDO del tema en opacidad baja
-                    Container(
-                      padding: const EdgeInsets.all(6.0),
-                      decoration: BoxDecoration(
-                        color: color.withOpacity(0.09),
-                        borderRadius: BorderRadius.circular(8.0),
+                    Text(
+                      title,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13.5,
+                        color: theme.colorScheme.onSurface,
                       ),
-                      child: Icon(icon, color: color, size: 18.0),
                     ),
-                    // Indicador de navegación simple o badge personalizado
-                    trailingBadge ?? Icon(
-                      Icons.chevron_right,
-                      size: 14.0,
-                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                    Text(
+                      time,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        fontSize: 10.0,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        title,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 13.0,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 1.0),
-                      Text(
-                        subtitle,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
-                          fontSize: 9.0,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                const SizedBox(height: 2.0),
+                Text(
+                  subtitle,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontSize: 11.5,
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                if (richBottom != null) ...[
-                  const SizedBox(height: 4.0),
-                  richBottom,
-                ],
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildMiniAvatar(String initials, Color color) {
+  // 🛠️ Upcoming reservations carousel card builder
+  Widget _buildReservationCard({
+    required BuildContext context,
+    required String name,
+    required String details,
+    required String time,
+    required IconData icon,
+    required String badgeText,
+    bool isVIP = false,
+  }) {
+    final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.only(right: 4.0),
-      width: 18.0,
-      height: 18.0,
+      width: 280.0,
+      margin: const EdgeInsets.only(right: 16.0),
+      padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.18),
-        shape: BoxShape.circle,
-        border: Border.all(color: color.withOpacity(0.35), width: 0.8),
+        color: const Color(0xFF1E2024),
+        borderRadius: BorderRadius.circular(24.0),
+        border: isVIP 
+            ? Border.all(color: theme.colorScheme.primaryContainer.withOpacity(0.5), width: 1.5)
+            : Border.all(color: theme.colorScheme.outlineVariant.withOpacity(0.08), width: 1.0),
       ),
-      child: Center(
-        child: Text(
-          initials,
-          style: TextStyle(
-            color: color,
-            fontSize: 7.5,
-            fontWeight: FontWeight.w900,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14.5,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2.0),
+                    Text(
+                      details,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 12.0,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                decoration: BoxDecoration(
+                  color: isVIP ? theme.colorScheme.primaryContainer : theme.colorScheme.surfaceVariant.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(100.0),
+                ),
+                child: Text(
+                  time,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10.0,
+                    color: isVIP ? theme.colorScheme.onPrimaryContainer : theme.colorScheme.onSurface,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
+          const SizedBox(height: 12.0),
+          Row(
+            children: [
+              Icon(
+                icon,
+                size: 14.0,
+                color: isVIP ? theme.colorScheme.primaryContainer : theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 6.0),
+              Text(
+                badgeText,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 11.5,
+                  fontWeight: isVIP ? FontWeight.bold : FontWeight.normal,
+                  color: isVIP ? theme.colorScheme.primaryContainer : theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 📊 Componente de barra individual para el gráfico Bento simulador de velocidad
+class _BarWidget extends StatelessWidget {
+  final String label;
+  final double heightPercentage;
+  final bool isNow;
+
+  const _BarWidget({
+    required this.label,
+    required this.heightPercentage,
+    this.isNow = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final barColor = isNow ? theme.colorScheme.primaryContainer : theme.colorScheme.primaryContainer.withOpacity(0.2);
+
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                // Track de fondo sutil
+                Container(
+                  width: 32.0,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceVariant.withOpacity(0.04),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                // Barra llena
+                FractionallySizedBox(
+                  heightFactor: heightPercentage > 0 ? heightPercentage : 0.05,
+                  child: Container(
+                    width: 32.0,
+                    decoration: BoxDecoration(
+                      color: barColor,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(8.0)),
+                      border: isNow ? Border.all(color: Colors.white, width: 1.5) : null,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              fontSize: 10.0,
+              fontWeight: isNow ? FontWeight.bold : FontWeight.normal,
+              color: isNow ? theme.colorScheme.primaryContainer : theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestobar Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#e2e2e8",
+                    "on-tertiary-container": "#bb0058",
+                    "on-background": "#e2e2e8",
+                    "on-primary-fixed": "#002022",
+                    "on-primary-fixed-variant": "#004f54",
+                    "surface-container-low": "#1a1c20",
+                    "surface-container": "#1e2024",
+                    "on-secondary-container": "#ddcdff",
+                    "secondary-fixed": "#e9ddff",
+                    "on-secondary-fixed": "#23005b",
+                    "tertiary-fixed-dim": "#ffb1c3",
+                    "primary": "#dbfcff",
+                    "on-surface": "#e2e2e8",
+                    "surface-bright": "#37393e",
+                    "error": "#ffb4ab",
+                    "on-tertiary-fixed": "#3f0019",
+                    "on-primary-container": "#006970",
+                    "secondary-container": "#7000ff",
+                    "tertiary": "#fff3f4",
+                    "surface": "#111317",
+                    "on-tertiary": "#66002c",
+                    "tertiary-fixed": "#ffd9e0",
+                    "inverse-primary": "#006970",
+                    "error-container": "#93000a",
+                    "tertiary-container": "#ffccd6",
+                    "outline": "#849495",
+                    "surface-dim": "#111317",
+                    "background": "#111317",
+                    "on-secondary": "#3c0090",
+                    "on-secondary-fixed-variant": "#5700c9",
+                    "on-error": "#690005",
+                    "primary-fixed-dim": "#00dbe9",
+                    "secondary": "#d1bcff",
+                    "surface-tint": "#00dbe9",
+                    "on-surface-variant": "#b9cacb",
+                    "outline-variant": "#3b494b",
+                    "primary-container": "#00f0ff",
+                    "on-primary": "#00363a",
+                    "on-error-container": "#ffdad6",
+                    "primary-fixed": "#7df4ff",
+                    "surface-container-lowest": "#0c0e12",
+                    "surface-container-highest": "#333539",
+                    "surface-container-high": "#282a2e",
+                    "inverse-on-surface": "#2f3035",
+                    "on-tertiary-fixed-variant": "#8f0041",
+                    "secondary-fixed-dim": "#d1bcff",
+                    "surface-variant": "#333539"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "gutter": "16px",
+                    "container-padding": "24px",
+                    "section-gap": "48px",
+                    "element-gap": "12px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "label-caps": ["JetBrains Mono"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #111317;
+            color: #e2e2e8;
+        }
+        .glass-card {
+            background: rgba(30, 32, 36, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(132, 148, 149, 0.1);
+        }
+        .chart-bar {
+            background: linear-gradient(180deg, #00f0ff 0%, #7000ff 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl shadow-sm border-b border-outline-variant/10">
+<div class="flex justify-between items-center h-20 px-container-padding w-full max-w-full mx-auto">
+<div class="flex items-center gap-element-gap">
+<span class="material-symbols-outlined text-primary font-headline-lg-mobile" data-icon="local_bar">local_bar</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile tracking-tighter text-primary dark:text-primary-fixed-dim">Gestobar</h1>
+</div>
+<div class="hidden md:flex items-center bg-surface-container rounded-full px-gutter py-2 gap-gutter border border-outline-variant/10">
+<span class="font-label-caps text-primary">Dashboard</span>
+<span class="text-on-surface-variant font-label-caps hover:text-primary transition-colors cursor-pointer">Analytics</span>
+<span class="text-on-surface-variant font-label-caps hover:text-primary transition-colors cursor-pointer">Inventory</span>
+<span class="text-on-surface-variant font-label-caps hover:text-primary transition-colors cursor-pointer">Orders</span>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="A professional headshot of a restaurant manager in a modern setting. High-end portrait lighting with a shallow depth of field. The style is clean and minimalist with a dark, sophisticated backdrop that complements the deep slate and cyan UI. Professional and polished atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB40huRQDLlQf6mFhnuTNN9ICRx1LN0sk6TkC5oLAb42_ss5GwbBeechcoOPQHVPoUWAzZLtSZKBeIdVjaR9rONtbZ46BCC6Evz88IaIGhJOQdAC8fD42aXOruDG1vZ1ynPc-z-IJA_JXSRoHjBRc42m0jyXldeXA8h2XZwTlPj_seKg_5k5A0lOGsLTuAodgmpKVN6JUTH1ahuAVF4J1uiYkHBzRc_WO5LB6KRGPxa7lvOs1cMnzw23I9DNAiK5eQIL2CV2mBCzTo"/>
+</div>
+</div>
+</div>
+</header>
+<main class="mt-24 px-container-padding max-w-7xl mx-auto space-y-section-gap">
+<!-- Metrics Section -->
+<section>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Daily Gross -->
+<div class="glass-card rounded-lg p-container-padding flex flex-col justify-between h-32 active:scale-95 transition-transform">
+<span class="font-label-caps text-on-surface-variant uppercase">Daily Gross</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-primary">$4,820</span>
+<span class="text-primary-fixed-dim text-body-sm font-bold">+12%</span>
+</div>
+</div>
+<!-- Active Tables -->
+<div class="glass-card rounded-lg p-container-padding flex flex-col justify-between h-32 active:scale-95 transition-transform">
+<span class="font-label-caps text-on-surface-variant uppercase">Active Tables</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-primary">18/24</span>
+<span class="text-on-surface-variant text-body-sm">Busy</span>
+</div>
+</div>
+<!-- Avg Turn -->
+<div class="glass-card rounded-lg p-container-padding flex flex-col justify-between h-32 active:scale-95 transition-transform">
+<span class="font-label-caps text-on-surface-variant uppercase">Avg Turn</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-primary">42m</span>
+<span class="text-on-surface-variant text-body-sm">Optimal</span>
+</div>
+</div>
+<!-- Open Voids -->
+<div class="glass-card rounded-lg p-container-padding flex flex-col justify-between h-32 active:scale-95 transition-transform">
+<span class="font-label-caps text-on-surface-variant uppercase">Open Voids</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-error">02</span>
+<span class="text-on-error-container text-body-sm">Action req.</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Revenue Velocity & Content Layout -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-section-gap">
+<!-- Revenue Velocity Bar Chart -->
+<div class="lg:col-span-8 glass-card rounded-lg p-container-padding">
+<div class="flex justify-between items-center mb-section-gap">
+<h2 class="font-headline-lg text-on-surface">Revenue Velocity</h2>
+<span class="font-label-caps text-primary px-4 py-1 bg-primary-container/10 rounded-full border border-primary-container/20">LIVE TRENDS</span>
+</div>
+<div class="flex items-end justify-between h-64 gap-base px-base">
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full chart-bar rounded-t-full h-[40%] opacity-60 group-hover:opacity-100 transition-opacity"></div>
+<span class="mt-4 font-label-caps text-on-surface-variant">12 PM</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full chart-bar rounded-t-full h-[65%] opacity-60 group-hover:opacity-100 transition-opacity"></div>
+<span class="mt-4 font-label-caps text-on-surface-variant">2 PM</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full chart-bar rounded-t-full h-[55%] opacity-60 group-hover:opacity-100 transition-opacity"></div>
+<span class="mt-4 font-label-caps text-on-surface-variant">4 PM</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full chart-bar rounded-t-full h-[90%] opacity-60 group-hover:opacity-100 transition-opacity"></div>
+<span class="mt-4 font-label-caps text-on-surface-variant">6 PM</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full chart-bar rounded-t-full h-[100%] opacity-100 transition-opacity shadow-[0_0_24px_rgba(0,240,255,0.3)]"></div>
+<span class="mt-4 font-label-caps text-primary font-bold">8 PM</span>
+</div>
+<div class="flex flex-col items-center flex-1 group">
+<div class="w-full chart-bar rounded-t-full h-[75%] opacity-60 group-hover:opacity-100 transition-opacity"></div>
+<span class="mt-4 font-label-caps text-on-surface-variant">10 PM</span>
+</div>
+</div>
+</div>
+<!-- Live Activity List -->
+<div class="lg:col-span-4 space-y-gutter">
+<h2 class="font-headline-lg text-on-surface mb-gutter">Live Activity</h2>
+<div class="space-y-element-gap">
+<!-- Activity Item 1 -->
+<div class="glass-card rounded-lg p-gutter flex items-center gap-gutter border-l-4 border-l-primary-container">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container" data-icon="event_seat">event_seat</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-on-surface font-bold">Table 12 Seated</p>
+<p class="font-body-sm text-on-surface-variant">4 Guests • Just now</p>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="glass-card rounded-lg p-gutter flex items-center gap-gutter border-l-4 border-l-secondary-container">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="restaurant">restaurant</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-on-surface font-bold">Premium Order</p>
+<p class="font-body-sm text-on-surface-variant">Table 04 • 2 mins ago</p>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="glass-card rounded-lg p-gutter flex items-center gap-gutter border-l-4 border-l-on-surface-variant/20">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="payments">payments</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-on-surface font-bold">Check Closed</p>
+<p class="font-body-sm text-on-surface-variant">Table 09 • $142.50 • 5 mins ago</p>
+</div>
+</div>
+<!-- Activity Item 4 -->
+<div class="glass-card rounded-lg p-gutter flex items-center gap-gutter border-l-4 border-l-error">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-on-surface font-bold">Void Requested</p>
+<p class="font-body-sm text-on-surface-variant">Table 21 • Manager Auth req.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-32 right-container-padding bg-primary-container text-on-primary-container h-16 px-gutter rounded-full shadow-[0_8px_32px_rgba(0,240,255,0.3)] flex items-center gap-base active:scale-90 transition-transform z-50">
+<span class="material-symbols-outlined" data-icon="add" style="font-variation-settings: 'FILL' 1;">add</span>
+<span class="font-label-caps">NEW ORDER</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-20 px-gutter pb-safe bg-surface-container/90 backdrop-blur-2xl border-t border-outline-variant/10 z-50 rounded-t-lg shadow-[0_-4px_24px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1.5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-label-caps text-label-caps">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-caps text-label-caps">Inventory</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-caps text-label-caps">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-caps text-label-caps">Staff</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestobar | Vibrant Management Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #111317; /* surface-dim from config */
+            color: #e2e2e8; /* on-surface */
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#e2e2e8",
+                      "on-tertiary-container": "#bb0058",
+                      "on-background": "#e2e2e8",
+                      "on-primary-fixed": "#002022",
+                      "on-primary-fixed-variant": "#004f54",
+                      "surface-container-low": "#1a1c20",
+                      "surface-container": "#1e2024",
+                      "on-secondary-container": "#ddcdff",
+                      "secondary-fixed": "#e9ddff",
+                      "on-secondary-fixed": "#23005b",
+                      "tertiary-fixed-dim": "#ffb1c3",
+                      "primary": "#dbfcff",
+                      "on-surface": "#e2e2e8",
+                      "surface-bright": "#37393e",
+                      "error": "#ffb4ab",
+                      "on-tertiary-fixed": "#3f0019",
+                      "on-primary-container": "#006970",
+                      "secondary-container": "#7000ff",
+                      "tertiary": "#fff3f4",
+                      "surface": "#111317",
+                      "on-tertiary": "#66002c",
+                      "tertiary-fixed": "#ffd9e0",
+                      "inverse-primary": "#006970",
+                      "error-container": "#93000a",
+                      "tertiary-container": "#ffccd6",
+                      "outline": "#849495",
+                      "surface-dim": "#111317",
+                      "background": "#111317",
+                      "on-secondary": "#3c0090",
+                      "on-secondary-fixed-variant": "#5700c9",
+                      "on-error": "#690005",
+                      "primary-fixed-dim": "#00dbe9",
+                      "secondary": "#d1bcff",
+                      "surface-tint": "#00dbe9",
+                      "on-surface-variant": "#b9cacb",
+                      "outline-variant": "#3b494b",
+                      "primary-container": "#00f0ff",
+                      "on-primary": "#00363a",
+                      "on-error-container": "#ffdad6",
+                      "primary-fixed": "#7df4ff",
+                      "surface-container-lowest": "#0c0e12",
+                      "surface-container-highest": "#333539",
+                      "surface-container-high": "#282a2e",
+                      "inverse-on-surface": "#2f3035",
+                      "on-tertiary-fixed-variant": "#8f0041",
+                      "secondary-fixed-dim": "#d1bcff",
+                      "surface-variant": "#333539"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "base": "8px",
+                      "gutter": "16px",
+                      "container-padding": "24px",
+                      "section-gap": "48px",
+                      "element-gap": "12px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "label-caps": ["JetBrains Mono"],
+                      "display-lg": ["Plus Jakarta Sans"],
+                      "headline-lg-mobile": ["Plus Jakarta Sans"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                      "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl shadow-sm border-b border-outline-variant/10">
+<div class="flex justify-between items-center h-20 px-container-padding w-full max-w-full mx-auto">
+<div class="flex items-center gap-element-gap">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="local_bar">local_bar</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg tracking-tighter text-primary dark:text-primary-fixed-dim">Gestobar</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary font-bold transition-colors" href="#">Analytics</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-2 rounded-full" href="#">Inventory</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-2 rounded-full" href="#">Orders</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-2 rounded-full" href="#">Staff</a>
+</nav>
+<div class="flex items-center gap-gutter">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors" data-icon="search">search</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img alt="User" class="w-full h-full object-cover" data-alt="A professional headshot of a hospitality manager with a warm smile, set against a blurred high-end lounge background. The lighting is soft and golden, emphasizing a premium and modern aesthetic. The color palette is sophisticated with deep neutrals and warm amber highlights to match the Gestobar brand identity. High-resolution digital photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlS-sDlrS0b2Lv0sKGQevfDOpZt5Mh0I-JXZ3j5U1HrJStUVgRYU5drlAS84IwSo_iOQddOrEoBjxODQAe5Y0_KF5naZ_idtTlTtZtDOoG4KNoAc_DLp0QcaTZCu8O6n03I1fYL8FNrarO4A5hD25Gn-NVn9VGQAHlu-HOewFSBba6e_rEDMbjpLiRlJK7gvD5zycg822e8_XGUfwBL1iGK85k-D9HtRWtUPjPHUKwG6vhiA_TlY7MX0Sfa3hbcKsu2DEBGFGi4RE"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-container-padding max-w-7xl mx-auto">
+<!-- Welcome Hero Section (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-section-gap">
+<div class="md:col-span-8 bg-surface-container border border-outline-variant/10 rounded-lg p-container-padding relative overflow-hidden flex flex-col justify-end min-h-[320px]">
+<div class="absolute inset-0 z-0 opacity-40">
+<img alt="Bar Interior" class="w-full h-full object-cover" data-alt="A cinematic, wide-angle shot of a luxurious modern bar interior at golden hour. The sunlight streams through tall windows, illuminating rows of premium amber-colored spirits and crystal glassware. The atmosphere is vibrant and high-end, featuring a fusion of modernist architecture and warm, inviting textures like dark wood and polished brass. Rich, saturated tones of gold and deep grey define the visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZO9MgWeQikG3hd6kkwzyAd4DWPAFRZtapxKBYTC6y7PrgsA9DqoX1aD8HjMGjOJ1z8E5Vfsr71sKgTzKNxthiYV2R6o0yomR8ahyc4juuGg2iq8GesKKSn_nNWYKowqBXpAhAwEcqoih25_SGW9Xdbw1am4T8-5YxqHXWYNP9Mk4Mx8duh2fDFVjPcQ33hu163FKNy5QS9fdoD1fY2H2uO2QMynPbbMNJXePExZJ1JeW2PctIMXaCU7bmHyN_vqhhPrXBczywNy8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+</div>
+<div class="relative z-10">
+<h2 class="font-display-lg text-display-lg text-primary mb-2">Good evening, Marcus</h2>
+<p class="text-on-surface-variant text-body-md max-w-md">The Friday rush is starting. Inventory for premium bourbons is low, but reservations are up 22% tonight.</p>
+</div>
+</div>
+<div class="md:col-span-4 bg-primary-container text-on-primary-container rounded-lg p-container-padding flex flex-col justify-between shadow-[0_12px_40px_rgba(0,240,255,0.15)]">
+<div>
+<span class="material-symbols-outlined text-4xl mb-4" data-icon="trending_up">trending_up</span>
+<p class="font-label-caps text-label-caps opacity-80 uppercase">Real-time Revenue</p>
+<h3 class="font-headline-lg text-headline-lg">$12,482.50</h3>
+</div>
+<div class="mt-4">
+<p class="text-body-sm">+14% from last Friday</p>
+<div class="w-full bg-on-primary-container/20 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-on-primary-container h-full w-[78%]"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-section-gap">
+<!-- Left Column: Analytics & Operations -->
+<div class="lg:col-span-2 space-y-gutter">
+<h3 class="font-headline-lg text-headline-lg flex items-center gap-base">
+<span class="material-symbols-outlined text-primary" data-icon="monitoring">monitoring</span>
+                    Live Operations
+                </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Orders Status Card -->
+<div class="bg-surface-container-high rounded-lg p-container-padding border border-outline-variant/10">
+<div class="flex justify-between items-start mb-6">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Active Orders</span>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold">LIVE</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-element-gap">
+<span class="material-symbols-outlined text-secondary" data-icon="wine_bar">wine_bar</span>
+<span class="font-body-md">Mixology Station</span>
+</div>
+<span class="font-body-md font-bold">12 Orders</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-element-gap">
+<span class="material-symbols-outlined text-secondary" data-icon="restaurant">restaurant</span>
+<span class="font-body-md">Kitchen Pass</span>
+</div>
+<span class="font-body-md font-bold">8 Orders</span>
+</div>
+</div>
+</div>
+<!-- Inventory Alert Card -->
+<div class="bg-surface-container-high rounded-lg p-container-padding border border-outline-variant/10">
+<div class="flex justify-between items-start mb-6">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Inventory Alerts</span>
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="p-3 bg-error-container/20 rounded-lg">
+<span class="material-symbols-outlined text-error" data-icon="liquor">liquor</span>
+</div>
+<div>
+<p class="font-body-md font-bold">Old Fashioned Base</p>
+<p class="text-body-sm text-on-surface-variant">Critical: 2 bottles left</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Performance Chart Section -->
+<div class="bg-surface-container rounded-lg p-container-padding border border-outline-variant/10 h-80 relative overflow-hidden">
+<div class="flex justify-between items-center mb-8">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile">Hourly Traffic</h4>
+<div class="flex gap-2">
+<button class="px-4 py-1 rounded-full bg-surface-container-highest text-body-sm">Today</button>
+<button class="px-4 py-1 rounded-full text-body-sm text-on-surface-variant">Yesterday</button>
+</div>
+</div>
+<!-- Visualization Placeholder -->
+<div class="absolute bottom-0 left-0 w-full h-40 flex items-end gap-2 px-container-padding">
+<div class="flex-1 bg-primary/20 h-[30%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-[45%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-[60%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-[55%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-[75%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary-container h-[90%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary-container h-[85%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary-container h-[95%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-[70%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-[50%] rounded-t-sm"></div>
+</div>
+</div>
+</div>
+<!-- Right Column: Staff & Reservations -->
+<div class="space-y-gutter">
+<h3 class="font-headline-lg text-headline-lg flex items-center gap-base">
+<span class="material-symbols-outlined text-primary" data-icon="group">group</span>
+                    Staff on Duty
+                </h3>
+<div class="bg-surface-container-high rounded-lg p-container-padding border border-outline-variant/10 space-y-6">
+<!-- Staff Item -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-element-gap">
+<div class="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-bold">EM</div>
+<div>
+<p class="font-body-md font-bold">Elena Moore</p>
+<p class="text-body-sm text-on-surface-variant">Head Mixologist</p>
+</div>
+</div>
+<span class="w-3 h-3 rounded-full bg-primary-container shadow-[0_0_8px_rgba(0,240,255,0.6)]"></span>
+</div>
+<!-- Staff Item -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-element-gap">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold">JH</div>
+<div>
+<p class="font-body-md font-bold">Julian Holt</p>
+<p class="text-body-sm text-on-surface-variant">Floor Lead</p>
+</div>
+</div>
+<span class="w-3 h-3 rounded-full bg-primary-container shadow-[0_0_8px_rgba(0,240,255,0.6)]"></span>
+</div>
+<!-- Staff Item -->
+<div class="flex items-center justify-between opacity-60">
+<div class="flex items-center gap-element-gap">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-bold">SR</div>
+<div>
+<p class="font-body-md font-bold">Sarah Reed</p>
+<p class="text-body-sm text-on-surface-variant">Hostess</p>
+</div>
+</div>
+<p class="text-xs font-label-caps">Starts 8PM</p>
+</div>
+<button class="w-full py-4 border-2 border-dashed border-outline-variant/30 rounded-lg text-on-surface-variant hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-base">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                        Manage Schedule
+                    </button>
+</div>
+<!-- Recent Activity/Orders -->
+<div class="bg-surface-container rounded-lg border border-outline-variant/10 overflow-hidden">
+<div class="p-container-padding border-b border-outline-variant/10 bg-surface-container-highest/30">
+<h4 class="font-label-caps text-label-caps">Recent Orders</h4>
+</div>
+<div class="p-base space-y-1">
+<div class="p-gutter hover:bg-surface-container-high rounded-lg flex justify-between items-center transition-colors group">
+<div>
+<p class="font-body-md">Negroni Sbagliato x2</p>
+<p class="text-xs text-on-surface-variant">Table 14 • 2m ago</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="p-gutter hover:bg-surface-container-high rounded-lg flex justify-between items-center transition-colors group">
+<div>
+<p class="font-body-md">Artisanal Cheese Plate</p>
+<p class="text-xs text-on-surface-variant">Bar Seat 4 • 5m ago</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB for quick action -->
+<button class="fixed bottom-28 right-8 md:bottom-12 md:right-12 w-16 h-16 bg-primary-container text-on-primary-container rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined text-3xl" data-icon="add_box">add_box</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full h-20 px-gutter pb-safe bg-surface-container/90 backdrop-blur-2xl border-t border-outline-variant/10 flex justify-around items-center z-50 rounded-t-lg shadow-[0_-4px_24px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1.5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-label-caps text-label-caps mt-1">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-caps text-label-caps mt-1">Inventory</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-caps text-label-caps mt-1">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-caps text-label-caps mt-1">Staff</span>
+</a>
+</nav>
+</body></html>

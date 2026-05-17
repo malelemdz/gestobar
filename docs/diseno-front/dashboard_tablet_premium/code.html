@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #111317;
+            color: #e2e2e8;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333539;
+            border-radius: 10px;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#1a1c20",
+                      "on-secondary": "#3c0090",
+                      "on-primary-fixed-variant": "#004f54",
+                      "on-secondary-fixed-variant": "#5700c9",
+                      "primary-container": "#00f0ff",
+                      "surface-dim": "#111317",
+                      "inverse-on-surface": "#2f3035",
+                      "on-tertiary": "#66002c",
+                      "error-container": "#93000a",
+                      "secondary": "#d1bcff",
+                      "background": "#111317",
+                      "surface-container": "#1e2024",
+                      "secondary-fixed": "#e9ddff",
+                      "inverse-surface": "#e2e2e8",
+                      "secondary-fixed-dim": "#d1bcff",
+                      "on-surface-variant": "#b9cacb",
+                      "surface-container-highest": "#333539",
+                      "on-tertiary-fixed-variant": "#8f0041",
+                      "on-tertiary-container": "#bb0058",
+                      "on-primary-fixed": "#002022",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-high": "#282a2e",
+                      "outline": "#849495",
+                      "error": "#ffb4ab",
+                      "tertiary-fixed": "#ffd9e0",
+                      "tertiary": "#fff3f4",
+                      "on-secondary-fixed": "#23005b",
+                      "on-background": "#e2e2e8",
+                      "primary-fixed-dim": "#00dbe9",
+                      "primary": "#dbfcff",
+                      "surface-variant": "#333539",
+                      "surface-bright": "#37393e",
+                      "on-secondary-container": "#ddcdff",
+                      "on-tertiary-fixed": "#3f0019",
+                      "on-error": "#690005",
+                      "on-primary-container": "#006970",
+                      "tertiary-fixed-dim": "#ffb1c3",
+                      "secondary-container": "#7000ff",
+                      "on-surface": "#e2e2e8",
+                      "primary-fixed": "#7df4ff",
+                      "surface-container-lowest": "#0c0e12",
+                      "tertiary-container": "#ffccd6",
+                      "surface-tint": "#00dbe9",
+                      "on-primary": "#00363a",
+                      "inverse-primary": "#006970",
+                      "surface": "#111317",
+                      "outline-variant": "#3b494b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "container-padding": "24px",
+                      "element-gap": "12px",
+                      "section-gap": "48px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "label-caps": ["JetBrains Mono"],
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "display-lg": ["Plus Jakarta Sans"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-screen w-72 bg-surface-container-low border-r border-outline-variant/10 flex flex-col py-gutter shadow-sm z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-lg text-headline-lg text-primary-container tracking-tighter">Neon Lounge</h1>
+<p class="font-body-md text-on-surface-variant text-sm">Bar Management</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Active State: Sales matches Dashboard intent -->
+<a class="flex items-center gap-4 px-6 py-4 bg-secondary-container text-on-secondary-container rounded-full mx-2 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-body-md text-body-md">Sales</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all duration-300 rounded-full mx-2" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-body-md text-body-md">Menu</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all duration-300 rounded-full mx-2" href="#">
+<span class="material-symbols-outlined">schedule</span>
+<span class="font-body-md text-body-md">Shifts</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all duration-300 rounded-full mx-2" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md text-body-md">Staff</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full bg-primary-container text-on-primary-container font-label-caps py-4 rounded-full flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+                New Order
+            </button>
+<div class="mt-6 px-4 flex items-center gap-3">
+<img alt="Manager Profile" class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a Hispanic bar manager in his late 30s, wearing a crisp dark denim shirt. He has a warm, confident expression and is standing in a dimly lit, high-end cocktail lounge with blurred glass bottles and warm amber lighting in the background. The style is modern, cinematic, and emphasizes a premium hospitality atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVEV2zlyScbbmSO1S4un8Dr9jbaKhZ7YqaJEECduB7eYmoXbfZ7B7UH76zatqkPEgaiWH0H_EEGpYkTxPJUmz6isgzPlvUIH2GC7mTJLxHKhv6vHrSgRmz33QhB5bOmO-nZfoZnxmcv_nCkzDJoNfumgeNvMUByeHXAoVpqJXcx7Ay6lfaXUPDj0y5m8_Vc6nJCbGdzJsqh3uL45HhAdo_cbpt5y9XJ1MdpSJCP2A3Bqr1w9NAJARDqyaQap2RhaSn1ipzPTkN-2M"/>
+<div>
+<p class="font-body-md text-sm font-bold">Carlos M.</p>
+<p class="font-label-caps text-[10px] text-on-surface-variant">GERENTE</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-72 min-h-screen flex flex-col relative overflow-y-auto h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 h-20 bg-background/80 backdrop-blur-xl z-40 flex items-center justify-between px-container-padding shrink-0">
+<div class="flex items-center gap-6">
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary">Neon Management</h2>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-high border-none rounded-full pl-10 pr-4 py-2 w-64 text-sm focus:ring-2 focus:ring-primary-container/50" placeholder="Buscar mesas, pedidos..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors active:opacity-80">
+<span class="material-symbols-outlined">sync</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors relative active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-2">
+<span class="font-label-caps text-on-surface-variant">ESTADO:</span>
+<span class="px-3 py-1 bg-primary/10 text-primary-fixed-dim rounded-full text-[10px] font-bold border border-primary-fixed-dim/20">EN VIVO</span>
+</div>
+</div>
+</header>
+<!-- Content Grid -->
+<div class="p-container-padding flex flex-col gap-gutter">
+<!-- Metric Cards -->
+<div class="grid grid-cols-4 gap-gutter">
+<!-- Daily Gross -->
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-caps text-on-surface-variant text-[10px]">VENTA BRUTA DIARIA</span>
+<span class="text-primary-container material-symbols-outlined">trending_up</span>
+</div>
+<div>
+<p class="font-headline-lg text-2xl text-primary">€12.450</p>
+<p class="text-[10px] text-primary-fixed-dim">+12% vs ayer</p>
+</div>
+</div>
+<!-- Active Tables -->
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-caps text-on-surface-variant text-[10px]">MESAS ACTIVAS</span>
+<span class="text-secondary material-symbols-outlined">grid_view</span>
+</div>
+<div>
+<p class="font-headline-lg text-2xl text-secondary">24 / 30</p>
+<p class="text-[10px] text-on-surface-variant">80% Ocupación</p>
+</div>
+</div>
+<!-- Avg Turn -->
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-caps text-on-surface-variant text-[10px]">ROTACIÓN MEDIA</span>
+<span class="text-tertiary-fixed-dim material-symbols-outlined">timer</span>
+</div>
+<div>
+<p class="font-headline-lg text-2xl text-tertiary-fixed-dim">52 min</p>
+<p class="text-[10px] text-tertiary-fixed-dim">-4 min vs media</p>
+</div>
+</div>
+<!-- Open Voids -->
+<div class="bg-surface-container p-6 rounded-lg border border-outline-variant/10 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="font-label-caps text-on-surface-variant text-[10px]">ANULACIONES ABIERTAS</span>
+<span class="text-error material-symbols-outlined">assignment_late</span>
+</div>
+<div>
+<p class="font-headline-lg text-2xl text-error">03</p>
+<p class="text-[10px] text-on-surface-variant">Requiere atención</p>
+</div>
+</div>
+</div>
+<!-- Middle Section: Chart and Activity -->
+<div class="grid grid-cols-12 gap-gutter h-[420px]">
+<!-- Revenue Velocity Chart -->
+<div class="col-span-8 bg-surface-container p-container-padding rounded-lg border border-outline-variant/10 flex flex-col">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h3 class="font-headline-lg text-lg">Velocidad de Ingresos</h3>
+<p class="text-sm text-on-surface-variant">Flujo de ventas en tiempo real por hora</p>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-label-caps border border-outline-variant">HOY</span>
+<span class="px-3 py-1 text-on-surface-variant rounded-full text-[10px] font-label-caps">AYER</span>
+</div>
+</div>
+<div class="flex-1 flex items-end gap-3 pb-2 relative">
+<!-- Simulated Chart Grid -->
+<div class="absolute inset-0 flex flex-col justify-between py-2 pointer-events-none opacity-10">
+<div class="border-t border-on-surface w-full"></div>
+<div class="border-t border-on-surface w-full"></div>
+<div class="border-t border-on-surface w-full"></div>
+<div class="border-t border-on-surface w-full"></div>
+</div>
+<!-- Bars/Lines visualization -->
+<div class="flex-1 h-3/4 bg-primary-container/20 rounded-t-xl relative group">
+<div class="absolute bottom-0 w-full bg-primary-container rounded-t-xl h-2/3"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface-variant">18:00</span>
+</div>
+<div class="flex-1 h-3/4 bg-primary-container/20 rounded-t-xl relative group">
+<div class="absolute bottom-0 w-full bg-primary-container rounded-t-xl h-1/2"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface-variant">19:00</span>
+</div>
+<div class="flex-1 h-3/4 bg-primary-container/20 rounded-t-xl relative group">
+<div class="absolute bottom-0 w-full bg-primary-container rounded-t-xl h-4/5"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface-variant">20:00</span>
+</div>
+<div class="flex-1 h-3/4 bg-primary-container/20 rounded-t-xl relative group">
+<div class="absolute bottom-0 w-full bg-primary-container rounded-t-xl h-full border-t-4 border-white"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface-variant font-bold text-primary">AHORA</span>
+</div>
+<div class="flex-1 h-3/4 bg-surface-container-highest rounded-t-xl relative">
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface-variant">22:00</span>
+</div>
+<div class="flex-1 h-3/4 bg-surface-container-highest rounded-t-xl relative">
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-on-surface-variant">23:00</span>
+</div>
+</div>
+</div>
+<!-- Live Activity Feed -->
+<div class="col-span-4 bg-surface-container p-container-padding rounded-lg border border-outline-variant/10 flex flex-col">
+<h3 class="font-headline-lg text-lg mb-6">Actividad en Vivo</h3>
+<div class="flex-1 flex flex-col gap-4 overflow-y-auto hide-scrollbar">
+<div class="flex gap-4 items-start p-3 rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="w-10 h-10 rounded-full bg-secondary-container/30 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-sm">payments</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<p class="text-sm font-bold">Mesa 12 cerrada</p>
+<span class="text-[10px] text-on-surface-variant">2m</span>
+</div>
+<p class="text-xs text-on-surface-variant">Total pagado: €142,50</p>
+</div>
+</div>
+<div class="flex gap-4 items-start p-3 rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="w-10 h-10 rounded-full bg-error-container/30 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-error text-sm">block</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<p class="text-sm font-bold">Anulación: Mesa 4</p>
+<span class="text-[10px] text-on-surface-variant">8m</span>
+</div>
+<p class="text-xs text-on-surface-variant">Item: Negroni (Error entrada)</p>
+</div>
+</div>
+<div class="flex gap-4 items-start p-3 rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary-container text-sm">star</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<p class="text-sm font-bold">Nueva Reseña 5★</p>
+<span class="text-[10px] text-on-surface-variant">15m</span>
+</div>
+<p class="text-xs text-on-surface-variant">"Cócteles increíbles, servicio 10"</p>
+</div>
+</div>
+<div class="flex gap-4 items-start p-3 rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">person_add</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<p class="text-sm font-bold">Staff: Entrada</p>
+<span class="text-[10px] text-on-surface-variant">22m</span>
+</div>
+<p class="text-xs text-on-surface-variant">Marta Ruiz ha iniciado turno</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Upcoming Reservations Carousel -->
+<div class="flex flex-col gap-4 mb-8">
+<div class="flex justify-between items-center">
+<h3 class="font-headline-lg text-lg">Próximas Reservas</h3>
+<div class="flex gap-4">
+<button class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="flex gap-gutter overflow-x-auto hide-scrollbar pb-4 -mx-2 px-2">
+<!-- Reservation Card 1 -->
+<div class="min-w-[280px] bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-sm font-bold">Familia García</p>
+<p class="text-xs text-on-surface-variant">Mesa 8 • 4 Personas</p>
+</div>
+<span class="px-2 py-1 bg-primary/10 text-primary-container text-[10px] rounded-full font-bold">21:00</span>
+</div>
+<div class="flex items-center gap-2 mt-4 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">celebration</span>
+<span>Aniversario</span>
+</div>
+</div>
+<!-- Reservation Card 2 -->
+<div class="min-w-[280px] bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-sm font-bold">Marcos Sanchéz</p>
+<p class="text-xs text-on-surface-variant">Bar • 2 Personas</p>
+</div>
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-[10px] rounded-full font-bold">21:15</span>
+</div>
+<div class="flex items-center gap-2 mt-4 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">local_bar</span>
+<span>Primera visita</span>
+</div>
+</div>
+<!-- Reservation Card 3 -->
+<div class="min-w-[280px] bg-surface-container p-6 rounded-lg border border-outline-variant/10 border-l-4 border-l-primary-container">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-sm font-bold">Elena Portillo</p>
+<p class="text-xs text-on-surface-variant">VIP • 6 Personas</p>
+</div>
+<span class="px-2 py-1 bg-primary-container text-on-primary-container text-[10px] rounded-full font-bold">21:30</span>
+</div>
+<div class="flex items-center gap-2 mt-4 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-primary-container">Cliente VIP Gold</span>
+</div>
+</div>
+<!-- Reservation Card 4 -->
+<div class="min-w-[280px] bg-surface-container p-6 rounded-lg border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-sm font-bold">Jorge Luis</p>
+<p class="text-xs text-on-surface-variant">Mesa 15 • 3 Personas</p>
+</div>
+<span class="px-2 py-1 bg-surface-container-high text-on-surface-variant text-[10px] rounded-full font-bold">22:00</span>
+</div>
+<div class="flex items-center gap-2 mt-4 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">event_seat</span>
+<span>Mesa preferida</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
