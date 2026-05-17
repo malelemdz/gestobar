@@ -1128,6 +1128,44 @@ class MainDashboardView extends ConsumerWidget {
       actionsList.add(const SizedBox(width: 12.0));
     }
 
+    // Acción 4: Foto de perfil premium en la esquina superior derecha (Móvil)
+    if (!isTablet) {
+      actionsList.add(
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: Center(
+            child: InkWell(
+              onTap: () {
+                ref.read(activeViewProvider.notifier).state = 'perfil';
+              },
+              borderRadius: BorderRadius.circular(100.0),
+              child: Container(
+                width: 40.0,
+                height: 40.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color(0x3300F0FF), // 20% opacity Electric Cyan border
+                    width: 1.0,
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100.0),
+                  child: Image.network(
+                    'https://lh3.googleusercontent.com/aida-public/AB6AXuBZZ4F3uxeKXlMSjT5dTb1O4_BTJuDlobMGJCsqzM_uclGpddIG1PoFe-ii5WY95o6-UbkutIhovD6rNMn-Yeq0BH9OJUet_BXiwV0AICeKlwpujiO_XFxYnVuCfNdrk1lasqCUyWhonZnODKafZDkpzxmUNyGoKPyZo7zMxLqhcaNnRIgINDnP5WjuhxdbwpvaiPVSK842ts9aS8GphuRhQB4reNSPcZLIz4YV4c_HPg-0Cj5n50esRHFSYrRtQQucvQXq2pCKA1c', // exact URL from code.html mockup!
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.person, color: Color(0xFF00F0FF), size: 20.0);
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     // Add static notifications/sync elements in Tablet to match code.html
     if (isTablet) {
       actionsList.add(
@@ -1265,10 +1303,11 @@ class MainDashboardView extends ConsumerWidget {
             )
           : Text(
               pageLabel,
-              style: theme.textTheme.titleLarge?.copyWith(
+              style: GoogleFonts.plusJakartaSans(
                 fontWeight: FontWeight.w800,
-                color: theme.colorScheme.primary,
-                letterSpacing: 0.3,
+                fontSize: 20.0,
+                color: pageLabel == 'Gestobar' ? const Color(0xFF00F0FF) : const Color(0xFFDBFCFF),
+                letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
               ),
             ),
       actions: actionsList,
