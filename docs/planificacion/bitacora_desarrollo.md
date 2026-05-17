@@ -56,6 +56,21 @@ El backend está construido con **NestJS (TypeScript)**, utilizando **TypeORM** 
     *   `DAMA`: Permiso único para ver sus propias comisiones.
     *   `REVIEWER`: Permiso de solo lectura.
 
+### 6. Módulo 3: Catálogo y Gestión de Productos
+*   **Entidad Categoría (`src/categories/entities/category.entity.ts`):**
+    *   Campos: `id` (UUID), `bar_id` (relación ManyToOne con Bar) y `orden` (para control de posicionamiento visual).
+*   **Entidades Producto y Variante (`src/products/entities/`):**
+    *   `Product`: Vinculado a su Bar y Categoría, con campos para `foto_url`, `nombre`, `descripcion` y relación OneToMany con Variantes (cascade habilitado).
+    *   `Variant`: Vinculado a Producto, con soporte para doble precio (`precio_a` para clientes normales y `precio_b` para damas/compañía), y el flag de disponibilidad `disponible`.
+    *   **Precisión de Precios:** Configurado TypeORM con tipo `decimal` (12, 2) y un transformador numérico para parsear las lecturas de base de datos directamente a tipo `number` de TypeScript, evitando el string por defecto de pg.
+*   **Validaciones y Reglas de Negocio:**
+    *   **Creación Árbol:** Para crear un producto es obligatorio mandar al menos una variante (`ArrayMinSize(1)`).
+    *   **Categoría por Defecto:** Si no se especifica `categoria_id` al crear un producto, el sistema busca o crea automáticamente una categoría por defecto llamada "General".
+    *   **Lógica de Eliminación de Variantes:** Se implementó una restricción de negocio en `removeVariant` que impide borrar la última variante de un producto (siempre debe quedar al menos una).
+*   **Decorador `@ActiveBarId()`:**
+    *   Facilita la extracción del ID del bar activo del payload JWT.
+    *   **Seguridad:** Un usuario regular tiene vetada la manipulación de cabeceras; se extrae su bar del JWT. En cambio, si el rol es `SUPERADMIN`, se le permite mandar el header `x-bar-id` para actuar en el contexto de cualquier bar sin necesidad de re-autenticarse.
+
 ---
 
 ## Archivos Clave del Backend
@@ -67,12 +82,23 @@ backend/src/
 │   ├── auth.service.ts
 │   ├── auth.controller.ts
 │   ├── strategies/jwt.strategy.ts
+│   ├── guards/jwt-auth.guard.ts
 │   ├── guards/permissions.guard.ts
-│   └── guards/tenant.guard.ts
+│   ├── guards/tenant.guard.ts
+│   └── decorators/active-bar-id.decorator.ts
 ├── bars/                      # CRUD de Bares (SaaS)
 │   ├── entities/bar.entity.ts
 │   ├── bars.service.ts
 │   └── bars.controller.ts
+├── categories/                # Módulo de Categorías (Módulo 3)
+│   ├── entities/category.entity.ts
+│   ├── categories.service.ts
+│   └── categories.controller.ts
+├── products/                  # Módulo de Productos y Variantes (Módulo 3)
+│   ├── entities/product.entity.ts
+│   ├── entities/variant.entity.ts
+│   ├── products.service.ts
+│   └── products.controller.ts
 ├── roles/                     # Roles y Permisos (RBAC)
 │   ├── entities/role.entity.ts
 │   ├── entities/permission.entity.ts

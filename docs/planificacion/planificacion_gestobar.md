@@ -50,14 +50,14 @@ Este documento sirve como guía de desarrollo y checklist de progreso. Los módu
 ## Módulo 3: Catálogo y Gestión de Productos
 *Estructura de productos con variantes y doble precio.*
 
-- [ ] **Categorización**
-  - [ ] CRUD de Categorías (Obligatorias, vinculadas a `bar_id`).
-  - [ ] Soporte para categoría por defecto si no se crean manualmente.
-- [ ] **Productos y Variantes**
-  - [ ] CRUD de Productos (Foto, Nombre, Descripción).
-  - [ ] Lógica de Variantes: Todo producto tiene al menos una variante.
-  - [ ] Gestión de Variantes (Nombre, Precio A - Normal, Precio B - Compañía).
-  - [ ] Flag de disponibilidad por variante.
+- [x] **Categorización**
+  - [x] CRUD de Categorías (Obligatorias, vinculadas a `bar_id`).
+  - [x] Soporte para categoría por defecto si no se crean manualmente.
+- [x] **Productos y Variantes**
+  - [x] CRUD de Productos (Foto, Nombre, Descripción).
+  - [x] Lógica de Variantes: Todo producto tiene al menos una variante.
+  - [x] Gestión de Variantes (Nombre, Precio A - Normal, Precio B - Compañía).
+  - [x] Flag de disponibilidad por variante.
 
 ---
 
