@@ -528,32 +528,39 @@ class MainDashboardView extends ConsumerWidget {
                               ),
                             ),
                           ],
+                          const Divider(height: 1.0),
+                      const SizedBox(height: 12.0),
+                      // Categoría: MÓDULOS
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+                        child: Text(
+                          'MÓDULOS',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontSize: 9.0,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.2,
+                            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                          ),
                         ),
                       ),
-                      const Divider(height: 1.0),
-                      const SizedBox(height: 12.0),
-
                       // Lista de Navegación del Sidebar
                       Expanded(
                         child: ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           itemCount: navItems.length,
                           itemBuilder: (context, index) {
                             final item = navItems[index];
                             final String viewId = item['view'] as String;
                             final bool isSelected = activeView == viewId;
 
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4.0),
-                              child: _buildSidebarNavItem(
-                                context: context,
-                                icon: isSelected ? item['icon_active'] as IconData : item['icon'] as IconData,
-                                label: item['label'] as String,
-                                isSelected: isSelected,
-                                onTap: () {
-                                  ref.read(activeViewProvider.notifier).state = viewId;
-                                },
-                              ),
+                            return _buildSidebarNavItem(
+                              context: context,
+                              icon: isSelected ? item['icon_active'] as IconData : item['icon'] as IconData,
+                              label: item['label'] as String,
+                              isSelected: isSelected,
+                              onTap: () {
+                                ref.read(activeViewProvider.notifier).state = viewId;
+                              },
                             );
                           },
                         ),
@@ -566,6 +573,19 @@ class MainDashboardView extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
+                            // Categoría: AJUSTES Y SOPORTE
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 6.0),
+                              child: Text(
+                                'SOPORTE',
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  fontSize: 9.0,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.2,
+                                  color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                                ),
+                              ),
+                            ),
                             // Opción 1: Mi Perfil
                             _buildSidebarBottomItem(
                               context: context,
@@ -600,19 +620,51 @@ class MainDashboardView extends ConsumerWidget {
                                 _showAboutDialog(context, theme);
                               },
                             ),
-                            const Divider(height: 16.0),
-                            // Opción 4: Cerrar Sesión
-                            _buildSidebarBottomItem(
-                              context: context,
-                              icon: Icons.logout,
-                              label: 'Cerrar Sesión',
-                              isSelected: false,
-                              isDanger: true,
-                              onTap: () {
-                                ref.read(authProvider.notifier).logout();
-                              },
+                            const SizedBox(height: 16.0),
+                            // 🌟 BOTÓN REAL DE CERRAR SESIÓN ESTILIZADO (10/10 Premium Button)
+                            Material(
+                              color: AppTheme.colorDanger.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(8.0),
+                                onTap: () {
+                                  ref.read(authProvider.notifier).logout();
+                                },
+                                child: Container(
+                                  height: 40.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    border: Border.all(
+                                      color: AppTheme.colorDanger.withOpacity(0.25),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.logout,
+                                        size: 15.0,
+                                        color: AppTheme.colorDanger,
+                                      ),
+                                      const SizedBox(width: 8.0),
+                                      Text(
+                                        'Cerrar Sesión',
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppTheme.colorDanger,
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
+                        ),
+                      ),      ],
                         ),
                       ),
                     ],
