@@ -12,6 +12,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { CajasModule } from './cajas/cajas.module';
 import { VentasModule } from './ventas/ventas.module';
+import { MenuModule } from './menu/menu.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { VentasModule } from './ventas/ventas.module';
     ProductsModule,
     CajasModule,
     VentasModule,
+    MenuModule,
   ],
   controllers: [AppController],
   providers: [AppService],

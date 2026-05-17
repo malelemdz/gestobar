@@ -92,12 +92,12 @@ Este documento sirve como guía de desarrollo y checklist de progreso. Los módu
 ## Módulo 6: Menú QR Público
 *Acceso informativo para el cliente final.*
 
-- [ ] **API Pública de Menú**
-  - [ ] Endpoint para leer datos del bar (Nombre, Logo, Redes, Ubicación).
-  - [ ] Endpoint para listar el catálogo de productos y variantes.
-  - [ ] Validación de estado: Mostrar "Cerrado" si la Caja no está abierta.
-- [ ] **Generación de QR**
-  - [ ] Generación automática de link basado en el `slug` del bar.
+- [x] **API Pública de Menú**
+  - [x] Endpoint para leer datos del bar (Nombre, Logo, Redes, Ubicación).
+  - [x] Endpoint para listar el catálogo de productos y variantes.
+  - [x] Validación de estado: Mostrar "Cerrado" si la Caja no está abierta.
+- [x] **Generación de QR**
+  - [x] Generación automática de link basado en el `slug` del bar.
 
 ---
 

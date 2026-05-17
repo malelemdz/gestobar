@@ -101,6 +101,20 @@ El backend está construido con **NestJS (TypeScript)**, utilizando **TypeORM** 
     *   **Canales Privados de Damas:** Al conectarse, una Dama se suscribe a su propio canal privado (`suscribir_dama` uniendo el socket a la sala del `damaId`).
     *   **Notificación Instantánea:** En el momento exacto en que se graba la venta atómica, el gateway emite de forma asíncrona notificaciones privadas a los canales de las Damas involucradas informando detalles de su nueva comisión o bebida invitada.
 
+### 9. Módulo 6: Menú QR Público
+*   **Diseño de API Pública (`src/menu/`):**
+    *   **Totalmente Anónimo:** Rutas y controladores configurados fuera de guardias de autenticación global, permitiendo acceso directo y de alta velocidad por clientes del bar mediante el código QR.
+    *   **Búsqueda por Slug:** El endpoint `/menu/:slug` resuelve la información de marca (Nombre, Logo, Redes, Whatsapp, etc.) basándose en el parámetro público `slug`.
+*   **Validación de Estatus de Operación ("Cerrado"):**
+    *   Retorna de manera dinámica la bandera `abierto: boolean`. Si no existe un turno de caja activo en estado `ABIERTA` para ese bar, se retorna `abierto: false`. Esto permite al frontend advertir a los clientes que la barra se encuentra temporalmente cerrada para pedidos.
+*   **Sanitización Absoluta de Precios de Compañía (Precio B):**
+    *   El endpoint `/menu/:slug/productos` devuelve la carta organizada en categorías de ordenación estructurada.
+    *   **Seguridad de Datos:** Las variantes de cada producto se mapean y sanitizan minuciosamente para:
+        1. Excluir variantes no disponibles (`v.disponible === false`).
+        2. **Eliminar por completo el `precio_b` (Precio de Compañía/Damas) del JSON de respuesta pública**, renombrando el atributo `precio_a` a simplemente `precio`. Esto imposibilita filtraciones de precios internos hacia el cliente general.
+*   **Generación de Enlaces QR Dinámicos:**
+    *   El servicio lee la variable de configuración `FRONTEND_URL` para construir de manera dinámica y exacta la URL final del menú basada en el slug único (`${frontendUrl}/menu/${bar.slug}`).
+
 ---
 
 ## Archivos Clave del Backend
@@ -141,6 +155,10 @@ backend/src/
 │   ├── ventas.service.ts
 │   ├── ventas.controller.ts
 │   └── ventas.gateway.ts
+├── menu/                      # Menú QR Público (Módulo 6 - Solo Backend)
+│   ├── menu.service.ts
+│   ├── menu.controller.ts
+│   └── menu.module.ts
 ├── roles/                     # Roles y Permisos (RBAC)
 │   ├── entities/role.entity.ts
 │   ├── entities/permission.entity.ts
