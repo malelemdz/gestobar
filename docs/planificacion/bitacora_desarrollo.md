@@ -71,6 +71,18 @@ El backend está construido con **NestJS (TypeScript)**, utilizando **TypeORM** 
     *   Facilita la extracción del ID del bar activo del payload JWT.
     *   **Seguridad:** Un usuario regular tiene vetada la manipulación de cabeceras; se extrae su bar del JWT. En cambio, si el rol es `SUPERADMIN`, se le permite mandar el header `x-bar-id` para actuar en el contexto de cualquier bar sin necesidad de re-autenticarse.
 
+### 7. Módulo 4: Sistema de Caja y Turnos
+*   **Entidad Caja (`src/cajas/entities/caja.entity.ts`):**
+    *   Campos: `id` (UUID), `bar_id` (relación ManyToOne con Bar), `apertura_usuario_id`, `cierre_usuario_id` (nullable), `fecha_apertura` (TIMESTAMP), `fecha_cierre` (TIMESTAMP, nullable), `monto_inicial`, `monto_final` (nullable) y `estado` (Enum 'ABIERTA' | 'CERRADA').
+*   **Validaciones y Restricciones Operativas:**
+    *   **Aislamiento y Concurrencia:** Solo se permite **una caja abierta** por bar simultáneamente. Si se intenta abrir otra, arroja `BadRequestException`.
+    *   **Operatividad obligatoria:** Ventas futuras consultarán `getActiveCaja` para verificar si hay una caja abierta; en caso de que esté cerrada, las ventas serán bloqueadas.
+*   **Reporte de Cierre con Cierre Atómico:**
+    *   Al cerrar la caja, el sistema calcula de forma dinámica: ventas totales, comisiones acumuladas por damas, desglose por métodos de pago y diferencia financiera (`monto_final - balance_esperado`).
+    *   **Tolerancia a Fallos:** En el cálculo se inyecta una consulta dinámica a través del `DataSource` de TypeORM dentro de un bloque `try-catch`, asegurando que el Módulo 4 funcione autónomamente y compile perfectamente aun antes de crear las entidades de ventas del Módulo 5.
+*   **Decorador `@ActiveUserId()` y `@ActiveBarId()`:**
+    *   Se implementó el decorador en `src/auth/decorators/active-user-id.decorator.ts` para extraer con facilidad y total seguridad el ID del usuario actual firmante desde el payload JWT (empleado para registrar a los responsables de apertura y cierre de caja).
+
 ---
 
 ## Archivos Clave del Backend
@@ -85,7 +97,8 @@ backend/src/
 │   ├── guards/jwt-auth.guard.ts
 │   ├── guards/permissions.guard.ts
 │   ├── guards/tenant.guard.ts
-│   └── decorators/active-bar-id.decorator.ts
+│   ├── decorators/active-bar-id.decorator.ts
+│   └── decorators/active-user-id.decorator.ts
 ├── bars/                      # CRUD de Bares (SaaS)
 │   ├── entities/bar.entity.ts
 │   ├── bars.service.ts
@@ -99,6 +112,10 @@ backend/src/
 │   ├── entities/variant.entity.ts
 │   ├── products.service.ts
 │   └── products.controller.ts
+├── cajas/                     # Módulo de Cajas y Turnos (Módulo 4)
+│   ├── entities/caja.entity.ts
+│   ├── cajas.service.ts
+│   └── cajas.controller.ts
 ├── roles/                     # Roles y Permisos (RBAC)
 │   ├── entities/role.entity.ts
 │   ├── entities/permission.entity.ts

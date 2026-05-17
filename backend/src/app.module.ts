@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { SeedModule } from './seed/seed.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
+import { CajasModule } from './cajas/cajas.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ProductsModule } from './products/products.module';
     SeedModule,
     CategoriesModule,
     ProductsModule,
+    CajasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

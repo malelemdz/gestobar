@@ -64,13 +64,13 @@ Este documento sirve como guía de desarrollo y checklist de progreso. Los módu
 ## Módulo 4: Sistema de Caja y Turnos
 *Control de flujo de dinero y tiempos de operación.*
 
-- [ ] **Gestión de Turnos**
-  - [ ] Lógica de Apertura de Caja (Usuario, fecha, monto inicial).
-  - [ ] Lógica de Cierre de Caja (Usuario, fecha, monto final).
-  - [ ] Soporte para turnos que cruzan la medianoche (ID de Turno único).
-- [ ] **Validación de Operación**
-  - [ ] Bloqueo de ventas si la caja no está abierta.
-  - [ ] Reporte resumido al cierre del turno (Ventas totales, comisiones, métodos de pago).
+- [x] **Gestión de Turnos**
+  - [x] Lógica de Apertura de Caja (Usuario, fecha, monto inicial).
+  - [x] Lógica de Cierre de Caja (Usuario, fecha, monto final).
+  - [x] Soporte para turnos que cruzan la medianoche (ID de Turno único).
+- [x] **Validación de Operación**
+  - [x] Bloqueo de ventas si la caja no está abierta.
+  - [x] Reporte resumido al cierre del turno (Ventas totales, comisiones, métodos de pago).
 
 ---
 
