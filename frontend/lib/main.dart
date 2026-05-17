@@ -1350,36 +1350,18 @@ class MainDashboardView extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          'Administración Pro',
+                          activeBarName,
                           style: theme.textTheme.labelSmall?.copyWith(
-                            fontSize: 10.0,
-                            color: const Color(0xFF00F0FF).withOpacity(0.8),
+                            fontSize: 11.0,
+                            color: const Color(0xFF00F0FF),
                             fontWeight: FontWeight.bold,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   ],
-                ),
-                const SizedBox(height: 20.0),
-                Text(
-                  activeBarName.toUpperCase(),
-                  style: GoogleFonts.jetBrainsMono(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 11.0,
-                    color: const Color(0xFF00F0FF),
-                    letterSpacing: 0.5,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2.0),
-                Text(
-                  'Usuario: ${user.nombre} (${user.rolNombre.toUpperCase()})',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontSize: 10.5,
-                    color: Colors.white.withOpacity(0.4),
-                  ),
                 ),
               ],
             ),
@@ -1457,22 +1439,7 @@ class MainDashboardView extends ConsumerWidget {
                   },
                 ),
 
-                // Logout danger option
-                _buildSidebarBottomItem(
-                  context: context,
-                  icon: Icons.logout,
-                  label: 'Cerrar Sesión',
-                  isSelected: false,
-                  isDanger: true,
-                  onTap: () {
-                    Navigator.pop(context);
-                    ref.read(authProvider.notifier).logout();
-                  },
-                ),
-
-                const SizedBox(height: 12.0),
-
-                // Modernist primary CTA Button matching "Cerrar Turno" in mockups
+                // Modernist primary CTA Button now functioning as "CERRAR SESIÓN"
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                   child: Container(
@@ -1496,17 +1463,11 @@ class MainDashboardView extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(100.0),
                         onTap: () {
                           Navigator.pop(context);
-                          // Prototype action: show feedback
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Operación de Cierre de Turno Iniciada.'),
-                              backgroundColor: Color(0xFF1E2024),
-                            ),
-                          );
+                          ref.read(authProvider.notifier).logout();
                         },
                         child: Center(
                           child: Text(
-                            'CERRAR TURNO',
+                            'CERRAR SESIÓN',
                             style: GoogleFonts.plusJakartaSans(
                               color: const Color(0xFF00363A), // Dark contrast color
                               fontWeight: FontWeight.w800,
