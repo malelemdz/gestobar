@@ -528,7 +528,9 @@ class MainDashboardView extends ConsumerWidget {
                               ),
                             ),
                           ],
-                          const Divider(height: 1.0),
+                        ),
+                      ),
+                      const Divider(height: 1.0),
                       const SizedBox(height: 12.0),
                       // Categoría: MÓDULOS
                       Padding(
@@ -663,8 +665,6 @@ class MainDashboardView extends ConsumerWidget {
                               ),
                             ),
                           ],
-                        ),
-                      ),      ],
                         ),
                       ),
                     ],
