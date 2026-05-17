@@ -63,10 +63,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   /// Cambia de bar activo en caliente (útil para SuperAdmins o dueños de múltiples locales)
-  Future<void> selectBar(String barId) async {
+  Future<void> selectBar(String? barId) async {
     final currentState = state;
     if (currentState is AuthAuthenticated) {
-      await _storage.write(ApiConstants.keyActiveBarId, barId);
+      if (barId == null) {
+        await _storage.delete(ApiConstants.keyActiveBarId);
+      } else {
+        await _storage.write(ApiConstants.keyActiveBarId, barId);
+      }
       state = currentState.copyWith(activeBarId: barId);
     }
   }
