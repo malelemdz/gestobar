@@ -4,9 +4,11 @@ import { SeedService } from './seed.service';
 import { SeedController } from './seed.controller';
 import { Role } from '../roles/entities/role.entity';
 import { Permission } from '../roles/entities/permission.entity';
+import { User } from '../users/entities/user.entity';
+import { Bar } from '../bars/entities/bar.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Role, Permission])],
+  imports: [TypeOrmModule.forFeature([Role, Permission, User, Bar])],
   controllers: [SeedController],
   providers: [SeedService],
 })
