@@ -7,7 +7,7 @@ import { TenantGuard } from '../auth/guards/tenant.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { Permissions } from '../auth/decorators/permissions.decorator';
 import { ActiveBarId } from '../auth/decorators/active-bar-id.decorator';
-import { ActiveUserId } from '../auth/decorators/active-user-id.decorator';
+import { ActiveUser, UserPayload } from '../auth/decorators/active-user.decorator';
 
 @Controller('cajas')
 @UseGuards(JwtAuthGuard, TenantGuard, PermissionsGuard)
@@ -24,9 +24,9 @@ export class CajasController {
   apertura(
     @Body() aperturaCajaDto: AperturaCajaDto,
     @ActiveBarId() barId: string,
-    @ActiveUserId() userId: string,
+    @ActiveUser() user: UserPayload,
   ) {
-    return this.cajasService.apertura(aperturaCajaDto, barId, userId);
+    return this.cajasService.apertura(aperturaCajaDto, barId, user);
   }
 
   @Post('cierre')
@@ -34,9 +34,9 @@ export class CajasController {
   cierre(
     @Body() cierreCajaDto: CierreCajaDto,
     @ActiveBarId() barId: string,
-    @ActiveUserId() userId: string,
+    @ActiveUser() user: UserPayload,
   ) {
-    return this.cajasService.cierre(cierreCajaDto, barId, userId);
+    return this.cajasService.cierre(cierreCajaDto, barId, user);
   }
 
   @Get()

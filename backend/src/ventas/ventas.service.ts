@@ -8,6 +8,8 @@ import { CajasService } from '../cajas/cajas.service';
 import { BarsService } from '../bars/bars.service';
 import { VentasGateway } from './ventas.gateway';
 import { CreateVentaDto } from './dto/create-venta.dto';
+import { AuditoriaService } from '../auditoria/auditoria.service';
+import { UserPayload } from '../auth/decorators/active-user.decorator';
 
 @Injectable()
 export class VentasService {
@@ -21,9 +23,10 @@ export class VentasService {
     private readonly cajasService: CajasService,
     private readonly barsService: BarsService,
     private readonly ventasGateway: VentasGateway,
+    private readonly auditoriaService: AuditoriaService,
   ) {}
 
-  async create(createVentaDto: CreateVentaDto, barId: string, userId: string): Promise<Venta> {
+  async create(createVentaDto: CreateVentaDto, barId: string, user: UserPayload): Promise<Venta> {
     // 1. Bloqueo de ventas si la caja no está abierta (Regla de negocio)
     const activeCaja = await this.cajasService.getActiveCaja(barId);
 
@@ -98,13 +101,28 @@ export class VentasService {
     const venta = this.ventaRepository.create({
       bar_id: barId,
       caja_id: activeCaja.id,
-      usuario_id: userId,
+      usuario_id: user.userId,
       total,
       metodo_pago: createVentaDto.metodo_pago,
       detalles,
     });
 
     const savedVenta = await this.ventaRepository.save(venta);
+
+    // Registro de Auditoría (Trazabilidad)
+    await this.auditoriaService.registrar({
+      barId,
+      usuarioId: user.userId,
+      rolNombre: user.rolName,
+      modulo: 'VENTAS',
+      accion: 'REGISTRAR_VENTA',
+      detalles: {
+        venta_id: savedVenta.id,
+        total: savedVenta.total,
+        metodo_pago: savedVenta.metodo_pago,
+        cantidad_items: savedVenta.detalles.length,
+      },
+    });
 
     // 5. Notificar en tiempo real por WebSockets a las Damas
     for (const d of savedVenta.detalles) {

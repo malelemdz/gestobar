@@ -115,6 +115,20 @@ El backend está construido con **NestJS (TypeScript)**, utilizando **TypeORM** 
 *   **Generación de Enlaces QR Dinámicos:**
     *   El servicio lee la variable de configuración `FRONTEND_URL` para construir de manera dinámica y exacta la URL final del menú basada en el slug único (`${frontendUrl}/menu/${bar.slug}`).
 
+### 10. Módulo 7: Auditoría y Trazabilidad (Ojo de Halcón)
+*   **Entidad de Auditoría (`src/auditoria/entities/auditoria.entity.ts`):**
+    *   Registra de forma blindada: `bar_id`, `usuario_id`, `rol_nombre`, `accion` (ej. `APERTURA`, `CIERRE`, `REGISTRAR_VENTA`), `modulo`, `detalles` (objeto JSONB con datos de payload anteriores y nuevos) e `ip_address` (nullable).
+*   **Globalización y Despliegue de Inyección:**
+    *   Configurado el módulo con el decorador `@Global()` en `src/auditoria/auditoria.module.ts`, permitiendo a cualquier servicio del backend registrar logs de forma asíncrona inyectando `AuditoriaService` sin acoplamientos complejos de imports.
+*   **Registro de Auditoría Automatizado:**
+    *   **Cajas:** Registra automáticamente aperturas de caja (con `monto_inicial`) y cierres (con `monto_final`, totales, comisiones y descuadres).
+    *   **Ventas:** Registra de forma atómica cada checkout realizado (ID de venta, montos cobrados, métodos de pago y cantidad de ítems).
+*   **Decorador `@ActiveUser()` y Clase `UserPayload`:**
+    *   Se creó `@ActiveUser()` en `src/auth/decorators/active-user.decorator.ts` para extraer con facilidad y total seguridad el payload completo del usuario (ID, Rol, Email) desde el token JWT.
+    *   **Compatibilidad TypeScript (TS1272):** Definida la clase `UserPayload` para resolver limpiamente las dependencias de reflexión de metadatos de TypeScript bajo la bandera `emitDecoratorMetadata`.
+*   **API Segura con Filtros Dinámicos:**
+    *   El endpoint `GET /auditoria` (protegido bajo el permiso `@Permissions('reportes.ver')`) ofrece un visor de logs multi-tenant que permite filtrar dinámicamente por usuario, rol, acción, módulo y rango de fechas (ISO) mediante operadores nativos de TypeORM como `Between`, `MoreThanOrEqual` y `LessThanOrEqual`.
+
 ---
 
 ## Archivos Clave del Backend
@@ -130,7 +144,8 @@ backend/src/
 │   ├── guards/permissions.guard.ts
 │   ├── guards/tenant.guard.ts
 │   ├── decorators/active-bar-id.decorator.ts
-│   └── decorators/active-user-id.decorator.ts
+│   ├── decorators/active-user-id.decorator.ts
+│   └── decorators/active-user.decorator.ts
 ├── bars/                      # CRUD de Bares (SaaS)
 │   ├── entities/bar.entity.ts
 │   ├── bars.service.ts
@@ -159,6 +174,11 @@ backend/src/
 │   ├── menu.service.ts
 │   ├── menu.controller.ts
 │   └── menu.module.ts
+├── auditoria/                 # Auditoría y Trazabilidad (Módulo 7)
+│   ├── entities/auditoria.entity.ts
+│   ├── dto/query-auditoria.dto.ts
+│   ├── auditoria.service.ts
+│   └── auditoria.controller.ts
 ├── roles/                     # Roles y Permisos (RBAC)
 │   ├── entities/role.entity.ts
 │   ├── entities/permission.entity.ts

@@ -13,6 +13,7 @@ import { ProductsModule } from './products/products.module';
 import { CajasModule } from './cajas/cajas.module';
 import { VentasModule } from './ventas/ventas.module';
 import { MenuModule } from './menu/menu.module';
+import { AuditoriaModule } from './auditoria/auditoria.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { MenuModule } from './menu/menu.module';
     CajasModule,
     VentasModule,
     MenuModule,
+    AuditoriaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -4,6 +4,8 @@ import { Repository, DataSource } from 'typeorm';
 import { Caja, EstadoCaja } from './entities/caja.entity';
 import { AperturaCajaDto } from './dto/apertura-caja.dto';
 import { CierreCajaDto } from './dto/cierre-caja.dto';
+import { AuditoriaService } from '../auditoria/auditoria.service';
+import { UserPayload } from '../auth/decorators/active-user.decorator';
 
 @Injectable()
 export class CajasService {
@@ -11,6 +13,7 @@ export class CajasService {
     @InjectRepository(Caja)
     private readonly cajaRepository: Repository<Caja>,
     private readonly dataSource: DataSource,
+    private readonly auditoriaService: AuditoriaService,
   ) {}
 
   async getActiveCaja(barId: string): Promise<Caja> {
@@ -33,7 +36,7 @@ export class CajasService {
     };
   }
 
-  async apertura(aperturaCajaDto: AperturaCajaDto, barId: string, userId: string): Promise<Caja> {
+  async apertura(aperturaCajaDto: AperturaCajaDto, barId: string, user: UserPayload): Promise<Caja> {
     // Verificar si ya existe una caja abierta para este bar
     const activeState = await this.getEstado(barId);
     if (activeState.abierta) {
@@ -42,19 +45,34 @@ export class CajasService {
 
     const nuevaCaja = this.cajaRepository.create({
       bar_id: barId,
-      apertura_usuario_id: userId,
+      apertura_usuario_id: user.userId,
       monto_inicial: aperturaCajaDto.monto_inicial,
       estado: EstadoCaja.ABIERTA,
     });
 
-    return await this.cajaRepository.save(nuevaCaja);
+    const savedCaja = await this.cajaRepository.save(nuevaCaja);
+
+    // Registro de Auditoría (Trazabilidad)
+    await this.auditoriaService.registrar({
+      barId,
+      usuarioId: user.userId,
+      rolNombre: user.rolName,
+      modulo: 'CAJAS',
+      accion: 'APERTURA',
+      detalles: {
+        caja_id: savedCaja.id,
+        monto_inicial: savedCaja.monto_inicial,
+      },
+    });
+
+    return savedCaja;
   }
 
-  async cierre(cierreCajaDto: CierreCajaDto, barId: string, userId: string): Promise<any> {
+  async cierre(cierreCajaDto: CierreCajaDto, barId: string, user: UserPayload): Promise<any> {
     // Obtener la caja activa
     const caja = await this.getActiveCaja(barId);
 
-    caja.cierre_usuario_id = userId;
+    caja.cierre_usuario_id = user.userId;
     caja.fecha_cierre = new Date();
     caja.monto_final = cierreCajaDto.monto_final;
     caja.estado = EstadoCaja.CERRADA;
@@ -99,6 +117,24 @@ export class CajasService {
 
     const balanceEsperado = caja.monto_inicial + ventasTotales - comisionesTotales;
     const diferencia = savedCaja.monto_final! - balanceEsperado;
+
+    // Registro de Auditoría (Trazabilidad)
+    await this.auditoriaService.registrar({
+      barId,
+      usuarioId: user.userId,
+      rolNombre: user.rolName,
+      modulo: 'CAJAS',
+      accion: 'CIERRE',
+      detalles: {
+        caja_id: savedCaja.id,
+        monto_inicial: savedCaja.monto_inicial,
+        monto_final: savedCaja.monto_final,
+        ventas_totales: ventasTotales,
+        comisiones_pagadas: comisionesTotales,
+        balance_esperado: balanceEsperado,
+        diferencia: diferencia,
+      },
+    });
 
     return {
       mensaje: 'Caja cerrada exitosamente',

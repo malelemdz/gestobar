@@ -104,11 +104,11 @@ Este documento sirve como guía de desarrollo y checklist de progreso. Los módu
 ## Módulo 7: Auditoría y Trazabilidad (Ojo de Halcón)
 *Seguridad y registro histórico de acciones.*
 
-- [ ] **Sistema de Logs**
-  - [ ] Registro de cada acción relevante (Quién, qué, cuándo, rol, módulo).
-  - [ ] Guardado de "Payload" (Datos anteriores y nuevos) en formato JSON.
-- [ ] **Consultas de Auditoría**
-  - [ ] Endpoints con filtros por fecha, usuario, rol y tipo de acción.
+- [x] **Sistema de Logs**
+  - [x] Registro de cada acción relevante (Quién, qué, cuándo, rol, módulo).
+  - [x] Guardado de "Payload" (Datos anteriores y nuevos) en formato JSON.
+- [x] **Consultas de Auditoría**
+  - [x] Endpoints con filtros por fecha, usuario, rol y tipo de acción.
 
 ---
 

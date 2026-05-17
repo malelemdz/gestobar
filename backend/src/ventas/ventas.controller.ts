@@ -7,6 +7,7 @@ import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { Permissions } from '../auth/decorators/permissions.decorator';
 import { ActiveBarId } from '../auth/decorators/active-bar-id.decorator';
 import { ActiveUserId } from '../auth/decorators/active-user-id.decorator';
+import { ActiveUser, UserPayload } from '../auth/decorators/active-user.decorator';
 
 @Controller('ventas')
 @UseGuards(JwtAuthGuard, TenantGuard, PermissionsGuard)
@@ -18,9 +19,9 @@ export class VentasController {
   create(
     @Body() createVentaDto: CreateVentaDto,
     @ActiveBarId() barId: string,
-    @ActiveUserId() userId: string,
+    @ActiveUser() user: UserPayload,
   ) {
-    return this.ventasService.create(createVentaDto, barId, userId);
+    return this.ventasService.create(createVentaDto, barId, user);
   }
 
   @Get('comisiones')
