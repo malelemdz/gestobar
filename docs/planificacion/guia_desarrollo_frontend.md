@@ -1,6 +1,6 @@
 # Guía de Desarrollo Frontend (Flutter) - Gestobar POS & SaaS
 
-Esta guía detalla la arquitectura, el diseño de la interfaz de usuario, la navegación adaptativa y la integración con nuestro backend multi-tenant para la aplicación Flutter de **Gestobar**. 
+Esta guía detalla la arquitectura, el diseño de la interfaz de usuario, la navegación adaptativa y la integración con nuestro backend multi-tenant para la aplicación **Flutter nativa (diseñada específicamente para dispositivos móviles y tablets Android / iOS)** de **Gestobar**. 
 
 Este documento sirve como plano de ingeniería para trasladar y relocalizar los diseños HTML interactivos existentes en la carpeta `docs/diseno-front` a un sistema modular y moderno en Flutter.
 
@@ -8,27 +8,41 @@ Este documento sirve como plano de ingeniería para trasladar y relocalizar los 
 
 ## 🎨 1. Sistema de Diseño Adaptativo y Paleta de Colores
 
-Para responder al entorno del bar y a las preferencias de los administradores, la interfaz implementa un **Doble Tema** (Claro y Oscuro) optimizado para pantallas táctiles de móviles y tablets.
+Para responder al entorno del bar y a las preferencias de los administradores, la interfaz implementa un **Doble Tema** (Claro y Oscuro) optimizado para pantallas táctiles de móviles y tablets, mapeando píxel por píxel la configuración estética del bar.
 
-### Paletas de Colores Armonizadas
+### Paletas de Colores Armonizadas (Extracto HTML de Referencia)
 
-| Elemento | 🌙 Modo Oscuro (Default - Bar Night) | ☀️ Modo Claro (Administrativo / Día) |
+| Elemento | 🌙 Modo Oscuro (Midnight Gold - Default Bar Night) | ☀️ Modo Claro (Golden Slate - Turno de Día) |
 | :--- | :--- | :--- |
-| **Fondo de la App** | `#0F0C1B` (Negro medianoche violeta) | `#F8FAFC` (Gris Slate ultra claro) |
-| **Superficies (Cards/Modals)** | `#17132B` (Violeta oscuro / Glassmorphic) | `#FFFFFF` (Blanco puro satinado) |
-| **Bordes y Divisores** | `#2A244D` (Violeta medio) | `#E2E8F0` (Gris borde suave) |
-| **Color Primario (Accent)** | `#FFB800` (Oro ámbar brillante) | `#D97706` (Ámbar tostado de alta visibilidad) |
-| **Color Secundario** | `#A855F7` (Púrpura neón) | `#7C3AED` (Violeta real profundo) |
-| **Texto Principal** | `#FFFFFF` (Blanco absoluto) | `#0F172A` (Gris pizarra oscuro) |
-| **Texto Secundario** | `#9CA3AF` (Gris frío) | `#475569` (Gris medio) |
+| **Fondo de la App** | `#181309` (Negro dorado medianoche / `background`) | `#F8F9FA` (Gris slate claro / `background`) |
+| **Fondo de Contenedor** | `#241F14` (`surface-container`) | `#EDEEEF` (`surface-container`) |
+| **Superficie de Tarjetas (Cards)** | `#2F291E` (`surface-container-high`) | `#FFFFFF` (`surface-container-lowest`) |
+| **Bordes y Contornos** | `#504532` (`outline-variant`) | `#D4C5AB` (`outline-variant`) |
+| **Color Primario (Accent)** | `#FBBC00` (Oro ámbar brillante / `primary-fixed-dim`) | `#795900` (Ámbar oscuro / `primary`) |
+| **Color Secundario** | `#43DDE6` (Cian neón / `secondary`) | `#006A65` (Verde azulado / `secondary`) |
+| **Texto Principal** | `#EDE1D0` (Crema cálido / `on-surface`) | `#191C1D` (Carbono oscuro / `on-surface`) |
+| **Texto Secundario** | `#D4C5AB` (Gris arena / `on-surface-variant`) | `#504532` (Marrón suave / `on-surface-variant`) |
 | **Caja Abierta (Éxito)** | `#10B981` (Verde esmeralda) | `#059669` (Verde oscuro) |
 | **Caja Cerrada (Peligro)** | `#EF4444` (Rojo carmesí) | `#DC2626` (Rojo intenso) |
-| **Descuadre (Alerta)** | `#F59E0B` (Naranja ámbar) | `#D97706` (Naranja medio) |
 
-### Tipografía y Componentes Táctiles
-*   **Fuente Principal**: `Outfit` o `Space Grotesk` (Google Fonts) para un estilo moderno, limpio y geométrico.
-*   **Micro-animaciones**: Transiciones de escala fluidas (`AnimatedContainer`, `Hero`) al tocar productos, y partículas animadas cuando una Dama recibe una comisión.
-*   **Teclado Numérico Tactil**: Botones redondos de gran formato con vibración háptica (`HapticFeedback.lightImpact`) para evitar errores humanos del cajero al registrar billetes.
+### Sistema Tipográfico (Tipografías y Tamaños)
+*   **Fuentes del Sistema**:
+    *   `Plus Jakarta Sans` (Google Fonts): Para títulos y encabezados de alta jerarquía, otorgando un carácter distintivo e innovador.
+    *   `Inter` (Google Fonts): Para textos descriptivos, etiquetas de botones y números/denominaciones del POS.
+*   **Escalas y Pesos en Flutter (`TextStyle`)**:
+    *   **`display-lg`**: `48.0` logical pixels (lineHeight `1.16` (`56.0/48.0`), letterSpacing `-0.02`, `FontWeight.w700`) - Usado para montos de dinero principales y totales de caja.
+    *   **`headline-lg`**: `32.0` logical pixels (lineHeight `1.25`, letterSpacing `-0.02`, `FontWeight.w700` / `w600`) - Títulos de páginas principales.
+    *   **`headline-md`**: `24.0` logical pixels (lineHeight `1.33`, letterSpacing `-0.01`, `FontWeight.w600`) - Títulos de componentes y widgets bento.
+    *   **`headline-sm`**: `20.0` logical pixels (lineHeight `1.40`, `FontWeight.w600`) - Nombres de tragos y productos en tarjetas.
+    *   **`body-lg`**: `18.0` logical pixels (lineHeight `1.55` (`28.0/18.0`), `FontWeight.w400`) - Texto de cuerpo extendido.
+    *   **`body-md`**: `16.0` logical pixels (lineHeight `1.50` (`24.0/16.0`), `FontWeight.w400`) - Textos estándar generales.
+    *   **`label-lg`**: `14.0` logical pixels (lineHeight `1.42` (`20.0/14.0`), letterSpacing `0.02`, `FontWeight.w600`) - Botones e indicadores rápidos.
+    *   **`label-sm`**: `12.0` logical pixels (lineHeight `1.33` (`16.0/12.0`), letterSpacing `0.04`, `FontWeight.w600`) - Badges de estado e información secundaria.
+
+### Espaciados y Grid Layout
+*   **`xs`**: `4.0` px | **`base`**: `8.0` px | **`sm`**: `12.0` px | **`margin-mobile` / `gutter`**: `16.0` px.
+*   **`md`**: `24.0` px | **`lg`**: `40.0` px | **`xl`**: `64.0` px.
+*   **Área de Toque Mínima (Touch Target)**: Mínimo `48.0` px de altura/anchura para asegurar operatividad táctil impecable en barras oscuras y con movimiento continuo.
 
 ---
 

@@ -205,3 +205,12 @@ backend/src/
     ├── seed.service.ts
     └── seed.controller.ts
 ```
+
+---
+
+## ⚠️ Estado de Pruebas e Integración (Importante)
+> [!IMPORTANT]
+> **Todo el código fuente del Backend ha sido escrito de forma exhaustiva, estructurada y robusta, y compila al 100% de manera perfecta** (sin ningún error ni advertencia en TypeScript o NestJS).
+>
+> Sin embargo, **ninguna de las funcionalidades ha sido probada aún en vivo (producción o integración end-to-end con cliente)**. Todo el sistema está en un estado *funcional puro en código*, listo para ser sometido a pruebas de integración con el cliente Flutter y pruebas unitarias/E2E avanzadas en el transcurso del desarrollo. Esto es una práctica habitual de desarrollo backend-first, donde la maduración de la API ocurrirá progresivamente a medida que el cliente frontend la consuma y detectemos pequeños ajustes finos.
+
