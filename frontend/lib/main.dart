@@ -429,61 +429,63 @@ class MainDashboardView extends ConsumerWidget {
             // ==========================================
             return Row(
               children: [
-                // SIDEBAR PREMIUM CUSTOM (Midnight Gold - Floating Flat Look)
+                // SIDEBAR PREMIUM CUSTOM (Midnight Gold - Ultra-Compact Flat Minimalist)
                 Container(
-                  width: 260.0,
-                  color: theme.colorScheme.background,
+                  width: 220.0,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.background,
+                    border: Border(
+                      right: BorderSide(
+                        color: theme.colorScheme.outlineVariant.withOpacity(0.12),
+                        width: 0.8,
+                      ),
+                    ),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // Cabecera del Sidebar: Espacio de Logo, Título y Nombre del Bar
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                // 🌟 Contenedor/Slot para el futuro logo oficial
+                                // 🌟 Logo Slot Compacto y Minimalista (32x32)
                                 Container(
-                                  width: 44.0,
-                                  height: 44.0,
+                                  width: 32.0,
+                                  height: 32.0,
                                   decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: theme.colorScheme.primary.withOpacity(0.3),
-                                      width: 1.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    color: theme.colorScheme.primary.withOpacity(0.05),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    color: theme.colorScheme.primary,
                                   ),
                                   child: Center(
                                     child: Icon(
                                       Icons.local_bar,
-                                      color: theme.colorScheme.primary,
-                                      size: 24.0,
+                                      color: theme.colorScheme.onPrimary,
+                                      size: 18.0,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 12.0),
+                                const SizedBox(width: 10.0),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Gestobar',
-                                        style: theme.textTheme.titleLarge?.copyWith(
+                                        style: theme.textTheme.titleMedium?.copyWith(
                                           fontWeight: FontWeight.w900,
                                           color: theme.colorScheme.primary,
-                                          letterSpacing: 1.5,
-                                          fontSize: 20.0,
+                                          letterSpacing: 0.5,
+                                          fontSize: 15.0,
                                         ),
                                       ),
-                                      const SizedBox(height: 2.0),
-                                      // Píldora del Sistema
                                       Text(
                                         'SaaS Hospitality',
                                         style: theme.textTheme.labelSmall?.copyWith(
-                                          fontSize: 9.0,
+                                          fontSize: 8.0,
                                           color: theme.colorScheme.secondary,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -493,31 +495,28 @@ class MainDashboardView extends ConsumerWidget {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 16.0),
+                            const SizedBox(height: 12.0),
                             // Nombre de la Sucursal / Bar asignado
                             Container(
                               width: double.infinity,
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
                               decoration: BoxDecoration(
-                                color: theme.colorScheme.onSurface.withOpacity(0.03),
-                                borderRadius: BorderRadius.circular(8.0),
-                                border: Border.all(
-                                  color: theme.colorScheme.outline.withOpacity(0.1),
-                                ),
+                                color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(6.0),
                               ),
                               child: Row(
                                 children: [
                                   Icon(
                                     Icons.storefront_outlined,
-                                    size: 14.0,
-                                    color: theme.colorScheme.primary.withOpacity(0.7),
+                                    size: 12.0,
+                                    color: theme.colorScheme.primary,
                                   ),
-                                  const SizedBox(width: 8.0),
+                                  const SizedBox(width: 6.0),
                                   Expanded(
                                     child: Text(
                                       activeBarName,
                                       style: theme.textTheme.labelSmall?.copyWith(
-                                        color: theme.colorScheme.onSurface,
+                                        color: theme.colorScheme.onSurfaceVariant,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 11.0,
                                       ),
@@ -620,39 +619,19 @@ class MainDashboardView extends ConsumerWidget {
                   ),
                 ),
 
-                // CUERPO CENTRAL DE LA PÁGINA (ESTILO PANEL DE CONTROL FLOTANTE PREMIUM)
+                // CUERPO CENTRAL DE LA PÁGINA (ESTILO PANEL DE CONTROL FLAT MINIMALISTA)
                 Expanded(
-                  child: Container(
-                    color: theme.colorScheme.background,
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(24.0),
-                        bottomLeft: Radius.circular(24.0),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
-                              blurRadius: 15.0,
-                              offset: const Offset(-5, 0),
-                            ),
-                          ],
-                        ),
-                        child: Scaffold(
-                          appBar: _buildCustomAppBar(
-                            context: context,
-                            ref: ref,
-                            user: user,
-                            pageLabel: _getTitleForView(activeView),
-                            isTablet: true,
-                            activeBarId: authState.activeBarId,
-                            activeView: activeView,
-                          ),
-                          body: _buildBodyForView(activeView),
-                        ),
-                      ),
+                  child: Scaffold(
+                    appBar: _buildCustomAppBar(
+                      context: context,
+                      ref: ref,
+                      user: user,
+                      pageLabel: _getTitleForView(activeView),
+                      isTablet: true,
+                      activeBarId: authState.activeBarId,
+                      activeView: activeView,
                     ),
+                    body: _buildBodyForView(activeView),
                   ),
                 ),
               ],
@@ -1202,7 +1181,7 @@ class MainDashboardView extends ConsumerWidget {
     );
   }
 
-  // 🌟 Diseña un botón de navegación premium estilizado con micro-animaciones y bordes de neón
+  // 🌟 Botón de navegación del Sidebar: Ultra-compacto, plano y minimalista (Estilo macOS)
   Widget _buildSidebarNavItem({
     required BuildContext context,
     required IconData icon,
@@ -1212,98 +1191,57 @@ class MainDashboardView extends ConsumerWidget {
   }) {
     final theme = Theme.of(context);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12.0),
-        onTap: onTap,
-        child: Container(
-          height: 48.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.0),
-            gradient: isSelected
-                ? LinearGradient(
-                    colors: [
-                      theme.colorScheme.primary.withOpacity(0.12),
-                      theme.colorScheme.primary.withOpacity(0.02),
-                    ],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  )
-                : null,
-            border: isSelected
-                ? Border.all(
-                    color: theme.colorScheme.primary.withOpacity(0.2),
-                    width: 1.0,
-                  )
-                : null,
-          ),
-          child: Row(
-            children: [
-              // 🌟 Indicador de borde izquierdo premium
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeInOut,
-                width: 3.5,
-                height: isSelected ? 20.0 : 0.0,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(4.0),
-                    bottomRight: Radius.circular(4.0),
-                  ),
-                  boxShadow: [
-                    if (isSelected)
-                      BoxShadow(
-                        color: theme.colorScheme.primary.withOpacity(0.6),
-                        blurRadius: 6.0,
-                        spreadRadius: 1.0,
-                      )
-                  ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Material(
+        color: isSelected 
+            ? theme.colorScheme.primary.withOpacity(0.09) 
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(6.0),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(6.0),
+          onTap: onTap,
+          child: Container(
+            height: 38.0,
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 16.0,
+                  color: isSelected 
+                      ? theme.colorScheme.primary 
+                      : theme.colorScheme.onSurfaceVariant.withOpacity(0.75),
                 ),
-              ),
-              const SizedBox(width: 12.0),
-              // Icono con color responsivo
-              Icon(
-                icon,
-                size: 20.0,
-                color: isSelected 
-                    ? theme.colorScheme.primary 
-                    : theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
-              ),
-              const SizedBox(width: 12.0),
-              // Texto del Label
-              Expanded(
-                child: Text(
-                  label,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: 13.5,
-                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
-                    color: isSelected 
-                        ? theme.colorScheme.primary 
-                        : theme.colorScheme.onSurfaceVariant.withOpacity(0.85),
-                    letterSpacing: 0.2,
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      fontSize: 12.0,
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                      color: isSelected 
+                          ? theme.colorScheme.primary 
+                          : theme.colorScheme.onSurfaceVariant.withOpacity(0.85),
+                      letterSpacing: 0.1,
+                    ),
                   ),
                 ),
-              ),
-              // Pequeño indicador de chevron flotante cuando está seleccionado
-              if (isSelected)
-                Padding(
-                  padding: const EdgeInsets.only(right: 12.0),
-                  child: Icon(
-                    Icons.keyboard_arrow_right,
-                    size: 16.0,
-                    color: theme.colorScheme.primary.withOpacity(0.8),
+                if (isSelected)
+                  Icon(
+                    Icons.circle,
+                    size: 5.0,
+                    color: theme.colorScheme.primary,
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // 🛠️ Diseña un botón de menú inferior estilizado para el Sidebar
+  // 🛠️ Botón inferior del Sidebar: Ultra-compacto, plano y minimalista (Estilo macOS)
   Widget _buildSidebarBottomItem({
     required BuildContext context,
     required IconData icon,
@@ -1315,35 +1253,42 @@ class MainDashboardView extends ConsumerWidget {
     final theme = Theme.of(context);
     final Color itemColor = isDanger
         ? AppTheme.colorDanger
-        : (isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant);
+        : (isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant.withOpacity(0.8));
 
-    return Material(
-      color: isSelected ? theme.colorScheme.primary.withOpacity(0.08) : Colors.transparent,
-      borderRadius: BorderRadius.circular(8.0),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8.0),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
-          child: Row(
-            children: [
-              Icon(
-                icon,
-                size: 18.0,
-                color: itemColor,
-              ),
-              const SizedBox(width: 12.0),
-              Expanded(
-                child: Text(
-                  label,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                    color: itemColor,
-                    fontSize: 13.0,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Material(
+        color: isSelected 
+            ? theme.colorScheme.primary.withOpacity(0.09) 
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(6.0),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(6.0),
+          onTap: onTap,
+          child: Container(
+            height: 36.0,
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 15.0,
+                  color: itemColor,
+                ),
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      fontSize: 11.5,
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                      color: itemColor,
+                      letterSpacing: 0.1,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1586,38 +1531,21 @@ class DashboardPage extends ConsumerWidget {
     required VoidCallback onTap,
   }) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.0),
-        gradient: LinearGradient(
-          colors: [
-            color.withOpacity(isDark ? 0.07 : 0.05),
-            theme.colorScheme.surface,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(isDark ? 0.2 : 0.05),
-            blurRadius: 10.0,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12.0),
         border: Border.all(
-          color: color.withOpacity(0.18),
-          width: 1.2,
+          color: theme.colorScheme.outlineVariant.withOpacity(0.25),
+          width: 0.8,
         ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(12.0),
           onTap: onTap,
-          splashColor: color.withOpacity(0.1),
-          highlightColor: color.withOpacity(0.05),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Column(
@@ -1627,44 +1555,43 @@ class DashboardPage extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Icono con contenedor de brillo de neón
+                    // Icono con contenedor de color SÓLIDO del tema en opacidad baja
                     Container(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(6.0),
                       decoration: BoxDecoration(
-                        color: color.withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(10.0),
-                        border: Border.all(color: color.withOpacity(0.2), width: 1.0),
+                        color: color.withOpacity(0.09),
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
-                      child: Icon(icon, color: color, size: 20.0),
+                      child: Icon(icon, color: color, size: 18.0),
                     ),
-                    // Pequeña flecha de acción minimalista
+                    // Indicador de navegación simple
                     Icon(
-                      Icons.arrow_outward,
+                      Icons.chevron_right,
                       size: 14.0,
-                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.4),
+                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
                     ),
                   ],
                 ),
+                const SizedBox(height: 8.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
                       style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 13.5,
-                        letterSpacing: 0.1,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13.0,
+                        color: theme.colorScheme.onSurface,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2.0),
+                    const SizedBox(height: 1.0),
                     Text(
                       subtitle,
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w500,
+                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
+                        fontSize: 9.0,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
