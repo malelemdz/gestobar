@@ -6,6 +6,7 @@ import 'core/network/dio_client.dart';
 import 'core/constants/api_constants.dart';
 import 'features/auth/providers/auth_provider.dart';
 import 'features/auth/providers/auth_state.dart';
+import 'features/auth/models/user_model.dart';
 
 void main() {
   // Asegura que las llamadas a canales nativos de Flutter (como Secure Storage)
@@ -589,9 +590,13 @@ class MainDashboardView extends ConsumerWidget {
                 // CUERPO CENTRAL DE LA PÁGINA
                 Expanded(
                   child: Scaffold(
-                    appBar: AppBar(
-                      title: Text(activeItem['label'] as String),
-                      elevation: 0,
+                    appBar: _buildCustomAppBar(
+                      context: context,
+                      ref: ref,
+                      user: user,
+                      pageLabel: activeItem['label'] as String,
+                      isTablet: true,
+                      activeBarId: authState.activeBarId,
                     ),
                     body: activeItem['view'] as Widget,
                   ),
@@ -605,25 +610,13 @@ class MainDashboardView extends ConsumerWidget {
             final showBottomBar = navItems.length > 1;
 
             return Scaffold(
-              appBar: AppBar(
-                title: Text(activeItem['label'] as String),
-                actions: [
-                  if (user.rolNombre == 'SUPERADMIN')
-                    IconButton(
-                      icon: const Icon(Icons.swap_horiz),
-                      tooltip: 'Cambiar de Sucursal',
-                      onPressed: () {
-                        ref.read(authProvider.notifier).selectBar(null);
-                      },
-                    ),
-                  IconButton(
-                    icon: const Icon(Icons.logout),
-                    tooltip: 'Cerrar Sesión',
-                    onPressed: () {
-                      ref.read(authProvider.notifier).logout();
-                    },
-                  ),
-                ],
+              appBar: _buildCustomAppBar(
+                context: context,
+                ref: ref,
+                user: user,
+                pageLabel: activeItem['label'] as String,
+                isTablet: false,
+                activeBarId: authState.activeBarId,
               ),
               body: activeItem['view'] as Widget,
               bottomNavigationBar: showBottomBar
@@ -663,32 +656,32 @@ class MainDashboardView extends ConsumerWidget {
     );
   }
 
-  // Genera el listado de páginas dinámicas según el rol autenticado
+  // Genera el listado de páginas dinámicas según el rol autenticado con nombres cortos
   List<Map<String, dynamic>> _getNavItemsForRole(String roleName) {
     switch (roleName.toUpperCase()) {
       case 'SUPERADMIN':
       case 'ADMIN':
         return [
           {
-            'label': 'Dashboard',
+            'label': 'Dash',
             'icon': Icons.dashboard_outlined,
             'icon_active': Icons.dashboard,
             'view': const DashboardPage(),
           },
           {
-            'label': 'Punto de Venta',
+            'label': 'POS',
             'icon': Icons.point_of_sale_outlined,
             'icon_active': Icons.point_of_sale,
             'view': const PosPage(),
           },
           {
-            'label': 'Caja y Turnos',
+            'label': 'Caja',
             'icon': Icons.payments_outlined,
             'icon_active': Icons.payments,
             'view': const CajaPage(),
           },
           {
-            'label': 'Auditoría',
+            'label': 'Audit',
             'icon': Icons.security_outlined,
             'icon_active': Icons.security,
             'view': const AuditoriaPage(),
@@ -697,13 +690,13 @@ class MainDashboardView extends ConsumerWidget {
       case 'BARMAN':
         return [
           {
-            'label': 'Punto de Venta',
+            'label': 'POS',
             'icon': Icons.point_of_sale_outlined,
             'icon_active': Icons.point_of_sale,
             'view': const PosPage(),
           },
           {
-            'label': 'Caja y Turnos',
+            'label': 'Caja',
             'icon': Icons.payments_outlined,
             'icon_active': Icons.payments,
             'view': const CajaPage(),
@@ -712,7 +705,7 @@ class MainDashboardView extends ConsumerWidget {
       case 'DAMA':
         return [
           {
-            'label': 'Mis Comisiones',
+            'label': 'Comis',
             'icon': Icons.star_outline,
             'icon_active': Icons.star,
             'view': const DamaPage(),
@@ -721,13 +714,244 @@ class MainDashboardView extends ConsumerWidget {
       default:
         return [
           {
-            'label': 'Dashboard',
+            'label': 'Dash',
             'icon': Icons.dashboard_outlined,
             'icon_active': Icons.dashboard,
             'view': const DashboardPage(),
           },
         ];
     }
+  }
+
+  // 🛠️ Diseña el AppBar personalizado y dinámico para cada Rol y Vista
+  AppBar _buildCustomAppBar({
+    required BuildContext context,
+    required WidgetRef ref,
+    required UserModel user,
+    required String pageLabel,
+    required bool isTablet,
+    required String? activeBarId,
+  }) {
+    final theme = Theme.of(context);
+    final String activeBarName = activeBarId != null ? 'El Templo del Oro' : 'Consola Global';
+    final String role = user.rolNombre.toUpperCase();
+    final bool isCajaAbierta = true; // Simulación para el prototipo visual
+
+    Widget leadingWidget;
+    if (isTablet) {
+      leadingWidget = const Padding(
+        padding: EdgeInsets.only(left: 16.0),
+        child: Icon(Icons.blur_on, color: Colors.amber, size: 28.0),
+      );
+    } else {
+      leadingWidget = Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: theme.colorScheme.primary.withOpacity(0.1),
+          ),
+          child: Icon(Icons.local_bar, color: theme.colorScheme.primary, size: 20.0),
+        ),
+      );
+    }
+
+    List<Widget> actionsList = [];
+
+    // Acción 1: Estado de Caja dinámico (Redirige al tocarlo al módulo de Caja)
+    if (role != 'DAMA') {
+      actionsList.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: InkWell(
+            onTap: () {
+              if (role == 'SUPERADMIN' || role == 'ADMIN') {
+                ref.read(navIndexProvider.notifier).state = 2; // Salta a Caja
+              } else if (role == 'BARMAN') {
+                ref.read(navIndexProvider.notifier).state = 1; // Salta a Caja
+              }
+            },
+            borderRadius: BorderRadius.circular(20.0),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              decoration: BoxDecoration(
+                color: isCajaAbierta
+                    ? AppTheme.colorSuccess.withOpacity(0.1)
+                    : AppTheme.colorWarning.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(
+                  color: isCajaAbierta
+                      ? AppTheme.colorSuccess.withOpacity(0.3)
+                      : AppTheme.colorWarning.withOpacity(0.3),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 6.0,
+                    height: 6.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isCajaAbierta ? AppTheme.colorSuccess : AppTheme.colorWarning,
+                    ),
+                  ),
+                  const SizedBox(width: 6.0),
+                  Text(
+                    isCajaAbierta ? 'Caja Abierta' : 'Caja Cerrada',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: isCajaAbierta ? AppTheme.colorSuccess : AppTheme.colorWarning,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      actionsList.add(const SizedBox(width: 12.0));
+    }
+
+    // Acción 2: Monitoreo en vivo de comisiones acumuladas y WebSocket para Damas
+    if (role == 'DAMA') {
+      // Indicador WebSocket
+      actionsList.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            decoration: BoxDecoration(
+              color: const Color(0xFF00ADB5).withOpacity(0.15),
+              borderRadius: BorderRadius.circular(20.0),
+              border: Border.all(color: const Color(0xFF00ADB5).withOpacity(0.3)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 6.0,
+                  height: 6.0,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xFF00ADB5),
+                  ),
+                ),
+                const SizedBox(width: 6.0),
+                const Text(
+                  'Realtime',
+                  style: TextStyle(
+                    color: Color(0xFF00ADB5),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 9.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      actionsList.add(const SizedBox(width: 8.0));
+
+      // Indicador de Ganancias Acumuladas
+      actionsList.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            decoration: BoxDecoration(
+              color: Colors.amber.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(20.0),
+              border: Border.all(color: Colors.amber.withOpacity(0.3)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.payments_outlined, color: Colors.amber, size: 14.0),
+                const SizedBox(width: 6.0),
+                Text(
+                  '150.00 Bs',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: Colors.amber,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      actionsList.add(const SizedBox(width: 12.0));
+    }
+
+    // Acción 3: Botón de cambio rápido de sucursal para SuperAdmins
+    if (role == 'SUPERADMIN') {
+      actionsList.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: OutlinedButton.icon(
+            icon: const Icon(Icons.swap_horiz, size: 14.0),
+            label: Text(
+              activeBarId != null ? 'Cambiar Bar' : 'Bares',
+              style: const TextStyle(fontSize: 10.0),
+            ),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              side: BorderSide(color: theme.colorScheme.primary.withOpacity(0.4)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
+            onPressed: () {
+              ref.read(authProvider.notifier).selectBar(null);
+            },
+          ),
+        ),
+      );
+      actionsList.add(const SizedBox(width: 12.0));
+    }
+
+    // Acción 4: Logout (Solo en móviles)
+    if (!isTablet) {
+      actionsList.add(
+        IconButton(
+          icon: const Icon(Icons.logout, size: 20.0),
+          tooltip: 'Salir',
+          onPressed: () {
+            ref.read(authProvider.notifier).logout();
+          },
+        ),
+      );
+      actionsList.add(const SizedBox(width: 8.0));
+    }
+
+    return AppBar(
+      leading: leadingWidget,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            pageLabel,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          Text(
+            activeBarName,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
+              fontSize: 10.0,
+            ),
+          ),
+        ],
+      ),
+      actions: actionsList,
+      elevation: 0,
+      backgroundColor: theme.colorScheme.background,
+    );
   }
 }
 
