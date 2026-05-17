@@ -129,6 +129,16 @@ El backend está construido con **NestJS (TypeScript)**, utilizando **TypeORM** 
 *   **API Segura con Filtros Dinámicos:**
     *   El endpoint `GET /auditoria` (protegido bajo el permiso `@Permissions('reportes.ver')`) ofrece un visor de logs multi-tenant que permite filtrar dinámicamente por usuario, rol, acción, módulo y rango de fechas (ISO) mediante operadores nativos de TypeORM como `Between`, `MoreThanOrEqual` y `LessThanOrEqual`.
 
+### 11. Módulo 8: Estadísticas y Business Intelligence (BI)
+*   **Diseño de Estadísticas Centralizadas (`src/estadisticas/`):**
+    *   **Resumen General (`/estadisticas/resumen`):** Devuelve agregados de ingresos totales, comisiones totales, ingreso neto estimado (`ingresos_totales - comisiones_pagadas`), cantidad de transacciones y un desglose pormenorizado del volumen y cantidad por método de pago (tarjeta, efectivo, QR, transferencia, etc.) filtrado por rangos de fechas (con un inteligente default de los últimos 30 días).
+    *   **Ranking de Productos (`/estadisticas/ranking-productos`):** Agrega las ventas en el rango de fechas para listar variantes, productos y categorías más demandadas con volumen vendido y dinero total recaudado.
+    *   **Productividad de Damas (`/estadisticas/ranking-damas`):** Muestra el ranking de efectividad del personal de compañía, detallando comisiones acumuladas, cantidad de invitaciones recibidas y turnos/servicios de compañía prestados en el periodo de tiempo analizado.
+*   **Reportes Detallados de Turnos de Caja (`/estadisticas/caja/:id`):**
+    *   Genera un reporte analítico exhaustivo para auditoría de un turno específico, cruzando el saldo inicial y final físico registrado con el balance computado automáticamente (Ventas registradas menos comisiones pagadas), exponiendo la diferencia exacta (descuadre de caja) y el desglose de ingresos por método de pago.
+*   **Rendimiento en Base de Datos:**
+    *   Implementado con consultas SQL directas y parametrizadas sobre el `DataSource` de TypeORM, optimizando al máximo los tiempos de procesamiento y respuesta en base de datos PostgreSQL, blindado con total aislamiento por `bar_id` (multi-tenant).
+
 ---
 
 ## Archivos Clave del Backend
@@ -179,6 +189,11 @@ backend/src/
 │   ├── dto/query-auditoria.dto.ts
 │   ├── auditoria.service.ts
 │   └── auditoria.controller.ts
+├── estadisticas/              # Estadísticas y Business Intelligence (Módulo 8)
+│   ├── dto/rango-fechas.dto.ts
+│   ├── estadisticas.service.ts
+│   ├── estadisticas.controller.ts
+│   └── estadisticas.module.ts
 ├── roles/                     # Roles y Permisos (RBAC)
 │   ├── entities/role.entity.ts
 │   ├── entities/permission.entity.ts

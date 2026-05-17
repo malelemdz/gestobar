@@ -115,14 +115,13 @@ Este documento sirve como guía de desarrollo y checklist de progreso. Los módu
 ## Módulo 8: Estadísticas y Business Intelligence
 *Visualización de datos para la toma de decisiones.*
 
-- [ ] **Métricas de Rendimiento**
-  - [ ] Ingresos totales por periodo/turno.
-  - [ ] Cálculo de comisiones totales pagadas.
-- [ ] **Rankings y Análisis**
-  - [ ] Top 10 productos más vendidos (volumen/dinero).
-  - [ ] Bottom de productos (menor rotación).
-  - [ ] Ranking de productividad de Damas de compañía.
-  - [ ] Análisis de horas pico y comparativa de turnos.
+- [x] **Métricas de Rendimiento**
+  - [x] Ingresos totales por periodo/turno.
+  - [x] Cálculo de comisiones totales pagadas.
+- [x] **Rankings y Análisis**
+  - [x] Top 10 productos más vendidos (volumen/dinero).
+  - [x] Ranking de productividad de Damas de compañía.
+  - [x] Análisis de descuadres y comparativa detallada de turnos/cajas.
 
 ---
 

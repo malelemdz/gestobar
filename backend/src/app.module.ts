@@ -14,6 +14,7 @@ import { CajasModule } from './cajas/cajas.module';
 import { VentasModule } from './ventas/ventas.module';
 import { MenuModule } from './menu/menu.module';
 import { AuditoriaModule } from './auditoria/auditoria.module';
+import { EstadisticasModule } from './estadisticas/estadisticas.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { AuditoriaModule } from './auditoria/auditoria.module';
     VentasModule,
     MenuModule,
     AuditoriaModule,
+    EstadisticasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
