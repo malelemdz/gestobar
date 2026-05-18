@@ -869,6 +869,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // 📈 4. DIÁLOGO RESUMEN DE CIERRE FINANCIERO (NEON MODAL)
   // =========================================================================
   void _showCierreSummaryDialog(Map<String, dynamic> res) {
+    final currencySymbol = ref.read(currencySymbolProvider);
     // Parseo seguro de los decimales de la API de NestJS
     final double mInicial = double.tryParse(res['monto_inicial']?.toString() ?? '') ?? 0.0;
     final double mFinal = double.tryParse(res['monto_final']?.toString() ?? '') ?? 0.0;
