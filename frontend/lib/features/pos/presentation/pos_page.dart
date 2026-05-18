@@ -456,6 +456,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     required BuildContext context,
     required CartState cart,
     required ThemeData theme,
+    BuildContext? modalContext,
   }) {
     final damasAsync = ref.watch(damasProvider);
     final cajaState = ref.watch(cajaStateProvider);
@@ -468,18 +469,18 @@ class _PosPageState extends ConsumerState<PosPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Cabecera del ticket compactada para optimizar espacio
+        // Cabecera del ticket compactada para optimizar espacio y evitar desperdicio arriba
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          padding: const EdgeInsets.fromLTRB(16, 6, 16, 4),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Ticket Operativo',
+                'Ticket de Venta',
                 style: GoogleFonts.plusJakartaSans(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,
-                  fontSize: 16,
+                  fontSize: 15,
                 ),
               ),
               if (cart.items.isNotEmpty)
@@ -494,6 +495,7 @@ class _PosPageState extends ConsumerState<PosPage> {
           ),
         ),
         const Divider(color: Colors.white10, height: 1),
+        const SizedBox(height: 12), // Espaciador para que el primer item respire y no quede pegado a la línea
         
         if (!isCajaAbierta)
           Padding(
@@ -886,7 +888,7 @@ class _PosPageState extends ConsumerState<PosPage> {
 
                 // Botón Checkout con bloqueo de Caja Cerrada
                 InkWell(
-                  onTap: (_isCheckingOut || !isCajaAbierta) ? null : () => _performCheckout(cart),
+                  onTap: (_isCheckingOut || !isCajaAbierta) ? null : () => _performCheckout(cart, modalContext: modalContext),
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
                     height: 48,
@@ -981,7 +983,12 @@ class _PosPageState extends ConsumerState<PosPage> {
                             ),
                           ),
                           Expanded(
-                            child: _buildCartSection(context: context, cart: activeCart, theme: theme),
+                            child: _buildCartSection(
+                              context: context,
+                              cart: activeCart,
+                              theme: theme,
+                              modalContext: context,
+                            ),
                           ),
                         ],
                       ),
@@ -1170,7 +1177,8 @@ class _PosPageState extends ConsumerState<PosPage> {
   }
 
   // Ejecuta la venta enviando la petición POST /ventas a NestJS
-  Future<void> _performCheckout(CartState cart) async {
+  Future<void> _performCheckout(CartState cart, {BuildContext? modalContext}) async {
+    debugPrint('⚡ [POS Checkout] Iniciando proceso de venta para ${cart.items.length} ítems. Método de pago: ${cart.metodoPago}');
     setState(() => _isCheckingOut = true);
 
     try {
@@ -1181,29 +1189,39 @@ class _PosPageState extends ConsumerState<PosPage> {
         items: cart.items,
       );
 
+      debugPrint('⚡ [POS Checkout] Venta registrada con éxito en el servidor.');
+
       // Limpiar carrito si tiene éxito
       ref.read(cartProvider.notifier).clear();
 
-      // Cerrar Bottom Sheet de móvil si estaba abierto
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
+      // Cerrar Bottom Sheet de móvil utilizando el context específico del modal
+      if (modalContext != null && Navigator.canPop(modalContext)) {
+        debugPrint('⚡ [POS Checkout] Cerrando modal bottom sheet de móvil.');
+        Navigator.pop(modalContext);
       }
 
       // Éxito visual
       _showSuccessDialog();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '⚠️ Error en la venta: ${e.toString().replaceAll('Exception: ', '')}',
-            style: GoogleFonts.plusJakartaSans(color: Colors.white),
+    } catch (e, stackTrace) {
+      debugPrint('❌ [POS Checkout] Error al realizar venta: $e');
+      debugPrint('$stackTrace');
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '⚠️ Error en la venta: ${e.toString().replaceAll('Exception: ', '')}',
+              style: GoogleFonts.plusJakartaSans(color: Colors.white),
+            ),
+            backgroundColor: AppTheme.colorDanger,
+            duration: const Duration(seconds: 4),
           ),
-          backgroundColor: AppTheme.colorDanger,
-          duration: const Duration(seconds: 4),
-        ),
-      );
+        );
+      }
     } finally {
-      setState(() => _isCheckingOut = false);
+      if (mounted) {
+        setState(() => _isCheckingOut = false);
+      }
     }
   }
 
