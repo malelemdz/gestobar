@@ -692,8 +692,16 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
   void _openBilleteoCalculator() {
     final currencySymbol = ref.read(currencySymbolProvider);
-    // Denominaciones típicas del bar
-    final List<int> denominaciones = [10, 20, 50, 100, 200, 500, 1000];
+    final customController = TextEditingController();
+
+    // Denominaciones iniciales típicas según moneda/país
+    final List<int> initialDenominaciones = currencySymbol.contains('Bs')
+        ? [10, 20, 50, 100, 200]
+        : (currencySymbol.contains('USD') || currencySymbol.contains('\$')
+            ? [1, 2, 5, 10, 20, 50, 100]
+            : [10, 20, 50, 100, 200, 500, 1000]);
+
+    final List<int> denominaciones = List<int>.from(initialDenominaciones);
     final Map<int, int> conteo = {for (var d in denominaciones) d: 0};
 
     showModalBottomSheet(
@@ -733,7 +741,10 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.clear, color: Colors.white54, size: 20),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                          customController.dispose();
+                          Navigator.pop(context);
+                        },
                       ),
                     ],
                   ),
@@ -819,6 +830,63 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                     ),
                   ),
 
+                  // Agregar denominación personalizada
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 38,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF282A30),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.white.withOpacity(0.04), width: 1),
+                            ),
+                            child: TextField(
+                              controller: customController,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                              style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                              decoration: InputDecoration(
+                                hintText: 'Agregar otro corte de billete/moneda...',
+                                hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 11),
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.only(bottom: 12),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            final int? val = int.tryParse(customController.text);
+                            if (val != null && val > 0 && !denominaciones.contains(val)) {
+                              setModalState(() {
+                                denominaciones.add(val);
+                                denominaciones.sort();
+                                conteo[val] = 0;
+                              });
+                              customController.clear();
+                            }
+                          },
+                          icon: const Icon(Icons.add, size: 16, color: Colors.white),
+                          label: Text(
+                            'Añadir',
+                            style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF00F0FF).withOpacity(0.15),
+                            side: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.4), width: 1),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   const Divider(color: Colors.white10, height: 24),
 
                   // Cómputo Total en Tiempo Real
@@ -849,6 +917,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   ElevatedButton(
                     onPressed: () {
                       _montoController.text = total.toStringAsFixed(2);
+                      customController.dispose();
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(

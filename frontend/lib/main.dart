@@ -31,6 +31,19 @@ void main() {
   );
 }
 
+// Comportamiento de scroll global estático y sin deformación elástica
+class ClampingScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
+    return child; // Elimina por completo el brillo y estiramiento visual
+  }
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const ClampingScrollPhysics(); // Fuerza la física Clamping estática de forma global
+  }
+}
+
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
@@ -45,6 +58,7 @@ class MyApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system, // Detecta y respeta automáticamente el tema del sistema (Modo Claro/Oscuro)
+      scrollBehavior: ClampingScrollBehavior(), // Registro global del comportamiento estático
       home: _resolveHomeScreen(authState),
     );
   }
