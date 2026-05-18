@@ -608,8 +608,9 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
 
   Future<void> _handleApertura() async {
-    final double? monto = double.tryParse(_montoController.text);
-    if (monto == null || monto < 0) {
+    final String text = _montoController.text.trim();
+    final double monto = text.isEmpty ? 0.0 : (double.tryParse(text) ?? -1.0);
+    if (monto < 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Monto inicial inválido.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
@@ -645,8 +646,9 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   }
 
   Future<void> _handleCierre(String cajaId) async {
-    final double? monto = double.tryParse(_montoController.text);
-    if (monto == null || monto < 0) {
+    final String text = _montoController.text.trim();
+    final double monto = text.isEmpty ? 0.0 : (double.tryParse(text) ?? -1.0);
+    if (monto < 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Monto final inválido.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
