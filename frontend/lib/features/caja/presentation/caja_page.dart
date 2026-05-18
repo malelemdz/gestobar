@@ -955,6 +955,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
     final double comisiones = double.tryParse(res['comisiones_pagadas']?.toString() ?? '') ?? 0.0;
     final double esperado = double.tryParse(res['balance_esperado']?.toString() ?? '') ?? 0.0;
     final double diferencia = double.tryParse(res['diferencia']?.toString() ?? '') ?? 0.0;
+    final List<dynamic> desgloseRaw = res['desglose_pagos'] as List? ?? [];
 
     final bool tieneDiscrepancia = diferencia.abs() > 0.01;
     final Color colorDiscrepancia = diferencia >= 0 ? Colors.greenAccent : Colors.redAccent;
@@ -1016,6 +1017,74 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   const Divider(color: Colors.white10, height: 16),
                   _buildSummaryRow('(=) Balance Esperado:', '$currencySymbol ${esperado.toStringAsFixed(2)}', Colors.white),
                   _buildSummaryRow('(=) Dinero Físico en Gaveta:', '$currencySymbol ${mFinal.toStringAsFixed(2)}', Colors.white),
+                  
+                  if (desgloseRaw.isNotEmpty) ...[
+                    const Divider(color: Colors.white10, height: 16),
+                    Text(
+                      'DESGLOSE POR MÉTODOS DE PAGO:',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: const Color(0xFF00F0FF),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ...desgloseRaw.map((item) {
+                      final String metodo = item['metodo']?.toString() ?? 'DESCONOCIDO';
+                      final double totalMetodo = double.tryParse(item['total']?.toString() ?? '') ?? 0.0;
+                      final int cantidad = int.tryParse(item['cantidad']?.toString() ?? '') ?? 0;
+
+                      String label = metodo;
+                      IconData icon = Icons.payment;
+                      Color color = Colors.white70;
+                      if (metodo == 'EFECTIVO') {
+                        label = 'Efectivo';
+                        icon = Icons.payments;
+                        color = const Color(0xFF00FF87);
+                      } else if (metodo == 'TARJETA') {
+                        label = 'Tarjeta (Voucher)';
+                        icon = Icons.credit_card;
+                        color = const Color(0xFF00F0FF);
+                      } else if (metodo == 'QR') {
+                        label = 'Transferencia / QR';
+                        icon = Icons.qr_code;
+                        color = const Color(0xFFFF00D6);
+                      } else if (metodo == 'MIXTO') {
+                        label = 'Pago Mixto';
+                        icon = Icons.account_balance_wallet;
+                        color = const Color(0xFFFFC107);
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(icon, size: 14, color: color.withOpacity(0.6)),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '$label ($cantidad vtas):',
+                                  style: GoogleFonts.plusJakartaSans(color: Colors.white70, fontSize: 11),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              '$currencySymbol ${totalMetodo.toStringAsFixed(2)}',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: color,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ],
+
                   const Divider(color: Colors.white10, height: 16),
 
                   // Faltante o Sobrante

@@ -747,7 +747,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                 ),
                 const SizedBox(height: 8),
                 Row(
-                  children: ['EFECTIVO', 'TARJETA', 'QR'].map((metodo) {
+                  children: ['EFECTIVO', 'TARJETA', 'QR', 'MIXTO'].map((metodo) {
                     final bool isSel = cart.metodoPago == metodo;
                     return Expanded(
                       child: Padding(
