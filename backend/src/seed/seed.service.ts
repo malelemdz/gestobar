@@ -52,7 +52,7 @@ export class SeedService {
     // 2. Crear Roles Básicos Globales
     const rolesData = [
       { nombre: 'SUPERADMIN', permissions: ['bares.gestionar', 'usuarios.gestionar', 'reportes.ver'] },
-      { nombre: 'ADMIN', permissions: ['usuarios.gestionar', 'roles.gestionar', 'productos.gestionar', 'caja.gestionar', 'reportes.ver'] },
+      { nombre: 'ADMIN', permissions: ['usuarios.gestionar', 'roles.gestionar', 'productos.gestionar', 'caja.gestionar', 'reportes.ver', 'ventas.registrar'] },
       { nombre: 'BARMAN', permissions: ['ventas.registrar', 'caja.gestionar'] },
       { nombre: 'DAMA', permissions: ['comisiones.ver_propias'] },
       { nombre: 'REVIEWER', permissions: ['revision.lectura'] },
