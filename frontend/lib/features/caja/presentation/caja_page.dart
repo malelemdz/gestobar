@@ -878,7 +878,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF00F0FF).withOpacity(0.15),
-                            side: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.4), width: 1),
+                            side: BorderSide(color: const Color(0xFF00F0FF).withOpacity(0.4), width: 1),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           ),
