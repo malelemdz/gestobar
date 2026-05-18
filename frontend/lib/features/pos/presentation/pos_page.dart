@@ -776,7 +776,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                                 Row(
                                   children: [
                                     buildPriceModeChip(
-                                      label: 'Normal A',
+                                      label: 'Cliente Solo A',
                                       isSelected: !item.esPrecioB && !item.esInvitacion,
                                       color: const Color(0xFF00F0FF),
                                       onTap: () {
@@ -785,7 +785,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                                     ),
                                     const SizedBox(width: 6),
                                     buildPriceModeChip(
-                                      label: 'Dama B',
+                                      label: 'Acompañado B',
                                       isSelected: item.esPrecioB,
                                       color: const Color(0xFFFF00D6),
                                       onTap: () {
@@ -794,7 +794,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                                     ),
                                     const SizedBox(width: 6),
                                     buildPriceModeChip(
-                                      label: 'Invitación',
+                                      label: 'Invitado A',
                                       isSelected: item.esInvitacion,
                                       color: Colors.amber,
                                       onTap: () {
@@ -841,7 +841,9 @@ class _PosPageState extends ConsumerState<PosPage> {
                                         dropdownColor: const Color(0xFF1E2024),
                                         icon: const Icon(Icons.arrow_drop_down, color: Color(0xFFFF00D6), size: 16),
                                         hint: Text(
-                                          'Asignar Dama para este trago...',
+                                          item.esPrecioB
+                                              ? '¿Quién acompaña al Cliente? (Genera Comisión)'
+                                              : '¿A qué Dama se le sirve la Invitación? (Comisión 0)',
                                           style: GoogleFonts.plusJakartaSans(
                                             color: Colors.white38,
                                             fontSize: 10,
