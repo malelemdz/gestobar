@@ -636,90 +636,247 @@ class _PosPageState extends ConsumerState<PosPage> {
                   itemCount: cart.items.length,
                   itemBuilder: (context, index) {
                     final item = cart.items[index];
+
+                    // Helper para chips de selección táctiles
+                    Widget buildPriceModeChip({
+                      required String label,
+                      required bool isSelected,
+                      required Color color,
+                      required VoidCallback onTap,
+                    }) {
+                      return InkWell(
+                        onTap: onTap,
+                        borderRadius: BorderRadius.circular(6),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: isSelected ? color.withOpacity(0.15) : Colors.white.withOpacity(0.02),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: isSelected ? color.withOpacity(0.6) : Colors.white10,
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            label,
+                            style: GoogleFonts.plusJakartaSans(
+                              color: isSelected ? color : Colors.white38,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 9,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12.0),
                       child: Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.03),
-                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.white.withOpacity(0.02),
+                          borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.04),
+                            color: item.esPrecioB
+                                ? const Color(0xFFFF00D6).withOpacity(0.2)
+                                : (item.esInvitacion
+                                    ? Colors.amber.withOpacity(0.2)
+                                    : Colors.white.withOpacity(0.04)),
                             width: 1,
                           ),
                         ),
-                        child: Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Cantidad y variantes
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.product.nombre,
-                                    style: GoogleFonts.plusJakartaSans(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
+                            // Fila Superior: Nombre, Variante, Cantidad y Controles
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.product.nombre,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      if (item.product.variantes.length > 1) ...[
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'Formato: ${item.variant.nombre}',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            color: Colors.white54,
+                                            fontSize: 9,
+                                          ),
+                                        ),
+                                      ],
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '$currencySymbol${item.precioUnitario.toStringAsFixed(2)} x ${item.quantity}',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: item.esPrecioB
+                                              ? const Color(0xFFFF00D6)
+                                              : (item.esInvitacion ? Colors.amber : const Color(0xFF00F0FF)),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  if (item.product.variantes.length > 1) ...[
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      'Formato: ${item.variant.nombre}',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: Colors.white54,
-                                        fontSize: 9,
+                                ),
+
+                                // Control de cantidad
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.remove_circle_outline, color: Colors.white54, size: 20),
+                                      onPressed: () {
+                                        ref.read(cartProvider.notifier).updateQuantityByIndex(index, -1);
+                                      },
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Text(
+                                        '${item.quantity}',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
                                       ),
                                     ),
+                                    IconButton(
+                                      icon: const Icon(Icons.add_circle_outline, color: Colors.white54, size: 20),
+                                      onPressed: () {
+                                        ref.read(cartProvider.notifier).updateQuantityByIndex(index, 1);
+                                      },
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                    ),
                                   ],
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '$currencySymbol${item.precioUnitario.toStringAsFixed(2)} c/u',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      color: cart.selectedDamaId != null
-                                          ? const Color(0xFFFF00D6)
-                                          : const Color(0xFF00F0FF),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            // Control de cantidad (- / +)
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.remove_circle_outline, color: Colors.white60, size: 18),
-                                  onPressed: () {
-                                    ref.read(cartProvider.notifier).updateQuantity(item.variant.id, -1);
-                                  },
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Text(
-                                    '${item.quantity}',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.add_circle_outline, color: Colors.white60, size: 18),
-                                  onPressed: () {
-                                    ref.read(cartProvider.notifier).updateQuantity(item.variant.id, 1);
-                                  },
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
                                 ),
                               ],
                             ),
+
+                            const SizedBox(height: 12),
+                            const Divider(color: Colors.white10, height: 1),
+                            const SizedBox(height: 8),
+
+                            // Fila Inferior: Chips de modo de precio y Subtotal
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Chips
+                                Row(
+                                  children: [
+                                    buildPriceModeChip(
+                                      label: 'Normal A',
+                                      isSelected: !item.esPrecioB && !item.esInvitacion,
+                                      color: const Color(0xFF00F0FF),
+                                      onTap: () {
+                                        ref.read(cartProvider.notifier).setItemPriceMode(index, esPrecioB: false, esInvitacion: false);
+                                      },
+                                    ),
+                                    const SizedBox(width: 6),
+                                    buildPriceModeChip(
+                                      label: 'Dama B',
+                                      isSelected: item.esPrecioB,
+                                      color: const Color(0xFFFF00D6),
+                                      onTap: () {
+                                        ref.read(cartProvider.notifier).setItemPriceMode(index, esPrecioB: true, esInvitacion: false);
+                                      },
+                                    ),
+                                    const SizedBox(width: 6),
+                                    buildPriceModeChip(
+                                      label: 'Invitación',
+                                      isSelected: item.esInvitacion,
+                                      color: Colors.amber,
+                                      onTap: () {
+                                        ref.read(cartProvider.notifier).setItemPriceMode(index, esPrecioB: false, esInvitacion: true);
+                                      },
+                                    ),
+                                  ],
+                                ),
+
+                                // Subtotal
+                                Text(
+                                  '$currencySymbol${item.subtotal.toStringAsFixed(2)}',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            // Selector de Dama inline si es Dama B o Invitación
+                            if (item.esPrecioB || item.esInvitacion) ...[
+                              const SizedBox(height: 10),
+                              damasAsync.when(
+                                data: (damasList) {
+                                  return Container(
+                                    height: 32,
+                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: item.damaId != null
+                                            ? const Color(0xFFFF00D6).withOpacity(0.3)
+                                            : Colors.white10,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String?>(
+                                        value: item.damaId,
+                                        isExpanded: true,
+                                        dropdownColor: const Color(0xFF1E2024),
+                                        icon: const Icon(Icons.arrow_drop_down, color: Color(0xFFFF00D6), size: 16),
+                                        hint: Text(
+                                          'Asignar Dama para este trago...',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            color: Colors.white38,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        items: damasList.map((dama) {
+                                          return DropdownMenuItem<String?>(
+                                            value: dama.id,
+                                            child: Text(
+                                              'Dama: ${dama.nombre}',
+                                              style: GoogleFonts.plusJakartaSans(
+                                                color: const Color(0xFFFF00D6),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 11,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (id) {
+                                          if (id == null) {
+                                            ref.read(cartProvider.notifier).setItemDama(index, null, null);
+                                          } else {
+                                            final selectedDama = damasList.firstWhere((d) => d.id == id);
+                                            ref.read(cartProvider.notifier).setItemDama(index, id, selectedDama.nombre);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                                loading: () => const SizedBox(height: 32),
+                                error: (e, s) => const SizedBox(),
+                              ),
+                            ],
                           ],
                         ),
                       ),
@@ -747,7 +904,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                 ),
                 const SizedBox(height: 8),
                 Row(
-                  children: ['EFECTIVO', 'TARJETA', 'QR', 'MIXTO'].map((metodo) {
+                  children: ['EFECTIVO', 'TARJETA', 'TR/QR', 'MIXTO'].map((metodo) {
                     final bool isSel = cart.metodoPago == metodo;
                     return Expanded(
                       child: Padding(
@@ -849,7 +1006,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                               child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                             )
                           : Text(
-                              isCajaAbierta ? 'EFECTUAR VENTA' : 'CAJA CERRADA (ABRA TURNO)',
+                              isCajaAbierta ? 'CONFIRMAR PAGO' : 'CAJA CERRADA (ABRA TURNO)',
                               style: GoogleFonts.plusJakartaSans(
                                 color: isCajaAbierta ? Colors.white : Colors.white24,
                                 fontWeight: FontWeight.w900,
@@ -883,33 +1040,38 @@ class _PosPageState extends ConsumerState<PosPage> {
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
           builder: (context) {
-            return DraggableScrollableSheet(
-              initialChildSize: 0.75,
-              minChildSize: 0.5,
-              maxChildSize: 0.95,
-              builder: (context, scrollController) {
-                return Container(
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF1A1C20),
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                  ),
-                  child: Column(
-                    children: [
-                      // Barra decoradora de deslizar
-                      const SizedBox(height: 12),
-                      Container(
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+            return Consumer(
+              builder: (context, ref, child) {
+                final activeCart = ref.watch(cartProvider);
+                return DraggableScrollableSheet(
+                  initialChildSize: 0.75,
+                  minChildSize: 0.5,
+                  maxChildSize: 0.95,
+                  builder: (context, scrollController) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF1A1C20),
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                       ),
-                      Expanded(
-                        child: _buildCartSection(context: context, cart: cart, theme: theme),
+                      child: Column(
+                        children: [
+                          // Barra decoradora de deslizar
+                          const SizedBox(height: 12),
+                          Container(
+                            width: 40,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: Colors.white24,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          Expanded(
+                            child: _buildCartSection(context: context, cart: activeCart, theme: theme),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 );
               },
             );
@@ -1100,9 +1262,8 @@ class _PosPageState extends ConsumerState<PosPage> {
       final repository = ref.read(catalogRepositoryProvider);
 
       await repository.checkout(
-        metodoPago: cart.metodoPago,
+        metodoPago: cart.metodoPago == 'TR/QR' ? 'QR' : cart.metodoPago,
         items: cart.items,
-        damaId: cart.selectedDamaId,
       );
 
       // Limpiar carrito si tiene éxito

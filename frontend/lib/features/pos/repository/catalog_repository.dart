@@ -45,7 +45,6 @@ class CatalogRepository {
   Future<void> checkout({
     required String metodoPago,
     required List<CartItem> items,
-    String? damaId,
   }) async {
     try {
       final payload = {
@@ -54,9 +53,9 @@ class CatalogRepository {
           return {
             'variante_id': item.variant.id,
             'cantidad': item.quantity,
-            'es_precio_b': damaId != null,
-            'dama_id': damaId,
-            'es_invitacion': false,
+            'es_precio_b': item.esPrecioB,
+            'dama_id': item.damaId,
+            'es_invitacion': item.esInvitacion,
           };
         }).toList(),
       };
