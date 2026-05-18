@@ -245,7 +245,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
   Widget _buildOpenCajaPanel(CajaModel caja, ThemeData theme) {
     final String barmanNombre = caja.aperturaUsuario != null
-        ? '${caja.aperturaUsuario!.nombre} ${caja.aperturaUsuario!.apellido ?? ''}'
+        ? caja.aperturaUsuario!.nombre
         : 'Barman Encargado';
 
     final String fecha = DateFormat('dd/MM/yyyy • hh:mm a').format(caja.fechaApertura.toLocal());
@@ -501,7 +501,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                 final item = closedHistory[index];
                 final String fApertura = DateFormat('dd/MM/yyyy • hh:mm a').format(item.fechaApertura.toLocal());
                 final String cerradoPor = item.cierreUsuario != null
-                    ? '${item.cierreUsuario!.nombre} ${item.cierreUsuario!.apellido ?? ''}'
+                    ? item.cierreUsuario!.nombre
                     : 'Encargado';
 
                 return Padding(

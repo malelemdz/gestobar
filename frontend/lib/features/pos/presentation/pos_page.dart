@@ -576,7 +576,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                             return DropdownMenuItem<String?>(
                               value: dama.id,
                               child: Text(
-                                '${dama.nombre} ${dama.apellido ?? ''}',
+                                dama.nombre,
                                 style: GoogleFonts.plusJakartaSans(
                                   color: const Color(0xFFFF00D6),
                                   fontWeight: FontWeight.bold,
@@ -593,7 +593,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                             final selectedDama = damasList.firstWhere((d) => d.id == id);
                             ref
                                 .read(cartProvider.notifier)
-                                .setDama(id, '${selectedDama.nombre} ${selectedDama.apellido ?? ''}');
+                                .setDama(id, selectedDama.nombre);
                           }
                         },
                       ),
