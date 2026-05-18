@@ -1194,10 +1194,16 @@ class _PosPageState extends ConsumerState<PosPage> {
       // Limpiar carrito si tiene éxito
       ref.read(cartProvider.notifier).clear();
 
-      // Cerrar Bottom Sheet de móvil utilizando el context específico del modal
-      if (modalContext != null && Navigator.canPop(modalContext)) {
-        debugPrint('⚡ [POS Checkout] Cerrando modal bottom sheet de móvil.');
-        Navigator.pop(modalContext);
+      // Cerrar Bottom Sheet de móvil utilizando el context específico del modal de forma segura
+      if (modalContext != null && modalContext.mounted) {
+        try {
+          if (Navigator.canPop(modalContext)) {
+            debugPrint('⚡ [POS Checkout] Cerrando modal bottom sheet de móvil.');
+            Navigator.pop(modalContext);
+          }
+        } catch (e) {
+          debugPrint('⚠️ [POS Checkout] No se pudo cerrar el modal automáticamente: $e');
+        }
       }
 
       // Éxito visual
