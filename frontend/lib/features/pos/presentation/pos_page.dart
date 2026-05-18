@@ -468,9 +468,9 @@ class _PosPageState extends ConsumerState<PosPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Cabecera del ticket
+        // Cabecera del ticket compactada para optimizar espacio
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -523,93 +523,6 @@ class _PosPageState extends ConsumerState<PosPage> {
               ),
             ),
           ),
-
-
-        // Selección de Dama (Compañías & Comisión)
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Compañía / Dama asignada',
-                style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white.withOpacity(0.5),
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const SizedBox(height: 6),
-              damasAsync.when(
-                data: (damasList) {
-                  return Container(
-                    height: 40,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF282A30),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: cart.selectedDamaId != null
-                            ? const Color(0xFFFF00D6).withOpacity(0.4)
-                            : Colors.white.withOpacity(0.05),
-                        width: 1,
-                      ),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String?>(
-                        value: cart.selectedDamaId,
-                        dropdownColor: const Color(0xFF1E2024),
-                        icon: const Icon(Icons.arrow_drop_down, color: Colors.white54),
-                        hint: Text(
-                          'Selecciona Dama (Ninguna)',
-                          style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white.withOpacity(0.3),
-                            fontSize: 12,
-                          ),
-                        ),
-                        items: [
-                          DropdownMenuItem<String?>(
-                            value: null,
-                            child: Text(
-                              'Ninguna (Precio Cliente)',
-                              style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 12),
-                            ),
-                          ),
-                          ...damasList.map((dama) {
-                            return DropdownMenuItem<String?>(
-                              value: dama.id,
-                              child: Text(
-                                dama.nombre,
-                                style: GoogleFonts.plusJakartaSans(
-                                  color: const Color(0xFFFF00D6),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            );
-                          }),
-                        ],
-                        onChanged: (id) {
-                          if (id == null) {
-                            ref.read(cartProvider.notifier).setDama(null, null);
-                          } else {
-                            final selectedDama = damasList.firstWhere((d) => d.id == id);
-                            ref
-                                .read(cartProvider.notifier)
-                                .setDama(id, selectedDama.nombre);
-                          }
-                        },
-                      ),
-                    ),
-                  );
-                },
-                loading: () => Container(height: 40, color: Colors.white10),
-                error: (err, stack) => Text('Error al cargar damas', style: TextStyle(color: Colors.red)),
-              ),
-            ],
-          ),
-        ),
 
         // Lista de bebidas añadidas
         Expanded(
