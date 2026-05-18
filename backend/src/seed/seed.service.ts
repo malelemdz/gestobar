@@ -5,6 +5,8 @@ import { Role } from '../roles/entities/role.entity';
 import { Permission } from '../roles/entities/permission.entity';
 import { User } from '../users/entities/user.entity';
 import { Bar } from '../bars/entities/bar.entity';
+import { Category } from '../categories/entities/category.entity';
+import { Product } from '../products/entities/product.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -18,6 +20,10 @@ export class SeedService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Bar)
     private readonly barRepository: Repository<Bar>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
   ) {}
 
   async runSeed() {
@@ -152,6 +158,119 @@ export class SeedService {
         estado: true,
       });
       await this.userRepository.save(dama);
+    }
+
+    // 6. Crear Categorías, Productos y Variantes del Menú del Bar
+    // Eliminar existentes para evitar duplicados en re-seed
+    await this.productRepository.delete({ bar_id: bar.id });
+    await this.categoryRepository.delete({ bar_id: bar.id });
+
+    // Tragos & Cócteles
+    const catTragos = await this.categoryRepository.save(
+      this.categoryRepository.create({
+        bar_id: bar.id,
+        nombre: 'Tragos & Cócteles',
+        orden: 1,
+      }),
+    );
+
+    // Cervezas
+    const catCervezas = await this.categoryRepository.save(
+      this.categoryRepository.create({
+        bar_id: bar.id,
+        nombre: 'Cervezas',
+        orden: 2,
+      }),
+    );
+
+    // Bebidas Analcohólicas
+    const catSuaves = await this.categoryRepository.save(
+      this.categoryRepository.create({
+        bar_id: bar.id,
+        nombre: 'Bebidas Analcohólicas',
+        orden: 3,
+      }),
+    );
+
+    // Estructurar productos y sus variantes (TypeORM persistirá variantes en cascada)
+    const productosData = [
+      {
+        bar_id: bar.id,
+        categoria_id: catTragos.id,
+        nombre: 'Fernet Branca',
+        descripcion: 'Clásico fernet cordobés servido con Coca Cola y abundante hielo.',
+        foto_url: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=500',
+        variantes: [
+          { nombre: 'Vaso Simple', precio_a: 30.0, precio_b: 55.0 },
+          { nombre: 'Jarra 1L', precio_a: 75.0, precio_b: 120.0 },
+        ],
+      },
+      {
+        bar_id: bar.id,
+        categoria_id: catTragos.id,
+        nombre: 'Whisky Red Label',
+        descripcion: 'Johnnie Walker Etiqueta Roja en las rocas o puro.',
+        foto_url: 'https://images.unsplash.com/photo-1527281497458-47f6516f5c81?w=500',
+        variantes: [
+          { nombre: 'Medida en Vaso', precio_a: 35.0, precio_b: 60.0 },
+          { nombre: 'Botella 750ml', precio_a: 380.0, precio_b: 550.0 },
+        ],
+      },
+      {
+        bar_id: bar.id,
+        categoria_id: catTragos.id,
+        nombre: 'Mojito Cubano',
+        descripcion: 'Ron blanco, menta fresca del huerto, limón natural y soda.',
+        foto_url: 'https://images.unsplash.com/photo-1575037614876-c38a4d44f5b8?w=500',
+        variantes: [
+          { nombre: 'Copa Estándar', precio_a: 25.0, precio_b: 50.0 },
+        ],
+      },
+      {
+        bar_id: bar.id,
+        categoria_id: catCervezas.id,
+        nombre: 'Corona Extra 355ml',
+        descripcion: 'Cerveza mexicana tipo lager ligera, con rodaja de limón.',
+        foto_url: 'https://images.unsplash.com/photo-1600788886242-5c96aabe3757?w=500',
+        variantes: [
+          { nombre: 'Botella Fria', precio_a: 20.0, precio_b: 40.0 },
+          { nombre: 'Balde x 5 unidades', precio_a: 90.0, precio_b: 180.0 },
+        ],
+      },
+      {
+        bar_id: bar.id,
+        categoria_id: catCervezas.id,
+        nombre: 'Paceña Centenario 620ml',
+        descripcion: 'Cerveza Pilsner boliviana de alta calidad y sabor robusto.',
+        foto_url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500',
+        variantes: [
+          { nombre: 'Botella Grande', precio_a: 18.0, precio_b: 35.0 },
+        ],
+      },
+      {
+        bar_id: bar.id,
+        categoria_id: catSuaves.id,
+        nombre: 'Red Bull Energy Drink',
+        descripcion: 'Bebida energética que te da alas en lata personal.',
+        foto_url: 'https://images.unsplash.com/photo-1622543929424-71d57b282928?w=500',
+        variantes: [
+          { nombre: 'Lata 250ml', precio_a: 25.0, precio_b: 45.0 },
+        ],
+      },
+      {
+        bar_id: bar.id,
+        categoria_id: catSuaves.id,
+        nombre: 'Coca Cola Personal',
+        descripcion: 'Refresco clásico personal en envase de vidrio.',
+        foto_url: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500',
+        variantes: [
+          { nombre: 'Vidrio 350ml', precio_a: 10.0, precio_b: 20.0 },
+        ],
+      },
+    ];
+
+    for (const p of productosData) {
+      await this.productRepository.save(this.productRepository.create(p));
     }
 
     return { 

@@ -20,16 +20,15 @@ export class CategoriesController {
   }
 
   @Get()
-  @Permissions('productos.gestionar')
   findAll(@ActiveBarId() barId: string) {
     return this.categoriesService.findAll(barId);
   }
 
   @Get(':id')
-  @Permissions('productos.gestionar')
   findOne(@Param('id', ParseUUIDPipe) id: string, @ActiveBarId() barId: string) {
     return this.categoriesService.findOne(id, barId);
   }
+
 
   @Patch(':id')
   @Permissions('productos.gestionar')

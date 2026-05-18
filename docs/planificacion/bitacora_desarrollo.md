@@ -235,3 +235,23 @@ backend/src/
     *   **Listo para Continuar el Desarrollo Móvil:** El esqueleto visual, el sistema de navegación adaptativo y la barra/cajón de control en móviles están completamente finalizados, probados y validados libre de warnings/errores de compilación.
     *   **Tablet Pendiente:** Queda agendada y pendiente la revisión e implementación exhaustiva de la adaptabilidad y layouts para pantallas grandes y Tablets.
 
+### 13. Hito 2: Modularización Arquitectónica y Limpieza de la UI
+*   **Extracción de Vistas Monolíticas:**
+    *   Se extrajeron y modularizaron las 9 pantallas prototipadas anteriormente dentro del archivo de 2500 líneas en `main.dart`, colocándolas en sus correspondientes carpetas funcionales bajo `lib/features/`:
+        *   `DashboardPage` -> [dashboard_page.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/features/dashboard/presentation/dashboard_page.dart)
+        *   `PosPage` -> [pos_page.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/features/pos/presentation/pos_page.dart)
+        *   `CajaPage` -> [caja_page.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/features/caja/presentation/caja_page.dart)
+        *   `AuditoriaPage` -> [auditoria_page.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/features/admin/presentation/auditoria_page.dart)
+        *   `DamaPage` -> [dama_page.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/features/damas/presentation/dama_page.dart)
+        *   `BarSelectorView` -> [bar_selector_view.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/features/admin/presentation/bar_selector_view.dart)
+        *   `MenuPage` -> [menu_page.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/features/menu_publico/presentation/menu_page.dart)
+        *   `StaffPage` -> [staff_page.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/features/staff/presentation/staff_page.dart)
+        *   `ConfigPage` -> [config_page.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/features/admin/presentation/config_page.dart)
+        *   `PerfilPage` -> [perfil_page.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/features/auth/presentation/perfil_page.dart)
+*   **Limpieza de `main.dart`:**
+    *   El archivo [main.dart](file:///Volumes/Corsair/macos/Development/gestobar/frontend/lib/main.dart) se redujo drásticamente de 2,521 líneas a 1,030 líneas (~60% de reducción en peso y volumen), conservando únicamente el bootstrapping de la aplicación (`MyApp`), la navegación adaptativa y la lógica de resolución de pantallas basadas en el estado de Riverpod.
+*   **Optimización del Compilador (Cero Advertencias):**
+    *   Se eliminaron todas las advertencias de importaciones no utilizadas en `main.dart` y en las nuevas vistas modulares.
+    *   `flutter analyze` corre al 100% libre de advertencias del compilador de código o errores sintácticos, garantizando la salud operacional del cliente.
+
+
