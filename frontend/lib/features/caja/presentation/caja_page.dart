@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../models/caja_model.dart';
 import '../providers/caja_provider.dart';
@@ -166,6 +167,9 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   child: TextField(
                     controller: _montoController,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+                    ],
                     style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                     decoration: InputDecoration(
                       hintText: '0.00',
@@ -376,6 +380,9 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   child: TextField(
                     controller: _montoController,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+                    ],
                     style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                     decoration: InputDecoration(
                       hintText: '0.00',
