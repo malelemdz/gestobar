@@ -56,3 +56,8 @@ final cajaStateProvider =
 final cajaHistoryProvider = FutureProvider<List<CajaModel>>((ref) async {
   return ref.watch(cajaRepositoryProvider).getHistory();
 });
+
+// Proveedor del símbolo de moneda del bar activo (Por defecto 'Bs.' según el bar semilla)
+final currencySymbolProvider = Provider<String>((ref) {
+  return 'Bs.';
+});

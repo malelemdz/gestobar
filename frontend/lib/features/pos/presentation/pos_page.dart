@@ -181,6 +181,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                 height: 38,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
+                  physics: const ClampingScrollPhysics(),
                   itemCount: categories.length + 1,
                   itemBuilder: (context, index) {
                     final bool isAll = index == 0;
@@ -259,6 +260,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                 }
 
                 return GridView.builder(
+                  physics: const ClampingScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 220,
                     mainAxisSpacing: 12,
@@ -298,6 +300,7 @@ class _PosPageState extends ConsumerState<PosPage> {
   }) {
     final cart = ref.watch(cartProvider);
     final hasDama = cart.selectedDamaId != null;
+    final currencySymbol = ref.watch(currencySymbolProvider);
 
     // Calcular el precio a mostrar (si tiene variantes)
     String precioText = '';
@@ -305,11 +308,11 @@ class _PosPageState extends ConsumerState<PosPage> {
       precioText = 'Sin precio';
     } else if (product.variantes.length == 1) {
       final double precio = hasDama ? product.variantes.first.precioB : product.variantes.first.precioA;
-      precioText = '\$${precio.toStringAsFixed(2)}';
+      precioText = '$currencySymbol${precio.toStringAsFixed(2)}';
     } else {
       // Tiene múltiples variantes, mostrar el rango mínimo
       final minPrecio = product.variantes.map((v) => hasDama ? v.precioB : v.precioA).reduce((a, b) => a < b ? a : b);
-      precioText = 'Desde \$${minPrecio.toStringAsFixed(2)}';
+      precioText = 'Desde $currencySymbol${minPrecio.toStringAsFixed(2)}';
     }
 
     return Container(
@@ -460,6 +463,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       data: (estado) => estado.abierta,
       orElse: () => false,
     );
+    final currencySymbol = ref.watch(currencySymbolProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -627,6 +631,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                   ),
                 )
               : ListView.builder(
+                  physics: const ClampingScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: cart.items.length,
                   itemBuilder: (context, index) {
@@ -670,7 +675,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                                   ],
                                   const SizedBox(height: 4),
                                   Text(
-                                    '\$${item.precioUnitario.toStringAsFixed(2)} c/u',
+                                    '$currencySymbol${item.precioUnitario.toStringAsFixed(2)} c/u',
                                     style: GoogleFonts.plusJakartaSans(
                                       color: cart.selectedDamaId != null
                                           ? const Color(0xFFFF00D6)
@@ -796,7 +801,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                       ),
                     ),
                     Text(
-                      '\$${cart.total.toStringAsFixed(2)}',
+                      '$currencySymbol${cart.total.toStringAsFixed(2)}',
                       style: GoogleFonts.plusJakartaSans(
                         color: const Color(0xFF00F0FF),
                         fontWeight: FontWeight.w900,
@@ -1023,6 +1028,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                 ...product.variantes.map((variant) {
                   final cartState = ref.watch(cartProvider);
                   final hasDama = cartState.selectedDamaId != null;
+                  final currencySymbol = ref.watch(currencySymbolProvider);
                   final double precio = hasDama ? variant.precioB : variant.precioA;
 
                   return Padding(
@@ -1065,7 +1071,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                               ),
                             ),
                             Text(
-                              '\$${precio.toStringAsFixed(2)}',
+                              '$currencySymbol${precio.toStringAsFixed(2)}',
                               style: GoogleFonts.plusJakartaSans(
                                 color: hasDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF),
                                 fontWeight: FontWeight.bold,

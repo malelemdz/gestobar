@@ -29,12 +29,14 @@ class _CajaPageState extends ConsumerState<CajaPage> {
     final theme = Theme.of(context);
     final cajaState = ref.watch(cajaStateProvider);
     final historyAsync = ref.watch(cajaHistoryProvider);
+    final currencySymbol = ref.watch(currencySymbolProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFF121214), // Midnight background
       body: cajaState.when(
         data: (estado) {
           return SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.all(24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,15 +45,15 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                 // PANEL CENTRAL ACTIVO (APERTURA O CIERRE)
                 // ==========================================
                 estado.abierta
-                    ? _buildOpenCajaPanel(estado.caja!, theme)
-                    : _buildClosedCajaPanel(theme),
+                    ? _buildOpenCajaPanel(estado.caja!, theme, currencySymbol)
+                    : _buildClosedCajaPanel(theme, currencySymbol),
 
                 const SizedBox(height: 32),
 
                 // ==========================================
                 // HISTORIAL DE AUDITORÍA DE CAJAS
                 // ==========================================
-                _buildHistorySection(historyAsync, theme),
+                _buildHistorySection(historyAsync, theme, currencySymbol),
               ],
             ),
           );
@@ -83,7 +85,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
   // 🚪 1. PANEL DE CAJA CERRADA (FORMULARIO APERTURA)
   // =========================================================================
-  Widget _buildClosedCajaPanel(ThemeData theme) {
+  Widget _buildClosedCajaPanel(ThemeData theme, String currencySymbol) {
     return Container(
       padding: const EdgeInsets.all(28.0),
       decoration: BoxDecoration(
@@ -168,7 +170,17 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                     decoration: InputDecoration(
                       hintText: '0.00',
                       hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white24),
-                      prefixIcon: const Icon(Icons.attach_money, color: Color(0xFF00F0FF)),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                        child: Text(
+                          currencySymbol,
+                          style: GoogleFonts.plusJakartaSans(
+                            color: const Color(0xFF00F0FF),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(vertical: 14),
                     ),
@@ -243,7 +255,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
   // 🔓 2. PANEL DE CAJA ABIERTA (DATOS Y FORMULARIO DE CIERRE)
   // =========================================================================
-  Widget _buildOpenCajaPanel(CajaModel caja, ThemeData theme) {
+  Widget _buildOpenCajaPanel(CajaModel caja, ThemeData theme, String currencySymbol) {
     final String barmanNombre = caja.aperturaUsuario != null
         ? caja.aperturaUsuario!.nombre
         : 'Barman Encargado';
@@ -333,7 +345,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                 style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 13),
               ),
               Text(
-                '\$${caja.montoInicial.toStringAsFixed(2)}',
+                '$currencySymbol ${caja.montoInicial.toStringAsFixed(2)}',
                 style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 14),
               ),
             ],
@@ -368,7 +380,17 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                     decoration: InputDecoration(
                       hintText: '0.00',
                       hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white24),
-                      prefixIcon: const Icon(Icons.attach_money, color: Color(0xFFFF00D6)),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                        child: Text(
+                          currencySymbol,
+                          style: GoogleFonts.plusJakartaSans(
+                            color: const Color(0xFFFF00D6),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(vertical: 14),
                     ),
@@ -443,7 +465,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
   // 📚 3. SECCIÓN HISTORIAL DE TURNOS CERRADOS
   // =========================================================================
-  Widget _buildHistorySection(AsyncValue<List<CajaModel>> historyAsync, ThemeData theme) {
+  Widget _buildHistorySection(AsyncValue<List<CajaModel>> historyAsync, ThemeData theme, String currencySymbol) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -543,7 +565,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'Arqueo: \$${item.montoFinal?.toStringAsFixed(2) ?? '0.00'}',
+                              'Arqueo: $currencySymbol ${item.montoFinal?.toStringAsFixed(2) ?? '0.00'}',
                               style: GoogleFonts.plusJakartaSans(
                                 color: const Color(0xFF00F0FF),
                                 fontWeight: FontWeight.w800,
@@ -558,7 +580,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
-                                'Inicial: \$${item.montoInicial.toStringAsFixed(2)}',
+                                'Inicial: $currencySymbol ${item.montoInicial.toStringAsFixed(2)}',
                                 style: GoogleFonts.plusJakartaSans(
                                   color: Colors.white54,
                                   fontSize: 10,
@@ -660,6 +682,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // 💴 CALCULADORA DE BILLETEO INTEGRADA (Denominaciones de Caja)
   // =========================================================================
   void _openBilleteoCalculator() {
+    final currencySymbol = ref.read(currencySymbolProvider);
     // Denominaciones típicas del bar
     final List<int> denominaciones = [10, 20, 50, 100, 200, 500, 1000];
     final Map<int, int> conteo = {for (var d in denominaciones) d: 0};
@@ -716,6 +739,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   Container(
                     constraints: const BoxConstraints(maxHeight: 280),
                     child: ListView(
+                      physics: const ClampingScrollPhysics(),
                       shrinkWrap: true,
                       children: denominaciones.map((val) {
                         return Padding(
@@ -726,7 +750,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                               SizedBox(
                                 width: 80,
                                 child: Text(
-                                  '\$ $val',
+                                  '$currencySymbol $val',
                                   style: GoogleFonts.plusJakartaSans(
                                     color: const Color(0xFF00F0FF),
                                     fontWeight: FontWeight.w900,
@@ -770,7 +794,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                               SizedBox(
                                 width: 100,
                                 child: Text(
-                                  '\$ ${(val * conteo[val]!).toStringAsFixed(2)}',
+                                  '$currencySymbol ${(val * conteo[val]!).toStringAsFixed(2)}',
                                   textAlign: TextAlign.end,
                                   style: GoogleFonts.plusJakartaSans(
                                     color: Colors.white,
@@ -801,7 +825,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                         ),
                       ),
                       Text(
-                        '\$ ${total.toStringAsFixed(2)}',
+                        '$currencySymbol ${total.toStringAsFixed(2)}',
                         style: GoogleFonts.plusJakartaSans(
                           color: const Color(0xFF00F0FF),
                           fontWeight: FontWeight.w900,
@@ -873,6 +897,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
               ),
             ),
             child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -906,12 +931,12 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   const SizedBox(height: 20),
 
                   // Desglose de saldos
-                  _buildSummaryRow('Dinero Inicial:', '\$${mInicial.toStringAsFixed(2)}', Colors.white54),
-                  _buildSummaryRow('(+) Ventas Totales:', '\$${vTotales.toStringAsFixed(2)}', const Color(0xFF00F0FF)),
-                  _buildSummaryRow('(-) Comisiones Damas:', '\$${comisiones.toStringAsFixed(2)}', const Color(0xFFFF00D6)),
+                  _buildSummaryRow('Dinero Inicial:', '$currencySymbol ${mInicial.toStringAsFixed(2)}', Colors.white54),
+                  _buildSummaryRow('(+) Ventas Totales:', '$currencySymbol ${vTotales.toStringAsFixed(2)}', const Color(0xFF00F0FF)),
+                  _buildSummaryRow('(-) Comisiones Damas:', '$currencySymbol ${comisiones.toStringAsFixed(2)}', const Color(0xFFFF00D6)),
                   const Divider(color: Colors.white10, height: 16),
-                  _buildSummaryRow('(=) Balance Esperado:', '\$${esperado.toStringAsFixed(2)}', Colors.white),
-                  _buildSummaryRow('(=) Dinero Físico en Gaveta:', '\$${mFinal.toStringAsFixed(2)}', Colors.white),
+                  _buildSummaryRow('(=) Balance Esperado:', '$currencySymbol ${esperado.toStringAsFixed(2)}', Colors.white),
+                  _buildSummaryRow('(=) Dinero Físico en Gaveta:', '$currencySymbol ${mFinal.toStringAsFixed(2)}', Colors.white),
                   const Divider(color: Colors.white10, height: 16),
 
                   // Faltante o Sobrante
@@ -929,9 +954,9 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                       Text(
                         tieneDiscrepancia
                             ? (diferencia >= 0
-                                ? '(+) \$${diferencia.toStringAsFixed(2)} (Sobrante)'
-                                : '(-) \$${diferencia.abs().toStringAsFixed(2)} (Faltante)')
-                            : '\$ 0.00 (Caja Cuadrada)',
+                                ? '(+) $currencySymbol ${diferencia.toStringAsFixed(2)} (Sobrante)'
+                                : '(-) $currencySymbol ${diferencia.abs().toStringAsFixed(2)} (Faltante)')
+                            : '$currencySymbol 0.00 (Caja Cuadrada)',
                         style: GoogleFonts.plusJakartaSans(
                           color: colorDiscrepancia,
                           fontWeight: FontWeight.w900,
