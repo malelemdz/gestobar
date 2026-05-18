@@ -41,7 +41,26 @@ class AuthRepository {
       throw Exception('No se pudo conectar con el servidor de Gestobar');
     }
   }
+
+  /// Obtiene todos del sistema (asociados al tenant activo)
+  Future<List<UserModel>> getUsers() async {
+    try {
+      final response = await _dio.get('/users');
+      final list = response.data as List? ?? [];
+      return list.map((json) => UserModel.fromJson(json as Map<String, dynamic>)).toList();
+    } on DioException catch (e) {
+      final errorResponse = e.response?.data;
+      String errorMessage = 'Error al cargar usuarios';
+      if (errorResponse != null && errorResponse['message'] != null) {
+        errorMessage = errorResponse['message'].toString();
+      }
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('No se pudo conectar con el servidor para obtener los usuarios');
+    }
+  }
 }
+
 
 // Inyección del repositorio con Riverpod
 final authRepositoryProvider = Provider<AuthRepository>((ref) {

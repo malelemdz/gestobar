@@ -20,17 +20,28 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    String rId = json['rol_id'] as String? ?? '';
+    String rNombre = json['rol_nombre'] as String? ?? '';
+
+    // Soporte para payloads con la relación 'rol' anidada
+    if (json['rol'] != null && json['rol'] is Map) {
+      final rolMap = json['rol'] as Map<String, dynamic>;
+      if (rId.isEmpty) rId = rolMap['id'] as String? ?? '';
+      if (rNombre.isEmpty) rNombre = rolMap['nombre'] as String? ?? '';
+    }
+
     return UserModel(
       id: json['id'] as String? ?? '',
       username: json['username'] as String? ?? '',
       nombre: json['nombre'] as String? ?? '',
-      rolId: json['rol_id'] as String? ?? '',
-      rolNombre: json['rol_nombre'] as String? ?? '',
+      rolId: rId,
+      rolNombre: rNombre,
       barId: json['bar_id'] as String?,
       fotoUrl: json['foto_url'] as String?,
       celular: json['celular'] as String?,
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {
