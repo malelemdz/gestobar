@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../admin/providers/bar_provider.dart';
 import '../models/caja_model.dart';
 import '../repository/caja_repository.dart';
 
@@ -59,5 +60,10 @@ final cajaHistoryProvider = FutureProvider<List<CajaModel>>((ref) async {
 
 // Proveedor del símbolo de moneda del bar activo (Por defecto 'Bs.' según el bar semilla)
 final currencySymbolProvider = Provider<String>((ref) {
-  return 'Bs.';
+  final barState = ref.watch(currentBarProvider);
+  return barState.when(
+    data: (bar) => bar.monedaSimbolo,
+    loading: () => 'Bs.',
+    error: (_, __) => 'Bs.',
+  );
 });
