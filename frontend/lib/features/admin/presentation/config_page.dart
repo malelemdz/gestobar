@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/currency_helper.dart';
 import '../providers/bar_provider.dart';
 import '../data/models/bar_model.dart';
 import '../providers/tarifas_provider.dart';
@@ -189,19 +190,6 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
     return confirm;
   }
 
-  String _getSymbolFromIso(String iso) {
-    switch (iso) {
-      case 'BOB':
-        return 'Bs';
-      case 'PEN':
-        return 'S/';
-      case 'EUR':
-        return '€';
-      default:
-        return '\$';
-    }
-  }
-
   Future<void> _saveConfig() async {
     if (_formKey.currentState!.validate()) {
       
@@ -222,7 +210,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
         'link_ubicacion': _ubicacionCtrl.text.trim(),
         'logo_url': _logoUrl,
         'moneda_iso': _currentIso,
-        'moneda_simbolo': _getSymbolFromIso(_currentIso),
+        'moneda_simbolo': CurrencyHelper.getSymbolFromIso(_currentIso),
         'timezone': _currentTimezone,
         'whatsapp': _whatsappCtrl.text.trim(),
         'facebook': _facebookCtrl.text.trim(),
@@ -569,9 +557,12 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                               ? Column(
                                   children: [
                                     _buildDropdownField<String>(
-                                      label: 'Moneda (ISO)',
+                                      label: 'Moneda del Bar',
                                       value: _currentIso,
-                                      items: _isoOptions.map((iso) => DropdownMenuItem(value: iso, child: Text(iso))).toList(),
+                                      items: _isoOptions.map((iso) => DropdownMenuItem(
+                                        value: iso, 
+                                        child: Text(CurrencyHelper.getCurrencyLabel(iso)),
+                                      )).toList(),
                                       onChanged: (val) {
                                         if (val != null) setState(() => _currentIso = val);
                                       },
@@ -598,9 +589,12 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                                   children: [
                                     Expanded(
                                       child: _buildDropdownField<String>(
-                                        label: 'Moneda (ISO)',
+                                        label: 'Moneda del Bar',
                                         value: _currentIso,
-                                        items: _isoOptions.map((iso) => DropdownMenuItem(value: iso, child: Text(iso))).toList(),
+                                        items: _isoOptions.map((iso) => DropdownMenuItem(
+                                          value: iso, 
+                                          child: Text(CurrencyHelper.getCurrencyLabel(iso)),
+                                        )).toList(),
                                         onChanged: (val) {
                                           if (val != null) setState(() => _currentIso = val);
                                         },

@@ -1,3 +1,5 @@
+import '../../../../core/utils/currency_helper.dart';
+
 class BarModel {
   final String id;
   final String nombre;
@@ -42,14 +44,15 @@ class BarModel {
   });
 
   factory BarModel.fromJson(Map<String, dynamic> json) {
+    final String iso = json['moneda_iso'] ?? 'BOB';
     return BarModel(
       id: json['id'],
       nombre: json['nombre'],
       ciudad: json['ciudad'],
       direccion: json['direccion'],
       timezone: json['timezone'] ?? 'America/La_Paz',
-      monedaSimbolo: json['moneda_simbolo'] ?? 'Bs',
-      monedaIso: json['moneda_iso'] ?? 'BOB',
+      monedaSimbolo: CurrencyHelper.cleanCurrencySymbol(json['moneda_simbolo'], iso),
+      monedaIso: iso,
       logoUrl: json['logo_url'],
       whatsapp: json['whatsapp'],
       linkUbicacion: json['link_ubicacion'],
@@ -104,6 +107,7 @@ class BarModel {
     String? tarifaCompaniaId,
     Map<String, dynamic>? horarios,
   }) {
+    final String targetIso = monedaIso ?? this.monedaIso;
     return BarModel(
       id: id,
       slug: slug,
@@ -112,8 +116,11 @@ class BarModel {
       ciudad: ciudad ?? this.ciudad,
       direccion: direccion ?? this.direccion,
       timezone: timezone ?? this.timezone,
-      monedaSimbolo: monedaSimbolo ?? this.monedaSimbolo,
-      monedaIso: monedaIso ?? this.monedaIso,
+      monedaSimbolo: CurrencyHelper.cleanCurrencySymbol(
+        monedaSimbolo ?? this.monedaSimbolo,
+        targetIso,
+      ),
+      monedaIso: targetIso,
       logoUrl: logoUrl ?? this.logoUrl,
       whatsapp: whatsapp ?? this.whatsapp,
       linkUbicacion: linkUbicacion ?? this.linkUbicacion,

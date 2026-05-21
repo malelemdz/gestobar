@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/utils/currency_helper.dart';
 import '../../../core/constants/api_constants.dart';
 import '../../../core/network/dio_client.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -137,7 +138,10 @@ class BarSelectorView extends ConsumerWidget {
                                           ),
                                         ),
                                         Text(
-                                          bar['moneda_simbolo'] ?? 'Bs',
+                                          CurrencyHelper.cleanCurrencySymbol(
+                                            bar['moneda_simbolo'],
+                                            bar['moneda_iso'],
+                                          ),
                                           style: theme.textTheme.labelMedium?.copyWith(
                                             color: theme.colorScheme.primary,
                                             fontWeight: FontWeight.bold,
