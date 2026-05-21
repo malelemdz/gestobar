@@ -17,6 +17,7 @@ import 'features/menu_publico/presentation/menu_page.dart';
 import 'features/staff/presentation/staff_page.dart';
 import 'features/admin/presentation/config_page.dart';
 import 'features/auth/presentation/perfil_page.dart';
+import 'features/admin/providers/bar_provider.dart';
 
 void main() {
   // Asegura que las llamadas a canales nativos de Flutter (como Secure Storage)
@@ -428,6 +429,13 @@ class MainDashboardView extends ConsumerWidget {
     final activeView = ref.watch(activeViewProvider);
     final activeBarId = authState.activeBarId;
 
+    final barState = ref.watch(currentBarProvider);
+    final String barName = barState.when(
+      data: (bar) => bar.nombre,
+      loading: () => 'Cargando...',
+      error: (_, __) => 'Gestobar',
+    );
+
     final String role = user.rolNombre.toUpperCase();
 
     // auto-corrección: asegurar que la vista seleccionada sea permitida para el rol
@@ -474,7 +482,7 @@ class MainDashboardView extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              activeBarId != null ? 'Neon Lounge' : 'Gestobar',
+                              activeBarId != null ? barName : 'Gestobar',
                               style: theme.textTheme.headlineLarge?.copyWith(
                                 fontSize: 28.0,
                                 fontWeight: FontWeight.w800,
@@ -1324,7 +1332,16 @@ class MainDashboardView extends ConsumerWidget {
     final String role = user.rolNombre.toUpperCase();
     final authState = ref.watch(authProvider) as AuthAuthenticated;
     final activeBarId = authState.activeBarId;
-    final String activeBarName = activeBarId != null ? 'El Templo del Oro' : 'Consola Global';
+    
+    final barState = ref.watch(currentBarProvider);
+    final String activeBarName = activeBarId != null
+        ? barState.when(
+            data: (bar) => bar.nombre,
+            loading: () => 'Cargando...',
+            error: (_, __) => 'El Templo del Oro',
+          )
+        : 'Consola Global';
+
     final List<Map<String, dynamic>> navItems = _getNavItemsForRole(role);
     final activeView = ref.watch(activeViewProvider);
 

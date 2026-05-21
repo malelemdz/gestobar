@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/providers/auth_state.dart';
 import '../../../main.dart'; // Para activeViewProvider
+import '../../admin/providers/bar_provider.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
@@ -13,6 +14,7 @@ class DashboardPage extends ConsumerWidget {
     final theme = Theme.of(context);
     final authState = ref.watch(authProvider) as AuthAuthenticated;
     final user = authState.user;
+    final barState = ref.watch(currentBarProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
@@ -38,45 +40,55 @@ class DashboardPage extends ConsumerWidget {
                     children: [
                       // Avatar circular con iniciales
                       Container(
-                        width: 54.0,
-                        height: 54.0,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF7000FF), // Violeta/Secondary
-                          shape: BoxShape.circle,
+                        width: 56.0,
+                        height: 56.0,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(100.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF7000FF).withOpacity(0.3),
+                              blurRadius: 12.0,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Center(
                           child: Text(
-                            user.nombre.isNotEmpty ? user.nombre.substring(0, 1).toUpperCase() : 'G',
+                            (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
                             style: GoogleFonts.plusJakartaSans(
                               color: Colors.white,
                               fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w900,
                             ),
                           ),
                         ),
                       ),
                       const SizedBox(width: 16.0),
+                      // Datos de sesión (Nombre, Rol)
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'SESIÓN ACTIVA',
+                              'Hola, ${user.nombre}',
                               style: GoogleFonts.plusJakartaSans(
-                                fontSize: 10.0,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0,
-                                color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -0.5,
                               ),
                             ),
                             const SizedBox(height: 2.0),
                             Text(
-                              user.nombre,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFFDBFCFF),
-                                letterSpacing: -0.5,
+                              user.email,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
+                                fontSize: 13.0,
                               ),
                             ),
                           ],
@@ -85,11 +97,10 @@ class DashboardPage extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 24.0),
-                  Container(
-                    height: 1.0,
-                    color: Colors.white.withOpacity(0.06),
-                  ),
-                  const SizedBox(height: 24.0),
+                  // Línea divisoria minimalista
+                  Divider(color: Colors.white.withOpacity(0.06), height: 1.0),
+                  const SizedBox(height: 20.0),
+                  // Fila de Metadatos (Rol y Sucursal)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -138,7 +149,11 @@ class DashboardPage extends ConsumerWidget {
                           const SizedBox(height: 6.0),
                           Text(
                             authState.activeBarId != null
-                                ? 'El Templo del Oro'
+                                ? barState.when(
+                                    data: (bar) => bar.nombre,
+                                    loading: () => 'Cargando...',
+                                    error: (_, __) => 'Error al cargar',
+                                  )
                                 : 'CONSOLA GLOBAL',
                             style: GoogleFonts.plusJakartaSans(
                               fontWeight: FontWeight.w800,
