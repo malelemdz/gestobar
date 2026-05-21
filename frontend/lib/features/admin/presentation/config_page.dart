@@ -40,8 +40,20 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
   String _currentIso = 'USD';
   String _currentTimezone = 'America/La_Paz';
 
-  final List<String> _isoOptions = ['USD', 'BOB', 'CLP', 'COP', 'PEN', 'MXN', 'ARS', 'EUR'];
-  final List<String> _timezoneOptions = ['America/La_Paz', 'America/Santiago', 'America/Bogota', 'America/Lima', 'America/Mexico_City', 'America/Argentina/Buenos_Aires'];
+  final List<String> _isoOptions = [
+    'USD', 'BOB', 'BRL', 'CLP', 'COP', 'CRC', 'CUP', 'DOP', 'EUR', 'GTQ',
+    'HNL', 'MXN', 'NIO', 'PAB', 'PEN', 'PYG', 'SVC', 'UYU', 'VES'
+  ];
+  final List<String> _timezoneOptions = [
+    'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles',
+    'Europe/Madrid', 'Atlantic/Canary', 'America/La_Paz', 'America/Lima',
+    'America/Santiago', 'America/Bogota', 'America/Mexico_City', 'America/Monterrey',
+    'America/Tijuana', 'America/Argentina/Buenos_Aires', 'America/Sao_Paulo',
+    'America/Manaus', 'America/Costa_Rica', 'America/El_Salvador', 'America/Guatemala',
+    'America/Tegucigalpa', 'America/Managua', 'America/Panama', 'America/Asuncion',
+    'America/Caracas', 'America/Montevideo', 'America/Guayaquil', 'America/Santo_Domingo',
+    'America/Puerto_Rico', 'America/Havana'
+  ];
 
   final List<String> _dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
   Map<String, dynamic> _horarios = {};

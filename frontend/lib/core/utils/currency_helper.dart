@@ -4,13 +4,29 @@ class CurrencyHelper {
   static String getSymbolFromIso(String iso) {
     switch (iso.trim().toUpperCase()) {
       case 'BOB':
+      case 'VES':
         return 'Bs';
       case 'PEN':
         return 'S/';
       case 'EUR':
         return '€';
+      case 'BRL':
+        return 'R\$';
+      case 'CRC':
+      case 'SVC':
+        return '₡';
+      case 'GTQ':
+        return 'Q';
+      case 'HNL':
+        return 'L';
+      case 'NIO':
+        return 'C\$';
+      case 'PAB':
+        return 'B/.';
+      case 'PYG':
+        return '₲';
       default:
-        return '\$'; // Dólar y cualquier otro por defecto ($)
+        return '\$'; // Dólar y cualquier otro peso/moneda por defecto ($)
     }
   }
 
@@ -34,21 +50,43 @@ class CurrencyHelper {
   static String getCurrencyLabel(String iso) {
     switch (iso.trim().toUpperCase()) {
       case 'USD':
-        return 'Dólar (\$)';
+        return 'Dólar estadounidense (\$)';
       case 'BOB':
         return 'Boliviano (Bs)';
+      case 'BRL':
+        return 'Real Brasileño (R\$)';
       case 'CLP':
         return 'Peso Chileno (\$)';
       case 'COP':
         return 'Peso Colombiano (\$)';
-      case 'PEN':
-        return 'Sol Peruano (S/)';
-      case 'MXN':
-        return 'Peso Mexicano (\$)';
-      case 'ARS':
-        return 'Peso Argentino (\$)';
+      case 'CRC':
+        return 'Colón Costarricense (₡)';
+      case 'CUP':
+        return 'Peso Cubano (\$)';
+      case 'DOP':
+        return 'Peso Dominicano (\$)';
       case 'EUR':
         return 'Euro (€)';
+      case 'GTQ':
+        return 'Quetzal Guatemalteco (Q)';
+      case 'HNL':
+        return 'Lempira Hondureño (L)';
+      case 'MXN':
+        return 'Peso Mexicano (\$)';
+      case 'NIO':
+        return 'Córdoba Nicaragüense (C\$)';
+      case 'PAB':
+        return 'Balboa Panameño (B/.)';
+      case 'PEN':
+        return 'Sol Peruano (S/)';
+      case 'PYG':
+        return 'Guaraní Paraguayo (₲)';
+      case 'SVC':
+        return 'Colón Salvadoreño (₡)';
+      case 'UYU':
+        return 'Peso Uruguayo (\$)';
+      case 'VES':
+        return 'Bolívar Venezolano (Bs)';
       default:
         return '$iso (\$)';
     }
