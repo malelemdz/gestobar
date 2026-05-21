@@ -85,7 +85,7 @@ class DashboardPage extends ConsumerWidget {
                             ),
                             const SizedBox(height: 2.0),
                             Text(
-                              user.email,
+                              user.username,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
                                 fontSize: 13.0,
