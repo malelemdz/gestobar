@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BarsModule } from './bars/bars.module';
@@ -15,7 +17,8 @@ import { VentasModule } from './ventas/ventas.module';
 import { MenuModule } from './menu/menu.module';
 import { AuditoriaModule } from './auditoria/auditoria.module';
 import { EstadisticasModule } from './estadisticas/estadisticas.module';
-
+import { TarifasModule } from './tarifas/tarifas.module';
+import { UploadsModule } from './uploads/uploads.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,6 +38,10 @@ import { EstadisticasModule } from './estadisticas/estadisticas.module';
         synchronize: true,
       }),
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/uploads',
+    }),
     BarsModule,
     UsersModule,
     RolesModule,
@@ -47,6 +54,8 @@ import { EstadisticasModule } from './estadisticas/estadisticas.module';
     MenuModule,
     AuditoriaModule,
     EstadisticasModule,
+    TarifasModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -42,8 +42,10 @@ export class ProductsService {
     product.variantes = createProductDto.variantes.map((v) =>
       this.variantRepository.create({
         nombre: v.nombre,
-        precio_a: v.precio_a,
-        precio_b: v.precio_b,
+        precios: v.precios.map(p => ({
+          tarifa_id: p.tarifa_id,
+          precio_unitario: p.precio_unitario,
+        })),
         disponible: v.disponible ?? true,
       }),
     );
@@ -56,6 +58,7 @@ export class ProductsService {
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.categoria', 'category')
       .leftJoinAndSelect('product.variantes', 'variant')
+      .leftJoinAndSelect('variant.precios', 'precio')
       .where('product.bar_id = :barId', { barId });
 
     if (categoryId) {
@@ -68,7 +71,7 @@ export class ProductsService {
   async findOne(id: string, barId: string): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { id, bar_id: barId },
-      relations: ['categoria', 'variantes'],
+      relations: ['categoria', 'variantes', 'variantes.precios'],
     });
 
     if (!product) {
@@ -106,8 +109,13 @@ export class ProductsService {
     await this.findOne(productId, barId);
 
     const variant = this.variantRepository.create({
-      ...createVariantDto,
+      nombre: createVariantDto.nombre,
       producto_id: productId,
+      disponible: createVariantDto.disponible ?? true,
+      precios: createVariantDto.precios.map(p => ({
+        tarifa_id: p.tarifa_id,
+        precio_unitario: p.precio_unitario,
+      })),
     });
 
     return await this.variantRepository.save(variant);

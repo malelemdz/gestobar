@@ -60,6 +60,15 @@ export class Bar {
   })
   comision_porcentaje: number;
 
+  @Column({ default: false })
+  modulo_damas_activo: boolean;
+
+  @Column({ type: 'uuid', nullable: true })
+  tarifa_compania_id: string | null;
+
+  @Column({ type: 'json', nullable: true })
+  horarios: any;
+
   @Column()
   owner_id: string;
 

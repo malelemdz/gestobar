@@ -47,7 +47,7 @@ export class VentasService {
       // Obtener la variante y verificar que pertenezca al bar
       const variant = await this.variantRepository.findOne({
         where: { id: item.variante_id },
-        relations: ['producto'],
+        relations: ['producto', 'precios', 'precios.tarifa'],
       });
 
       if (!variant || variant.producto.bar_id !== barId) {
@@ -59,7 +59,24 @@ export class VentasService {
         throw new BadRequestException(`El producto '${variant.producto.nombre} (${variant.nombre})' no está disponible en este momento.`);
       }
 
-      let precioUnitario = variant.precio_a;
+      let precioNormal = 0;
+      let precioCompania = 0;
+      
+      const tarifaNormal = variant.precios?.find(p => p.tarifa?.es_default);
+      if (tarifaNormal) {
+        precioNormal = tarifaNormal.precio_unitario;
+      } else if (variant.precios && variant.precios.length > 0) {
+        precioNormal = variant.precios[0].precio_unitario;
+      }
+
+      if (bar.tarifa_compania_id) {
+         const tarifaComp = variant.precios?.find(p => p.tarifa_id === bar.tarifa_compania_id);
+         if (tarifaComp) {
+           precioCompania = tarifaComp.precio_unitario;
+         }
+      }
+
+      let precioUnitario = precioNormal;
       let comisionDama = 0;
       let esPrecioB = false;
 
@@ -69,14 +86,14 @@ export class VentasService {
         if (!item.dama_id) {
           throw new BadRequestException(`Para registrar una invitación de '${variant.producto.nombre}', debes especificar el 'dama_id'.`);
         }
-        precioUnitario = variant.precio_a;
+        precioUnitario = precioNormal;
         comisionDama = 0;
       } else if (item.es_precio_b) {
         // Compañía (Precio B): Obligatorio dama_id y comisión según bar
         if (!item.dama_id) {
           throw new BadRequestException(`Para ventas de compañía (Precio B) de '${variant.producto.nombre}', el 'dama_id' es obligatorio.`);
         }
-        precioUnitario = variant.precio_b;
+        precioUnitario = precioCompania > 0 ? precioCompania : precioNormal;
         esPrecioB = true;
         
         // Cálculo de comisión automático y configurable por bar
@@ -84,7 +101,7 @@ export class VentasService {
         comisionDama = Math.round(rawComision * 100) / 100; // Redondear a 2 decimales
       } else {
         // Venta Normal: Precio A y comisión 0
-        precioUnitario = variant.precio_a;
+        precioUnitario = precioNormal;
         comisionDama = 0;
       }
 

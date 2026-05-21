@@ -7,6 +7,7 @@ import { User } from '../users/entities/user.entity';
 import { Bar } from '../bars/entities/bar.entity';
 import { Category } from '../categories/entities/category.entity';
 import { Product } from '../products/entities/product.entity';
+import { Tarifa } from '../tarifas/entities/tarifa.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -24,6 +25,8 @@ export class SeedService {
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(Tarifa)
+    private readonly tarifaRepository: Repository<Tarifa>,
   ) {}
 
   async runSeed() {
@@ -113,6 +116,22 @@ export class SeedService {
       bar = await this.barRepository.save(bar);
     }
 
+    // 4.5 Crear Tarifas por Defecto
+    let tarifaGeneral = await this.tarifaRepository.findOne({ where: { nombre: 'General', bar_id: bar.id } });
+    if (!tarifaGeneral) {
+      tarifaGeneral = await this.tarifaRepository.save(this.tarifaRepository.create({ nombre: 'General', es_default: true, bar_id: bar.id }));
+    }
+    
+    let tarifaCompania = await this.tarifaRepository.findOne({ where: { nombre: 'Compañía', bar_id: bar.id } });
+    if (!tarifaCompania) {
+      tarifaCompania = await this.tarifaRepository.save(this.tarifaRepository.create({ nombre: 'Compañía', es_default: false, bar_id: bar.id }));
+    }
+
+    // Asignar al bar
+    bar.modulo_damas_activo = true;
+    bar.tarifa_compania_id = tarifaCompania.id;
+    await this.barRepository.save(bar);
+
     // 5. Crear Staff del Bar Asociado
     // Admin Local
     let admin = await this.userRepository.findOne({ where: { username: 'admin' } });
@@ -201,8 +220,20 @@ export class SeedService {
         descripcion: 'Clásico fernet cordobés servido con Coca Cola y abundante hielo.',
         foto_url: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=500',
         variantes: [
-          { nombre: 'Vaso Simple', precio_a: 30.0, precio_b: 55.0 },
-          { nombre: 'Jarra 1L', precio_a: 75.0, precio_b: 120.0 },
+          { 
+            nombre: 'Vaso Simple', 
+            precios: [
+              { tarifa_id: tarifaGeneral.id, precio_unitario: 30.0 },
+              { tarifa_id: tarifaCompania.id, precio_unitario: 55.0 }
+            ] 
+          },
+          { 
+            nombre: 'Jarra 1L', 
+            precios: [
+              { tarifa_id: tarifaGeneral.id, precio_unitario: 75.0 },
+              { tarifa_id: tarifaCompania.id, precio_unitario: 120.0 }
+            ] 
+          },
         ],
       },
       {
@@ -212,8 +243,20 @@ export class SeedService {
         descripcion: 'Johnnie Walker Etiqueta Roja en las rocas o puro.',
         foto_url: 'https://images.unsplash.com/photo-1527281497458-47f6516f5c81?w=500',
         variantes: [
-          { nombre: 'Medida en Vaso', precio_a: 35.0, precio_b: 60.0 },
-          { nombre: 'Botella 750ml', precio_a: 380.0, precio_b: 550.0 },
+          { 
+            nombre: 'Medida en Vaso', 
+            precios: [
+              { tarifa_id: tarifaGeneral.id, precio_unitario: 35.0 },
+              { tarifa_id: tarifaCompania.id, precio_unitario: 60.0 }
+            ]
+          },
+          { 
+            nombre: 'Botella 750ml', 
+            precios: [
+              { tarifa_id: tarifaGeneral.id, precio_unitario: 380.0 },
+              { tarifa_id: tarifaCompania.id, precio_unitario: 550.0 }
+            ]
+          },
         ],
       },
       {
@@ -223,7 +266,13 @@ export class SeedService {
         descripcion: 'Ron blanco, menta fresca del huerto, limón natural y soda.',
         foto_url: 'https://images.unsplash.com/photo-1575037614876-c38a4d44f5b8?w=500',
         variantes: [
-          { nombre: 'Copa Estándar', precio_a: 25.0, precio_b: 50.0 },
+          { 
+            nombre: 'Copa Estándar', 
+            precios: [
+              { tarifa_id: tarifaGeneral.id, precio_unitario: 25.0 },
+              { tarifa_id: tarifaCompania.id, precio_unitario: 50.0 }
+            ]
+          },
         ],
       },
       {
@@ -233,8 +282,20 @@ export class SeedService {
         descripcion: 'Cerveza mexicana tipo lager ligera, con rodaja de limón.',
         foto_url: 'https://images.unsplash.com/photo-1600788886242-5c96aabe3757?w=500',
         variantes: [
-          { nombre: 'Botella Fria', precio_a: 20.0, precio_b: 40.0 },
-          { nombre: 'Balde x 5 unidades', precio_a: 90.0, precio_b: 180.0 },
+          { 
+            nombre: 'Botella Fria', 
+            precios: [
+              { tarifa_id: tarifaGeneral.id, precio_unitario: 20.0 },
+              { tarifa_id: tarifaCompania.id, precio_unitario: 40.0 }
+            ]
+          },
+          { 
+            nombre: 'Balde x 5 unidades', 
+            precios: [
+              { tarifa_id: tarifaGeneral.id, precio_unitario: 90.0 },
+              { tarifa_id: tarifaCompania.id, precio_unitario: 180.0 }
+            ]
+          },
         ],
       },
       {
@@ -244,7 +305,13 @@ export class SeedService {
         descripcion: 'Cerveza Pilsner boliviana de alta calidad y sabor robusto.',
         foto_url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500',
         variantes: [
-          { nombre: 'Botella Grande', precio_a: 18.0, precio_b: 35.0 },
+          { 
+            nombre: 'Botella Grande', 
+            precios: [
+              { tarifa_id: tarifaGeneral.id, precio_unitario: 18.0 },
+              { tarifa_id: tarifaCompania.id, precio_unitario: 35.0 }
+            ]
+          },
         ],
       },
       {
@@ -254,7 +321,13 @@ export class SeedService {
         descripcion: 'Bebida energética que te da alas en lata personal.',
         foto_url: 'https://images.unsplash.com/photo-1622543929424-71d57b282928?w=500',
         variantes: [
-          { nombre: 'Lata 250ml', precio_a: 25.0, precio_b: 45.0 },
+          { 
+            nombre: 'Lata 250ml', 
+            precios: [
+              { tarifa_id: tarifaGeneral.id, precio_unitario: 25.0 },
+              { tarifa_id: tarifaCompania.id, precio_unitario: 45.0 }
+            ]
+          },
         ],
       },
       {
@@ -264,7 +337,13 @@ export class SeedService {
         descripcion: 'Refresco clásico personal en envase de vidrio.',
         foto_url: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500',
         variantes: [
-          { nombre: 'Vidrio 350ml', precio_a: 10.0, precio_b: 20.0 },
+          { 
+            nombre: 'Vidrio 350ml', 
+            precios: [
+              { tarifa_id: tarifaGeneral.id, precio_unitario: 10.0 },
+              { tarifa_id: tarifaCompania.id, precio_unitario: 20.0 }
+            ]
+          },
         ],
       },
     ];

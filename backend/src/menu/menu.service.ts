@@ -74,7 +74,7 @@ export class MenuService {
     // Obtener todos los productos con sus variantes
     const products = await this.productRepository.find({
       where: { bar_id: bar.id },
-      relations: ['variantes'],
+      relations: ['variantes', 'variantes.precios', 'variantes.precios.tarifa'],
     });
 
     // Estructurar catálogo sanitizando y protegiendo el Precio B
@@ -93,11 +93,21 @@ export class MenuService {
           // Exponer únicamente variantes disponibles y renombrar precio_a a "precio" (escondiendo precio_b)
           variantes: (p.variantes || [])
             .filter((v) => v.disponible)
-            .map((v) => ({
-              id: v.id,
-              nombre: v.nombre,
-              precio: v.precio_a,
-            })),
+            .map((v) => {
+              let defaultPrice = 0;
+              const defaultTarifa = v.precios?.find(p => p.tarifa?.es_default);
+              if (defaultTarifa) {
+                defaultPrice = defaultTarifa.precio_unitario;
+              } else if (v.precios && v.precios.length > 0) {
+                defaultPrice = v.precios[0].precio_unitario;
+              }
+              
+              return {
+                id: v.id,
+                nombre: v.nombre,
+                precio: defaultPrice,
+              };
+            }),
         })).filter((p) => p.variantes.length > 0), // Solo mostrar productos que tengan variantes disponibles
       };
     }).filter((cat) => cat.productos.length > 0); // Solo mostrar categorías que tengan productos con variantes

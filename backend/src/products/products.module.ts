@@ -4,12 +4,13 @@ import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { Product } from './entities/product.entity';
 import { Variant } from './entities/variant.entity';
+import { VariantePrecio } from './entities/variante-precio.entity';
 import { CategoriesModule } from '../categories/categories.module';
 import { RolesModule } from '../roles/roles.module'; // Required for PermissionsGuard
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Variant]),
+    TypeOrmModule.forFeature([Product, Variant, VariantePrecio]),
     CategoriesModule,
     RolesModule,
   ],

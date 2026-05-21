@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Product } from './product.entity';
+import { VariantePrecio } from './variante-precio.entity';
 
 @Entity('variantes')
 export class Variant {
@@ -16,28 +17,8 @@ export class Variant {
   @Column()
   nombre: string;
 
-  @Column({
-    type: 'decimal',
-    precision: 12,
-    scale: 2,
-    transformer: {
-      to: (value: number) => value,
-      from: (value: string) => parseFloat(value),
-    },
-  })
-  precio_a: number;
-
-  @Column({
-    type: 'decimal',
-    precision: 12,
-    scale: 2,
-    transformer: {
-      to: (value: number) => value,
-      from: (value: string) => parseFloat(value),
-    },
-  })
-  precio_b: number;
-
+  @OneToMany(() => VariantePrecio, vp => vp.variante, { cascade: true })
+  precios: VariantePrecio[];
   @Column({ default: true })
   disponible: boolean;
 }

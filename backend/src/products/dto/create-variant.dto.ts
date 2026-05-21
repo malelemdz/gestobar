@@ -1,17 +1,16 @@
-import { IsString, IsNotEmpty, IsNumber, Min, IsBoolean, IsOptional } from 'class-validator';
-
+import { IsString, IsNotEmpty, IsBoolean, IsOptional, IsArray, ValidateNested, ArrayMinSize } from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateVariantePrecioDto } from './create-variante-precio.dto';
 export class CreateVariantDto {
   @IsString()
   @IsNotEmpty({ message: 'El nombre de la variante es obligatorio' })
   nombre: string;
 
-  @IsNumber({ maxDecimalPlaces: 2 }, { message: 'El precio A debe ser un número válido' })
-  @Min(0, { message: 'El precio A no puede ser negativo' })
-  precio_a: number;
-
-  @IsNumber({ maxDecimalPlaces: 2 }, { message: 'El precio B debe ser un número válido' })
-  @Min(0, { message: 'El precio B no puede ser negativo' })
-  precio_b: number;
+  @IsArray()
+  @ArrayMinSize(1, { message: 'Debe proporcionar al menos un precio para la variante' })
+  @ValidateNested({ each: true })
+  @Type(() => CreateVariantePrecioDto)
+  precios: CreateVariantePrecioDto[];
 
   @IsBoolean()
   @IsOptional()

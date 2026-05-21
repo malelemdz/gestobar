@@ -66,4 +66,15 @@ export class CreateBarDto {
   @Max(100)
   @IsOptional()
   comision_porcentaje?: number;
+
+  @IsBoolean()
+  @IsOptional()
+  modulo_damas_activo?: boolean;
+
+  @IsUUID()
+  @IsOptional()
+  tarifa_compania_id?: string;
+
+  @IsOptional()
+  horarios?: any;
 }
