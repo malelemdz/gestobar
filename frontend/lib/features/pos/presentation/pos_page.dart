@@ -308,8 +308,8 @@ class _PosPageState extends ConsumerState<PosPage> {
 
     // Calcular cuántos de este producto hay en el carrito
     final int quantityInCart = cart.items
-        .where((item) => item.producto.id == product.id)
-        .fold(0, (sum, item) => sum + item.cantidad);
+        .where((item) => item.product.id == product.id)
+        .fold<int>(0, (sum, item) => sum + item.quantity);
     
     // Color de acento basado en el estado (Dama o Normal)
     final accentColor = hasDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF);
@@ -377,12 +377,8 @@ class _PosPageState extends ConsumerState<PosPage> {
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: accentColor.withOpacity(0.15),
+                              color: Colors.black.withOpacity(0.6),
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: accentColor.withOpacity(0.3),
-                                width: 1,
-                              ),
                             ),
                             child: Icon(Icons.check, color: accentColor, size: 14),
                           ),
