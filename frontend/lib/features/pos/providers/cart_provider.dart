@@ -6,20 +6,20 @@ class CartItem {
   final ProductModel product;
   final VariantModel variant;
   final int quantity;
-  final double precioUnitario; // Precio activo (precioA, precioB)
+  final double precioUnitario; // Precio calculado en base a la tarifaId
   final String? damaId;
   final String? damaNombre;
-  final bool esPrecioB;      // true para Precio B (Compañía), false para Precio A
-  final bool esInvitacion;   // true si es cortesía/invitación para la Dama (Precio A, comision 0)
+  final String tarifaId;     // ID de la tarifa aplicada a este ítem
+  final bool esInvitacion;   // true si es invitación para la Dama (aplica Tarifa Default)
 
   CartItem({
     required this.product,
     required this.variant,
     required this.quantity,
     required this.precioUnitario,
+    required this.tarifaId,
     this.damaId,
     this.damaNombre,
-    this.esPrecioB = false,
     this.esInvitacion = false,
   });
 
@@ -30,7 +30,7 @@ class CartItem {
     double? precioUnitario,
     String? damaId,
     String? damaNombre,
-    bool? esPrecioB,
+    String? tarifaId,
     bool? esInvitacion,
   }) {
     return CartItem(
@@ -40,7 +40,7 @@ class CartItem {
       precioUnitario: precioUnitario ?? this.precioUnitario,
       damaId: damaId != null ? (damaId.isEmpty ? null : damaId) : this.damaId,
       damaNombre: damaNombre != null ? (damaNombre.isEmpty ? null : damaNombre) : this.damaNombre,
-      esPrecioB: esPrecioB ?? this.esPrecioB,
+      tarifaId: tarifaId ?? this.tarifaId,
       esInvitacion: esInvitacion ?? this.esInvitacion,
     );
   }
@@ -88,16 +88,11 @@ class CartNotifier extends StateNotifier<CartState> {
   CartNotifier() : super(CartState());
 
   /// Añade una variante al carrito
-  void addItem(ProductModel product, VariantModel variant) {
-    // Si hay una Dama global activa, se pre-asigna como Precio B por defecto
-    final bool hasGlobalDama = state.selectedDamaId != null;
-    final double precio = hasGlobalDama ? variant.precioB : variant.precioA;
-
-    // Buscamos si existe ya un ítem con las mismas características de Dama/Precio
-    // para agruparlo. Si difieren (ej: uno es Normal y otro es Dama), se crean líneas separadas.
+  void addItem(ProductModel product, VariantModel variant, {required String tarifaId, required double precioUnitario}) {
+    // Buscamos si existe ya un ítem idéntico (misma variante, misma tarifa, misma dama, mismo estado de invitación)
     final index = state.items.indexWhere((item) =>
         item.variant.id == variant.id &&
-        item.esPrecioB == hasGlobalDama &&
+        item.tarifaId == tarifaId &&
         item.damaId == state.selectedDamaId &&
         item.esInvitacion == false);
 
@@ -114,8 +109,8 @@ class CartNotifier extends StateNotifier<CartState> {
         product: product,
         variant: variant,
         quantity: 1,
-        precioUnitario: precio,
-        esPrecioB: hasGlobalDama,
+        precioUnitario: precioUnitario,
+        tarifaId: tarifaId,
         damaId: state.selectedDamaId,
         damaNombre: state.selectedDamaNombre,
         esInvitacion: false,
@@ -144,26 +139,27 @@ class CartNotifier extends StateNotifier<CartState> {
     }
   }
 
-  /// Cambia de forma atómica el modo de precio de un ítem específico del ticket
-  void setItemPriceMode(int index, {required bool esPrecioB, required bool esInvitacion}) {
+  /// Alterna el estado de "Invitación" de un ítem (Toggle)
+  void toggleInvitacion(int index, {required String tarifaDefaultId, required String tarifaCompaniaId}) {
     if (index < 0 || index >= state.items.length) return;
-
+    
     final item = state.items[index];
-    double nuevoPrecio = item.variant.precioA;
-    if (esPrecioB) {
-      nuevoPrecio = item.variant.precioB;
+    final bool newEsInvitacion = !item.esInvitacion;
+    
+    // Si es invitación -> Tarifa por defecto. Si NO es invitación -> Tarifa de Compañía
+    final targetTarifaId = newEsInvitacion ? tarifaDefaultId : tarifaCompaniaId;
+    
+    double nuevoPrecio;
+    try {
+      nuevoPrecio = item.variant.precios.firstWhere((p) => p.tarifaId == targetTarifaId).precioUnitario;
+    } catch (_) {
+      nuevoPrecio = newEsInvitacion ? item.variant.precioA : item.variant.precioB;
     }
 
-    // Si se pasa a Normal, se limpia la dama asociada.
-    final String? newDamaId = (esPrecioB || esInvitacion) ? item.damaId : '';
-    final String? newDamaNombre = (esPrecioB || esInvitacion) ? item.damaNombre : '';
-
     final updatedItem = item.copyWith(
-      esPrecioB: esPrecioB,
-      esInvitacion: esInvitacion,
+      esInvitacion: newEsInvitacion,
+      tarifaId: targetTarifaId,
       precioUnitario: nuevoPrecio,
-      damaId: newDamaId,
-      damaNombre: newDamaNombre,
     );
 
     final newItems = List<CartItem>.from(state.items);
@@ -171,22 +167,20 @@ class CartNotifier extends StateNotifier<CartState> {
     state = state.copyWith(items: newItems);
   }
 
-  /// Asigna una Dama y su nombre a un ítem específico del ticket
-  void setItemDama(int index, String? damaId, String? damaNombre) {
+  /// Cambia manualmente la tarifa de un ítem (Solo aplicable cuando NO hay Dama en el ticket)
+  void setItemTarifa(int index, String newTarifaId) {
     if (index < 0 || index >= state.items.length) return;
-
-    final item = state.items[index];
     
-    // Si la Dama es nula, limpiamos el modo de precio B o invitación.
-    final bool esPrecioB = damaId == null ? false : item.esPrecioB;
-    final bool esInvitacion = damaId == null ? false : item.esInvitacion;
-    final double nuevoPrecio = esPrecioB ? item.variant.precioB : item.variant.precioA;
+    final item = state.items[index];
+    double nuevoPrecio;
+    try {
+      nuevoPrecio = item.variant.precios.firstWhere((p) => p.tarifaId == newTarifaId).precioUnitario;
+    } catch (_) {
+      nuevoPrecio = item.variant.precioA;
+    }
 
     final updatedItem = item.copyWith(
-      damaId: damaId ?? '',
-      damaNombre: damaNombre ?? '',
-      esPrecioB: esPrecioB,
-      esInvitacion: esInvitacion,
+      tarifaId: newTarifaId,
       precioUnitario: nuevoPrecio,
     );
 
@@ -195,11 +189,37 @@ class CartNotifier extends StateNotifier<CartState> {
     state = state.copyWith(items: newItems);
   }
 
-  /// Asigna una Dama global por defecto (para nuevos ítems añadidos)
-  void setDama(String? id, String? nombre) {
+  /// Asigna una Dama global por defecto (para nuevos ítems añadidos) y re-calcula toda la cuenta
+  void setDama(String? id, String? nombre, {required String tarifaCompaniaId, required String tarifaDefaultId}) {
+    final bool hasGlobalDama = id != null && id.isNotEmpty;
+
+    final newItems = state.items.map((item) {
+      if (item.esInvitacion) {
+        // Si ya era una invitación explícita, se mantiene a precio default pero actualizamos el ID de la dama
+        return item.copyWith(damaId: id ?? '', damaNombre: nombre ?? '');
+      }
+
+      final targetTarifaId = hasGlobalDama ? tarifaCompaniaId : tarifaDefaultId;
+      double nuevoPrecio;
+      try {
+        nuevoPrecio = item.variant.precios.firstWhere((p) => p.tarifaId == targetTarifaId).precioUnitario;
+      } catch (_) {
+        nuevoPrecio = hasGlobalDama ? item.variant.precioB : item.variant.precioA;
+      }
+
+      return item.copyWith(
+        damaId: id ?? '',
+        damaNombre: nombre ?? '',
+        tarifaId: targetTarifaId,
+        precioUnitario: nuevoPrecio,
+        esInvitacion: false, // Resetear bandera de invitación si quitamos dama
+      );
+    }).toList();
+
     state = state.copyWith(
       selectedDamaId: id ?? '',
       selectedDamaNombre: nombre ?? '',
+      items: newItems,
     );
   }
 

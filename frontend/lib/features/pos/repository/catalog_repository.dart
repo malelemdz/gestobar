@@ -131,7 +131,7 @@ class CatalogRepository {
         return {
           'variante_id': item.variant.id,
           'cantidad': item.quantity,
-          'es_precio_b': item.esPrecioB,
+          'tarifa_id': item.tarifaId,
           'dama_id': item.damaId,
           'es_invitacion': item.esInvitacion,
         };

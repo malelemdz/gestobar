@@ -4,11 +4,18 @@ import '../models/product_model.dart';
 import '../repository/catalog_repository.dart';
 import '../../auth/models/user_model.dart';
 import '../../auth/repository/auth_repository.dart';
+import 'dart:convert';
+import '../../../core/storage/secure_storage_service.dart';
 
-// Proveedor futuro para obtener las damas de compañía activas para comisionar en el POS
-final damasProvider = FutureProvider<List<UserModel>>((ref) async {
-  final users = await ref.watch(authRepositoryProvider).getUsers();
-  return users.where((u) => u.rolNombre.toUpperCase() == 'DAMA').toList();
+// =========================================================================
+// DAMAS (USUARIOS)
+// =========================================================================
+
+final damasProvider = StreamProvider<List<UserModel>>((ref) {
+  final authRepo = ref.watch(authRepositoryProvider);
+  return authRepo.watchUsers().map((users) {
+    return users.where((u) => u.rolNombre.toUpperCase() == 'DAMA').toList();
+  });
 });
 
 

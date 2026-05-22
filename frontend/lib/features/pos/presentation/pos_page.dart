@@ -10,8 +10,9 @@ import '../repository/catalog_repository.dart';
 import '../../../features/auth/models/user_model.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../caja/providers/caja_provider.dart';
-
-
+import '../../admin/providers/bar_provider.dart';
+import '../../admin/providers/tarifas_provider.dart';
+import '../../admin/data/models/tarifa_model.dart';
 class PosPage extends ConsumerStatefulWidget {
   const PosPage({super.key});
 
@@ -533,6 +534,8 @@ class _PosPageState extends ConsumerState<PosPage> {
   }) {
     final damasAsync = ref.watch(damasProvider);
     final cajaState = ref.watch(cajaStateProvider);
+    final barState = ref.watch(currentBarProvider);
+    final tarifasState = ref.watch(barTarifasProvider);
     final bool isCajaAbierta = cajaState.maybeWhen(
       data: (estado) => estado.abierta,
       orElse: () => false,
@@ -568,8 +571,97 @@ class _PosPageState extends ConsumerState<PosPage> {
           ),
         ),
         const Divider(color: Colors.white10, height: 1),
-        const SizedBox(height: 12), // Espaciador para que el primer item respire y no quede pegado a la línea
+        const SizedBox(height: 8), 
         
+        // --- SELECTOR GLOBAL DE COMPAÑÍA ---
+        barState.maybeWhen(
+          data: (bar) {
+            if (bar.moduloDamasActivo && bar.tarifaCompaniaId != null) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                  decoration: BoxDecoration(
+                    color: Colors.blueAccent.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.blueAccent.withOpacity(0.3)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: damasAsync.when(
+                      data: (damas) {
+                        // Evitar CRASH: Asegurarnos de que el ID guardado en el carrito siga existiendo en la lista
+                        final isDamaValid = cart.selectedDamaId != null && damas.any((d) => d.id == cart.selectedDamaId);
+                        final safeSelectedDamaId = isDamaValid ? cart.selectedDamaId : null;
+
+                        return DropdownButton<String?>(
+                          isExpanded: true,
+                          value: safeSelectedDamaId,
+                          hint: Text(damas.isEmpty ? 'Cargando Compañía...' : 'Sin Compañía (Cliente Normal)', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 13)),
+                          dropdownColor: const Color(0xFF1E2024),
+                          icon: const Icon(Icons.people_alt_outlined, color: Colors.blueAccent, size: 20),
+                          items: [
+                            DropdownMenuItem<String?>(
+                              value: null,
+                              child: Text('Sin Compañía', style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 13)),
+                            ),
+                            ...damas.map((d) => DropdownMenuItem<String?>(
+                              value: d.id,
+                              child: Text(d.nombre, style: GoogleFonts.plusJakartaSans(color: Colors.blueAccent, fontSize: 13, fontWeight: FontWeight.bold)),
+                            )),
+                          ],
+                          onChanged: (val) {
+                            final dama = damas.firstWhere((d) => d.id == val, orElse: () => UserModel(id: '', username: '', nombre: '', rolId: '', rolNombre: ''));
+                            
+                            // Obtener tarifa default del listado
+                            final tarifaDefaultId = tarifasState.maybeWhen(
+                              data: (tfs) => tfs.firstWhere((t) => t.esDefault, orElse: () => tfs.first).id,
+                              orElse: () => '',
+                            );
+
+                            ref.read(cartProvider.notifier).setDama(
+                              val,
+                              val == null ? null : dama.nombre,
+                              tarifaCompaniaId: bar.tarifaCompaniaId!,
+                              tarifaDefaultId: tarifaDefaultId,
+                            );
+                          },
+                        );
+                      },
+                      loading: () => Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Row(
+                          children: [
+                            const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(color: Colors.blueAccent, strokeWidth: 2),
+                            ),
+                            const SizedBox(width: 12),
+                            Text('Conectando a Base Local...', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                      error: (err, _) => Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.error_outline, color: Colors.redAccent, size: 20),
+                            const SizedBox(width: 12),
+                            Text('Error al cargar Damas', style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
+            return const SizedBox();
+          },
+          orElse: () => const SizedBox(),
+        ),
         if (!isCajaAbierta)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -624,38 +716,9 @@ class _PosPageState extends ConsumerState<PosPage> {
                   itemCount: cart.items.length,
                   itemBuilder: (context, index) {
                     final item = cart.items[index];
-
-                    // Helper para chips de selección táctiles
-                    Widget buildPriceModeChip({
-                      required String label,
-                      required bool isSelected,
-                      required Color color,
-                      required VoidCallback onTap,
-                    }) {
-                      return InkWell(
-                        onTap: onTap,
-                        borderRadius: BorderRadius.circular(6),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: isSelected ? color.withOpacity(0.15) : Colors.white.withOpacity(0.02),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: isSelected ? color.withOpacity(0.6) : Colors.white10,
-                              width: 1,
-                            ),
-                          ),
-                          child: Text(
-                            label,
-                            style: GoogleFonts.plusJakartaSans(
-                              color: isSelected ? color : Colors.white38,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 9,
-                            ),
-                          ),
-                        ),
-                      );
-                    }
+                    final List<TarifaModel> tarifasActivas = tarifasState.maybeWhen(data: (t) => t, orElse: () => []);
+                    final String tDefaultId = tarifasActivas.firstWhere((t) => t.esDefault, orElse: () => TarifaModel(id: '', barId: '', nombre: '', esDefault: true, activo: true)).id;
+                    final String tCompaniaId = barState.maybeWhen(data: (b) => b.tarifaCompaniaId ?? '', orElse: () => '');
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12.0),
@@ -665,11 +728,11 @@ class _PosPageState extends ConsumerState<PosPage> {
                           color: Colors.white.withOpacity(0.02),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: item.esPrecioB
+                            color: (cart.selectedDamaId != null && cart.selectedDamaId!.isNotEmpty && !item.esInvitacion)
                                 ? const Color(0xFFFF00D6).withOpacity(0.2)
                                 : (item.esInvitacion
                                     ? Colors.amber.withOpacity(0.2)
-                                    : Colors.white.withOpacity(0.04)),
+                                    : (item.tarifaId != tDefaultId ? const Color(0xFF00F0FF).withOpacity(0.2) : Colors.white.withOpacity(0.04))),
                             width: 1,
                           ),
                         ),
@@ -706,7 +769,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                                       Text(
                                         '$currencySymbol${item.precioUnitario.toStringAsFixed(2)} x ${item.quantity}',
                                         style: GoogleFonts.plusJakartaSans(
-                                          color: item.esPrecioB
+                                          color: (cart.selectedDamaId != null && cart.selectedDamaId!.isNotEmpty && !item.esInvitacion)
                                               ? const Color(0xFFFF00D6)
                                               : (item.esInvitacion ? Colors.amber : const Color(0xFF00F0FF)),
                                           fontWeight: FontWeight.bold,
@@ -756,41 +819,76 @@ class _PosPageState extends ConsumerState<PosPage> {
                             const Divider(color: Colors.white10, height: 1),
                             const SizedBox(height: 8),
 
-                            // Fila Inferior: Chips de modo de precio y Subtotal
+                            // Fila Inferior: Controles y Subtotal
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                // Chips
-                                Row(
-                                  children: [
-                                    buildPriceModeChip(
-                                      label: 'Cliente Solo A',
-                                      isSelected: !item.esPrecioB && !item.esInvitacion,
-                                      color: const Color(0xFF00F0FF),
-                                      onTap: () {
-                                        ref.read(cartProvider.notifier).setItemPriceMode(index, esPrecioB: false, esInvitacion: false);
-                                      },
+                                // Controles: Invitación o Selector de Tarifa
+                                if (cart.selectedDamaId != null && cart.selectedDamaId!.isNotEmpty) ...[
+                                  // Botón Invitación (Toggle)
+                                  InkWell(
+                                    onTap: () {
+                                      ref.read(cartProvider.notifier).toggleInvitacion(
+                                        index, 
+                                        tarifaDefaultId: tDefaultId, 
+                                        tarifaCompaniaId: tCompaniaId
+                                      );
+                                    },
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: item.esInvitacion ? Colors.amber.withOpacity(0.15) : Colors.white.withOpacity(0.02),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: item.esInvitacion ? Colors.amber.withOpacity(0.5) : Colors.white10,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.card_giftcard, size: 14, color: item.esInvitacion ? Colors.amber : Colors.white38),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            'Invitación',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              color: item.esInvitacion ? Colors.amber : Colors.white38,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(width: 6),
-                                    buildPriceModeChip(
-                                      label: 'Acompañado B',
-                                      isSelected: item.esPrecioB,
-                                      color: const Color(0xFFFF00D6),
-                                      onTap: () {
-                                        ref.read(cartProvider.notifier).setItemPriceMode(index, esPrecioB: true, esInvitacion: false);
-                                      },
+                                  ),
+                                ] else ...[
+                                  // Selector manual de tarifa
+                                  Container(
+                                    height: 30,
+                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.05),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: Colors.white10),
                                     ),
-                                    const SizedBox(width: 6),
-                                    buildPriceModeChip(
-                                      label: 'Invitado A',
-                                      isSelected: item.esInvitacion,
-                                      color: Colors.amber,
-                                      onTap: () {
-                                        ref.read(cartProvider.notifier).setItemPriceMode(index, esPrecioB: false, esInvitacion: true);
-                                      },
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        value: item.tarifaId.isEmpty ? (tDefaultId.isEmpty ? null : tDefaultId) : item.tarifaId,
+                                        dropdownColor: const Color(0xFF1E2024),
+                                        icon: const Icon(Icons.arrow_drop_down, color: Colors.white54, size: 16),
+                                        items: tarifasActivas.map((t) => DropdownMenuItem(
+                                          value: t.id,
+                                          child: Text(t.nombre, style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontSize: 10, fontWeight: FontWeight.bold)),
+                                        )).toList(),
+                                        onChanged: (val) {
+                                          if (val != null) {
+                                            ref.read(cartProvider.notifier).setItemTarifa(index, val);
+                                          }
+                                        },
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
 
                                 // Subtotal
                                 Text(
@@ -803,70 +901,6 @@ class _PosPageState extends ConsumerState<PosPage> {
                                 ),
                               ],
                             ),
-
-                            // Selector de Dama inline si es Dama B o Invitación
-                            if (item.esPrecioB || item.esInvitacion) ...[
-                              const SizedBox(height: 10),
-                              damasAsync.when(
-                                data: (damasList) {
-                                  return Container(
-                                    height: 32,
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: item.damaId != null
-                                            ? const Color(0xFFFF00D6).withOpacity(0.3)
-                                            : Colors.white10,
-                                        width: 1,
-                                      ),
-                                    ),
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButton<String?>(
-                                        value: item.damaId,
-                                        isExpanded: true,
-                                        dropdownColor: const Color(0xFF1E2024),
-                                        icon: const Icon(Icons.arrow_drop_down, color: Color(0xFFFF00D6), size: 16),
-                                        hint: Text(
-                                          item.esPrecioB
-                                              ? '¿Quién acompaña al Cliente? (Genera Comisión)'
-                                              : '¿A qué Dama se le sirve la Invitación? (Comisión 0)',
-                                          style: GoogleFonts.plusJakartaSans(
-                                            color: Colors.white38,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        items: damasList.map((dama) {
-                                          return DropdownMenuItem<String?>(
-                                            value: dama.id,
-                                            child: Text(
-                                              'Dama: ${dama.nombre}',
-                                              style: GoogleFonts.plusJakartaSans(
-                                                color: const Color(0xFFFF00D6),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 11,
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        onChanged: (id) {
-                                          if (id == null) {
-                                            ref.read(cartProvider.notifier).setItemDama(index, null, null);
-                                          } else {
-                                            final selectedDama = damasList.firstWhere((d) => d.id == id);
-                                            ref.read(cartProvider.notifier).setItemDama(index, id, selectedDama.nombre);
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
-                                loading: () => const SizedBox(height: 32),
-                                error: (e, s) => const SizedBox(),
-                              ),
-                            ],
                           ],
                         ),
                       ),
@@ -1135,9 +1169,30 @@ class _PosPageState extends ConsumerState<PosPage> {
   void _handleProductAdd(ProductModel product) {
     if (product.variantes.isEmpty) return;
 
+    final cartState = ref.read(cartProvider);
+    final hasGlobalDama = cartState.selectedDamaId != null && cartState.selectedDamaId!.isNotEmpty;
+    
+    final tarifasState = ref.read(barTarifasProvider);
+    final barState = ref.read(currentBarProvider);
+    
+    final List<TarifaModel> tarifasActivas = tarifasState.maybeWhen(data: (t) => t, orElse: () => []);
+    final String tarifaDefaultId = tarifasActivas.isEmpty ? '' : tarifasActivas.firstWhere((t) => t.esDefault, orElse: () => tarifasActivas.first).id;
+    final String tarifaCompaniaId = barState.maybeWhen(data: (b) => b.tarifaCompaniaId ?? '', orElse: () => '');
+    
+    final targetTarifaId = hasGlobalDama ? tarifaCompaniaId : tarifaDefaultId;
+
     if (product.variantes.length == 1) {
       // Tiene solo una variante, agregar directamente
-      ref.read(cartProvider.notifier).addItem(product, product.variantes.first);
+      final variant = product.variantes.first;
+      
+      double precioFinal;
+      try {
+        precioFinal = variant.precios.firstWhere((p) => p.tarifaId == targetTarifaId).precioUnitario;
+      } catch (_) {
+        precioFinal = hasGlobalDama ? variant.precioB : variant.precioA;
+      }
+
+      ref.read(cartProvider.notifier).addItem(product, variant, tarifaId: targetTarifaId, precioUnitario: precioFinal);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -1183,16 +1238,20 @@ class _PosPageState extends ConsumerState<PosPage> {
                 ),
                 const SizedBox(height: 20),
                 ...product.variantes.map((variant) {
-                  final cartState = ref.watch(cartProvider);
-                  final hasDama = cartState.selectedDamaId != null;
-                  final currencySymbol = ref.watch(currencySymbolProvider);
-                  final double precio = hasDama ? variant.precioB : variant.precioA;
+                  final currencySymbol = ref.read(currencySymbolProvider);
+                  
+                  double precio;
+                  try {
+                    precio = variant.precios.firstWhere((p) => p.tarifaId == targetTarifaId).precioUnitario;
+                  } catch (_) {
+                    precio = hasGlobalDama ? variant.precioB : variant.precioA;
+                  }
 
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: InkWell(
                       onTap: () {
-                        ref.read(cartProvider.notifier).addItem(product, variant);
+                        ref.read(cartProvider.notifier).addItem(product, variant, tarifaId: targetTarifaId, precioUnitario: precio);
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -1230,7 +1289,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                             Text(
                               '$currencySymbol${precio.toStringAsFixed(2)}',
                               style: GoogleFonts.plusJakartaSans(
-                                color: hasDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF),
+                                color: hasGlobalDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
                               ),

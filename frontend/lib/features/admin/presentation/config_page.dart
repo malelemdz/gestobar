@@ -1171,7 +1171,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                       return _buildDropdownField<String?>(
                         label: 'Tarifa de Compañía',
                         value: _selectedTarifaCompaniaId,
-                        items: tarifas.map((t) => DropdownMenuItem<String?>(value: t.id, child: Text(t.nombre))).toList(),
+                        items: tarifas.where((t) => !t.esDefault).map((t) => DropdownMenuItem<String?>(value: t.id, child: Text(t.nombre))).toList(),
                         onChanged: (val) {
                           setState(() => _selectedTarifaCompaniaId = val);
                           _onInputChanged();
@@ -1263,6 +1263,14 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                       decoration: BoxDecoration(color: const Color(0xFF00F0FF).withOpacity(0.15), borderRadius: BorderRadius.circular(100)),
                                       child: Text('Default', style: GoogleFonts.inter(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 10)),
+                                    ),
+                                  ],
+                                  if (tarifa.id == _selectedTarifaCompaniaId) ...[
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(color: Colors.pinkAccent.withOpacity(0.15), borderRadius: BorderRadius.circular(100)),
+                                      child: Text('Dama', style: GoogleFonts.inter(color: Colors.pinkAccent, fontWeight: FontWeight.bold, fontSize: 10)),
                                     ),
                                   ],
                                 ],

@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'hive_entities/category_hive.dart';
 import 'hive_entities/product_hive.dart';
 import 'hive_entities/sync_queue_hive.dart';
+import 'hive_entities/user_hive.dart';
 import '../network/dio_client.dart';
 import 'sync_worker.dart';
 
@@ -22,9 +23,11 @@ Future<void> initHive() async {
   Hive.registerAdapter(VariantHiveAdapter());
   Hive.registerAdapter(VariantPriceHiveAdapter());
   Hive.registerAdapter(SyncQueueTaskHiveAdapter());
+  Hive.registerAdapter(UserHiveAdapter());
   
   // Cargar colecciones en RAM
   await Hive.openBox<CategoryHive>('categories');
   await Hive.openBox<ProductHive>('products');
   await Hive.openBox<SyncQueueTaskHive>('sync_queue');
+  await Hive.openBox<UserHive>('users');
 }
