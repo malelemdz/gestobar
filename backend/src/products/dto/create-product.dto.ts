@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsUUID, IsArray, ValidateNested, ArrayMinSize } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsUUID, IsArray, ValidateNested, ArrayMinSize, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateVariantDto } from './create-variant.dto';
 
@@ -18,6 +18,10 @@ export class CreateProductDto {
   @IsUUID('4', { message: 'El ID de categoría debe ser un UUID válido' })
   @IsOptional()
   categoria_id?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  disponible?: boolean;
 
   @IsArray()
   @ArrayMinSize(1, { message: 'El producto debe tener al menos una variante' })

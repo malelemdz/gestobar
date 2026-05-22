@@ -12,20 +12,20 @@ final damasProvider = FutureProvider<List<UserModel>>((ref) async {
 });
 
 
-// Proveedor futuro para obtener las categorías
+// Proveedor futuro para obtener las categorías (Modo Admin para Flutter)
 final categoriesProvider = FutureProvider<List<CategoryModel>>((ref) async {
-  return ref.watch(catalogRepositoryProvider).getCategories();
+  return ref.watch(catalogRepositoryProvider).getCategories(isAdmin: true);
 });
 
-// Proveedor futuro para obtener todos los productos del bar activo
+// Proveedor futuro para obtener todos los productos del bar activo (Modo Admin)
 final productsProvider = FutureProvider<List<ProductModel>>((ref) async {
-  return ref.watch(catalogRepositoryProvider).getProducts();
+  return ref.watch(catalogRepositoryProvider).getProducts(isAdmin: true);
 });
 
 // ID de categoría seleccionado actualmente para el POS (null representa "Todos")
 final selectedCategoryIdProvider = StateProvider<String?>((ref) => null);
 
-// Proveedor reactivo que filtra los productos en memoria instantáneamente (0ms de lag)
+// Proveedor reactivo que filtra los productos en memoria instantáneamente (0ms de lag) para el Admin
 final filteredProductsProvider = Provider<AsyncValue<List<ProductModel>>>((ref) {
   final productsAsync = ref.watch(productsProvider);
   final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
@@ -35,5 +35,34 @@ final filteredProductsProvider = Provider<AsyncValue<List<ProductModel>>>((ref) 
       return products;
     }
     return products.where((p) => p.categoriaId == selectedCategoryId).toList();
+  });
+});
+
+// =========================================================
+// FILTROS ESTRICTOS PARA EL POS (Solo Activos)
+// =========================================================
+final posCategoriesProvider = Provider<AsyncValue<List<CategoryModel>>>((ref) {
+  final categoriesAsync = ref.watch(categoriesProvider);
+  return categoriesAsync.whenData((categories) {
+    return categories.where((c) => c.disponible).toList();
+  });
+});
+
+final posFilteredProductsProvider = Provider<AsyncValue<List<ProductModel>>>((ref) {
+  final productsAsync = ref.watch(filteredProductsProvider);
+  return productsAsync.whenData((products) {
+    return products
+        .where((p) => p.disponible)
+        .map((p) => ProductModel(
+              id: p.id,
+              nombre: p.nombre,
+              descripcion: p.descripcion,
+              fotoUrl: p.fotoUrl,
+              categoriaId: p.categoriaId,
+              disponible: p.disponible,
+              variantes: p.variantes.where((v) => v.disponible).toList(),
+            ))
+        .where((p) => p.variantes.isNotEmpty) // No mostrar si no tiene variantes activas
+        .toList();
   });
 });

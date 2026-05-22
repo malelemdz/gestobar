@@ -6,6 +6,7 @@ class ProductModel {
   final String? descripcion;
   final String? fotoUrl;
   final String categoriaId;
+  final bool disponible;
   final List<VariantModel> variantes;
 
   ProductModel({
@@ -14,6 +15,7 @@ class ProductModel {
     this.descripcion,
     this.fotoUrl,
     required this.categoriaId,
+    this.disponible = true,
     required this.variantes,
   });
 
@@ -28,6 +30,7 @@ class ProductModel {
       descripcion: json['descripcion'] as String?,
       fotoUrl: json['foto_url'] as String?,
       categoriaId: json['categoria_id'] as String? ?? '',
+      disponible: json['disponible'] as bool? ?? true,
       variantes: variantsList,
     );
   }
@@ -39,6 +42,7 @@ class ProductModel {
       'descripcion': descripcion,
       'foto_url': fotoUrl,
       'categoria_id': categoriaId,
+      'disponible': disponible,
       'variantes': variantes.map((v) => v.toJson()).toList(),
     };
   }

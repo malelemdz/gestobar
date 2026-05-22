@@ -33,8 +33,8 @@ class _PosPageState extends ConsumerState<PosPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final categoriesAsync = ref.watch(categoriesProvider);
-    final productsAsync = ref.watch(filteredProductsProvider);
+    final categoriesAsync = ref.watch(posCategoriesProvider);
+    final productsAsync = ref.watch(posFilteredProductsProvider);
     final cart = ref.watch(cartProvider);
     final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
 

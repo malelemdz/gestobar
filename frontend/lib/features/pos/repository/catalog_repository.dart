@@ -11,10 +11,12 @@ class CatalogRepository {
 
   CatalogRepository(this._dio);
 
-  /// Obtiene todas las categorías del bar activo (del tenant inyectado)
-  Future<List<CategoryModel>> getCategories() async {
+  Future<List<CategoryModel>> getCategories({bool isAdmin = false}) async {
     try {
-      final response = await _dio.get('/categories');
+      final queryParams = <String, dynamic>{};
+      if (isAdmin) queryParams['admin'] = 'true';
+      
+      final response = await _dio.get('/categories', queryParameters: queryParams.isNotEmpty ? queryParams : null);
       final list = response.data as List? ?? [];
       return list.map((json) => CategoryModel.fromJson(json as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
@@ -24,14 +26,16 @@ class CatalogRepository {
     }
   }
 
-  /// Obtiene todos los productos del bar activo, filtrables por categoría
-  Future<List<ProductModel>> getProducts({String? categoryId}) async {
+  Future<List<ProductModel>> getProducts({String? categoryId, bool isAdmin = false}) async {
     try {
       final queryParams = <String, dynamic>{};
       if (categoryId != null) {
         queryParams['categoryId'] = categoryId;
       }
-      final response = await _dio.get('/products', queryParameters: queryParams);
+      if (isAdmin) {
+        queryParams['admin'] = 'true';
+      }
+      final response = await _dio.get('/products', queryParameters: queryParams.isNotEmpty ? queryParams : null);
       final list = response.data as List? ?? [];
       return list.map((json) => ProductModel.fromJson(json as Map<String, dynamic>)).toList();
     } on DioException catch (e) {

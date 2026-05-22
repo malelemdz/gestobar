@@ -46,8 +46,8 @@ export class AuditSubscriber implements EntitySubscriberInterface {
 
     await this.auditoriaService.registrar({
       barId: user.barId,
-      usuarioId: user.id,
-      rolNombre: user.role?.nombre || 'Desconocido',
+      usuarioId: user.userId,
+      rolNombre: user.rolName || 'Desconocido',
       accion: 'Crear',
       modulo,
       detalles: { mensaje: `Creó un registro: ${nombre}`, id: event.entity?.id },
@@ -68,10 +68,11 @@ export class AuditSubscriber implements EntitySubscriberInterface {
 
     const cambios: any = {};
     if (event.databaseEntity && event.entity && event.updatedColumns) {
+      const entity = event.entity;
       event.updatedColumns.forEach(col => {
         const prop = col.propertyName;
-        if (prop !== 'updated_at' && event.databaseEntity[prop] !== event.entity[prop]) {
-          cambios[prop] = { de: event.databaseEntity[prop], a: event.entity[prop] };
+        if (prop !== 'updated_at' && event.databaseEntity[prop] !== entity[prop]) {
+          cambios[prop] = { de: event.databaseEntity[prop], a: entity[prop] };
         }
       });
     }
@@ -80,8 +81,8 @@ export class AuditSubscriber implements EntitySubscriberInterface {
 
     await this.auditoriaService.registrar({
       barId: user.barId,
-      usuarioId: user.id,
-      rolNombre: user.role?.nombre || 'Desconocido',
+      usuarioId: user.userId,
+      rolNombre: user.rolName || 'Desconocido',
       accion: 'Editar',
       modulo,
       detalles: { mensaje: `Actualizó registro: ${nombre}`, cambios },
@@ -102,8 +103,8 @@ export class AuditSubscriber implements EntitySubscriberInterface {
 
     await this.auditoriaService.registrar({
       barId: user.barId,
-      usuarioId: user.id,
-      rolNombre: user.role?.nombre || 'Desconocido',
+      usuarioId: user.userId,
+      rolNombre: user.rolName || 'Desconocido',
       accion: 'Eliminar',
       modulo,
       detalles: { mensaje: `Eliminó registro: ${nombre}` },

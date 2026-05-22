@@ -62,10 +62,10 @@ class MenuAdminNotifier extends StateNotifier<MenuAdminState> {
     }
   }
 
-  Future<bool> updateCategory(String id, String nombre, int orden) async {
+  Future<bool> updateCategory(String id, String nombre, int orden, {bool? disponible}) async {
     state = state.copyWith(isLoading: true);
     try {
-      await _repository.updateCategory(id, nombre, orden);
+      await _repository.updateCategory(id, nombre, orden, disponible: disponible);
       _ref.invalidate(categoriesProvider);
       _ref.invalidate(productsProvider);
       state = state.copyWith(isLoading: false, successMessage: 'Categoría actualizada con éxito');
@@ -97,6 +97,7 @@ class MenuAdminNotifier extends StateNotifier<MenuAdminState> {
     String? descripcion,
     String? fotoUrl,
     required String categoriaId,
+    bool? disponible,
     required List<Map<String, dynamic>> variantes,
   }) async {
     state = state.copyWith(isLoading: true);
@@ -106,6 +107,7 @@ class MenuAdminNotifier extends StateNotifier<MenuAdminState> {
         descripcion: descripcion,
         fotoUrl: fotoUrl,
         categoriaId: categoriaId,
+        disponible: disponible,
         variantes: variantes,
       );
       _ref.invalidate(productsProvider);

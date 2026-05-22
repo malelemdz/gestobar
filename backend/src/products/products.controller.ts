@@ -25,8 +25,10 @@ export class ProductsController {
   findAll(
     @ActiveBarId() barId: string,
     @Query('categoryId') categoryId?: string,
+    @Query('admin') admin?: string,
   ) {
-    return this.productsService.findAll(barId, categoryId);
+    const isAdmin = admin === 'true';
+    return this.productsService.findAll(barId, categoryId, isAdmin);
   }
 
   @Get(':id')

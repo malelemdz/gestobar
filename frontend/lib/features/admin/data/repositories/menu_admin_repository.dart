@@ -18,11 +18,15 @@ class MenuAdminRepository {
     return CategoryModel.fromJson(response.data);
   }
 
-  Future<CategoryModel> updateCategory(String id, String nombre, int orden) async {
-    final response = await _dio.patch('/categories/$id', data: {
+  Future<CategoryModel> updateCategory(String id, String nombre, int orden, {bool? disponible}) async {
+    final data = <String, dynamic>{
       'nombre': nombre,
       'orden': orden,
-    });
+    };
+    if (disponible != null) {
+      data['disponible'] = disponible;
+    }
+    final response = await _dio.patch('/categories/$id', data: data);
     return CategoryModel.fromJson(response.data);
   }
 
@@ -37,6 +41,7 @@ class MenuAdminRepository {
     String? descripcion,
     String? fotoUrl,
     required String categoriaId,
+    bool? disponible,
     required List<Map<String, dynamic>> variantes,
   }) async {
     final response = await _dio.post('/products', data: {
@@ -44,6 +49,7 @@ class MenuAdminRepository {
       'descripcion': descripcion,
       'foto_url': fotoUrl,
       'categoria_id': categoriaId,
+      if (disponible != null) 'disponible': disponible,
       'variantes': variantes,
     });
     return ProductModel.fromJson(response.data);

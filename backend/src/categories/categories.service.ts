@@ -36,9 +36,14 @@ export class CategoriesService {
     return await this.categoryRepository.save(category);
   }
 
-  async findAll(barId: string): Promise<Category[]> {
+  async findAll(barId: string, isAdmin: boolean = false): Promise<Category[]> {
+    const whereClause: any = { bar_id: barId };
+    if (!isAdmin) {
+      whereClause.disponible = true;
+    }
+
     let categories = await this.categoryRepository.find({
-      where: { bar_id: barId },
+      where: whereClause,
       order: { orden: 'ASC', nombre: 'ASC' },
     });
 
@@ -66,7 +71,21 @@ export class CategoriesService {
   async update(id: string, updateCategoryDto: UpdateCategoryDto, barId: string): Promise<Category> {
     const category = await this.findOne(id, barId);
     const updated = this.categoryRepository.merge(category, updateCategoryDto);
-    return await this.categoryRepository.save(updated);
+    await this.categoryRepository.save(updated);
+
+    // Cascada de disponibilidad a Productos y Variantes
+    if (updateCategoryDto.disponible !== undefined) {
+      await this.categoryRepository.manager.query(
+        `UPDATE productos SET disponible = $1 WHERE categoria_id = $2`,
+        [updateCategoryDto.disponible, id]
+      );
+      
+      await this.categoryRepository.manager.query(
+        `UPDATE variantes SET disponible = $1 WHERE producto_id IN (SELECT id FROM productos WHERE categoria_id = $2)`,
+        [updateCategoryDto.disponible, id]
+      );
+    }
+    return updated;
   }
 
   async remove(id: string, barId: string): Promise<void> {

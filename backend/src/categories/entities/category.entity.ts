@@ -20,6 +20,9 @@ export class Category {
   @Column({ default: 0 })
   orden: number;
 
+  @Column({ default: true })
+  disponible: boolean;
+
   @OneToMany(() => Product, (product) => product.categoria)
   productos: Product[];
 

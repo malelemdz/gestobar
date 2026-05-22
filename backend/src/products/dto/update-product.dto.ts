@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsUUID } from 'class-validator';
+import { IsString, IsOptional, IsUUID, IsBoolean } from 'class-validator';
 
 export class UpdateProductDto {
   @IsString()
@@ -16,4 +16,8 @@ export class UpdateProductDto {
   @IsUUID('4', { message: 'El ID de categoría debe ser un UUID válido' })
   @IsOptional()
   categoria_id?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  disponible?: boolean;
 }

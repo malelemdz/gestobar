@@ -31,6 +31,9 @@ export class Product {
   @Column({ nullable: true })
   descripcion: string;
 
+  @Column({ default: true })
+  disponible: boolean;
+
   @OneToMany(() => Variant, (variant) => variant.producto, { cascade: true })
   variantes: Variant[];
 

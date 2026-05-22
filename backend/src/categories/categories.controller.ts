@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseUUIDPipe, Query } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -20,8 +20,12 @@ export class CategoriesController {
   }
 
   @Get()
-  findAll(@ActiveBarId() barId: string) {
-    return this.categoriesService.findAll(barId);
+  findAll(
+    @ActiveBarId() barId: string,
+    @Query('admin') admin?: string,
+  ) {
+    const isAdmin = admin === 'true';
+    return this.categoriesService.findAll(barId, isAdmin);
   }
 
   @Get(':id')

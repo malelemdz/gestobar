@@ -310,14 +310,16 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                           ref.read(selectedCategoryIdProvider.notifier).state = cat.id;
                         },
                         borderRadius: BorderRadius.circular(16),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: isSelected ? const Color(0xFF1E2024) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: isSelected ? const Color(0xFF00F0FF).withOpacity(0.2) : Colors.transparent,
-                              width: 1,
+                        child: Opacity(
+                          opacity: cat.disponible ? 1.0 : 0.4,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: isSelected ? const Color(0xFF1E2024) : const Color(0xFF131518),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: isSelected ? const Color(0xFF00F0FF).withOpacity(0.2) : Colors.white.withOpacity(0.05),
+                                width: 1,
                             ),
                           ),
                           child: Row(
@@ -358,6 +360,18 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                                         : null,
                                   ),
                                   const SizedBox(width: 4),
+                                  // Visibility Toggle
+                                  IconButton(
+                                    icon: Icon(
+                                      cat.disponible ? Icons.visibility : Icons.visibility_off, 
+                                      size: 14, 
+                                      color: cat.disponible ? const Color(0xFF00F0FF) : Colors.orangeAccent
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () => _toggleCategoryVisibility(context, cat),
+                                  ),
+                                  const SizedBox(width: 4),
                                   // Edit icon
                                   IconButton(
                                     icon: const Icon(Icons.edit, size: 14, color: Color(0xFF00F0FF)),
@@ -377,6 +391,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                               ),
                             ],
                           ),
+                        ),
                         ),
                       ),
                     );
@@ -551,8 +566,10 @@ class _MenuPageState extends ConsumerState<MenuPage> {
       precioText = 'Desde $currencySymbol${minPrecio.toStringAsFixed(2)}';
     }
 
-    return Container(
-      decoration: BoxDecoration(
+    return Opacity(
+      opacity: product.disponible ? 1.0 : 0.4,
+      child: Container(
+        decoration: BoxDecoration(
         color: const Color(0xFF1E2024), // surface-container
         borderRadius: BorderRadius.circular(24), // Liquid extreme rounded
         border: Border.all(
@@ -584,6 +601,23 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                     right: 8,
                     child: Row(
                       children: [
+                        // Visibility toggle
+                        GestureDetector(
+                          onTap: () => _toggleProductVisibility(context, product),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.6),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              product.disponible ? Icons.visibility : Icons.visibility_off, 
+                              color: product.disponible ? const Color(0xFF00F0FF) : Colors.orangeAccent, 
+                              size: 14,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
                         // Edit action
                         GestureDetector(
                           onTap: () => _openAddEditProductDialog(context, product),
@@ -675,6 +709,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
             ),
           ),
         ],
+      ),
       ),
     );
   }
@@ -835,63 +870,117 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     );
   }
 
-  void _confirmDeleteCategory(BuildContext context, CategoryModel category) {
-    showDialog(
+  // =========================================================================
+  // ⚡ COMPONENTE MAESTRO DE CONFIRMACIÓN (BOTTOM SHEET)
+  // =========================================================================
+  Future<bool?> _showBottomConfirmation({
+    required BuildContext context,
+    required String title,
+    required String description,
+    required String confirmText,
+    required Color confirmColor,
+    required IconData icon,
+  }) {
+    return showModalBottomSheet<bool>(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.7),
+      backgroundColor: const Color(0xFF1A1C20),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (context) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: AlertDialog(
-            backgroundColor: const Color(0xFF1E2024),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24.0),
-              side: BorderSide(color: Colors.white.withOpacity(0.05)),
-            ),
-            title: Text(
-              '¿Eliminar ${category.nombre}?',
-              style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            content: Text(
-              '¿Estás seguro de que deseas eliminar la categoría "${category.nombre}"? Esto desvinculará sus productos.',
-              style: GoogleFonts.inter(color: Colors.white70, fontSize: 13),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancelar', style: GoogleFonts.inter(color: Colors.white60)),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final success = await ref
-                      .read(menuAdminProvider.notifier)
-                      .deleteCategory(category.id);
-                  if (success && mounted) {
-                    Navigator.pop(context);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 48,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-                child: Text(
-                  'Eliminar',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: confirmColor.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(icon, color: confirmColor, size: 24),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Text(
+                  description,
+                  style: GoogleFonts.inter(color: Colors.white70, fontSize: 14),
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text('Cancelar', style: GoogleFonts.inter(color: Colors.white60)),
+                    ),
+                    const SizedBox(width: 12),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: confirmColor,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                      child: Text(
+                        confirmText,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.bold,
+                          color: confirmColor == const Color(0xFF00F0FF) ? const Color(0xFF0c0e12) : Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
     );
+  }
+
+  void _confirmDeleteCategory(BuildContext context, CategoryModel category) async {
+    final bool? confirm = await _showBottomConfirmation(
+      context: context,
+      title: '¿Eliminar ${category.nombre}?',
+      description: '¿Estás seguro de que deseas eliminar la categoría "${category.nombre}"? Esto desvinculará sus productos y no se puede deshacer.',
+      confirmText: 'Eliminar',
+      confirmColor: Colors.redAccent,
+      icon: Icons.delete_outline,
+    );
+
+    if (confirm == true) {
+      ref.read(menuAdminProvider.notifier).deleteCategory(category.id);
+    }
   }
 
   // Mobile categories management panel
@@ -936,49 +1025,88 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                       itemCount: categories.length,
                       itemBuilder: (context, index) {
                         final cat = categories[index];
-                        return ListTile(
-                          title: Text(
-                            cat.nombre,
-                            style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.arrow_upward, size: 16, color: Colors.white30),
-                                onPressed: index > 0
-                                    ? () async {
-                                        await _swapCategoriesOrder(
-                                            context, cat, categories[index - 1]);
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Opacity(
+                            opacity: cat.disponible ? 1.0 : 0.4,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF131518),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: Colors.white.withOpacity(0.05)),
+                              ),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                                title: Text(
+                                  cat.nombre,
+                                  style: GoogleFonts.inter(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                                ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.arrow_upward, size: 16, color: Colors.white30),
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      onPressed: index > 0
+                                          ? () async {
+                                              await _swapCategoriesOrder(
+                                                  context, cat, categories[index - 1]);
+                                              Navigator.pop(context);
+                                            }
+                                          : null,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    IconButton(
+                                      icon: const Icon(Icons.arrow_downward, size: 16, color: Colors.white30),
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      onPressed: index < categories.length - 1
+                                          ? () async {
+                                              await _swapCategoriesOrder(
+                                                  context, cat, categories[index + 1]);
+                                              Navigator.pop(context);
+                                            }
+                                          : null,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    IconButton(
+                                      icon: Icon(
+                                        cat.disponible ? Icons.visibility : Icons.visibility_off, 
+                                        size: 16, 
+                                        color: cat.disponible ? const Color(0xFF00F0FF) : Colors.orangeAccent
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      onPressed: () {
                                         Navigator.pop(context);
-                                      }
-                                    : null,
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.arrow_downward, size: 16, color: Colors.white30),
-                                onPressed: index < categories.length - 1
-                                    ? () async {
-                                        await _swapCategoriesOrder(
-                                            context, cat, categories[index + 1]);
+                                        _toggleCategoryVisibility(context, cat);
+                                      },
+                                    ),
+                                    const SizedBox(width: 8),
+                                    IconButton(
+                                      icon: const Icon(Icons.edit, size: 16, color: Color(0xFF00F0FF)),
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      onPressed: () {
                                         Navigator.pop(context);
-                                      }
-                                    : null,
+                                        _openCategoryDialog(context, cat);
+                                      },
+                                    ),
+                                    const SizedBox(width: 8),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        _confirmDeleteCategory(context, cat);
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.edit, size: 16, color: Color(0xFF00F0FF)),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  _openCategoryDialog(context, cat);
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  _confirmDeleteCategory(context, cat);
-                                },
-                              ),
-                            ],
+                            ),
                           ),
                         );
                       },
@@ -996,63 +1124,61 @@ class _MenuPageState extends ConsumerState<MenuPage> {
   // =========================================================================
   // 🧪 PRODUCT ACTIONS & MUTATORS
   // =========================================================================
-  void _confirmDeleteProduct(BuildContext context, ProductModel product) {
-    showDialog(
+  void _confirmDeleteProduct(BuildContext context, ProductModel product) async {
+    final bool? confirm = await _showBottomConfirmation(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.7),
-      builder: (context) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: AlertDialog(
-            backgroundColor: const Color(0xFF1E2024),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24.0),
-              side: BorderSide(color: Colors.white.withOpacity(0.05)),
-            ),
-            title: Text(
-              '¿Eliminar ${product.nombre}?',
-              style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            content: Text(
-              '¿Estás seguro de que deseas eliminar el producto "${product.nombre}" del catálogo?',
-              style: GoogleFonts.inter(color: Colors.white70, fontSize: 13),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancelar', style: GoogleFonts.inter(color: Colors.white60)),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final success = await ref
-                      .read(menuAdminProvider.notifier)
-                      .deleteProduct(product.id);
-                  if (success && mounted) {
-                    Navigator.pop(context);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: Text(
-                  'Eliminar',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+      title: '¿Eliminar ${product.nombre}?',
+      description: '¿Estás seguro de que deseas eliminar el producto "${product.nombre}" del catálogo?',
+      confirmText: 'Eliminar',
+      confirmColor: Colors.redAccent,
+      icon: Icons.delete_outline,
     );
+
+    if (confirm == true) {
+      ref.read(menuAdminProvider.notifier).deleteProduct(product.id);
+    }
+  }
+
+  void _toggleCategoryVisibility(BuildContext context, CategoryModel category) async {
+    final bool? confirm = await _showBottomConfirmation(
+      context: context,
+      title: category.disponible ? '¿Apagar Categoría?' : '¿Encender Categoría?',
+      description: category.disponible
+          ? 'Esto apagará la categoría y ocultará de forma automática (en cascada) todos sus productos en el punto de venta y Menú QR. ¿Estás seguro?'
+          : 'Esto encenderá la categoría y hará visibles nuevamente todos los productos y variantes que contenga. ¿Estás seguro?',
+      confirmText: category.disponible ? 'Sí, Apagar' : 'Sí, Encender',
+      confirmColor: category.disponible ? Colors.orangeAccent : const Color(0xFF00F0FF),
+      icon: category.disponible ? Icons.visibility_off : Icons.visibility,
+    );
+
+    if (confirm == true) {
+      ref.read(menuAdminProvider.notifier).updateCategory(
+        category.id,
+        category.nombre,
+        category.orden,
+        disponible: !category.disponible,
+      );
+    }
+  }
+
+  void _toggleProductVisibility(BuildContext context, ProductModel product) async {
+    final bool? confirm = await _showBottomConfirmation(
+      context: context,
+      title: product.disponible ? '¿Apagar Producto?' : '¿Encender Producto?',
+      description: product.disponible
+          ? 'Esto apagará el producto y ocultará de forma automática (en cascada) todas sus variantes en el punto de venta y Menú QR. ¿Estás seguro?'
+          : 'Esto encenderá el producto y hará visibles nuevamente todas sus variantes. ¿Estás seguro?',
+      confirmText: product.disponible ? 'Sí, Apagar' : 'Sí, Encender',
+      confirmColor: product.disponible ? Colors.orangeAccent : const Color(0xFF00F0FF),
+      icon: product.disponible ? Icons.visibility_off : Icons.visibility,
+    );
+
+    if (confirm == true) {
+      ref.read(menuAdminProvider.notifier).updateProduct(
+        product.id,
+        {'disponible': !product.disponible},
+      );
+    }
   }
 
   void _openAddEditProductDialog(BuildContext context, ProductModel? product) {
@@ -1087,6 +1213,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
   String? _selectedCategoryId;
   String? _fotoUrl;
   bool _isUploadingImage = false;
+  bool _isDisponible = true;
 
   // Local list to manage variants: each item is a local helper representation
   // precios map stores: tarifaId -> precioUnitario
@@ -1099,6 +1226,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
     _descriptionController = TextEditingController(text: widget.product?.descripcion ?? '');
     _selectedCategoryId = widget.product?.categoriaId;
     _fotoUrl = widget.product?.fotoUrl;
+    _isDisponible = widget.product?.disponible ?? true;
 
     if (widget.product != null && widget.product!.variantes.isNotEmpty) {
       for (final variant in widget.product!.variantes) {
@@ -1436,6 +1564,31 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                           ),
                         ),
 
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'DISPONIBLE EN MENÚ (TODO EL PRODUCTO)',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: AppTheme.liquidOnSurfaceVariant,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                            Switch(
+                              value: _isDisponible,
+                              activeColor: const Color(0xFF00F0FF),
+                              onChanged: (val) {
+                                setState(() {
+                                  _isDisponible = val;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+
                         const SizedBox(height: 24),
                         const Divider(color: Colors.white10),
                         const SizedBox(height: 16),
@@ -1757,8 +1910,10 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
   // =========================================================================
   Future<void> _saveProduct() async {
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedCategoryId == null) return;
 
+    // El estado de disponibilidad ahora se gestiona desde fuera del modal.
+
+    if (_selectedCategoryId == null) return;
     final notifier = ref.read(menuAdminProvider.notifier);
     bool overallSuccess = false;
 
@@ -1789,6 +1944,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
         descripcion: _descriptionController.text.trim(),
         fotoUrl: _fotoUrl,
         categoriaId: _selectedCategoryId!,
+        disponible: true,
         variantes: variantsPayload,
       );
     } else {

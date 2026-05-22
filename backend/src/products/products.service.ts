@@ -36,6 +36,7 @@ export class ProductsService {
       foto_url: createProductDto.foto_url,
       bar_id: barId,
       categoria_id: categoryId,
+      disponible: createProductDto.disponible ?? true,
     });
 
     // Lógica de variantes: Crear las variantes asociadas (cascada habilitada)
@@ -53,14 +54,18 @@ export class ProductsService {
     return await this.productRepository.save(product);
   }
 
-  async findAll(barId: string, categoryId?: string): Promise<Product[]> {
+  async findAll(barId: string, categoryId?: string, isAdmin: boolean = false): Promise<Product[]> {
     const queryBuilder = this.productRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.categoria', 'category')
-      .leftJoinAndSelect('product.variantes', 'variant')
+      .leftJoinAndSelect('product.variantes', 'variant', isAdmin ? '' : 'variant.disponible = :variantDisponible', { variantDisponible: true })
       .leftJoinAndSelect('variant.precios', 'precio')
       .leftJoinAndSelect('precio.tarifa', 'tarifa')
       .where('product.bar_id = :barId', { barId });
+
+    if (!isAdmin) {
+      queryBuilder.andWhere('product.disponible = :disponible', { disponible: true });
+    }
 
     if (categoryId) {
       queryBuilder.andWhere('product.categoria_id = :categoryId', { categoryId });
@@ -94,8 +99,19 @@ export class ProductsService {
     if (updateProductDto.nombre !== undefined) product.nombre = updateProductDto.nombre;
     if (updateProductDto.descripcion !== undefined) product.descripcion = updateProductDto.descripcion;
     if (updateProductDto.foto_url !== undefined) product.foto_url = updateProductDto.foto_url;
+    if (updateProductDto.disponible !== undefined) product.disponible = updateProductDto.disponible;
 
-    return await this.productRepository.save(product);
+    await this.productRepository.save(product);
+
+    // Cascada de disponibilidad hacia las variantes
+    if (updateProductDto.disponible !== undefined) {
+      await this.productRepository.manager.query(
+        `UPDATE variantes SET disponible = $1 WHERE producto_id = $2`,
+        [updateProductDto.disponible, id]
+      );
+    }
+
+    return product;
   }
 
   async remove(id: string, barId: string): Promise<void> {
