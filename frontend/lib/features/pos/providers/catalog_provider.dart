@@ -12,14 +12,14 @@ final damasProvider = FutureProvider<List<UserModel>>((ref) async {
 });
 
 
-// Proveedor futuro para obtener las categorías (Modo Admin para Flutter)
-final categoriesProvider = FutureProvider<List<CategoryModel>>((ref) async {
-  return ref.watch(catalogRepositoryProvider).getCategories(isAdmin: true);
+// Proveedor reactivo para obtener las categorías (Modo Admin y POS)
+final categoriesProvider = StreamProvider<List<CategoryModel>>((ref) {
+  return ref.watch(catalogRepositoryProvider).watchCategories(isAdmin: true);
 });
 
-// Proveedor futuro para obtener todos los productos del bar activo (Modo Admin)
-final productsProvider = FutureProvider<List<ProductModel>>((ref) async {
-  return ref.watch(catalogRepositoryProvider).getProducts(isAdmin: true);
+// Proveedor reactivo para obtener todos los productos del bar activo
+final productsProvider = StreamProvider<List<ProductModel>>((ref) {
+  return ref.watch(catalogRepositoryProvider).watchProducts(isAdmin: true);
 });
 
 // ID de categoría seleccionado actualmente para el POS (null representa "Todos")

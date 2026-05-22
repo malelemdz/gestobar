@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'core/local_db/isar_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/providers/auth_provider.dart';
 import 'features/auth/providers/auth_state.dart';
@@ -19,15 +22,20 @@ import 'features/admin/presentation/config_page.dart';
 import 'features/auth/presentation/perfil_page.dart';
 import 'features/admin/providers/bar_provider.dart';
 
-void main() {
+void main() async {
   // Asegura que las llamadas a canales nativos de Flutter (como Secure Storage)
   // estén inicializadas antes de que se dibuje el árbol de widgets.
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Inicialización ultra-rápida de la caché local NoSQL (Isar)
+  final isar = await initIsar();
+  
   runApp(
-    // Requerido por Riverpod para inicializar el contenedor de estados
-    const ProviderScope(
-      child: MyApp(),
+    ProviderScope(
+      overrides: [
+        isarProvider.overrideWithValue(isar),
+      ],
+      child: const MyApp(),
     ),
   );
 }
