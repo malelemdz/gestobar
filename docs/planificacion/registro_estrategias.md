@@ -57,3 +57,20 @@ Este documento registra las estrategias adoptadas, los problemas encontrados, la
     2. Expandir el padding superior del encabezado lateral a `80.0` y el inferior a `36.0` con `18.0` de separación entre logo y textos, ofreciendo una respiración premium y elegante.
     3. Reubicar el nombre del bar activo directamente debajo del logo e incorporar el botón de tipo cápsula cian sólido únicamente para "Cerrar Sesión", retirando opciones secundarias repetitivas.
 *   **Lección:** Un diseño premium se apoya en la calibración matemática y la holgura en los márgenes de respiro. El espacio vacío es un elemento de diseño activo.
+
+
+## Bases de Datos Locales (Compatibilidad Android 16KB Pages)
+
+### ❌ Estrategia Fallida: Isar / ObjectBox / SQLite (con dependencias binarias)
+Inicialmente consideramos Isar Database para persistencia local. Sin embargo, a partir de 2026 Google Play exige compatibilidad estricta con 16KB memory pages en la arquitectura arm64. Muchas librerías basadas en C/C++ inyectan binarios `.so` precompilados antiguos que fallan catastróficamente o generan graves advertencias de compatibilidad.
+
+### ✅ Estrategia Exitosa: Hive (Puro Dart)
+Cambiamos inmediatamente a **Hive**. Al ser una base de datos local Key-Value estructurada 100% en puro Dart, funciona de forma inmaculada sobre páginas de memoria de 16KB sin requerir NDK ni binarios de C++. Esto evita por completo advertencias de Google Play y asegura una estabilidad a futuro.
+
+## Generación de Íconos Adaptativos en Android
+
+### ❌ Estrategia Fallida: flutter_launcher_icons v0.13.1 + Parches de Transparencia
+En Android, la versión `0.13.1` aplicaba un auto-cropping muy agresivo eliminando los márgenes transparentes, lo que causaba que el logo se deformara y ampliara. Intentamos inyectar píxeles de 1% de opacidad en las esquinas de la imagen como "anclaje", lo cual resultó ser un parche sucio.
+
+### ✅ Estrategia Exitosa: flutter_launcher_icons v0.14.3+
+Se procedió a igualar la dependencia con una aplicación exitosa previa (*Restaurafy*) actualizando a la versión `v0.14.3`. Esta versión moderna respeta nativamente el padding transparente de los iconos adaptativos sin necesidad de alterar los assets con scripts externos, resolviendo la deformación visual de raíz.

@@ -7,6 +7,8 @@ import '../models/caja_model.dart';
 import '../providers/caja_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../features/auth/providers/auth_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import '../../../core/local_db/hive_entities/sync_queue_hive.dart';
 
 class CajaPage extends ConsumerStatefulWidget {
   const CajaPage({super.key});
@@ -660,6 +662,19 @@ class _CajaPageState extends ConsumerState<CajaPage> {
         SnackBar(
           content: Text('Monto final inválido.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
           backgroundColor: AppTheme.colorDanger,
+        ),
+      );
+      return;
+    }
+
+    // 🔒 BLOQUEO OFFLINE-FIRST: Evitar cierre si hay ventas encoladas
+    final syncBox = Hive.box<SyncQueueTaskHive>('sync_queue');
+    if (syncBox.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('⚠️ Bloqueo de Seguridad: Tienes ${syncBox.length} pedido(s) cobrados sin internet que aún no suben al servidor. Conéctate a WiFi para sincronizar antes de cerrar el turno.', style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold)),
+          backgroundColor: AppTheme.colorDanger,
+          duration: const Duration(seconds: 5),
         ),
       );
       return;

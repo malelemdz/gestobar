@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/providers/auth_state.dart';
-import '../../../main.dart'; // Para activeViewProvider
+import 'main_dashboard_view.dart'; // Para activeViewProvider
 import '../../admin/providers/bar_provider.dart';
 
 class DashboardPage extends ConsumerWidget {

@@ -255,3 +255,19 @@ backend/src/
     *   `flutter analyze` corre al 100% libre de advertencias del compilador de código o errores sintácticos, garantizando la salud operacional del cliente.
 
 
+
+
+## [22-05-2026] - Refactorización de Arquitectura y Correcciones de UI
+
+### 1. Desacoplamiento de main.dart
+- Se refactorizó drásticamente el archivo monolítico `main.dart` de más de 1700 líneas. Su lógica de interfaces se separó modularmente en `PremiumSplashScreen`, `LoginView`, y `MainDashboardView` dentro de sus directorios bajo `lib/features/`.
+- Se migraron las importaciones relativas a absolutas (`package:gestobar/...`) para prevenir fallos en cascada en Riverpod.
+
+### 2. Splash Screen y Naming Institucional
+- Se replicó el elegante comportamiento visual de *Restaurafy* usando `TweenAnimationBuilder` (Fade-In progresivo) sobre fondo estricto `#111317`.
+- Se reemplazó el isotipo puro por el `app_icon.png` (90x90px) con `BoxFit.contain` para erradicar cualquier deformación en pantallas grandes.
+- Se renombró el `android:label` de *"gestobar"* a **"Gestobar"** en el `AndroidManifest.xml` para la visualización formal en el cajón de apps.
+- En el Login, se ajustó el tamaño del isotipo a 72px para mayor prestancia visual.
+
+### 3. Íconos Adaptativos Perfectos
+- Se actualizó `flutter_launcher_icons` de `^0.13.1` a `^0.14.3` para regenerar la iconografía de Android/iOS nativa, solventando el bug del auto-cropping sin usar scripts de parches de píxeles.
