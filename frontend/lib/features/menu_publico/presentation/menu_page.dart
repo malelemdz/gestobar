@@ -1021,11 +1021,29 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                   ),
                   const Divider(color: Colors.white10),
                   Expanded(
-                    child: ListView.builder(
+                    child: ReorderableListView.builder(
                       itemCount: categories.length,
+                      onReorder: (oldIndex, newIndex) {
+                        setModalState(() {
+                          if (newIndex > oldIndex) {
+                            newIndex -= 1;
+                          }
+                          final item = categories.removeAt(oldIndex);
+                          categories.insert(newIndex, item);
+
+                          // Update orders in background
+                          final notifier = ref.read(menuAdminProvider.notifier);
+                          for (int i = 0; i < categories.length; i++) {
+                            if (categories[i].orden != i + 1) {
+                              notifier.updateCategory(categories[i].id, categories[i].nombre, i + 1);
+                            }
+                          }
+                        });
+                      },
                       itemBuilder: (context, index) {
                         final cat = categories[index];
                         return Padding(
+                          key: ValueKey(cat.id),
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: Opacity(
                             opacity: cat.disponible ? 1.0 : 0.4,
@@ -1040,36 +1058,11 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                                 title: Text(
                                   cat.nombre,
                                   style: GoogleFonts.inter(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.arrow_upward, size: 16, color: Colors.white30),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: index > 0
-                                          ? () async {
-                                              await _swapCategoriesOrder(
-                                                  context, cat, categories[index - 1]);
-                                              Navigator.pop(context);
-                                            }
-                                          : null,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    IconButton(
-                                      icon: const Icon(Icons.arrow_downward, size: 16, color: Colors.white30),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: index < categories.length - 1
-                                          ? () async {
-                                              await _swapCategoriesOrder(
-                                                  context, cat, categories[index + 1]);
-                                              Navigator.pop(context);
-                                            }
-                                          : null,
-                                    ),
-                                    const SizedBox(width: 8),
                                     IconButton(
                                       icon: Icon(
                                         cat.disponible ? Icons.visibility : Icons.visibility_off, 
@@ -1077,32 +1070,37 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                                         color: cat.disponible ? const Color(0xFF00F0FF) : Colors.orangeAccent
                                       ),
                                       padding: EdgeInsets.zero,
+                                      visualDensity: VisualDensity.compact,
                                       constraints: const BoxConstraints(),
                                       onPressed: () {
                                         Navigator.pop(context);
                                         _toggleCategoryVisibility(context, cat);
                                       },
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: 12),
                                     IconButton(
                                       icon: const Icon(Icons.edit, size: 16, color: Color(0xFF00F0FF)),
                                       padding: EdgeInsets.zero,
+                                      visualDensity: VisualDensity.compact,
                                       constraints: const BoxConstraints(),
                                       onPressed: () {
                                         Navigator.pop(context);
                                         _openCategoryDialog(context, cat);
                                       },
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: 12),
                                     IconButton(
                                       icon: const Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
                                       padding: EdgeInsets.zero,
+                                      visualDensity: VisualDensity.compact,
                                       constraints: const BoxConstraints(),
                                       onPressed: () {
                                         Navigator.pop(context);
                                         _confirmDeleteCategory(context, cat);
                                       },
                                     ),
+                                    const SizedBox(width: 8),
+                                    const Icon(Icons.drag_handle, color: Colors.white30, size: 20),
                                   ],
                                 ),
                               ),
@@ -1564,30 +1562,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                           ),
                         ),
 
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'DISPONIBLE EN MENÚ (TODO EL PRODUCTO)',
-                              style: GoogleFonts.plusJakartaSans(
-                                color: AppTheme.liquidOnSurfaceVariant,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.1,
-                              ),
-                            ),
-                            Switch(
-                              value: _isDisponible,
-                              activeColor: const Color(0xFF00F0FF),
-                              onChanged: (val) {
-                                setState(() {
-                                  _isDisponible = val;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
+
 
                         const SizedBox(height: 24),
                         const Divider(color: Colors.white10),
