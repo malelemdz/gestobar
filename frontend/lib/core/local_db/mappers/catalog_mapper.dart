@@ -3,24 +3,24 @@ import '../../../features/pos/models/product_model.dart';
 import '../../../features/pos/models/variant_model.dart';
 import '../../../features/pos/models/variant_price_model.dart';
 
-import '../entities/category_entity.dart';
-import '../entities/product_entity.dart';
+import '../hive_entities/category_hive.dart';
+import '../hive_entities/product_hive.dart';
 
 // Mappers for Category
 extension CategoryMapper on CategoryModel {
-  CategoryIsar toIsar() {
-    return CategoryIsar()
-      ..backendId = id
+  CategoryHive toHive() {
+    return CategoryHive()
+      ..id = id
       ..nombre = nombre
       ..orden = orden
       ..disponible = disponible;
   }
 }
 
-extension CategoryIsarMapper on CategoryIsar {
+extension CategoryHiveMapper on CategoryHive {
   CategoryModel toDomain() {
     return CategoryModel(
-      id: backendId,
+      id: id,
       nombre: nombre,
       orden: orden,
       disponible: disponible,
@@ -30,22 +30,22 @@ extension CategoryIsarMapper on CategoryIsar {
 
 // Mappers for Product
 extension ProductMapper on ProductModel {
-  ProductIsar toIsar() {
-    return ProductIsar()
-      ..backendId = id
+  ProductHive toHive() {
+    return ProductHive()
+      ..id = id
       ..nombre = nombre
       ..descripcion = descripcion
       ..fotoUrl = fotoUrl
       ..categoriaId = categoriaId
       ..disponible = disponible
-      ..variantes = variantes.map((v) => v.toIsar()).toList();
+      ..variantes = variantes.map((v) => v.toHive()).toList();
   }
 }
 
-extension ProductIsarMapper on ProductIsar {
+extension ProductHiveMapper on ProductHive {
   ProductModel toDomain() {
     return ProductModel(
-      id: backendId,
+      id: id,
       nombre: nombre,
       descripcion: descripcion,
       fotoUrl: fotoUrl,
@@ -57,34 +57,34 @@ extension ProductIsarMapper on ProductIsar {
 }
 
 extension VariantMapper on VariantModel {
-  VariantIsar toIsar() {
-    return VariantIsar()
-      ..backendId = id
+  VariantHive toHive() {
+    return VariantHive()
+      ..id = id
       ..nombre = nombre
       ..precioA = precioA
       ..precioB = precioB
       ..disponible = disponible
-      ..precios = precios.map((p) => p.toIsar()).toList();
+      ..precios = precios.map((p) => p.toHive()).toList();
   }
 }
 
-extension VariantIsarMapper on VariantIsar {
+extension VariantHiveMapper on VariantHive {
   VariantModel toDomain() {
     return VariantModel(
-      id: backendId ?? '',
-      nombre: nombre ?? '',
-      precioA: precioA ?? 0.0,
-      precioB: precioB ?? 0.0,
-      disponible: disponible ?? true,
-      precios: precios?.map((p) => p.toDomain()).toList() ?? [],
+      id: id,
+      nombre: nombre,
+      precioA: precioA,
+      precioB: precioB,
+      disponible: disponible,
+      precios: precios.map((p) => p.toDomain()).toList(),
     );
   }
 }
 
 extension VariantPriceMapper on VariantPriceModel {
-  VariantPriceIsar toIsar() {
-    return VariantPriceIsar()
-      ..backendId = id
+  VariantPriceHive toHive() {
+    return VariantPriceHive()
+      ..id = id
       ..tarifaId = tarifaId
       ..precioUnitario = precioUnitario
       ..tarifaNombre = tarifaNombre
@@ -92,14 +92,14 @@ extension VariantPriceMapper on VariantPriceModel {
   }
 }
 
-extension VariantPriceIsarMapper on VariantPriceIsar {
+extension VariantPriceHiveMapper on VariantPriceHive {
   VariantPriceModel toDomain() {
     return VariantPriceModel(
-      id: backendId ?? '',
-      tarifaId: tarifaId ?? '',
-      precioUnitario: precioUnitario ?? 0.0,
-      tarifaNombre: tarifaNombre ?? '',
-      esDefault: esDefault ?? false,
+      id: id,
+      tarifaId: tarifaId,
+      precioUnitario: precioUnitario,
+      tarifaNombre: tarifaNombre,
+      esDefault: esDefault,
     );
   }
 }
