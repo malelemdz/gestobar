@@ -101,8 +101,6 @@ class _PosPageState extends ConsumerState<PosPage> {
                         theme: theme,
                       ),
                     ),
-                    // Espacio inferior para que el ticket flotante no tape elementos de la grilla
-                    if (cart.items.isNotEmpty) const SizedBox(height: 76),
                   ],
                 ),
                 // Ticket Flotante Inferior (Móvil)
@@ -152,7 +150,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               onChanged: (val) => setState(() => _searchQuery = val),
               style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
               decoration: InputDecoration(
-                hintText: 'Buscar bebidas, cervezas o tragos...',
+                hintText: 'Buscar productos...',
                 hintStyle: GoogleFonts.plusJakartaSans(
                   color: Colors.white.withOpacity(0.3),
                   fontSize: 14,
@@ -177,16 +175,19 @@ class _PosPageState extends ConsumerState<PosPage> {
           // Pestañas de Categoría (Scrollable Row)
           categoriesAsync.when(
             data: (categories) {
+              final sortedCategories = List<CategoryModel>.from(categories)
+                ..sort((a, b) => a.orden.compareTo(b.orden));
+
               return SizedBox(
                 height: 38,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: categories.length + 1,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: sortedCategories.length + 1,
                   itemBuilder: (context, index) {
                     final bool isAll = index == 0;
-                    final String? catId = isAll ? null : categories[index - 1].id;
-                    final String nombre = isAll ? 'Todos' : categories[index - 1].nombre;
+                    final String? catId = isAll ? null : sortedCategories[index - 1].id;
+                    final String nombre = isAll ? 'Todos' : sortedCategories[index - 1].nombre;
                     final bool isSelected = selectedCategoryId == catId;
 
                     return Padding(
@@ -260,12 +261,13 @@ class _PosPageState extends ConsumerState<PosPage> {
                 }
 
                 return GridView.builder(
-                  physics: const ClampingScrollPhysics(),
+                  padding: EdgeInsets.only(bottom: 86.0), // Floating cart padding
+                  physics: const BouncingScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 220,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 0.76,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.72,
                   ),
                   itemCount: products.length,
                   itemBuilder: (context, index) {
@@ -318,7 +320,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF1E2024), // surface-container
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24), // Liquid extreme rounded
         border: Border.all(
           color: Colors.white.withOpacity(0.04),
           width: 1,
@@ -330,7 +332,7 @@ class _PosPageState extends ConsumerState<PosPage> {
           // Imagen / Miniatura elegante del Trago
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -342,14 +344,15 @@ class _PosPageState extends ConsumerState<PosPage> {
                     )
                   else
                     _buildPlaceholderDrinkIcon(),
-                  // Gradiente sutil inferior sobre la foto
+                  // Gradiente inferior
                   Positioned.fill(
                     child: Container(
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.transparent, Color(0x99121214)],
+                          colors: [Colors.transparent, Color(0xDD121214)],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
+                          stops: [0.4, 1.0],
                         ),
                       ),
                     ),
@@ -361,7 +364,7 @@ class _PosPageState extends ConsumerState<PosPage> {
 
           // Contenido de la tarjeta
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -371,22 +374,24 @@ class _PosPageState extends ConsumerState<PosPage> {
                   style: GoogleFonts.plusJakartaSans(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 13,
+                    fontSize: 14,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  product.descripcion ?? 'Sin descripción',
+                  product.descripcion != null && product.descripcion!.isNotEmpty 
+                      ? product.descripcion! 
+                      : 'Sin descripción',
                   style: GoogleFonts.plusJakartaSans(
                     color: Colors.white.withOpacity(0.4),
-                    fontSize: 10,
+                    fontSize: 11,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
 
                 // Precio y Botón Agregar
                 Row(
@@ -397,23 +402,23 @@ class _PosPageState extends ConsumerState<PosPage> {
                       style: GoogleFonts.plusJakartaSans(
                         color: hasDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF),
                         fontWeight: FontWeight.w800,
-                        fontSize: 12.0,
+                        fontSize: 13.0,
                       ),
                     ),
                     InkWell(
                       onTap: () => _handleProductAdd(product),
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.06),
+                          color: const Color(0xFF0C0E12),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: Colors.white.withOpacity(0.08),
                             width: 1,
                           ),
                         ),
-                        child: const Icon(Icons.add, color: Colors.white, size: 14),
+                        child: const Icon(Icons.add, color: Color(0xFF00F0FF), size: 16),
                       ),
                     ),
                   ],
