@@ -363,7 +363,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                                   // Visibility Toggle
                                   IconButton(
                                     icon: Icon(
-                                      cat.disponible ? Icons.visibility : Icons.visibility_off, 
+                                      cat.disponible ? Icons.toggle_on : Icons.toggle_off, 
                                       size: 14, 
                                       color: cat.disponible ? const Color(0xFF00F0FF) : Colors.orangeAccent
                                     ),
@@ -611,7 +611,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
-                              product.disponible ? Icons.visibility : Icons.visibility_off, 
+                              product.disponible ? Icons.toggle_on : Icons.toggle_off, 
                               color: product.disponible ? const Color(0xFF00F0FF) : Colors.orangeAccent, 
                               size: 14,
                             ),
@@ -757,113 +757,118 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     final TextEditingController nameController =
         TextEditingController(text: category?.nombre ?? '');
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.7),
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF131518),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (context) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: AlertDialog(
-            backgroundColor: const Color(0xFF1E2024),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24.0),
-              side: BorderSide(color: Colors.white.withOpacity(0.05)),
-            ),
-            title: Text(
-              category == null ? 'Nueva Categoría' : 'Editar Categoría',
-              style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            content: Container(
-              width: 320,
-              padding: const EdgeInsets.only(top: 8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'NOMBRE',
-                    style: GoogleFonts.plusJakartaSans(
-                      color: AppTheme.liquidOnSurfaceVariant,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.1,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0C0E12),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.1)),
-                    ),
-                    child: TextField(
-                      controller: nameController,
-                      style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
-                      decoration: InputDecoration(
-                        hintText: 'Ej. Cócteles, Botellas...',
-                        hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        border: InputBorder.none,
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      category == null ? 'Nueva Categoría' : 'Editar Categoría',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 18,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancelar', style: GoogleFonts.inter(color: Colors.white60)),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  if (nameController.text.trim().isEmpty) return;
-
-                  final notifier = ref.read(menuAdminProvider.notifier);
-                  bool success = false;
-
-                  if (category == null) {
-                    // Create: Fetch current categories length to set order
-                    final currentCats = ref.read(categoriesProvider).value ?? [];
-                    final nextOrder = currentCats.isEmpty
-                        ? 1
-                        : currentCats.map((c) => c.orden).reduce((a, b) => a > b ? a : b) + 1;
-
-                    success = await notifier.createCategory(
-                      nameController.text.trim(),
-                      nextOrder,
-                    );
-                  } else {
-                    // Update
-                    success = await notifier.updateCategory(
-                      category.id,
-                      nameController.text.trim(),
-                      category.orden,
-                    );
-                  }
-
-                  if (success && mounted) {
-                    Navigator.pop(context);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF00F0FF),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white54),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
                 ),
-                child: Text(
-                  'Guardar',
+                const SizedBox(height: 24),
+                Text(
+                  'NOMBRE',
                   style: GoogleFonts.plusJakartaSans(
+                    color: AppTheme.liquidOnSurfaceVariant,
+                    fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF0c0e12),
+                    letterSpacing: 0.1,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 6),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0C0E12),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  ),
+                  child: TextField(
+                    controller: nameController,
+                    style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+                    decoration: InputDecoration(
+                      hintText: 'Ej. Cócteles, Botellas...',
+                      hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (nameController.text.trim().isEmpty) return;
+
+                    final notifier = ref.read(menuAdminProvider.notifier);
+                    bool success = false;
+
+                    if (category == null) {
+                      final currentCats = ref.read(categoriesProvider).value ?? [];
+                      final nextOrder = currentCats.isEmpty
+                          ? 1
+                          : currentCats.map((c) => c.orden).reduce((a, b) => a > b ? a : b) + 1;
+
+                      success = await notifier.createCategory(
+                        nameController.text.trim(),
+                        nextOrder,
+                      );
+                    } else {
+                      success = await notifier.updateCategory(
+                        category.id,
+                        nameController.text.trim(),
+                        category.orden,
+                      );
+                    }
+
+                    if (success && mounted) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF00F0FF),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: Text(
+                    'Guardar Categoría',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF0c0e12),
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         );
       },
@@ -1065,7 +1070,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                                   children: [
                                     IconButton(
                                       icon: Icon(
-                                        cat.disponible ? Icons.visibility : Icons.visibility_off, 
+                                        cat.disponible ? Icons.toggle_on : Icons.toggle_off, 
                                         size: 16, 
                                         color: cat.disponible ? const Color(0xFF00F0FF) : Colors.orangeAccent
                                       ),
@@ -1100,7 +1105,10 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                                       },
                                     ),
                                     const SizedBox(width: 8),
-                                    const Icon(Icons.drag_handle, color: Colors.white30, size: 20),
+                                    ReorderableDragStartListener(
+                                      index: index,
+                                      child: const Icon(Icons.drag_handle, color: Colors.white30, size: 24),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -1146,7 +1154,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
           : 'Esto encenderá la categoría y hará visibles nuevamente todos los productos y variantes que contenga. ¿Estás seguro?',
       confirmText: category.disponible ? 'Sí, Apagar' : 'Sí, Encender',
       confirmColor: category.disponible ? Colors.orangeAccent : const Color(0xFF00F0FF),
-      icon: category.disponible ? Icons.visibility_off : Icons.visibility,
+      icon: category.disponible ? Icons.toggle_off : Icons.toggle_on,
     );
 
     if (confirm == true) {
@@ -1168,7 +1176,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
           : 'Esto encenderá el producto y hará visibles nuevamente todas sus variantes. ¿Estás seguro?',
       confirmText: product.disponible ? 'Sí, Apagar' : 'Sí, Encender',
       confirmColor: product.disponible ? Colors.orangeAccent : const Color(0xFF00F0FF),
-      icon: product.disponible ? Icons.visibility_off : Icons.visibility,
+      icon: product.disponible ? Icons.toggle_off : Icons.toggle_on,
     );
 
     if (confirm == true) {
