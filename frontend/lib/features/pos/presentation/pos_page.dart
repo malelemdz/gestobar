@@ -170,7 +170,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
           // Pestañas de Categoría (Scrollable Row)
           categoriesAsync.when(
@@ -234,7 +234,7 @@ class _PosPageState extends ConsumerState<PosPage> {
             loading: () => const SizedBox(height: 38),
             error: (err, stack) => const SizedBox(height: 38),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
           // Grilla de Productos
           Expanded(
@@ -374,7 +374,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                   style: GoogleFonts.plusJakartaSans(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 13,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -386,12 +386,12 @@ class _PosPageState extends ConsumerState<PosPage> {
                       : 'Sin descripción',
                   style: GoogleFonts.plusJakartaSans(
                     color: Colors.white.withOpacity(0.4),
-                    fontSize: 11,
+                    fontSize: 10,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
 
                 // Precio y Botón Agregar
                 Row(
@@ -402,7 +402,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                       style: GoogleFonts.plusJakartaSans(
                         color: hasDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF),
                         fontWeight: FontWeight.w800,
-                        fontSize: 13.0,
+                        fontSize: 12.0,
                       ),
                     ),
                     InkWell(
