@@ -1,21 +1,60 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../repository/catalog_repository.dart';
 import '../../auth/models/user_model.dart';
 import '../../auth/repository/auth_repository.dart';
-import 'dart:convert';
-import '../../../core/storage/secure_storage_service.dart';
+import '../../../core/local_db/hive_entities/user_hive.dart';
+import '../../../core/local_db/mappers/user_mapper.dart';
 
 // =========================================================================
-// DAMAS (USUARIOS)
+// DAMAS (USUARIOS) - INSTANTÁNEO Y SILENCIOSO
 // =========================================================================
 
-final damasProvider = StreamProvider<List<UserModel>>((ref) {
+class DamasNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
+  final AuthRepository _repo;
+
+  DamasNotifier(this._repo) : super(const AsyncLoading()) {
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    try {
+      final box = Hive.box<UserHive>('users');
+      final localUsers = box.values.toList();
+      
+      if (localUsers.isNotEmpty) {
+        // Si hay datos locales, los mostramos instantáneamente (0ms)
+        _updateState(box);
+        box.watch().listen((_) => _updateState(box));
+        // Y sincronizamos en las sombras sin interrumpir la venta
+        _repo.syncUsersSilently();
+      } else {
+        // FUENTE DE VERDAD: Si la base local está vacía, no asumimos nada. 
+        // Bloqueamos la interfaz en estado de "Carga" hasta que el Servidor responda.
+        await _repo.syncUsersSilently();
+        _updateState(box);
+        box.watch().listen((_) => _updateState(box));
+      }
+    } catch (e, st) {
+      state = AsyncError('Error de sincronización', st);
+    }
+  }
+
+  void _updateState(Box<UserHive> box) {
+    final list = box.values.toList();
+    final damas = list
+        .map((e) => e.toDomain())
+        .where((u) => u.rolNombre.toUpperCase() == 'DAMA')
+        .toList();
+    state = AsyncData(damas);
+  }
+}
+
+final damasProvider = StateNotifierProvider<DamasNotifier, AsyncValue<List<UserModel>>>((ref) {
   final authRepo = ref.watch(authRepositoryProvider);
-  return authRepo.watchUsers().map((users) {
-    return users.where((u) => u.rolNombre.toUpperCase() == 'DAMA').toList();
-  });
+  return DamasNotifier(authRepo);
 });
 
 

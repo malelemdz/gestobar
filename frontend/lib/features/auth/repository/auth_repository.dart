@@ -49,30 +49,7 @@ class AuthRepository {
   // USUARIOS (HIVE OFFLINE-FIRST)
   // =========================================================================
 
-  /// Devuelve un Stream reactivo de la BD local (0ms lag) y sincroniza en background
-  Stream<List<UserModel>> watchUsers() async* {
-    // 1. Disparar sync en background
-    _syncUsers().catchError((_) {});
-
-    final box = Hive.box<UserHive>('users');
-    
-    // 2. Emitir valor inicial instantáneo
-    yield _getUsersSorted(box);
-
-    // 3. Emitir nuevos valores cada vez que haya un cambio en la caja
-    await for (var _ in box.watch()) {
-      yield _getUsersSorted(box);
-    }
-  }
-
-  List<UserModel> _getUsersSorted(Box<UserHive> box) {
-    final list = box.values.toList();
-    // Podrías ordenar por nombre aquí si lo deseas
-    list.sort((a, b) => a.nombre.compareTo(b.nombre));
-    return list.map((e) => e.toDomain()).toList();
-  }
-
-  Future<void> _syncUsers() async {
+  Future<void> syncUsersSilently() async {
     try {
       final response = await _dio.get('/users');
       final list = response.data as List? ?? [];
@@ -87,7 +64,7 @@ class AuthRepository {
       };
       await box.putAll(map);
     } catch (e) {
-      // Ignorar fallo de red silenciosamente
+      // Ignorar fallo silenciosamente
     }
   }
 

@@ -589,14 +589,14 @@ class _PosPageState extends ConsumerState<PosPage> {
                   child: DropdownButtonHideUnderline(
                     child: damasAsync.when(
                       data: (damas) {
-                        // Evitar CRASH: Asegurarnos de que el ID guardado en el carrito siga existiendo en la lista
+                        // Evitar CRASH si el ID guardado no existe
                         final isDamaValid = cart.selectedDamaId != null && damas.any((d) => d.id == cart.selectedDamaId);
                         final safeSelectedDamaId = isDamaValid ? cart.selectedDamaId : null;
 
                         return DropdownButton<String?>(
                           isExpanded: true,
                           value: safeSelectedDamaId,
-                          hint: Text(damas.isEmpty ? 'Cargando Compañía...' : 'Sin Compañía (Cliente Normal)', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 13)),
+                          hint: Text('Sin Compañía (Cliente Normal)', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 13)),
                           dropdownColor: const Color(0xFF1E2024),
                           icon: const Icon(Icons.people_alt_outlined, color: Colors.blueAccent, size: 20),
                           items: [
@@ -612,7 +612,6 @@ class _PosPageState extends ConsumerState<PosPage> {
                           onChanged: (val) {
                             final dama = damas.firstWhere((d) => d.id == val, orElse: () => UserModel(id: '', username: '', nombre: '', rolId: '', rolNombre: ''));
                             
-                            // Obtener tarifa default del listado
                             final tarifaDefaultId = tarifasState.maybeWhen(
                               data: (tfs) => tfs.firstWhere((t) => t.esDefault, orElse: () => tfs.first).id,
                               orElse: () => '',
@@ -638,7 +637,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                               child: CircularProgressIndicator(color: Colors.blueAccent, strokeWidth: 2),
                             ),
                             const SizedBox(width: 12),
-                            Text('Conectando a Base Local...', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 13)),
+                            Text('Cargando personal...', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 13)),
                           ],
                         ),
                       ),
@@ -649,7 +648,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                           children: [
                             const Icon(Icons.error_outline, color: Colors.redAccent, size: 20),
                             const SizedBox(width: 12),
-                            Text('Error al cargar Damas', style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontSize: 13)),
+                            Text('No se pudo cargar el personal', style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontSize: 13)),
                           ],
                         ),
                       ),
