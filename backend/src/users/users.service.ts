@@ -54,4 +54,10 @@ export class UsersService {
       relations: ['rol'],
     });
   }
+
+  async update(id: string, updateData: Partial<User>): Promise<User> {
+    const user = await this.findOne(id);
+    Object.assign(user, updateData);
+    return await this.userRepository.save(user);
+  }
 }

@@ -59,6 +59,23 @@ class AuthRepository {
       throw Exception('No se pudo conectar con el servidor para obtener los usuarios');
     }
   }
+
+  /// Actualiza los datos de un usuario en el backend
+  Future<UserModel> updateUser(String id, Map<String, dynamic> data) async {
+    try {
+      final response = await _dio.patch('/users/$id', data: data);
+      return UserModel.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      final errorResponse = e.response?.data;
+      String errorMessage = 'Error al actualizar perfil';
+      if (errorResponse != null && errorResponse['message'] != null) {
+        errorMessage = errorResponse['message'].toString();
+      }
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('No se pudo conectar con el servidor para actualizar el perfil');
+    }
+  }
 }
 
 

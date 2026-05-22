@@ -59,6 +59,7 @@ export class ProductsService {
       .leftJoinAndSelect('product.categoria', 'category')
       .leftJoinAndSelect('product.variantes', 'variant')
       .leftJoinAndSelect('variant.precios', 'precio')
+      .leftJoinAndSelect('precio.tarifa', 'tarifa')
       .where('product.bar_id = :barId', { barId });
 
     if (categoryId) {

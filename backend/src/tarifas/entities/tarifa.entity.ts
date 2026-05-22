@@ -20,6 +20,9 @@ export class Tarifa {
   @Column({ default: false })
   es_default: boolean;
 
+  @Column({ default: true })
+  activo: boolean;
+
   @OneToMany(() => VariantePrecio, vp => vp.tarifa)
   precios: VariantePrecio[];
 

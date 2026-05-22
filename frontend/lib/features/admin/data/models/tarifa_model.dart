@@ -3,12 +3,14 @@ class TarifaModel {
   final String barId;
   final String nombre;
   final bool esDefault;
+  final bool activo;
 
   TarifaModel({
     required this.id,
     required this.barId,
     required this.nombre,
     required this.esDefault,
+    required this.activo,
   });
 
   factory TarifaModel.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class TarifaModel {
       barId: json['bar_id'] as String,
       nombre: json['nombre'] as String,
       esDefault: json['es_default'] as bool? ?? false,
+      activo: json['activo'] as bool? ?? true,
     );
   }
 
@@ -26,6 +29,7 @@ class TarifaModel {
       'bar_id': barId,
       'nombre': nombre,
       'es_default': esDefault,
+      'activo': activo,
     };
   }
 }
