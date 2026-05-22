@@ -306,6 +306,14 @@ class _PosPageState extends ConsumerState<PosPage> {
     final hasDama = cart.selectedDamaId != null;
     final currencySymbol = ref.watch(currencySymbolProvider);
 
+    // Calcular cuántos de este producto hay en el carrito
+    final int quantityInCart = cart.items
+        .where((item) => item.producto.id == product.id)
+        .fold(0, (sum, item) => sum + item.cantidad);
+    
+    // Color de acento basado en el estado (Dama o Normal)
+    final accentColor = hasDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF);
+
     // Calcular el precio a mostrar (si tiene variantes)
     String precioText = '';
     if (product.variantes.isEmpty) {
@@ -363,18 +371,65 @@ class _PosPageState extends ConsumerState<PosPage> {
                   Positioned(
                     top: 8,
                     right: 8,
-                    child: GestureDetector(
-                      onTap: () => _handleProductAdd(product),
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.6),
-                          shape: BoxShape.circle,
+                    child: Row(
+                      children: [
+                        if (quantityInCart > 0) ...[
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: accentColor.withOpacity(0.15),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: accentColor.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Icon(Icons.check, color: accentColor, size: 14),
+                          ),
+                          const SizedBox(width: 4),
+                        ],
+                        GestureDetector(
+                          onTap: () => _handleProductAdd(product),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.6),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.add, color: Color(0xFF00F0FF), size: 14),
+                          ),
                         ),
-                        child: const Icon(Icons.add, color: Color(0xFF00F0FF), size: 14),
-                      ),
+                      ],
                     ),
                   ),
+                  // Notificación Flotante (Contador Izquierda)
+                  if (quantityInCart > 0)
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: accentColor,
+                          borderRadius: BorderRadius.circular(100),
+                          boxShadow: [
+                            BoxShadow(
+                              color: accentColor.withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          '$quantityInCart',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
