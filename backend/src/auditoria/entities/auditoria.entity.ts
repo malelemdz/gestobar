@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, UpdateDateColumn } from 'typeorm';
 import { Bar } from '../../bars/entities/bar.entity';
 import { User } from '../../users/entities/user.entity';
 
@@ -41,4 +41,7 @@ export class Auditoria {
 
   @CreateDateColumn({ type: 'timestamp' })
   fecha: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, UpdateDateColumn } from 'typeorm';
 import { Bar } from '../../bars/entities/bar.entity';
 import { Product } from '../../products/entities/product.entity';
 
@@ -22,4 +22,7 @@ export class Category {
 
   @OneToMany(() => Product, (product) => product.categoria)
   productos: Product[];
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, UpdateDateColumn } from 'typeorm';
 import { Bar } from '../../bars/entities/bar.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { Variant } from './variant.entity';
@@ -33,4 +33,7 @@ export class Product {
 
   @OneToMany(() => Variant, (variant) => variant.producto, { cascade: true })
   variantes: Variant[];
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

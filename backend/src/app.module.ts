@@ -19,6 +19,9 @@ import { AuditoriaModule } from './auditoria/auditoria.module';
 import { EstadisticasModule } from './estadisticas/estadisticas.module';
 import { TarifasModule } from './tarifas/tarifas.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { ClsModule } from 'nestjs-cls';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuditInterceptor } from './auditoria/audit.interceptor';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -42,6 +45,10 @@ import { UploadsModule } from './uploads/uploads.module';
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
     }),
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
+    }),
     BarsModule,
     UsersModule,
     RolesModule,
@@ -58,6 +65,12 @@ import { UploadsModule } from './uploads/uploads.module';
     UploadsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuditInterceptor,
+    },
+  ],
 })
 export class AppModule {}

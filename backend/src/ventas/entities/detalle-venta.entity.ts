@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn } from 'typeorm';
 import { Venta } from './venta.entity';
 import { Variant } from '../../products/entities/variant.entity';
 import { User } from '../../users/entities/user.entity';
@@ -60,4 +60,7 @@ export class DetalleVenta {
 
   @Column({ default: false })
   es_invitacion: boolean;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

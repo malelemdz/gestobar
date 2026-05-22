@@ -737,7 +737,7 @@ class MainDashboardView extends ConsumerWidget {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: navItems.map((item) {
+                        children: navItems.where((item) => item['view'] != 'audit').map((item) {
                           final String viewId = item['view'] as String;
                           final bool isSelected = activeView == viewId;
                           final IconData icon = isSelected ? item['icon_active'] as IconData : item['icon'] as IconData;
@@ -880,6 +880,12 @@ class MainDashboardView extends ConsumerWidget {
             'label': 'Staff',
             'icon': Icons.people_alt_outlined,
             'icon_active': Icons.people,
+          },
+          {
+            'view': 'audit',
+            'label': 'Bitácora',
+            'icon': Icons.security_outlined,
+            'icon_active': Icons.security,
           },
         ];
       case 'BARMAN':

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, OneToMany, JoinColumn, UpdateDateColumn } from 'typeorm';
 import { Bar } from '../../bars/entities/bar.entity';
 import { Caja } from '../../cajas/entities/caja.entity';
 import { User } from '../../users/entities/user.entity';
@@ -49,4 +49,7 @@ export class Venta {
 
   @OneToMany(() => DetalleVenta, (detalle) => detalle.venta, { cascade: true })
   detalles: DetalleVenta[];
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

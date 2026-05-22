@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable, UpdateDateColumn } from 'typeorm';
 import { Bar } from '../../bars/entities/bar.entity';
 import { Permission } from './permission.entity';
 
@@ -24,4 +24,7 @@ export class Role {
     inverseJoinColumn: { name: 'permiso_id', referencedColumnName: 'id' },
   })
   permisos: Permission[];
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

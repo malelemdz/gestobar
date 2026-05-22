@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, UpdateDateColumn } from 'typeorm';
 import { Product } from './product.entity';
 import { VariantePrecio } from './variante-precio.entity';
 
@@ -21,4 +21,7 @@ export class Variant {
   precios: VariantePrecio[];
   @Column({ default: true })
   disponible: boolean;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn } from 'typeorm';
 import { Variant } from './variant.entity';
 import { Tarifa } from '../../tarifas/entities/tarifa.entity';
 
@@ -31,4 +31,7 @@ export class VariantePrecio {
     },
   })
   precio_unitario: number;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }
