@@ -56,8 +56,9 @@ class _PosPageState extends ConsumerState<PosPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF121214), // Midnight background
-      body: LayoutBuilder(
-        builder: (context, constraints) {
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
           final bool isTablet = constraints.maxWidth >= 900;
 
           if (isTablet) {
@@ -116,6 +117,7 @@ class _PosPageState extends ConsumerState<PosPage> {
           }
         },
       ),
+      ),
     );
   }
 
@@ -130,7 +132,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     required ThemeData theme,
   }) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -357,6 +359,22 @@ class _PosPageState extends ConsumerState<PosPage> {
                       ),
                     ),
                   ),
+                  // Top overlay for quick actions
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () => _handleProductAdd(product),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.add, color: Color(0xFF00F0FF), size: 14),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -393,7 +411,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                 ),
                 const SizedBox(height: 8),
 
-                // Precio y Botón Agregar
+                // Precio y Variantes
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -405,20 +423,19 @@ class _PosPageState extends ConsumerState<PosPage> {
                         fontSize: 12.0,
                       ),
                     ),
-                    InkWell(
-                      onTap: () => _handleProductAdd(product),
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF0C0E12),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.08),
-                            width: 1,
-                          ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF7000FF).withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Text(
+                        '${product.variantes.length} Var',
+                        style: GoogleFonts.inter(
+                          color: const Color(0xFFD1BCFF),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 9,
                         ),
-                        child: const Icon(Icons.add, color: Color(0xFF00F0FF), size: 16),
                       ),
                     ),
                   ],
