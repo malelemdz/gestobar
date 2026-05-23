@@ -282,6 +282,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
 
       final success = await ref.read(currentBarProvider.notifier).updateBarInfo(updates);
       if (success) {
+        final bool isCurrencyChanged = _originalIso != null && _originalIso != _currentIso;
         _originalIso = _currentIso;
         _originalTimezone = _currentTimezone;
         ref.invalidate(currentBarProvider);
@@ -289,6 +290,23 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Configuración guardada correctamente.')),
           );
+          
+          if (isCurrencyChanged) {
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                backgroundColor: const Color(0xFF16181C),
+                title: Text('Reinicio Requerido', style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold)),
+                content: Text('Has cambiado la moneda del Bar.\n\nPor favor, reinicia la aplicación (Hot Restart) para que los nuevos formatos matemáticos se apliquen en todas las pantallas del sistema.', style: GoogleFonts.inter(color: Colors.white70)),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text('Entendido', style: TextStyle(color: Color(0xFF00F0FF))),
+                  ),
+                ],
+              ),
+            );
+          }
         }
       }
     }
@@ -908,13 +926,15 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 600),
-          child: _buildBentoCard(
-            width: double.infinity,
-            title: 'Operaciones',
-            description: 'Configura la moneda de transacciones y la zona horaria local.',
-            icon: Icons.monetization_on_outlined,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
+          child: Column(
+            children: [
+              _buildBentoCard(
+                width: double.infinity,
+                title: 'Operaciones',
+                description: 'Configura la moneda de transacciones y la zona horaria local.',
+                icon: Icons.monetization_on_outlined,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
                 final isMobile = constraints.maxWidth < 400;
                 if (isMobile) {
                   return Column(
@@ -992,7 +1012,61 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
               }
             ),
           ),
+          const SizedBox(height: 24),
+          _buildCurrencyPreview(),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCurrencyPreview() {
+    final symbol = CurrencyHelper.getSymbolFromIso(_currentIso);
+    final formatted = CurrencyHelper.formatAmount(15000.5, _currentIso);
+    final decimals = CurrencyHelper.getDecimalDigits(_currentIso);
+    
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(maxWidth: 600),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.3), width: 1.5),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFF00F0FF).withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.visibility_outlined, color: Color(0xFF00F0FF), size: 28),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('VISTA PREVIA DEL FORMATO', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                const SizedBox(height: 6),
+                RichText(
+                  text: TextSpan(
+                    style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
+                    children: [
+                      const TextSpan(text: 'Los cobros de 15,000.50 se verán como: '),
+                      TextSpan(text: '$symbol $formatted', style: const TextStyle(color: Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 16)),
+                    ]
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text('La moneda $_currentIso usa $decimals decimales.', style: GoogleFonts.inter(color: Colors.white30, fontSize: 12)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

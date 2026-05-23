@@ -74,11 +74,11 @@ class VentasActivasNotifier extends StateNotifier<VentasActivasState> {
     }
   }
 
-  void _initSockets() {
+  Future<void> _initSockets() async {
     if (_isListeningSockets || _barId == null) return;
     
     try {
-      final socket = _socketService.socket;
+      final socket = await _socketService.connect();
       final eventName = 'nueva_venta_bar_$_barId';
 
       socket.on(eventName, (data) {
@@ -97,7 +97,7 @@ class VentasActivasNotifier extends StateNotifier<VentasActivasState> {
   void dispose() {
     if (_isListeningSockets && _barId != null) {
       try {
-        _socketService.socket.off('nueva_venta_bar_$_barId');
+        _socketService.socket?.off('nueva_venta_bar_$_barId');
       } catch (_) {}
     }
     super.dispose();

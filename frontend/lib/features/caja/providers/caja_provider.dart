@@ -67,3 +67,13 @@ final currencySymbolProvider = Provider<String>((ref) {
     error: (_, __) => 'Bs',
   );
 });
+
+// Proveedor del código ISO de moneda del bar activo
+final currencyIsoProvider = Provider<String>((ref) {
+  final barState = ref.watch(currentBarProvider);
+  return barState.when(
+    data: (bar) => bar.monedaIso,
+    loading: () => 'BOB',
+    error: (_, __) => 'BOB',
+  );
+});

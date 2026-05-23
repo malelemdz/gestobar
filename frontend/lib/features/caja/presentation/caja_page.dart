@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import '../../../core/utils/currency_helper.dart';
 import '../../admin/providers/bar_provider.dart';
 import '../models/caja_model.dart';
 import '../providers/caja_provider.dart';
@@ -35,6 +36,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
     final cajaState = ref.watch(cajaStateProvider);
     final historyAsync = ref.watch(cajaHistoryProvider);
     final currencySymbol = ref.watch(currencySymbolProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFF121214), // Midnight background
@@ -50,15 +52,15 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                 // PANEL CENTRAL ACTIVO (APERTURA O CIERRE)
                 // ==========================================
                 estado.abierta
-                    ? _buildOpenCajaPanel(estado.caja!, theme, currencySymbol)
-                    : _buildClosedCajaPanel(theme, currencySymbol),
+                    ? _buildOpenCajaPanel(estado.caja!, theme, currencySymbol, currencyIso)
+                    : _buildClosedCajaPanel(theme, currencySymbol, currencyIso),
 
                 const SizedBox(height: 32),
 
                 // ==========================================
                 // HISTORIAL DE AUDITORÍA DE CAJAS
                 // ==========================================
-                _buildHistorySection(historyAsync, theme, currencySymbol),
+                _buildHistorySection(historyAsync, theme, currencySymbol, currencyIso),
               ],
             ),
           );
@@ -88,9 +90,9 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   }
 
   // =========================================================================
-  // 🚪 1. PANEL DE CAJA CERRADA (FORMULARIO APERTURA)
+  // 📚 1. PANEL DE CAJA CERRADA (Apertura Mágica)
   // =========================================================================
-  Widget _buildClosedCajaPanel(ThemeData theme, String currencySymbol) {
+  Widget _buildClosedCajaPanel(ThemeData theme, String currencySymbol, String currencyIso) {
     return Container(
       padding: const EdgeInsets.all(28.0),
       decoration: BoxDecoration(
@@ -172,11 +174,11 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                     controller: _montoController,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+                      CurrencyInputFormatter(iso: currencyIso),
                     ],
                     style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                     decoration: InputDecoration(
-                      hintText: '0.00',
+                      hintText: CurrencyHelper.getDecimalDigits(currencyIso) == 0 ? '0' : '0.00',
                       hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white24),
                       prefixIcon: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
@@ -261,9 +263,9 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   }
 
   // =========================================================================
-  // 🔓 2. PANEL DE CAJA ABIERTA (DATOS Y FORMULARIO DE CIERRE)
+  // 📚 2. PANEL DE CAJA ABIERTA (Arqueo y Cierre)
   // =========================================================================
-  Widget _buildOpenCajaPanel(CajaModel caja, ThemeData theme, String currencySymbol) {
+  Widget _buildOpenCajaPanel(CajaModel caja, ThemeData theme, String currencySymbol, String currencyIso) {
     final String barmanNombre = caja.aperturaUsuario != null
         ? caja.aperturaUsuario!.nombre
         : 'Barman Encargado';
@@ -353,7 +355,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                 style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 13),
               ),
               Text(
-                '$currencySymbol ${caja.montoInicial.toStringAsFixed(2)}',
+                '$currencySymbol ${CurrencyHelper.formatAmount(caja.montoInicial, currencyIso)}',
                 style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 14),
               ),
             ],
@@ -386,17 +388,17 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      _buildMetricCard('Total\nVentas', totales['general']?.toDouble() ?? 0.0, currencySymbol, const Color(0xFF00F0FF)),
+                      _buildMetricCard('Total\nVentas', totales['general']?.toDouble() ?? 0.0, currencySymbol, const Color(0xFF00F0FF), currencyIso),
                       const SizedBox(width: 8),
-                      _buildMetricCard('En\nEfectivo', totales['efectivo']?.toDouble() ?? 0.0, currencySymbol, Colors.white),
+                      _buildMetricCard('En\nEfectivo', totales['efectivo']?.toDouble() ?? 0.0, currencySymbol, Colors.white, currencyIso),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      _buildMetricCard('En\nTarjeta', totales['tarjeta']?.toDouble() ?? 0.0, currencySymbol, Colors.white),
+                      _buildMetricCard('En\nTarjeta', totales['tarjeta']?.toDouble() ?? 0.0, currencySymbol, Colors.white, currencyIso),
                       const SizedBox(width: 8),
-                      _buildMetricCard('Transf\nQR', totales['tr_qr']?.toDouble() ?? 0.0, currencySymbol, Colors.white),
+                      _buildMetricCard('Transf\nQR', totales['tr_qr']?.toDouble() ?? 0.0, currencySymbol, Colors.white, currencyIso),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -428,11 +430,11 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                     controller: _montoController,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+                      CurrencyInputFormatter(iso: currencyIso),
                     ],
                     style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                     decoration: InputDecoration(
-                      hintText: '0.00',
+                      hintText: CurrencyHelper.getDecimalDigits(currencyIso) == 0 ? '0' : '0.00',
                       hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white24),
                       prefixIcon: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
@@ -516,7 +518,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
     );
   }
 
-  Widget _buildMetricCard(String title, double amount, String currency, Color color) {
+  Widget _buildMetricCard(String title, double amount, String currency, Color color, String currencyIso) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -534,7 +536,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
             ),
             const SizedBox(height: 4),
             Text(
-              '$currency${amount.toStringAsFixed(2)}',
+              '$currency${CurrencyHelper.formatAmount(amount, currencyIso)}',
               style: GoogleFonts.plusJakartaSans(color: color, fontSize: 16, fontWeight: FontWeight.w900),
             ),
           ],
@@ -546,7 +548,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
   // 📚 3. SECCIÓN HISTORIAL DE TURNOS CERRADOS
   // =========================================================================
-  Widget _buildHistorySection(AsyncValue<List<CajaModel>> historyAsync, ThemeData theme, String currencySymbol) {
+  Widget _buildHistorySection(AsyncValue<List<CajaModel>> historyAsync, ThemeData theme, String currencySymbol, String currencyIso) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -646,7 +648,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              'Arqueo: $currencySymbol ${item.montoFinal?.toStringAsFixed(2) ?? '0.00'}',
+                              'Arqueo: $currencySymbol ${item.montoFinal != null ? CurrencyHelper.formatAmount(item.montoFinal!, currencyIso) : '0.00'}',
                               style: GoogleFonts.plusJakartaSans(
                                 color: const Color(0xFF00F0FF),
                                 fontWeight: FontWeight.w800,
@@ -661,7 +663,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
-                                'Inicial: $currencySymbol ${item.montoInicial.toStringAsFixed(2)}',
+                                'Inicial: $currencySymbol ${CurrencyHelper.formatAmount(item.montoInicial, currencyIso)}',
                                 style: GoogleFonts.plusJakartaSans(
                                   color: Colors.white54,
                                   fontSize: 10,
@@ -690,7 +692,8 @@ class _CajaPageState extends ConsumerState<CajaPage> {
 
   Future<void> _handleApertura() async {
     final String text = _montoController.text.trim();
-    final double monto = text.isEmpty ? 0.0 : (double.tryParse(text) ?? -1.0);
+    final String iso = ref.read(currencyIsoProvider);
+    final double monto = text.isEmpty ? 0.0 : CurrencyHelper.parseAmount(text, iso);
     if (monto < 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -728,7 +731,8 @@ class _CajaPageState extends ConsumerState<CajaPage> {
 
   Future<void> _handleCierre(String cajaId) async {
     final String text = _montoController.text.trim();
-    final double monto = text.isEmpty ? 0.0 : (double.tryParse(text) ?? -1.0);
+    final String iso = ref.read(currencyIsoProvider);
+    final double monto = text.isEmpty ? 0.0 : CurrencyHelper.parseAmount(text, iso);
     if (monto < 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -779,6 +783,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
   void _openBilleteoCalculator() {
     final currencySymbol = ref.read(currencySymbolProvider);
+    final currencyIso = ref.read(currencyIsoProvider);
     final customController = TextEditingController();
 
     // Denominaciones iniciales típicas según moneda/país
@@ -901,7 +906,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                               SizedBox(
                                 width: 100,
                                 child: Text(
-                                  '$currencySymbol ${(val * conteo[val]!).toStringAsFixed(2)}',
+                                  '$currencySymbol ${CurrencyHelper.formatAmount((val * conteo[val]!).toDouble(), currencyIso)}',
                                   textAlign: TextAlign.end,
                                   style: GoogleFonts.plusJakartaSans(
                                     color: Colors.white,
@@ -989,7 +994,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                         ),
                       ),
                       Text(
-                        '$currencySymbol ${total.toStringAsFixed(2)}',
+                        '$currencySymbol ${CurrencyHelper.formatAmount(total.toDouble(), currencyIso)}',
                         style: GoogleFonts.plusJakartaSans(
                           color: const Color(0xFF00F0FF),
                           fontWeight: FontWeight.w900,
@@ -1003,7 +1008,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   // Botón Aplicar a formulario
                   ElevatedButton(
                     onPressed: () {
-                      _montoController.text = total.toStringAsFixed(2);
+                      _montoController.text = CurrencyHelper.formatAmount(total.toDouble(), currencyIso);
                       customController.dispose();
                       Navigator.pop(context);
                     },
@@ -1035,6 +1040,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
   void _showCierreSummaryDialog(Map<String, dynamic> res) {
     final currencySymbol = ref.read(currencySymbolProvider);
+    final currencyIso = ref.read(currencyIsoProvider);
     // Parseo seguro de los decimales de la API de NestJS
     final double mInicial = double.tryParse(res['monto_inicial']?.toString() ?? '') ?? 0.0;
     final double mFinal = double.tryParse(res['monto_final']?.toString() ?? '') ?? 0.0;
@@ -1098,12 +1104,12 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   const SizedBox(height: 20),
 
                   // Desglose de saldos
-                  _buildSummaryRow('Dinero Inicial:', '$currencySymbol ${mInicial.toStringAsFixed(2)}', Colors.white54),
-                  _buildSummaryRow('(+) Ventas Totales:', '$currencySymbol ${vTotales.toStringAsFixed(2)}', const Color(0xFF00F0FF)),
-                  _buildSummaryRow('(-) Comisiones Damas:', '$currencySymbol ${comisiones.toStringAsFixed(2)}', const Color(0xFFFF00D6)),
+                  _buildSummaryRow('Dinero Inicial:', '$currencySymbol ${CurrencyHelper.formatAmount(mInicial, currencyIso)}', Colors.white54),
+                  _buildSummaryRow('(+) Ventas Totales:', '$currencySymbol ${CurrencyHelper.formatAmount(vTotales, currencyIso)}', const Color(0xFF00F0FF)),
+                  _buildSummaryRow('(-) Comisiones Damas:', '$currencySymbol ${CurrencyHelper.formatAmount(comisiones, currencyIso)}', const Color(0xFFFF00D6)),
                   const Divider(color: Colors.white10, height: 16),
-                  _buildSummaryRow('(=) Balance Esperado:', '$currencySymbol ${esperado.toStringAsFixed(2)}', Colors.white),
-                  _buildSummaryRow('(=) Dinero Físico en Gaveta:', '$currencySymbol ${mFinal.toStringAsFixed(2)}', Colors.white),
+                  _buildSummaryRow('(=) Balance Esperado:', '$currencySymbol ${CurrencyHelper.formatAmount(esperado, currencyIso)}', Colors.white),
+                  _buildSummaryRow('(=) Dinero Físico en Gaveta:', '$currencySymbol ${CurrencyHelper.formatAmount(mFinal, currencyIso)}', Colors.white),
                   
                   if (desgloseRaw.isNotEmpty) ...[
                     const Divider(color: Colors.white10, height: 16),
@@ -1159,7 +1165,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                               ],
                             ),
                             Text(
-                              '$currencySymbol ${totalMetodo.toStringAsFixed(2)}',
+                              '$currencySymbol ${CurrencyHelper.formatAmount(totalMetodo, currencyIso)}',
                               style: GoogleFonts.plusJakartaSans(
                                 color: color,
                                 fontWeight: FontWeight.bold,
@@ -1189,8 +1195,8 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                       Text(
                         tieneDiscrepancia
                             ? (diferencia >= 0
-                                ? '(+) $currencySymbol ${diferencia.toStringAsFixed(2)} (Sobrante)'
-                                : '(-) $currencySymbol ${diferencia.abs().toStringAsFixed(2)} (Faltante)')
+                                ? '(+) $currencySymbol ${CurrencyHelper.formatAmount(diferencia, currencyIso)} (Sobrante)'
+                                : '(-) $currencySymbol ${CurrencyHelper.formatAmount(diferencia.abs(), currencyIso)} (Faltante)')
                             : '$currencySymbol 0.00 (Caja Cuadrada)',
                         style: GoogleFonts.plusJakartaSans(
                           color: colorDiscrepancia,

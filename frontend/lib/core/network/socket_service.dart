@@ -10,15 +10,10 @@ class SocketService {
 
   SocketService(this._storage);
 
-  IO.Socket get socket {
-    if (_socket == null) {
-      throw Exception('Socket no ha sido inicializado. Llama a connect() primero.');
-    }
-    return _socket!;
-  }
+  IO.Socket? get socket => _socket;
 
-  Future<void> connect() async {
-    if (_socket != null && _socket!.connected) return;
+  Future<IO.Socket> connect() async {
+    if (_socket != null) return _socket!;
 
     final token = await _storage.read(ApiConstants.keyJwtToken);
     
@@ -44,6 +39,7 @@ class SocketService {
     });
 
     _socket!.connect();
+    return _socket!;
   }
 
   void disconnect() {

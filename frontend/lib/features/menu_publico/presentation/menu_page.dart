@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../core/utils/currency_helper.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../pos/models/category_model.dart';
 import '../../pos/models/product_model.dart';
@@ -510,6 +511,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     ThemeData theme,
   ) {
     final currencySymbol = ref.watch(currencySymbolProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
 
     return filteredProducts.when(
       data: (products) {
@@ -544,7 +546,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
           itemCount: products.length,
           itemBuilder: (context, index) {
             final product = products[index];
-            return _buildAdminProductCard(context, product, currencySymbol);
+            return _buildAdminProductCard(context, product, currencySymbol, currencyIso);
           },
         );
       },
@@ -554,16 +556,16 @@ class _MenuPageState extends ConsumerState<MenuPage> {
   }
 
   // Product card inside administration
-  Widget _buildAdminProductCard(BuildContext context, ProductModel product, String currencySymbol) {
+  Widget _buildAdminProductCard(BuildContext context, ProductModel product, String currencySymbol, String currencyIso) {
     String precioText = '';
     if (product.variantes.isEmpty) {
       precioText = 'Sin precio';
     } else if (product.variantes.length == 1) {
       final double precio = product.variantes.first.precioA;
-      precioText = '$currencySymbol${precio.toStringAsFixed(2)}';
+      precioText = '$currencySymbol${CurrencyHelper.formatAmount(precio, currencyIso)}';
     } else {
       final minPrecio = product.variantes.map((v) => v.precioA).reduce((a, b) => a < b ? a : b);
-      precioText = 'Desde $currencySymbol${minPrecio.toStringAsFixed(2)}';
+      precioText = 'Desde $currencySymbol${CurrencyHelper.formatAmount(minPrecio, currencyIso)}';
     }
 
     return Opacity(
@@ -1323,6 +1325,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
     final theme = Theme.of(context);
     final categories = ref.watch(categoriesProvider).value ?? [];
     final tariffs = ref.watch(barTarifasProvider).value ?? [];
+    final currencyIso = ref.watch(currencyIsoProvider);
 
     // Auto add default unique variant if creating and none exist
     if (_localVariants.isEmpty && tariffs.isNotEmpty) {
@@ -1775,28 +1778,31 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                                     const SizedBox(height: 4),
                                                     Expanded(
                                                       child: TextFormField(
-                                                        initialValue: price > 0 ? price.toStringAsFixed(2) : '',
+                                                        initialValue: price > 0 ? CurrencyHelper.formatAmount(price, currencyIso) : '',
                                                         style: GoogleFonts.jetBrainsMono(
                                                           color: Colors.white,
                                                           fontSize: 13,
                                                           fontWeight: FontWeight.bold,
                                                         ),
                                                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                                        inputFormatters: [
+                                                          CurrencyInputFormatter(iso: currencyIso),
+                                                        ],
                                                         decoration: InputDecoration(
-                                                          hintText: '0.00',
+                                                          hintText: CurrencyHelper.getDecimalDigits(currencyIso) == 0 ? '0' : '0.00',
                                                           hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
                                                           isDense: true,
                                                           contentPadding: EdgeInsets.zero,
                                                           border: InputBorder.none,
                                                         ),
                                                         onChanged: (val) {
-                                                          final double? pNum = double.tryParse(val);
-                                                          pricesMap[tariff.id] = pNum ?? 0.0;
+                                                          final double pNum = CurrencyHelper.parseAmount(val, currencyIso);
+                                                          pricesMap[tariff.id] = pNum;
                                                         },
                                                         validator: (val) {
                                                           if (val == null || val.trim().isEmpty) return 'Requerido';
-                                                          final double? pNum = double.tryParse(val);
-                                                          if (pNum == null || pNum < 0) return 'Inválido';
+                                                          final double pNum = CurrencyHelper.parseAmount(val, currencyIso);
+                                                          if (pNum <= 0) return 'Inválido';
                                                           return null;
                                                         },
                                                       ),

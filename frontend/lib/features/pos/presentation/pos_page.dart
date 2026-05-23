@@ -10,6 +10,7 @@ import '../repository/catalog_repository.dart';
 import '../../../features/auth/models/user_model.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../caja/providers/caja_provider.dart';
+import '../../../core/utils/currency_helper.dart';
 import '../../admin/providers/bar_provider.dart';
 import '../../admin/providers/tarifas_provider.dart';
 import '../../admin/data/models/tarifa_model.dart';
@@ -37,6 +38,8 @@ class _PosPageState extends ConsumerState<PosPage> {
     final categoriesAsync = ref.watch(posCategoriesProvider);
     final productsAsync = ref.watch(posFilteredProductsProvider);
     final cart = ref.watch(cartProvider);
+    final currencySymbol = ref.watch(currencySymbolProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
     final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
 
     // Consultar reactivamente si la caja está abierta para el bloqueo preventivo
@@ -306,6 +309,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     final cart = ref.watch(cartProvider);
     final hasDama = cart.selectedDamaId != null;
     final currencySymbol = ref.watch(currencySymbolProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
 
     // Calcular cuántos de este producto hay en el carrito
     final int quantityInCart = cart.items
@@ -321,11 +325,11 @@ class _PosPageState extends ConsumerState<PosPage> {
       precioText = 'Sin precio';
     } else if (product.variantes.length == 1) {
       final double precio = hasDama ? product.variantes.first.precioB : product.variantes.first.precioA;
-      precioText = '$currencySymbol${precio.toStringAsFixed(2)}';
+      precioText = '$currencySymbol${CurrencyHelper.formatAmount(precio, currencyIso)}';
     } else {
       // Tiene múltiples variantes, mostrar el rango mínimo
       final minPrecio = product.variantes.map((v) => hasDama ? v.precioB : v.precioA).reduce((a, b) => a < b ? a : b);
-      precioText = 'Desde $currencySymbol${minPrecio.toStringAsFixed(2)}';
+      precioText = 'Desde $currencySymbol${CurrencyHelper.formatAmount(minPrecio, currencyIso)}';
     }
 
     return Container(
@@ -541,6 +545,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       orElse: () => false,
     );
     final currencySymbol = ref.watch(currencySymbolProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -766,7 +771,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                                       ],
                                       const SizedBox(height: 4),
                                       Text(
-                                        '$currencySymbol${item.precioUnitario.toStringAsFixed(2)} x ${item.quantity}',
+                                        '$currencySymbol${CurrencyHelper.formatAmount(item.precioUnitario, currencyIso)} x ${item.quantity}',
                                         style: GoogleFonts.plusJakartaSans(
                                           color: (cart.selectedDamaId != null && cart.selectedDamaId!.isNotEmpty && !item.esInvitacion)
                                               ? const Color(0xFFFF00D6)
@@ -891,7 +896,7 @@ class _PosPageState extends ConsumerState<PosPage> {
 
                                 // Subtotal
                                 Text(
-                                  '$currencySymbol${item.subtotal.toStringAsFixed(2)}',
+                                  '$currencySymbol${CurrencyHelper.formatAmount(item.subtotal, currencyIso)}',
                                   style: GoogleFonts.plusJakartaSans(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -981,7 +986,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                       ),
                     ),
                     Text(
-                      '$currencySymbol${cart.total.toStringAsFixed(2)}',
+                      '$currencySymbol${CurrencyHelper.formatAmount(cart.total, currencyIso)}',
                       style: GoogleFonts.plusJakartaSans(
                         color: const Color(0xFF00F0FF),
                         fontWeight: FontWeight.w900,
@@ -994,7 +999,7 @@ class _PosPageState extends ConsumerState<PosPage> {
 
                 // Botón Checkout con bloqueo de Caja Cerrada
                 InkWell(
-                  onTap: (_isCheckingOut || !isCajaAbierta) ? null : () => _handleCheckoutClick(cart, modalContext),
+                  onTap: (_isCheckingOut || !isCajaAbierta) ? null : () => _handleCheckoutClick(cart, modalContext, currencyIso),
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
                     height: 48,
@@ -1311,7 +1316,8 @@ class _PosPageState extends ConsumerState<PosPage> {
   // 🧮 LÓGICA DE COBRO, VUELTOS Y PAGO MIXTO
   // =========================================================================
 
-  void _handleCheckoutClick(CartState cart, BuildContext? parentModalContext) {
+  void _handleCheckoutClick(CartState cart, BuildContext? parentModalContext, String currencyIso) {
+    debugPrint("🔥 CLICK RECIBIDO: Método ${cart.metodoPago}, Total: ${cart.total}");
     if (cart.metodoPago == 'TARJETA' || cart.metodoPago == 'TR/QR') {
       // Si es 100% digital, cobramos directo sin pedir vuelto
       _performCheckout(cart, modalContext: parentModalContext, montoTarjeta: cart.metodoPago == 'TARJETA' ? cart.total : 0, montoTrQr: cart.metodoPago == 'TR/QR' ? cart.total : 0);
@@ -1327,7 +1333,8 @@ class _PosPageState extends ConsumerState<PosPage> {
     double valTrQr = 0.0;
     
     // Controlador único para Efectivo cuando NO es mixto (para dar vuelto)
-    final txtRecibidoEfectivo = TextEditingController(text: isMixto ? '' : cart.total.toStringAsFixed(2));
+    final bool hasDecimals = CurrencyHelper.getDecimalDigits(currencyIso) > 0;
+    final txtRecibidoEfectivo = TextEditingController(text: isMixto ? '' : (hasDecimals ? cart.total.toStringAsFixed(2) : cart.total.toInt().toString()));
 
     showModalBottomSheet(
       context: context,
@@ -1342,7 +1349,7 @@ class _PosPageState extends ConsumerState<PosPage> {
             if (isMixto) {
               totalIngresado = valEfectivo + valTarjeta + valTrQr;
             } else {
-              final ingresado = double.tryParse(txtRecibidoEfectivo.text) ?? 0.0;
+              final ingresado = CurrencyHelper.parseAmount(txtRecibidoEfectivo.text, currencyIso);
               totalIngresado = ingresado;
               vuelto = ingresado > cart.total ? ingresado - cart.total : 0.0;
             }
@@ -1373,7 +1380,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'TOTAL A COBRAR: $currencySymbol ${cart.total.toStringAsFixed(2)}',
+                    'TOTAL A COBRAR: $currencySymbol ${CurrencyHelper.formatAmount(cart.total, currencyIso)}',
                     style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 20),
                     textAlign: TextAlign.center,
                   ),
@@ -1386,6 +1393,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                     TextField(
                       controller: txtRecibidoEfectivo,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [CurrencyInputFormatter(iso: currencyIso)],
                       style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
                       onChanged: (val) => setModalState(() {}),
                       decoration: InputDecoration(
@@ -1402,7 +1410,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                       children: [
                         Text('Vuelto a entregar:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 14)),
                         Text(
-                          '$currencySymbol ${vuelto.toStringAsFixed(2)}',
+                          '$currencySymbol ${CurrencyHelper.formatAmount(vuelto, currencyIso)}',
                           style: GoogleFonts.plusJakartaSans(
                             color: vuelto > 0 ? const Color(0xFFFF00D6) : Colors.white24,
                             fontWeight: FontWeight.w900,
@@ -1413,9 +1421,9 @@ class _PosPageState extends ConsumerState<PosPage> {
                     ),
                   ] else ...[
                     // MODO MIXTO (Distribución)
-                    _buildMixtoInput('Efectivo', valEfectivo, (v) => setModalState(() => valEfectivo = v), currencySymbol),
-                    _buildMixtoInput('Tarjeta', valTarjeta, (v) => setModalState(() => valTarjeta = v), currencySymbol),
-                    _buildMixtoInput('Transf/QR', valTrQr, (v) => setModalState(() => valTrQr = v), currencySymbol),
+                    _buildMixtoInput('Efectivo', valEfectivo, (v) => setModalState(() => valEfectivo = v), currencySymbol, currencyIso),
+                    _buildMixtoInput('Tarjeta', valTarjeta, (v) => setModalState(() => valTarjeta = v), currencySymbol, currencyIso),
+                    _buildMixtoInput('Transf/QR', valTrQr, (v) => setModalState(() => valTrQr = v), currencySymbol, currencyIso),
                     
                     const SizedBox(height: 16),
                     Row(
@@ -1423,7 +1431,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                       children: [
                         Text('Resta por cubrir:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 14)),
                         Text(
-                          '$currencySymbol ${(cart.total - totalIngresado).clamp(0.0, 99999.0).toStringAsFixed(2)}',
+                          '$currencySymbol ${CurrencyHelper.formatAmount((cart.total - totalIngresado).clamp(0.0, 99999.0), currencyIso)}',
                           style: GoogleFonts.plusJakartaSans(
                             color: (cart.total - totalIngresado) > 0.01 ? Colors.redAccent : const Color(0xFF00F0FF),
                             fontWeight: FontWeight.bold,
@@ -1455,7 +1463,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                     child: Text(
-                      'PROCESAR VENTA',
+                      'CONFIRMAR',
                       style: GoogleFonts.plusJakartaSans(color: canSubmit ? Colors.white : Colors.white30, fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -1468,7 +1476,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     );
   }
 
-  Widget _buildMixtoInput(String label, double val, Function(double) onChanged, String currency) {
+  Widget _buildMixtoInput(String label, double val, Function(double) onChanged, String currency, String currencyIso) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Row(
@@ -1477,8 +1485,9 @@ class _PosPageState extends ConsumerState<PosPage> {
           Expanded(
             child: TextField(
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [CurrencyInputFormatter(iso: currencyIso)],
               style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold),
-              onChanged: (text) => onChanged(double.tryParse(text) ?? 0.0),
+              onChanged: (text) => onChanged(CurrencyHelper.parseAmount(text, currencyIso)),
               decoration: InputDecoration(
                 prefixText: '$currency ',
                 prefixStyle: const TextStyle(color: Color(0xFF00F0FF)),
