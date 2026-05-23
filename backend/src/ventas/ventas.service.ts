@@ -59,57 +59,36 @@ export class VentasService {
         throw new BadRequestException(`El producto '${variant.producto.nombre} (${variant.nombre})' no está disponible en este momento.`);
       }
 
-      let precioNormal = 0;
-      let precioCompania = 0;
+      // Buscar el precio de la variante para la tarifa especificada
+      const precioTarifa = variant.precios?.find(p => p.tarifa_id === item.tarifa_id);
+      if (!precioTarifa) {
+        throw new BadRequestException(
+          `El producto '${variant.producto.nombre} (${variant.nombre})' no tiene configurado un precio para la tarifa solicitada.`
+        );
+      }
       
-      const tarifaNormal = variant.precios?.find(p => p.tarifa?.es_default);
-      if (tarifaNormal) {
-        precioNormal = tarifaNormal.precio_unitario;
-      } else if (variant.precios && variant.precios.length > 0) {
-        precioNormal = variant.precios[0].precio_unitario;
-      }
-
-      if (bar.tarifa_compania_id) {
-         const tarifaComp = variant.precios?.find(p => p.tarifa_id === bar.tarifa_compania_id);
-         if (tarifaComp) {
-           precioCompania = tarifaComp.precio_unitario;
-         }
-      }
-
-      let precioUnitario = precioNormal;
+      const precioUnitario = precioTarifa.precio_unitario;
       let comisionDama = 0;
-      let esPrecioB = false;
 
-      // Aplicar reglas según el caso (Invitación, Compañía o Venta Normal)
-      if (item.es_invitacion) {
-        // Invitaciones: Precio A y comisión 0 (Obligatorio dama_id)
-        if (!item.dama_id) {
-          throw new BadRequestException(`Para registrar una invitación de '${variant.producto.nombre}', debes especificar el 'dama_id'.`);
-        }
-        precioUnitario = precioNormal;
-        comisionDama = 0;
-      } else if (item.es_precio_b) {
-        // Compañía (Precio B): Obligatorio dama_id y comisión según bar
-        if (!item.dama_id) {
-          throw new BadRequestException(`Para ventas de compañía (Precio B) de '${variant.producto.nombre}', el 'dama_id' es obligatorio.`);
-        }
-        precioUnitario = precioCompania > 0 ? precioCompania : precioNormal;
-        esPrecioB = true;
-        
+      // Verificar si corresponde a una venta de Compañía (Dama asociada y tarifa_id coincide con bar.tarifa_compania_id)
+      const esCompania = item.dama_id && item.tarifa_id === bar.tarifa_compania_id && !item.es_invitacion;
+
+      if (esCompania) {
         // Cálculo de comisión automático y configurable por bar
         const rawComision = precioUnitario * (comisionPorcentaje / 100);
         comisionDama = Math.round(rawComision * 100) / 100; // Redondear a 2 decimales
-      } else {
-        // Venta Normal: Precio A y comisión 0
-        precioUnitario = precioNormal;
-        comisionDama = 0;
+      } else if (item.es_invitacion) {
+        if (!item.dama_id) {
+          throw new BadRequestException(`Para registrar una invitación de '${variant.producto.nombre}', debes especificar el 'dama_id'.`);
+        }
       }
 
       const detalle = this.detalleRepository.create({
         variante_id: variant.id,
         cantidad: item.cantidad,
         precio_unitario: precioUnitario,
-        es_precio_b: esPrecioB,
+        tarifa_id: item.tarifa_id,
+        es_precio_b: !!esCompania, // Para retrocompatibilidad con reportes viejos
         dama_id: item.dama_id || null,
         comision_dama: comisionDama,
         es_invitacion: item.es_invitacion || false,

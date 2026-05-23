@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDa
 import { Venta } from './venta.entity';
 import { Variant } from '../../products/entities/variant.entity';
 import { User } from '../../users/entities/user.entity';
+import { Tarifa } from '../../tarifas/entities/tarifa.entity';
 
 @Entity('detalle_ventas')
 export class DetalleVenta {
@@ -35,6 +36,13 @@ export class DetalleVenta {
     },
   })
   precio_unitario: number;
+
+  @Column({ type: 'uuid', nullable: true })
+  tarifa_id: string | null;
+
+  @ManyToOne(() => Tarifa, { nullable: true })
+  @JoinColumn({ name: 'tarifa_id' })
+  tarifa: Tarifa | null;
 
   @Column({ default: false })
   es_precio_b: boolean;

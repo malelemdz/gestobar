@@ -8,9 +8,8 @@ export class CreateVentaItemDto {
   @Min(1, { message: 'La cantidad mínima es 1' })
   cantidad: number;
 
-  @IsBoolean()
-  @IsOptional()
-  es_precio_b?: boolean;
+  @IsUUID('4', { message: 'El ID de tarifa debe ser un UUID válido' })
+  tarifa_id: string;
 
   @IsUUID('4', { message: 'El ID de dama debe ser un UUID válido' })
   @IsOptional()

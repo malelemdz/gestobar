@@ -134,12 +134,11 @@ class CatalogRepository {
       if (montoTarjeta != null) 'monto_tarjeta': montoTarjeta,
       if (montoTrQr != null) 'monto_tr_qr': montoTrQr,
       'items': items.map((item) {
-        final bool isDamaSelected = item.damaId != null && item.damaId!.isNotEmpty;
         return {
           'variante_id': item.variant.id,
           'cantidad': item.quantity,
-          'es_precio_b': isDamaSelected && !item.esInvitacion,
-          'dama_id': isDamaSelected ? item.damaId : null,
+          'tarifa_id': item.tarifaId,
+          'dama_id': item.damaId != null && item.damaId!.isNotEmpty ? item.damaId : null,
           'es_invitacion': item.esInvitacion,
         };
       }).toList(),
