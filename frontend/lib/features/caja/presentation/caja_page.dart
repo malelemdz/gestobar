@@ -135,7 +135,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'CAJA OPERATIVA CERRADA',
+                      'CAJA CERRADA',
                       style: GoogleFonts.plusJakartaSans(
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
@@ -159,7 +159,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
 
           // Entrada de dinero inicial obligatoria
           Text(
-            'Efectivo Inicial en Gaveta (Fondo de Caja) *Obligatorio',
+            'Efectivo inicial en gaveta.',
             style: GoogleFonts.plusJakartaSans(
               color: Colors.white.withOpacity(0.6),
               fontWeight: FontWeight.bold,
@@ -230,7 +230,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                         child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                       )
                     : Text(
-                        'ABRIR CAJA REGISTRADORA',
+                        'ABRIR CAJA',
                         style: GoogleFonts.plusJakartaSans(
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
@@ -307,7 +307,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'TURNO ACTIVO DE CAJA',
+                          'CAJA ABIERTA',
                           style: GoogleFonts.plusJakartaSans(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
@@ -352,7 +352,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   ),
                   child: Center(
                     child: Text(
-                      'ARQUEAR Y CERRAR TURNO',
+                      'CERRAR CAJA',
                       style: GoogleFonts.plusJakartaSans(
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
