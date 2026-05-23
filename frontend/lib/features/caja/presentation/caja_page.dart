@@ -175,6 +175,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
             ),
             child: TextField(
               controller: _montoController,
+              textAlignVertical: TextAlignVertical.center,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
                 CurrencyInputFormatter(iso: currencyIso),
@@ -183,8 +184,9 @@ class _CajaPageState extends ConsumerState<CajaPage> {
               decoration: InputDecoration(
                 hintText: 'Ingresa 0 si abres con gaveta vacía',
                 hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 13),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                prefixIcon: Container(
+                  width: 48,
+                  alignment: Alignment.center,
                   child: Text(
                     currencySymbol,
                     style: GoogleFonts.plusJakartaSans(
@@ -194,8 +196,14 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                     ),
                   ),
                 ),
+                prefixIconConstraints: const BoxConstraints(
+                  minWidth: 48,
+                  maxWidth: 48,
+                  minHeight: 48,
+                  maxHeight: 48,
+                ),
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
             ),
           ),
@@ -712,6 +720,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                     ),
                     child: TextField(
                       controller: _movMontoCtrl,
+                      textAlignVertical: TextAlignVertical.center,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       inputFormatters: [
                         CurrencyInputFormatter(iso: currencyIso),
@@ -720,8 +729,9 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                       decoration: InputDecoration(
                         hintText: '0.00',
                         hintStyle: const TextStyle(color: Colors.white24),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                        prefixIcon: Container(
+                          width: 48,
+                          alignment: Alignment.center,
                           child: Text(
                             currencySymbol,
                             style: GoogleFonts.plusJakartaSans(
@@ -731,8 +741,14 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                             ),
                           ),
                         ),
+                        prefixIconConstraints: const BoxConstraints(
+                          minWidth: 48,
+                          maxWidth: 48,
+                          minHeight: 48,
+                          maxHeight: 48,
+                        ),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                     ),
                   ),
