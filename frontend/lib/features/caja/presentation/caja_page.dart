@@ -27,6 +27,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   final TextEditingController _movConceptoCtrl = TextEditingController();
   bool _isLoading = false;
   String _selectedMetodoPago = 'EFECTIVO';
+  int _activeTab = 0;
 
   @override
   void dispose() {
@@ -40,7 +41,6 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cajaState = ref.watch(cajaStateProvider);
-    final historyAsync = ref.watch(cajaHistoryProvider);
     final currencySymbol = ref.watch(currencySymbolProvider);
     final currencyIso = ref.watch(currencyIsoProvider);
 
@@ -60,13 +60,6 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                 estado.abierta
                     ? _buildOpenCajaPanel(estado.caja!, theme, currencySymbol, currencyIso)
                     : _buildClosedCajaPanel(theme, currencySymbol, currencyIso),
-
-                const SizedBox(height: 24),
-
-                // ==========================================
-                // HISTORIAL DE AUDITORÍA DE CAJAS CERRADAS
-                // ==========================================
-                _buildHistorySection(historyAsync, theme, currencySymbol, currencyIso),
               ],
             ),
           );
@@ -266,30 +259,34 @@ class _CajaPageState extends ConsumerState<CajaPage> {
     final String fecha = DateFormat('dd/MM/yyyy • hh:mm a').format(caja.fechaApertura.toLocal());
     final bool isTablet = MediaQuery.of(context).size.width >= 750;
 
-    // Construir Bento Grid de 9 Métricas
+    final double totalVentasPos = caja.totalVentasEfectivo + caja.totalVentasTarjeta + caja.totalVentasTrQr;
+
+    // Construir Bento Grid de 10 Métricas
     final List<Widget> cards = [
-      _buildFinancieraCard('Fondo de Caja (Inicial)', caja.montoInicial, currencySymbol, const Color(0xFF00F0FF), currencyIso),
-      _buildFinancieraCard('Ventas Efectivo POS', caja.totalVentasEfectivo, currencySymbol, Colors.white70, currencyIso),
-      _buildFinancieraCard('Ventas Tarjeta POS', caja.totalVentasTarjeta, currencySymbol, Colors.white70, currencyIso),
-      _buildFinancieraCard('Ventas TR / QR POS', caja.totalVentasTrQr, currencySymbol, Colors.white70, currencyIso),
-      _buildFinancieraCard('Ingresos Manuales', caja.totalIngresosManuales, currencySymbol, const Color(0xFF00FF66), currencyIso),
-      _buildFinancieraCard('Egresos Caja Chica', caja.totalEgresosManuales, currencySymbol, Colors.redAccent, currencyIso),
-      _buildFinancieraCard('Total Esperado en Gaveta', caja.totalEsperadoGaveta, currencySymbol, const Color(0xFF00F0FF), currencyIso, isImportant: true),
+      _buildFinancieraCard('Fondo de Caja (Inicial)', caja.montoInicial, currencySymbol, const Color(0xFF00F0FF), currencyIso, Icons.account_balance_wallet_outlined),
+      _buildFinancieraCard('Total Esperado en Gaveta', caja.totalEsperadoGaveta, currencySymbol, const Color(0xFF00F0FF), currencyIso, Icons.move_to_inbox_outlined),
+      _buildFinancieraCard('Ventas Efectivo POS', caja.totalVentasEfectivo, currencySymbol, Colors.white70, currencyIso, Icons.payments_outlined),
+      _buildFinancieraCard('Ventas Tarjeta POS', caja.totalVentasTarjeta, currencySymbol, Colors.white70, currencyIso, Icons.credit_card_outlined),
+      _buildFinancieraCard('Ventas TR / QR POS', caja.totalVentasTrQr, currencySymbol, Colors.white70, currencyIso, Icons.mobile_friendly_outlined),
+      _buildFinancieraCard('Ventas Totales POS', totalVentasPos, currencySymbol, const Color(0xFF00FF66), currencyIso, Icons.analytics_outlined),
+      _buildFinancieraCard('Ganancia Neta del Bar', caja.gananciaNetaBar, currencySymbol, const Color(0xFF7000FF), currencyIso, Icons.trending_up_outlined),
       _buildFinancieraCard(
         'Comisiones Damas',
         caja.totalComisionesDamas,
         currencySymbol,
         const Color(0xFFFF00D6),
         currencyIso,
+        Icons.female_outlined,
         onTap: () => _openDamasBreakdownBottomSheet(caja.id),
       ),
-      _buildFinancieraCard('Ganancia Neta del Bar', caja.gananciaNetaBar, currencySymbol, const Color(0xFF7000FF), currencyIso, isHighlighted: true),
+      _buildFinancieraCard('Ingresos Manuales', caja.totalIngresosManuales, currencySymbol, const Color(0xFF00FFCC), currencyIso, Icons.add_circle_outline),
+      _buildFinancieraCard('Egresos Caja Chica', caja.totalEgresosManuales, currencySymbol, Colors.redAccent, currencyIso, Icons.remove_circle_outline),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Ficha del turno superior
+        // 1. Ficha del turno superior (Caja Abierta y Cerrar Caja)
         Container(
           padding: const EdgeInsets.all(20.0),
           decoration: BoxDecoration(
@@ -338,7 +335,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
               ),
               const SizedBox(height: 20),
 
-              // Botón Único de Cierre Sin Inputs
+              // Botón de Cierre
               InkWell(
                 onTap: _isLoading ? null : () => _showCierreConfirmationBottomSheet(caja.id),
                 borderRadius: BorderRadius.circular(12),
@@ -376,91 +373,179 @@ class _CajaPageState extends ConsumerState<CajaPage> {
           ),
         ),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
 
-        // Bento Grid de Métricas
-        GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: cards.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: isTablet ? 3 : 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: isTablet ? 2.3 : 1.9,
-          ),
-          itemBuilder: (context, index) => cards[index],
+        // 2. Botones de Caja Chica Pill-Shaped Premium (sin parecer cards)
+        Row(
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () => _openAddMovementBottomSheet('INGRESO'),
+                borderRadius: BorderRadius.circular(30),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF00FF66),
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF00FF66).withOpacity(0.2),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.add_circle, size: 16, color: Color(0xFF121214)),
+                      const SizedBox(width: 8),
+                      Text(
+                        'INGRESO CHICA',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: const Color(0xFF121214),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 11,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: InkWell(
+                onTap: () => _openAddMovementBottomSheet('EGRESO'),
+                borderRadius: BorderRadius.circular(30),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.redAccent.withOpacity(0.2),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.remove_circle, size: 16, color: Color(0xFF121214)),
+                      const SizedBox(width: 8),
+                      Text(
+                        'EGRESO CHICA',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: const Color(0xFF121214),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 11,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
 
         const SizedBox(height: 20),
 
-        // PANEL DE CAJA CHICA (Ingresos y Egresos Manuales)
+        // 3. Pestañas de Navegación del Turno (Premium Segmented Control)
         Container(
-          padding: const EdgeInsets.all(20),
+          height: 46,
+          padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: const Color(0xFF1E2024),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withOpacity(0.04)),
+            color: const Color(0xFF181A1E),
+            borderRadius: BorderRadius.circular(23),
+            border: Border.all(color: Colors.white.withOpacity(0.03)),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Row(
             children: [
-              Text(
-                'CAJA CHICA / OPERACIONES MANUALES',
-                style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white54,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.8,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.add_circle_outline, size: 18),
-                      label: const Text('INGRESO'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00FF66).withOpacity(0.1),
-                        foregroundColor: const Color(0xFF00FF66),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: const Color(0xFF00FF66).withOpacity(0.3)),
-                        ),
-                      ),
-                      onPressed: () => _openAddMovementBottomSheet('INGRESO'),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.remove_circle_outline, size: 18),
-                      label: const Text('EGRESO'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent.withOpacity(0.1),
-                        foregroundColor: Colors.redAccent,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: Colors.redAccent.withOpacity(0.3)),
-                        ),
-                      ),
-                      onPressed: () => _openAddMovementBottomSheet('EGRESO'),
-                    ),
-                  ),
-                ],
-              ),
+              _buildTabButton(0, 'BALANCE', Icons.analytics_outlined),
+              _buildTabButton(1, 'MOVIMIENTOS', Icons.swap_vert_outlined),
             ],
           ),
         ),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
 
-        // BITÁCORA DE MOVIMIENTOS EN VIVO
-        _buildMovimientosList(caja.movimientos, currencySymbol, currencyIso),
+        // 4. Contenido Activo de la Pestaña Seleccionada
+        _activeTab == 0
+            ? GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: cards.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: isTablet ? 3 : 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: isTablet ? 2.5 : 2.0,
+                ),
+                itemBuilder: (context, index) => cards[index],
+              )
+            : _buildMovimientosList(caja.movimientos, currencySymbol, currencyIso),
       ],
+    );
+  }
+
+  // =========================================================================
+  // 💴 BOTÓN DE PESTAÑA PERSONALIZADO
+  // =========================================================================
+  Widget _buildTabButton(int index, String label, IconData icon) {
+    final bool isActive = _activeTab == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _activeTab = index;
+          });
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: 38,
+          decoration: BoxDecoration(
+            color: isActive
+                ? const Color(0xFF7000FF)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: isActive
+                ? [
+                    BoxShadow(
+                      color: const Color(0xFF7000FF).withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: isActive ? Colors.white : Colors.white30,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  color: isActive ? Colors.white : Colors.white30,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -472,9 +557,8 @@ class _CajaPageState extends ConsumerState<CajaPage> {
     double amount,
     String currency,
     Color accentColor,
-    String currencyIso, {
-    bool isImportant = false,
-    bool isHighlighted = false,
+    String currencyIso,
+    IconData icon, {
     VoidCallback? onTap,
   }) {
     final formatted = CurrencyHelper.formatAmount(amount, currencyIso);
@@ -483,31 +567,16 @@ class _CajaPageState extends ConsumerState<CajaPage> {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: isHighlighted
-                ? const Color(0xFF7000FF).withOpacity(0.08)
-                : const Color(0xFF1E2024),
-            borderRadius: BorderRadius.circular(16),
+            color: const Color(0xFF1E2024),
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: isHighlighted
-                  ? const Color(0xFF7000FF).withOpacity(0.4)
-                  : (isImportant
-                      ? const Color(0xFF00F0FF).withOpacity(0.3)
-                      : Colors.white.withOpacity(0.03)),
-              width: isHighlighted || isImportant ? 1.5 : 1,
+              color: Colors.white.withOpacity(0.03),
+              width: 1,
             ),
-            boxShadow: isHighlighted
-                ? [
-                    BoxShadow(
-                      color: const Color(0xFF7000FF).withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : null,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -515,6 +584,12 @@ class _CajaPageState extends ConsumerState<CajaPage> {
             children: [
               Row(
                 children: [
+                  Icon(
+                    icon,
+                    size: 13,
+                    color: accentColor.withOpacity(0.6),
+                  ),
+                  const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       title.toUpperCase(),
@@ -532,7 +607,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                     const Icon(Icons.arrow_forward_ios, size: 10, color: Color(0xFFFF00D6)),
                 ],
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 5),
               FittedBox(
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.centerLeft,
@@ -540,7 +615,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   '$currency $formatted',
                   style: GoogleFonts.plusJakartaSans(
                     color: accentColor,
-                    fontSize: isImportant || isHighlighted ? 18 : 15,
+                    fontSize: 14,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -728,8 +803,8 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                       ],
                       style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                       decoration: InputDecoration(
-                        hintText: '0.00',
-                        hintStyle: const TextStyle(color: Colors.white24),
+                        hintText: CurrencyHelper.formatAmount(0.00, currencyIso),
+                        hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 15, fontWeight: FontWeight.bold),
                         prefixIcon: Container(
                           width: 48,
                           alignment: Alignment.center,
@@ -1258,93 +1333,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
     }
   }
 
-  // =========================================================================
-  // 📚 7. HISTORIAL DE CAJAS CERRADAS (Turnos Archivados)
-  // =========================================================================
-  Widget _buildHistorySection(AsyncValue<List<CajaModel>> historyAsync, ThemeData theme, String currencySymbol, String currencyIso) {
-    return Container(
-      padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E2024),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'HISTORIAL DE TURNOS CERRADOS',
-            style: GoogleFonts.plusJakartaSans(
-              color: Colors.white54,
-              fontSize: 10,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.8,
-            ),
-          ),
-          const SizedBox(height: 16),
-          historyAsync.when(
-            data: (list) {
-              final closedList = list.where((c) => c.estado == 'CERRADA').toList();
-              if (closedList.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0),
-                  child: Center(
-                    child: Text(
-                      'No hay turnos cerrados en el historial de este bar.',
-                      style: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 11),
-                    ),
-                  ),
-                );
-              }
 
-              return ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: closedList.length,
-                separatorBuilder: (context, index) => const Divider(color: Colors.white10, height: 1),
-                itemBuilder: (context, index) {
-                  final item = closedList[index];
-                  final String barman = item.aperturaUsuario != null ? item.aperturaUsuario!.nombre : 'Cajero';
-                  final String fechaApertura = DateFormat('dd/MM/yyyy • hh:mm a').format(item.fechaApertura.toLocal());
-                  final String formattedMonto = CurrencyHelper.formatAmount(item.montoFinal ?? 0.0, currencyIso);
-
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.03),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.archive_outlined, color: Colors.white30, size: 20),
-                    ),
-                    title: Text(
-                      'Turno cerrado de $barman',
-                      style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
-                    ),
-                    subtitle: Text(
-                      fechaApertura,
-                      style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 10),
-                    ),
-                    trailing: Text(
-                      '$currencySymbol $formattedMonto',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: const Color(0xFF00F0FF),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 13,
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-            loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF00F0FF))),
-            error: (err, _) => Text('Error al cargar historial: $err', style: const TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-  }
 
   // =========================================================================
   // 📚 8. REPORTE FINAL NEON DE CIERRE DE CAJA (Resumen Financiero)
