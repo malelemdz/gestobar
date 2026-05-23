@@ -288,6 +288,43 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
         if (!confirmed) return;
       }
       
+      if (mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          barrierColor: Colors.black.withOpacity(0.8),
+          builder: (context) => Center(
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2024),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressIndicator(color: Color(0xFF00F0FF)),
+                    const SizedBox(height: 24),
+                    Text(
+                      changedCurrency ? 'Migrando precios...\nEsto puede tomar unos segundos.' : 'Guardando configuración...',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+      
       double conversionRate = 1.0;
       if (changedCurrency) {
         int oldDecimals = CurrencyHelper.getDecimalDigits(_originalIso!);
@@ -317,6 +354,12 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
       };
 
       final success = await ref.read(currentBarProvider.notifier).updateBarInfo(updates);
+      
+      // Cerramos el diálogo de carga
+      if (mounted) {
+        Navigator.pop(context);
+      }
+
       if (success) {
         _originalIso = _currentIso;
         _originalTimezone = _currentTimezone;
