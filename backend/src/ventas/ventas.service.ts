@@ -119,13 +119,38 @@ export class VentasService {
       total += precioUnitario * item.cantidad;
     }
 
-    // 4. Registrar venta atómica
+    // 4. Determinar desglose de pagos
+    let monto_efectivo = 0;
+    let monto_tarjeta = 0;
+    let monto_tr_qr = 0;
+
+    if (createVentaDto.metodo_pago === 'EFECTIVO') {
+      monto_efectivo = total;
+    } else if (createVentaDto.metodo_pago === 'TARJETA') {
+      monto_tarjeta = total;
+    } else if (createVentaDto.metodo_pago === 'TR/QR' || createVentaDto.metodo_pago === 'QR') {
+      monto_tr_qr = total;
+    } else if (createVentaDto.metodo_pago === 'MIXTO') {
+      monto_efectivo = createVentaDto.monto_efectivo || 0;
+      monto_tarjeta = createVentaDto.monto_tarjeta || 0;
+      monto_tr_qr = createVentaDto.monto_tr_qr || 0;
+
+      const sumaDesglose = monto_efectivo + monto_tarjeta + monto_tr_qr;
+      if (Math.abs(sumaDesglose - total) > 0.01) { // Tolerancia por redondeos flotantes
+        throw new BadRequestException(`El desglose mixto (${sumaDesglose}) no coincide con el total de la venta (${total}).`);
+      }
+    }
+
+    // 5. Registrar venta atómica
     const venta = this.ventaRepository.create({
       bar_id: barId,
       caja_id: activeCaja.id,
       usuario_id: user.userId,
       total,
       metodo_pago: createVentaDto.metodo_pago,
+      monto_efectivo,
+      monto_tarjeta,
+      monto_tr_qr,
       detalles,
     });
 
@@ -178,7 +203,40 @@ export class VentasService {
       }
     }
 
+    // 6. Sincronización en Tiempo Real: Avisar a todos los Cajeros del Bar
+    this.ventasGateway.server.emit(`nueva_venta_bar_${barId}`, savedVenta);
+
     return savedVenta;
+  }
+
+  async getActiveVentas(barId: string): Promise<any> {
+    const activeCaja = await this.cajasService.getActiveCaja(barId);
+    if (!activeCaja) {
+      return { totales: { efectivo: 0, tarjeta: 0, tr_qr: 0, general: 0 }, ventas: [] };
+    }
+
+    const ventas = await this.ventaRepository.find({
+      where: { caja_id: activeCaja.id },
+      relations: ['usuario', 'detalles', 'detalles.variante', 'detalles.variante.producto', 'detalles.dama'],
+      order: { fecha: 'DESC' },
+    });
+
+    const totales = ventas.reduce(
+      (acc, v) => {
+        acc.efectivo += Number(v.monto_efectivo) || 0;
+        acc.tarjeta += Number(v.monto_tarjeta) || 0;
+        acc.tr_qr += Number(v.monto_tr_qr) || 0;
+        acc.general += Number(v.total) || 0;
+        return acc;
+      },
+      { efectivo: 0, tarjeta: 0, tr_qr: 0, general: 0 }
+    );
+
+    return {
+      caja_id: activeCaja.id,
+      totales,
+      ventas,
+    };
   }
 
   async findAll(barId: string): Promise<Venta[]> {

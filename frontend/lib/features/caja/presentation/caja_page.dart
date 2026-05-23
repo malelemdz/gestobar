@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import '../../admin/providers/bar_provider.dart';
 import '../models/caja_model.dart';
 import '../providers/caja_provider.dart';
+import '../providers/ventas_activas_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../features/auth/providers/auth_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -360,6 +362,49 @@ class _CajaPageState extends ConsumerState<CajaPage> {
           const Divider(color: Colors.white10),
           const SizedBox(height: 24),
 
+          // DASHBOARD EN VIVO (Conectado a WebSockets)
+          Consumer(
+            builder: (context, ref, child) {
+              final state = ref.watch(ventasActivasProvider);
+              if (state.isLoading) {
+                return const Center(child: CircularProgressIndicator(color: Color(0xFF00F0FF)));
+              }
+
+              final totales = state.totales;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'MÉTRICAS EN VIVO',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: const Color(0xFF00F0FF),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 14,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      _buildMetricCard('Total\nVentas', totales['general']?.toDouble() ?? 0.0, currencySymbol, const Color(0xFF00F0FF)),
+                      const SizedBox(width: 8),
+                      _buildMetricCard('En\nEfectivo', totales['efectivo']?.toDouble() ?? 0.0, currencySymbol, Colors.white),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      _buildMetricCard('En\nTarjeta', totales['tarjeta']?.toDouble() ?? 0.0, currencySymbol, Colors.white),
+                      const SizedBox(width: 8),
+                      _buildMetricCard('Transf\nQR', totales['tr_qr']?.toDouble() ?? 0.0, currencySymbol, Colors.white),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              );
+            },
+          ),
+
           // Formulario de arqueo final para cierre
           Text(
             'ARQUEO DE CIERRE: Efectivo Físico en Gaveta',
@@ -467,6 +512,33 @@ class _CajaPageState extends ConsumerState<CajaPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMetricCard(String title, double amount, String currency, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.04),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white10, width: 1),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 10, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '$currency${amount.toStringAsFixed(2)}',
+              style: GoogleFonts.plusJakartaSans(color: color, fontSize: 16, fontWeight: FontWeight.w900),
+            ),
+          ],
+        ),
       ),
     );
   }

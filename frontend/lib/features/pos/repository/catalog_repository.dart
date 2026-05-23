@@ -124,9 +124,15 @@ class CatalogRepository {
   Future<void> checkout({
     required String metodoPago,
     required List<CartItem> items,
+    double? montoEfectivo,
+    double? montoTarjeta,
+    double? montoTrQr,
   }) async {
     final payload = {
       'metodo_pago': metodoPago,
+      if (montoEfectivo != null) 'monto_efectivo': montoEfectivo,
+      if (montoTarjeta != null) 'monto_tarjeta': montoTarjeta,
+      if (montoTrQr != null) 'monto_tr_qr': montoTrQr,
       'items': items.map((item) {
         return {
           'variante_id': item.variant.id,

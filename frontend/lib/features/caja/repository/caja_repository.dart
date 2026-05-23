@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/dio_client.dart';
 import '../models/caja_model.dart';
+import '../models/venta_model.dart';
 
 class CajaRepository {
   final Dio _dio;
@@ -80,6 +81,32 @@ class CajaRepository {
       throw Exception(errorMessage);
     } catch (e) {
       throw Exception('No se pudo conectar con el servidor para cargar el historial');
+    }
+  }
+
+  /// Obtiene la tabla en vivo de las ventas del turno actual y sus totales
+  Future<Map<String, dynamic>> getActiveVentas() async {
+    try {
+      final response = await _dio.get('/ventas/caja/activa');
+      final data = response.data as Map<String, dynamic>;
+      final ventas = (data['ventas'] as List? ?? [])
+          .map((json) => VentaModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+      
+      return {
+        'caja_id': data['caja_id'] ?? '',
+        'totales': data['totales'] ?? { 'efectivo': 0, 'tarjeta': 0, 'tr_qr': 0, 'general': 0 },
+        'ventas': ventas,
+      };
+    } on DioException catch (e) {
+      final errorResponse = e.response?.data;
+      String errorMessage = 'Error al cargar ventas en vivo';
+      if (errorResponse != null && errorResponse['message'] != null) {
+        errorMessage = errorResponse['message'].toString();
+      }
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('No se pudo conectar con el servidor para cargar ventas en vivo');
     }
   }
 }

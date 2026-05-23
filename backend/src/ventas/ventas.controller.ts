@@ -33,6 +33,12 @@ export class VentasController {
     return this.ventasService.getDamaComisiones(damaId, barId);
   }
 
+  @Get('caja/activa')
+  @Permissions('reportes.ver')
+  getActiveVentas(@ActiveBarId() barId: string) {
+    return this.ventasService.getActiveVentas(barId);
+  }
+
   @Get()
   @Permissions('reportes.ver')
   findAll(@ActiveBarId() barId: string) {

@@ -1,0 +1,67 @@
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
+import '../constants/api_constants.dart';
+import '../storage/secure_storage_service.dart';
+
+class SocketService {
+  final SecureStorageService _storage;
+  IO.Socket? _socket;
+
+  SocketService(this._storage);
+
+  IO.Socket get socket {
+    if (_socket == null) {
+      throw Exception('Socket no ha sido inicializado. Llama a connect() primero.');
+    }
+    return _socket!;
+  }
+
+  Future<void> connect() async {
+    if (_socket != null && _socket!.connected) return;
+
+    final token = await _storage.read(ApiConstants.keyJwtToken);
+    
+    _socket = IO.io(
+      ApiConstants.wsUrl,
+      IO.OptionBuilder()
+          .setTransports(['websocket']) // Forzar WebSockets puros por velocidad
+          .disableAutoConnect()
+          .setExtraHeaders({'Authorization': 'Bearer $token'})
+          .build(),
+    );
+
+    _socket!.onConnect((_) {
+      debugPrint('⚡ [WebSockets] Conectado al servidor Central');
+    });
+
+    _socket!.onDisconnect((_) {
+      debugPrint('⚠️ [WebSockets] Desconectado del servidor');
+    });
+
+    _socket!.onConnectError((error) {
+      debugPrint('❌ [WebSockets] Error de Conexión: $error');
+    });
+
+    _socket!.connect();
+  }
+
+  void disconnect() {
+    _socket?.disconnect();
+    _socket = null;
+  }
+}
+
+final socketServiceProvider = Provider<SocketService>((ref) {
+  final storage = ref.watch(secureStorageProvider);
+  final service = SocketService(storage);
+  
+  // Al montar el provider intentamos conectar inmediatamente (Opcional, pero recomendado)
+  service.connect();
+  
+  ref.onDispose(() {
+    service.disconnect();
+  });
+  
+  return service;
+});

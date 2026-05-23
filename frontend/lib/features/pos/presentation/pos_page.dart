@@ -994,7 +994,7 @@ class _PosPageState extends ConsumerState<PosPage> {
 
                 // Botón Checkout con bloqueo de Caja Cerrada
                 InkWell(
-                  onTap: (_isCheckingOut || !isCajaAbierta) ? null : () => _performCheckout(cart, modalContext: modalContext),
+                  onTap: (_isCheckingOut || !isCajaAbierta) ? null : () => _handleCheckoutClick(cart, modalContext),
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
                     height: 48,
@@ -1307,8 +1307,195 @@ class _PosPageState extends ConsumerState<PosPage> {
     }
   }
 
+  // =========================================================================
+  // 🧮 LÓGICA DE COBRO, VUELTOS Y PAGO MIXTO
+  // =========================================================================
+
+  void _handleCheckoutClick(CartState cart, BuildContext? parentModalContext) {
+    if (cart.metodoPago == 'TARJETA' || cart.metodoPago == 'TR/QR') {
+      // Si es 100% digital, cobramos directo sin pedir vuelto
+      _performCheckout(cart, modalContext: parentModalContext, montoTarjeta: cart.metodoPago == 'TARJETA' ? cart.total : 0, montoTrQr: cart.metodoPago == 'TR/QR' ? cart.total : 0);
+      return;
+    }
+
+    // Si es Efectivo o Mixto, abrimos la calculadora de cobro
+    final bool isMixto = cart.metodoPago == 'MIXTO';
+    final currencySymbol = ref.read(currencySymbolProvider);
+
+    double valEfectivo = isMixto ? 0.0 : cart.total;
+    double valTarjeta = 0.0;
+    double valTrQr = 0.0;
+    
+    // Controlador único para Efectivo cuando NO es mixto (para dar vuelto)
+    final txtRecibidoEfectivo = TextEditingController(text: isMixto ? '' : cart.total.toStringAsFixed(2));
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            double totalIngresado = 0.0;
+            double vuelto = 0.0;
+
+            if (isMixto) {
+              totalIngresado = valEfectivo + valTarjeta + valTrQr;
+            } else {
+              final ingresado = double.tryParse(txtRecibidoEfectivo.text) ?? 0.0;
+              totalIngresado = ingresado;
+              vuelto = ingresado > cart.total ? ingresado - cart.total : 0.0;
+            }
+
+            final bool canSubmit = isMixto
+                ? (totalIngresado - cart.total).abs() < 0.01 // Debe ser exacto
+                : totalIngresado >= cart.total - 0.01; // Debe cubrir el monto
+
+            return Container(
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 24,
+                bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+              ),
+              decoration: const BoxDecoration(
+                color: Color(0xFF1E2024),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    isMixto ? 'DISTRIBUCIÓN DE PAGO MIXTO' : 'COBRO EN EFECTIVO',
+                    style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'TOTAL A COBRAR: $currencySymbol ${cart.total.toStringAsFixed(2)}',
+                    style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+
+                  if (!isMixto) ...[
+                    // MODO EFECTIVO (Cálculo de Vuelto)
+                    Text('Monto Recibido del Cliente:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 12)),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: txtRecibidoEfectivo,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                      onChanged: (val) => setModalState(() {}),
+                      decoration: InputDecoration(
+                        prefixText: '$currencySymbol ',
+                        prefixStyle: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontSize: 24, fontWeight: FontWeight.bold),
+                        filled: true,
+                        fillColor: Colors.black26,
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Vuelto a entregar:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 14)),
+                        Text(
+                          '$currencySymbol ${vuelto.toStringAsFixed(2)}',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: vuelto > 0 ? const Color(0xFFFF00D6) : Colors.white24,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ] else ...[
+                    // MODO MIXTO (Distribución)
+                    _buildMixtoInput('Efectivo', valEfectivo, (v) => setModalState(() => valEfectivo = v), currencySymbol),
+                    _buildMixtoInput('Tarjeta', valTarjeta, (v) => setModalState(() => valTarjeta = v), currencySymbol),
+                    _buildMixtoInput('Transf/QR', valTrQr, (v) => setModalState(() => valTrQr = v), currencySymbol),
+                    
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Resta por cubrir:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 14)),
+                        Text(
+                          '$currencySymbol ${(cart.total - totalIngresado).clamp(0.0, 99999.0).toStringAsFixed(2)}',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: (cart.total - totalIngresado) > 0.01 ? Colors.redAccent : const Color(0xFF00F0FF),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+
+                  const SizedBox(height: 32),
+                  ElevatedButton(
+                    onPressed: canSubmit
+                        ? () {
+                            Navigator.pop(ctx);
+                            _performCheckout(
+                              cart,
+                              modalContext: parentModalContext,
+                              montoEfectivo: isMixto ? valEfectivo : cart.total, // Guardamos estricto el cobro
+                              montoTarjeta: isMixto ? valTarjeta : 0.0,
+                              montoTrQr: isMixto ? valTrQr : 0.0,
+                            );
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF7000FF),
+                      disabledBackgroundColor: Colors.white10,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: Text(
+                      'PROCESAR VENTA',
+                      style: GoogleFonts.plusJakartaSans(color: canSubmit ? Colors.white : Colors.white30, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildMixtoInput(String label, double val, Function(double) onChanged, String currency) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Row(
+        children: [
+          SizedBox(width: 90, child: Text(label, style: GoogleFonts.plusJakartaSans(color: Colors.white70, fontWeight: FontWeight.bold))),
+          Expanded(
+            child: TextField(
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold),
+              onChanged: (text) => onChanged(double.tryParse(text) ?? 0.0),
+              decoration: InputDecoration(
+                prefixText: '$currency ',
+                prefixStyle: const TextStyle(color: Color(0xFF00F0FF)),
+                filled: true,
+                fillColor: Colors.black26,
+                isDense: true,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   // Ejecuta la venta enviando la petición POST /ventas a NestJS
-  Future<void> _performCheckout(CartState cart, {BuildContext? modalContext}) async {
+  Future<void> _performCheckout(CartState cart, {BuildContext? modalContext, double? montoEfectivo, double? montoTarjeta, double? montoTrQr}) async {
     debugPrint('⚡ [POS Checkout] Iniciando proceso de venta para ${cart.items.length} ítems. Método de pago: ${cart.metodoPago}');
     setState(() => _isCheckingOut = true);
 
@@ -1318,6 +1505,9 @@ class _PosPageState extends ConsumerState<PosPage> {
       await repository.checkout(
         metodoPago: cart.metodoPago == 'TR/QR' ? 'QR' : cart.metodoPago,
         items: cart.items,
+        montoEfectivo: montoEfectivo,
+        montoTarjeta: montoTarjeta,
+        montoTrQr: montoTrQr,
       );
 
       debugPrint('⚡ [POS Checkout] Venta registrada con éxito en el servidor.');
