@@ -13,6 +13,7 @@ import '../providers/tarifas_provider.dart';
 import '../data/models/tarifa_model.dart';
 import '../../pos/providers/catalog_provider.dart';
 import '../../caja/providers/caja_provider.dart';
+import '../../caja/providers/ventas_activas_provider.dart';
 import '../../../core/widgets/premium_fab.dart';
 
 class ConfigPage extends ConsumerStatefulWidget {
@@ -369,6 +370,9 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
         ref.invalidate(productsProvider);
         ref.invalidate(filteredProductsProvider);
         ref.invalidate(posFilteredProductsProvider);
+        ref.invalidate(cajaStateProvider);
+        ref.invalidate(cajaHistoryProvider);
+        ref.invalidate(ventasActivasProvider);
         
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -719,7 +723,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
     required String label,
     required T value,
     required List<DropdownMenuItem<T>> items,
-    required void Function(T?) onChanged,
+    required void Function(T?)? onChanged,
   }) {
     final theme = Theme.of(context);
     return Column(
@@ -1122,8 +1126,10 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
 
   Widget _buildCurrencyPreview() {
     final symbol = CurrencyHelper.getSymbolFromIso(_currentIso);
-    final formatted = CurrencyHelper.formatAmount(15000.5, _currentIso);
     final decimals = CurrencyHelper.getDecimalDigits(_currentIso);
+    final double sampleAmount = decimals == 0 ? 7500.0 : 75.00;
+    final formatted = CurrencyHelper.formatAmount(sampleAmount, _currentIso);
+    final String sourceText = decimals == 0 ? '75,00' : '7.500';
     
     return Container(
       width: double.infinity,
@@ -1155,7 +1161,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                   text: TextSpan(
                     style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
                     children: [
-                      const TextSpan(text: 'Los cobros de 15,000.50 se verán como: '),
+                      TextSpan(text: 'Los cobros de $sourceText se verán como: '),
                       TextSpan(text: '$symbol $formatted', style: const TextStyle(color: Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 16)),
                     ]
                   ),
