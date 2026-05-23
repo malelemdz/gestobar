@@ -7,6 +7,7 @@ import '../../../core/utils/currency_helper.dart';
 import '../../admin/providers/bar_provider.dart';
 import '../models/caja_model.dart';
 import '../providers/caja_provider.dart';
+import '../repository/caja_repository.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../features/auth/providers/auth_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
