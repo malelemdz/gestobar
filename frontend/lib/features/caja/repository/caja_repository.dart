@@ -9,7 +9,7 @@ class CajaRepository {
 
   CajaRepository(this._dio);
 
-  /// Obtiene el estado actual de la caja (si hay un turno abierto o no)
+  /// Obtiene el estado actual de la caja (si hay un turno abierto o no, con todas sus métricas Bento)
   Future<EstadoCajaResponse> getEstado() async {
     try {
       final response = await _dio.get('/cajas/estado');
@@ -26,7 +26,7 @@ class CajaRepository {
     }
   }
 
-  /// Abre un nuevo turno de caja registrando el efectivo inicial en la gaveta
+  /// Abre un nuevo turno de caja registrando el efectivo inicial obligatorio en la gaveta
   Future<CajaModel> apertura(double montoInicial) async {
     try {
       final response = await _dio.post(
@@ -46,13 +46,10 @@ class CajaRepository {
     }
   }
 
-  /// Cierra el turno activo, calculando ventas, comisiones y arqueo físico
-  Future<Map<String, dynamic>> cierre(double montoFinal) async {
+  /// Cierra el turno activo de forma autónoma sin inputs
+  Future<Map<String, dynamic>> cierre() async {
     try {
-      final response = await _dio.post(
-        '/cajas/cierre',
-        data: {'monto_final': montoFinal},
-      );
+      final response = await _dio.post('/cajas/cierre');
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
       final errorResponse = e.response?.data;
@@ -63,6 +60,53 @@ class CajaRepository {
       throw Exception(errorMessage);
     } catch (e) {
       throw Exception('No se pudo conectar al servidor para cerrar la caja');
+    }
+  }
+
+  /// Registra un ingreso o egreso de caja chica en el turno activo
+  Future<CajaMovimientoModel> registrarMovimiento({
+    required double monto,
+    required String tipo,
+    required String metodoPago,
+    required String concepto,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/cajas/movimientos',
+        data: {
+          'monto': monto,
+          'tipo': tipo,
+          'metodo_pago': metodoPago,
+          'concepto': concepto,
+        },
+      );
+      return CajaMovimientoModel.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      final errorResponse = e.response?.data;
+      String errorMessage = 'Error al registrar movimiento';
+      if (errorResponse != null && errorResponse['message'] != null) {
+        errorMessage = errorResponse['message'].toString();
+      }
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('No se pudo conectar al servidor para registrar el movimiento');
+    }
+  }
+
+  /// Obtiene la lista agregada de comisiones de damas en el turno
+  Future<List<dynamic>> getDamaComisiones(String cajaId) async {
+    try {
+      final response = await _dio.get('/cajas/$cajaId/comisiones-damas');
+      return response.data as List<dynamic>? ?? [];
+    } on DioException catch (e) {
+      final errorResponse = e.response?.data;
+      String errorMessage = 'Error al obtener comisiones';
+      if (errorResponse != null && errorResponse['message'] != null) {
+        errorMessage = errorResponse['message'].toString();
+      }
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('No se pudo conectar al servidor para obtener comisiones');
     }
   }
 

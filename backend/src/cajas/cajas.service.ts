@@ -2,8 +2,10 @@ import { Injectable, BadRequestException, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Caja, EstadoCaja } from './entities/caja.entity';
+import { CajaMovimiento, TipoMovimiento } from './entities/caja-movimiento.entity';
 import { AperturaCajaDto } from './dto/apertura-caja.dto';
 import { CierreCajaDto } from './dto/cierre-caja.dto';
+import { CreateMovimientoDto } from './dto/create-movimiento.dto';
 import { AuditoriaService } from '../auditoria/auditoria.service';
 import { UserPayload } from '../auth/decorators/active-user.decorator';
 
@@ -12,6 +14,8 @@ export class CajasService {
   constructor(
     @InjectRepository(Caja)
     private readonly cajaRepository: Repository<Caja>,
+    @InjectRepository(CajaMovimiento)
+    private readonly movimientoRepository: Repository<CajaMovimiento>,
     private readonly dataSource: DataSource,
     private readonly auditoriaService: AuditoriaService,
   ) {}
@@ -26,13 +30,96 @@ export class CajasService {
     return active;
   }
 
-  async getEstado(barId: string): Promise<{ abierta: boolean; caja: Caja | null }> {
+  async getEstado(barId: string): Promise<any> {
     const active = await this.cajaRepository.findOne({
       where: { bar_id: barId, estado: EstadoCaja.ABIERTA },
+      relations: ['aperturaUsuario'],
     });
+
+    if (!active) {
+      return {
+        abierta: false,
+        caja: null,
+      };
+    }
+
+    // 1. Obtener agregaciones de ventas POS por canal de pago
+    let totalVentasEfectivo = 0;
+    let totalVentasTarjeta = 0;
+    let totalVentasTrQr = 0;
+    let totalComisionesDamas = 0;
+
+    try {
+      const salesResult = await this.dataSource.query(
+        `SELECT 
+          COALESCE(SUM(monto_efectivo), 0) as efectivo,
+          COALESCE(SUM(monto_tarjeta), 0) as tarjeta,
+          COALESCE(SUM(monto_tr_qr), 0) as tr_qr
+         FROM ventas WHERE caja_id = $1`,
+        [active.id],
+      );
+      totalVentasEfectivo = parseFloat(salesResult[0]?.efectivo || '0');
+      totalVentasTarjeta = parseFloat(salesResult[0]?.tarjeta || '0');
+      totalVentasTrQr = parseFloat(salesResult[0]?.tr_qr || '0');
+
+      const comResult = await this.dataSource.query(
+        `SELECT COALESCE(SUM(dv.comision_dama * dv.cantidad), 0) as total 
+         FROM detalle_ventas dv 
+         INNER JOIN ventas v ON dv.venta_id = v.id 
+         WHERE v.caja_id = $1`,
+        [active.id],
+      );
+      totalComisionesDamas = parseFloat(comResult[0]?.total || '0');
+    } catch (e) {
+      // Las tablas ventas o detalle_ventas no existen aún.
+    }
+
+    // 2. Obtener agregaciones de caja chica manual (ingresos y egresos)
+    let totalIngresosManuales = 0;
+    let totalEgresosManuales = 0;
+    let movimientos: CajaMovimiento[] = [];
+
+    try {
+      movimientos = await this.movimientoRepository.find({
+        where: { caja_id: active.id },
+        relations: ['usuario'],
+        order: { created_at: 'DESC' },
+      });
+
+      totalIngresosManuales = movimientos
+        .filter((m) => m.tipo === TipoMovimiento.INGRESO)
+        .reduce((sum, m) => sum + Number(m.monto), 0);
+
+      totalEgresosManuales = movimientos
+        .filter((m) => m.tipo === TipoMovimiento.EGRESO)
+        .reduce((sum, m) => sum + Number(m.monto), 0);
+    } catch (e) {
+      // Error o tabla vacía
+    }
+
+    const totalVentasPOS = totalVentasEfectivo + totalVentasTarjeta + totalVentasTrQr;
+
+    // 3. FÓRMULAS FINANCIERAS SEGREGADAS A PRUEBA DE CONTAMINACIÓN
+    // Total Esperado en Gaveta = Fondo Inicial + Ventas Totales POS + Ingresos Manuales - Egresos Manuales
+    const totalEsperadoGaveta = active.monto_inicial + totalVentasPOS + totalIngresosManuales - totalEgresosManuales;
+
+    // Ganancia Neta del Bar = Ventas Totales POS - Comisiones Damas - Egresos Manuales
+    const gananciaNetaBar = totalVentasPOS - totalComisionesDamas - totalEgresosManuales;
+
     return {
-      abierta: !!active,
-      caja: active,
+      abierta: true,
+      caja: {
+        ...active,
+        total_ventas_efectivo: totalVentasEfectivo,
+        total_ventas_tarjeta: totalVentasTarjeta,
+        total_ventas_tr_qr: totalVentasTrQr,
+        total_ingresos_manuales: totalIngresosManuales,
+        total_egresos_manuales: totalEgresosManuales,
+        total_comisiones_damas: totalComisionesDamas,
+        total_esperado_gaveta: totalEsperadoGaveta,
+        ganancia_neta_bar: gananciaNetaBar,
+        movimientos,
+      },
     };
   }
 
@@ -84,16 +171,11 @@ export class CajasService {
     // Obtener la caja activa
     const caja = await this.getActiveCaja(barId);
 
-    caja.cierre_usuario_id = user.userId;
-    caja.fecha_cierre = new Date();
-    caja.monto_final = cierreCajaDto.monto_final;
-    caja.estado = EstadoCaja.CERRADA;
-
-    const savedCaja = await this.cajaRepository.save(caja);
-
-    // Calcular reporte de cierre (Ventas y comisiones vinculadas)
+    // Calcular reporte de cierre (Ventas, comisiones y movimientos de caja chica en caliente)
     let ventasTotales = 0;
     let comisionesTotales = 0;
+    let totalIngresosManuales = 0;
+    let totalEgresosManuales = 0;
     let metodosPago = [];
 
     try {
@@ -104,7 +186,7 @@ export class CajasService {
       ventasTotales = parseFloat(salesResult[0]?.total || '0');
 
       const comResult = await this.dataSource.query(
-        `SELECT SUM(dv.comision_dama) as total 
+        `SELECT SUM(dv.comision_dama * dv.cantidad) as total 
          FROM detalle_ventas dv 
          INNER JOIN ventas v ON dv.venta_id = v.id 
          WHERE v.caja_id = $1`,
@@ -120,15 +202,33 @@ export class CajasService {
       metodosPago = metodosResult.map((r: any) => ({
         metodo: r.metodo_pago,
         total: parseFloat(r.total || '0'),
+        amount: parseFloat(r.total || '0'),
         cantidad: parseInt(r.cantidad || '0'),
       }));
+
+      const movs = await this.movimientoRepository.find({
+        where: { caja_id: caja.id },
+      });
+      totalIngresosManuales = movs
+        .filter((m) => m.tipo === TipoMovimiento.INGRESO)
+        .reduce((sum, m) => sum + Number(m.monto), 0);
+
+      totalEgresosManuales = movs
+        .filter((m) => m.tipo === TipoMovimiento.EGRESO)
+        .reduce((sum, m) => sum + Number(m.monto), 0);
     } catch (error) {
-      // Las tablas ventas o detalle_ventas no existen aún en base de datos.
-      // Se mantiene los valores por defecto (0).
+      //
     }
 
-    const balanceEsperado = caja.monto_inicial + ventasTotales - comisionesTotales;
-    const diferencia = savedCaja.monto_final! - balanceEsperado;
+    // Cierre Autónomo sin Entrada: El monto final se calcula exactamente con el esperado
+    const balanceEsperado = caja.monto_inicial + ventasTotales + totalIngresosManuales - totalEgresosManuales;
+
+    caja.cierre_usuario_id = user.userId;
+    caja.fecha_cierre = new Date();
+    caja.monto_final = balanceEsperado;
+    caja.estado = EstadoCaja.CERRADA;
+
+    const savedCaja = await this.cajaRepository.save(caja);
 
     // Registro de Auditoría (Trazabilidad)
     await this.auditoriaService.registrar({
@@ -143,8 +243,9 @@ export class CajasService {
         monto_final: savedCaja.monto_final,
         ventas_totales: ventasTotales,
         comisiones_pagadas: comisionesTotales,
+        ingresos_manuales: totalIngresosManuales,
+        egresos_manuales: totalEgresosManuales,
         balance_esperado: balanceEsperado,
-        diferencia: diferencia,
       },
       ipAddress: ipAndUa?.ipAddress,
       userAgent: ipAndUa?.userAgent,
@@ -160,11 +261,80 @@ export class CajasService {
         monto_final: savedCaja.monto_final,
         ventas_totales: ventasTotales,
         comisiones_pagadas: comisionesTotales,
+        ingresos_manuales: totalIngresosManuales,
+        egresos_manuales: totalEgresosManuales,
         balance_esperado: balanceEsperado,
-        diferencia: diferencia,
+        diferencia: 0,
         desglose_pagos: metodosPago,
       },
     };
+  }
+
+  async registrarMovimiento(
+    createMovimientoDto: CreateMovimientoDto,
+    barId: string,
+    user: UserPayload,
+  ): Promise<CajaMovimiento> {
+    const caja = await this.getActiveCaja(barId);
+    
+    const nuevoMovimiento = this.movimientoRepository.create({
+      caja_id: caja.id,
+      monto: createMovimientoDto.monto,
+      tipo: createMovimientoDto.tipo,
+      metodo_pago: createMovimientoDto.metodo_pago,
+      concepto: createMovimientoDto.concepto,
+      usuario_id: user.userId,
+    });
+
+    const savedMov = await this.movimientoRepository.save(nuevoMovimiento);
+
+    await this.auditoriaService.registrar({
+      barId,
+      usuarioId: user.userId,
+      rolNombre: user.rolName,
+      modulo: 'CAJAS',
+      accion: 'REGISTRAR_MOVIMIENTO',
+      detalles: {
+        movimiento_id: savedMov.id,
+        caja_id: caja.id,
+        monto: savedMov.monto,
+        tipo: savedMov.tipo,
+        metodo_pago: savedMov.metodo_pago,
+        concepto: savedMov.concepto,
+      },
+    });
+
+    return savedMov;
+  }
+
+  async getDamaComisiones(cajaId: string, barId: string): Promise<any[]> {
+    const caja = await this.cajaRepository.findOne({
+      where: { id: cajaId, bar_id: barId },
+    });
+    if (!caja) {
+      throw new NotFoundException(`Caja con ID ${cajaId} no encontrada.`);
+    }
+
+    const query = `
+      SELECT 
+        u.id as "dama_id", 
+        u.nombre as "nombre", 
+        u.apellido as "apellido",
+        COALESCE(SUM(dv.comision_dama * dv.cantidad), 0) as "total_comision"
+      FROM detalle_ventas dv
+      INNER JOIN ventas v ON v.id = dv.venta_id
+      INNER JOIN usuarios u ON u.id = dv.dama_id
+      WHERE v.caja_id = $1
+      GROUP BY u.id, u.nombre, u.apellido
+    `;
+
+    const result = await this.dataSource.query(query, [cajaId]);
+
+    return result.map((r: any) => ({
+      dama_id: r.dama_id,
+      nombre: `${r.nombre} ${r.apellido || ''}`.trim(),
+      total_comision: parseFloat(r.total_comision || '0'),
+    }));
   }
 
   async findAll(barId: string): Promise<Caja[]> {

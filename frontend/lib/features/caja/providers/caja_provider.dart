@@ -33,14 +33,36 @@ class CajaNotifier extends StateNotifier<AsyncValue<EstadoCajaResponse>> {
     }
   }
 
-  /// Cierra la caja registrando el arqueo físico y retorna el resumen financiero
-  Future<Map<String, dynamic>> cerrarCaja(double montoFinal) async {
+  /// Cierra la caja registrando el arqueo físico y retorna el resumen financiero de forma autónoma
+  Future<Map<String, dynamic>> cerrarCaja() async {
     try {
-      final summary = await _repository.cierre(montoFinal);
+      final summary = await _repository.cierre();
       await refreshEstado(); // Refrescar para cambiar la UI a estado CERRADO
       return summary;
     } catch (e) {
       await refreshEstado();
+      rethrow;
+    }
+  }
+
+  /// Registra un movimiento de caja chica en caliente
+  Future<void> registrarMovimiento({
+    required double monto,
+    required String tipo,
+    required String metodoPago,
+    required String concepto,
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      await _repository.registrarMovimiento(
+        monto: monto,
+        tipo: tipo,
+        metodoPago: metodoPago,
+        concepto: concepto,
+      );
+      await refreshEstado(); // Refrescar para repintar las Bento Cards y la bitácora
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
       rethrow;
     }
   }

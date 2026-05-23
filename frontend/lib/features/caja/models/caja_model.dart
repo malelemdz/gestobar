@@ -1,5 +1,49 @@
 import '../../../features/auth/models/user_model.dart';
 
+class CajaMovimientoModel {
+  final String id;
+  final String cajaId;
+  final double monto;
+  final String tipo; // 'INGRESO' | 'EGRESO'
+  final String metodoPago; // 'EFECTIVO' | 'TARJETA' | 'TRANSFERENCIA'
+  final String concepto;
+  final String usuarioId;
+  final UserModel? usuario;
+  final DateTime createdAt;
+
+  CajaMovimientoModel({
+    required this.id,
+    required this.cajaId,
+    required this.monto,
+    required this.tipo,
+    required this.metodoPago,
+    required this.concepto,
+    required this.usuarioId,
+    this.usuario,
+    required this.createdAt,
+  });
+
+  factory CajaMovimientoModel.fromJson(Map<String, dynamic> json) {
+    return CajaMovimientoModel(
+      id: json['id'] as String? ?? '',
+      cajaId: json['caja_id'] as String? ?? '',
+      monto: (json['monto'] is num)
+          ? (json['monto'] as num).toDouble()
+          : double.tryParse(json['monto']?.toString() ?? '') ?? 0.0,
+      tipo: json['tipo'] as String? ?? 'INGRESO',
+      metodoPago: json['metodo_pago'] as String? ?? 'EFECTIVO',
+      concepto: json['concepto'] as String? ?? '',
+      usuarioId: json['usuario_id'] as String? ?? '',
+      usuario: json['usuario'] != null
+          ? UserModel.fromJson(json['usuario'] as Map<String, dynamic>)
+          : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : DateTime.now(),
+    );
+  }
+}
+
 class CajaModel {
   final String id;
   final String barId;
@@ -13,6 +57,17 @@ class CajaModel {
   final UserModel? aperturaUsuario;
   final UserModel? cierreUsuario;
 
+  // Nuevas Métricas Financieras Enriquecidas
+  final double totalVentasEfectivo;
+  final double totalVentasTarjeta;
+  final double totalVentasTrQr;
+  final double totalIngresosManuales;
+  final double totalEgresosManuales;
+  final double totalComisionesDamas;
+  final double totalEsperadoGaveta;
+  final double gananciaNetaBar;
+  final List<CajaMovimientoModel> movimientos;
+
   CajaModel({
     required this.id,
     required this.barId,
@@ -25,6 +80,15 @@ class CajaModel {
     this.fechaCierre,
     this.aperturaUsuario,
     this.cierreUsuario,
+    this.totalVentasEfectivo = 0.0,
+    this.totalVentasTarjeta = 0.0,
+    this.totalVentasTrQr = 0.0,
+    this.totalIngresosManuales = 0.0,
+    this.totalEgresosManuales = 0.0,
+    this.totalComisionesDamas = 0.0,
+    this.totalEsperadoGaveta = 0.0,
+    this.gananciaNetaBar = 0.0,
+    this.movimientos = const [],
   });
 
   factory CajaModel.fromJson(Map<String, dynamic> json) {
@@ -54,6 +118,34 @@ class CajaModel {
       cierreUsuario: json['cierreUsuario'] != null
           ? UserModel.fromJson(json['cierreUsuario'] as Map<String, dynamic>)
           : null,
+      totalVentasEfectivo: (json['total_ventas_efectivo'] is num)
+          ? (json['total_ventas_efectivo'] as num).toDouble()
+          : double.tryParse(json['total_ventas_efectivo']?.toString() ?? '') ?? 0.0,
+      totalVentasTarjeta: (json['total_ventas_tarjeta'] is num)
+          ? (json['total_ventas_tarjeta'] as num).toDouble()
+          : double.tryParse(json['total_ventas_tarjeta']?.toString() ?? '') ?? 0.0,
+      totalVentasTrQr: (json['total_ventas_tr_qr'] is num)
+          ? (json['total_ventas_tr_qr'] as num).toDouble()
+          : double.tryParse(json['total_ventas_tr_qr']?.toString() ?? '') ?? 0.0,
+      totalIngresosManuales: (json['total_ingresos_manuales'] is num)
+          ? (json['total_ingresos_manuales'] as num).toDouble()
+          : double.tryParse(json['total_ingresos_manuales']?.toString() ?? '') ?? 0.0,
+      totalEgresosManuales: (json['total_egresos_manuales'] is num)
+          ? (json['total_egresos_manuales'] as num).toDouble()
+          : double.tryParse(json['total_egresos_manuales']?.toString() ?? '') ?? 0.0,
+      totalComisionesDamas: (json['total_comisiones_damas'] is num)
+          ? (json['total_comisiones_damas'] as num).toDouble()
+          : double.tryParse(json['total_comisiones_damas']?.toString() ?? '') ?? 0.0,
+      totalEsperadoGaveta: (json['total_esperado_gaveta'] is num)
+          ? (json['total_esperado_gaveta'] as num).toDouble()
+          : double.tryParse(json['total_esperado_gaveta']?.toString() ?? '') ?? 0.0,
+      gananciaNetaBar: (json['ganancia_neta_bar'] is num)
+          ? (json['ganancia_neta_bar'] as num).toDouble()
+          : double.tryParse(json['ganancia_neta_bar']?.toString() ?? '') ?? 0.0,
+      movimientos: (json['movimientos'] as List<dynamic>?)
+              ?.map((e) => CajaMovimientoModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 

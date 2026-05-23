@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Param, UseGuards, ParseUUIDPipe, Req } fro
 import { CajasService } from './cajas.service';
 import { AperturaCajaDto } from './dto/apertura-caja.dto';
 import { CierreCajaDto } from './dto/cierre-caja.dto';
+import { CreateMovimientoDto } from './dto/create-movimiento.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TenantGuard } from '../auth/guards/tenant.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
@@ -43,6 +44,25 @@ export class CajasController {
     const ipAddress = req.ip || req.connection?.remoteAddress;
     const userAgent = req.headers['user-agent'];
     return this.cajasService.cierre(cierreCajaDto, barId, user, { ipAddress, userAgent });
+  }
+
+  @Post('movimientos')
+  @Permissions('caja.gestionar')
+  registrarMovimiento(
+    @Body() createMovimientoDto: CreateMovimientoDto,
+    @ActiveBarId() barId: string,
+    @ActiveUser() user: UserPayload,
+  ) {
+    return this.cajasService.registrarMovimiento(createMovimientoDto, barId, user);
+  }
+
+  @Get(':id/comisiones-damas')
+  @Permissions('caja.gestionar')
+  getDamaComisiones(
+    @Param('id', ParseUUIDPipe) id: string,
+    @ActiveBarId() barId: string,
+  ) {
+    return this.cajasService.getDamaComisiones(id, barId);
   }
 
   @Get()
