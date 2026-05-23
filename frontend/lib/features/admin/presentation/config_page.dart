@@ -12,6 +12,7 @@ import '../data/models/bar_model.dart';
 import '../providers/tarifas_provider.dart';
 import '../data/models/tarifa_model.dart';
 import '../../pos/providers/catalog_provider.dart';
+import '../../caja/providers/caja_provider.dart';
 import '../../../core/widgets/premium_fab.dart';
 
 class ConfigPage extends ConsumerStatefulWidget {
@@ -810,6 +811,8 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
   Widget build(BuildContext context) {
     final barState = ref.watch(currentBarProvider);
     final tarifasState = ref.watch(barTarifasProvider);
+    final cajaState = ref.watch(cajaStateProvider);
+    final isCajaAbierta = cajaState.value?.abierta ?? false;
     final theme = Theme.of(context);
 
     return barState.when(
@@ -857,7 +860,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                       children: [
                         _buildIdentidadTab(theme),
                         _buildRedesTab(theme),
-                        _buildOperacionesTab(theme),
+                        _buildOperacionesTab(theme, isCajaAbierta),
                         _buildHorarioTab(theme),
                         _buildCompaniaTab(theme, tarifasState),
                         _buildTarifasTab(theme, tarifasState),
@@ -990,7 +993,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
     );
   }
 
-  Widget _buildOperacionesTab(ThemeData theme) {
+  Widget _buildOperacionesTab(ThemeData theme, bool isCajaAbierta) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
       child: Center(
@@ -1003,8 +1006,32 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                 title: 'Operaciones',
                 description: 'Configura la moneda de transacciones y la zona horaria local.',
                 icon: Icons.monetization_on_outlined,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
+                child: Column(
+                  children: [
+                    if (isCajaAbierta)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppTheme.colorDanger.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppTheme.colorDanger.withOpacity(0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.lock_clock, color: AppTheme.colorDanger, size: 20),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Existe una caja abierta actualmente. Para evitar descuadres en el arqueo, debes cerrarla antes de modificar la Moneda o Zona Horaria.',
+                                style: GoogleFonts.inter(color: AppTheme.colorDanger, fontSize: 12, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
                 final isMobile = constraints.maxWidth < 400;
                 if (isMobile) {
                   return Column(
@@ -1016,7 +1043,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                           value: iso, 
                           child: Text(CurrencyHelper.getCurrencyLabel(iso)),
                         )).toList(),
-                        onChanged: (val) {
+                        onChanged: isCajaAbierta ? null : (val) {
                           if (val != null) {
                             setState(() => _currentIso = val);
                             _onInputChanged();
@@ -1031,7 +1058,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                           value: tz,
                           child: Text(tz, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 13)),
                         )).toList(),
-                        onChanged: (val) {
+                        onChanged: isCajaAbierta ? null : (val) {
                           if (val != null) {
                             setState(() => _currentTimezone = val);
                             _onInputChanged();
@@ -1051,7 +1078,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                             value: iso, 
                             child: Text(CurrencyHelper.getCurrencyLabel(iso)),
                           )).toList(),
-                          onChanged: (val) {
+                          onChanged: isCajaAbierta ? null : (val) {
                             if (val != null) {
                               setState(() => _currentIso = val);
                               _onInputChanged();
@@ -1068,7 +1095,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                             value: tz,
                             child: Text(tz, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 13)),
                           )).toList(),
-                          onChanged: (val) {
+                          onChanged: isCajaAbierta ? null : (val) {
                             if (val != null) {
                               setState(() => _currentTimezone = val);
                               _onInputChanged();
@@ -1081,8 +1108,10 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                 }
               }
             ),
-          ),
-          const SizedBox(height: 24),
+          ],
+        ),
+      ),
+      const SizedBox(height: 24),
           _buildCurrencyPreview(),
             ],
           ),
