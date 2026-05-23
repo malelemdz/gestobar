@@ -1,4 +1,10 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateBarDto } from './create-bar.dto';
 
-export class UpdateBarDto extends PartialType(CreateBarDto) {}
+import { IsNumber, IsOptional } from 'class-validator';
+
+export class UpdateBarDto extends PartialType(CreateBarDto) {
+  @IsNumber()
+  @IsOptional()
+  tasa_conversion?: number;
+}

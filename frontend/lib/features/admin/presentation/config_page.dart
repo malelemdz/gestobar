@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/currency_helper.dart';
 import '../providers/bar_provider.dart';
+import '../providers/menu_admin_provider.dart';
 import '../data/models/bar_model.dart';
 import '../providers/tarifas_provider.dart';
 import '../data/models/tarifa_model.dart';
@@ -156,60 +157,87 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
     }
   }
 
-  Future<bool> _showCriticalWarningModal(String fieldName) async {
+  Future<bool> _showUnifiedWarningModal(bool changedCurrency, bool changedTimezone) async {
     bool confirm = false;
-    final confirmCtrl = TextEditingController();
-    
-    await showDialog(
+    final TextEditingController confirmCtrl = TextEditingController();
+
+    await showModalBottomSheet(
       context: context,
-      barrierDismissible: false,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: AppTheme.liquidSurface,
-          title: Row(
-            children: [
-              Icon(Icons.warning_amber_rounded, color: AppTheme.colorWarning),
-              const SizedBox(width: 8),
-              const Text('Advertencia Crítica'),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Estás cambiando un ajuste global ($fieldName).\n\n'
-                '${fieldName == 'Moneda' 
-                  ? 'Este cambio es meramente visual y de formato. NO realiza una conversión monetaria de tus precios actuales.'
-                  : 'Los reportes de ventas históricos podrían desfasarse en tiempo si cambias la zona horaria.'}\n\n'
-                'Escribe "CONFIRMAR" para proceder.',
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: confirmCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Escribe CONFIRMAR',
-                  border: OutlineInputBorder(),
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFF1E2024),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.warning_amber_rounded, color: AppTheme.colorWarning, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  'CAMBIOS CRÍTICOS DETECTADOS',
+                  style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                if (changedCurrency)
+                  Text(
+                    'Has cambiado la Moneda. El sistema migrará matemáticamente TODOS los precios de tu Menú para ajustarlos a la escala correcta (Ej: 27.42 a 27.420).',
+                    style: GoogleFonts.inter(color: Colors.white70, fontSize: 14),
+                  ),
+                if (changedCurrency && changedTimezone) const SizedBox(height: 12),
+                if (changedTimezone)
+                  Text(
+                    'Has cambiado la Zona Horaria. Los reportes de ventas históricos podrían desfasarse en tiempo.',
+                    style: GoogleFonts.inter(color: Colors.white70, fontSize: 14),
+                  ),
+                const SizedBox(height: 24),
+                Text(
+                  'Escribe "CONFIRMAR" para proceder:',
+                  style: GoogleFonts.inter(color: Colors.white54, fontSize: 12),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: confirmCtrl,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: 'CONFIRMAR',
+                    hintStyle: const TextStyle(color: Colors.white24),
+                    filled: true,
+                    fillColor: Colors.black26,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Cancelar', style: GoogleFonts.inter(color: Colors.white54)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (confirmCtrl.text.trim().toUpperCase() == 'CONFIRMAR') {
+                          confirm = true;
+                          Navigator.pop(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.colorWarning,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: Text('Entendido, Cambiar', style: GoogleFonts.plusJakartaSans(color: Colors.black, fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (confirmCtrl.text.trim().toUpperCase() == 'CONFIRMAR') {
-                  confirm = true;
-                  Navigator.pop(context);
-                }
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.colorWarning),
-              child: const Text('Entendido, Cambiar'),
-            ),
-          ],
         );
       },
     );
@@ -251,14 +279,20 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
   Future<void> _saveConfig() async {
     if (_formKey.currentState!.validate()) {
       
-      if (_originalIso != null && _originalIso != _currentIso) {
-        final confirmed = await _showCriticalWarningModal('Moneda');
+      final bool changedCurrency = _originalIso != null && _originalIso != _currentIso;
+      final bool changedTimezone = _originalTimezone != null && _originalTimezone != _currentTimezone;
+
+      if (changedCurrency || changedTimezone) {
+        final confirmed = await _showUnifiedWarningModal(changedCurrency, changedTimezone);
         if (!confirmed) return;
       }
       
-      if (_originalTimezone != null && _originalTimezone != _currentTimezone) {
-        final confirmed = await _showCriticalWarningModal('Zona Horaria');
-        if (!confirmed) return;
+      double conversionRate = 1.0;
+      if (changedCurrency) {
+        int oldDecimals = CurrencyHelper.getDecimalDigits(_originalIso!);
+        int newDecimals = CurrencyHelper.getDecimalDigits(_currentIso);
+        if (oldDecimals == 2 && newDecimals == 0) conversionRate = 1000.0;
+        if (oldDecimals == 0 && newDecimals == 2) conversionRate = 0.001;
       }
 
       final updates = {
@@ -278,35 +312,24 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
         'comision_porcentaje': double.tryParse(_comisionCtrl.text) ?? 0.0,
         'tarifa_compania_id': _selectedTarifaCompaniaId,
         'horarios': _horarios,
+        'tasa_conversion': conversionRate,
       };
 
       final success = await ref.read(currentBarProvider.notifier).updateBarInfo(updates);
       if (success) {
-        final bool isCurrencyChanged = _originalIso != null && _originalIso != _currentIso;
         _originalIso = _currentIso;
         _originalTimezone = _currentTimezone;
         ref.invalidate(currentBarProvider);
+        ref.invalidate(menuAdminProvider);
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Configuración guardada correctamente.')),
+            SnackBar(
+              content: Text('Configuración guardada y precios migrados. La interfaz se actualizará automáticamente.', style: GoogleFonts.inter(color: Colors.white)),
+              backgroundColor: const Color(0xFF7000FF),
+              duration: const Duration(seconds: 3),
+            ),
           );
-          
-          if (isCurrencyChanged) {
-            showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                backgroundColor: const Color(0xFF16181C),
-                title: Text('Reinicio Requerido', style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold)),
-                content: Text('Has cambiado la moneda del Bar.\n\nPor favor, reinicia la aplicación (Hot Restart) para que los nuevos formatos matemáticos se apliquen en todas las pantallas del sistema.', style: GoogleFonts.inter(color: Colors.white70)),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    child: const Text('Entendido', style: TextStyle(color: Color(0xFF00F0FF))),
-                  ),
-                ],
-              ),
-            );
-          }
         }
       }
     }

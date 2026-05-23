@@ -1243,6 +1243,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                 const SizedBox(height: 20),
                 ...product.variantes.map((variant) {
                   final currencySymbol = ref.read(currencySymbolProvider);
+                  final currencyIso = ref.read(currencyIsoProvider);
                   
                   double precio;
                   try {
@@ -1291,7 +1292,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                               ),
                             ),
                             Text(
-                              '$currencySymbol${precio.toStringAsFixed(2)}',
+                              '$currencySymbol${CurrencyHelper.formatAmount(precio, currencyIso)}',
                               style: GoogleFonts.plusJakartaSans(
                                 color: hasGlobalDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF),
                                 fontWeight: FontWeight.bold,

@@ -22,6 +22,9 @@ class SocketService {
       IO.OptionBuilder()
           .setTransports(['websocket']) // Forzar WebSockets puros por velocidad
           .disableAutoConnect()
+          .enableReconnection() // Activar reconexión automática
+          .setReconnectionDelay(3000) // Empezar esperando 3 segundos
+          .setReconnectionDelayMax(15000) // Máximo 15 segundos entre intentos
           .setExtraHeaders({'Authorization': 'Bearer $token'})
           .build(),
     );
@@ -34,8 +37,14 @@ class SocketService {
       debugPrint('⚠️ [WebSockets] Desconectado del servidor');
     });
 
+    // Interceptamos el error para no ensuciar la consola con "Connection refused"
     _socket!.onConnectError((error) {
-      debugPrint('❌ [WebSockets] Error de Conexión: $error');
+      final errorStr = error.toString();
+      if (errorStr.contains('Connection refused') || errorStr.contains('OS Error: 111')) {
+        debugPrint('⏳ [WebSockets] Buscando servidor... reconectando pacíficamente.');
+      } else {
+        debugPrint('❌ [WebSockets] Error de Conexión: $error');
+      }
     });
 
     _socket!.connect();

@@ -34,9 +34,61 @@ export class BarsService {
   }
 
   async update(id: string, updateBarDto: UpdateBarDto): Promise<Bar> {
+    const { tasa_conversion, ...rest } = updateBarDto;
+    
+    console.log('--- INTENTO DE ACTUALIZAR BAR ---');
+    console.log('ID:', id);
+    console.log('Tasa de Conversion recibida:', tasa_conversion);
+    console.log('Resto del DTO:', rest);
+
     const bar = await this.findOne(id);
-    const updatedBar = this.barRepository.merge(bar, updateBarDto);
-    return await this.barRepository.save(updatedBar);
+    const updatedBar = this.barRepository.merge(bar, rest);
+    await this.barRepository.save(updatedBar);
+
+    if (tasa_conversion && tasa_conversion !== 1) {
+      console.log('Disparando Query de Multiplicación por:', tasa_conversion);
+      
+      const resAntes = await this.barRepository.manager.query(
+        `SELECT vp.id, vp.precio_unitario FROM variantes_precios vp JOIN variantes v ON vp.variante_id = v.id JOIN productos p ON p.id = v.producto_id WHERE p.bar_id = $1 LIMIT 3`,
+        [id]
+      );
+      console.log('--- PRECIOS ANTES DE LA CONVERSION ---');
+      console.table(resAntes);
+
+      const res = await this.barRepository.manager.query(
+        `UPDATE variantes_precios vp
+         SET precio_unitario = vp.precio_unitario * $1
+         FROM variantes v
+         JOIN productos p ON p.id = v.producto_id
+         WHERE v.id = vp.variante_id AND p.bar_id = $2`,
+        [tasa_conversion, id]
+      );
+
+      // ¡CRÍTICO! Actualizar las fechas de los productos y variantes para que el celular invalide su caché.
+      await this.barRepository.manager.query(
+        `UPDATE productos SET updated_at = NOW() WHERE bar_id = $1`,
+        [id]
+      );
+      
+      await this.barRepository.manager.query(
+        `UPDATE variantes v SET updated_at = NOW() 
+         FROM productos p 
+         WHERE p.id = v.producto_id AND p.bar_id = $1`,
+        [id]
+      );
+      
+      const resDespues = await this.barRepository.manager.query(
+        `SELECT vp.id, vp.precio_unitario FROM variantes_precios vp JOIN variantes v ON vp.variante_id = v.id JOIN productos p ON p.id = v.producto_id WHERE p.bar_id = $1 LIMIT 3`,
+        [id]
+      );
+      console.log('--- PRECIOS DESPUES DE LA CONVERSION ---');
+      console.table(resDespues);
+      console.log('Resultado Query (Filas actualizadas):', res[1] ?? res);
+    } else {
+      console.log('No se aplicó multiplicación porque la tasa es 1 o undefined');
+    }
+    
+    return this.findOne(id);
   }
 
   async remove(id: string): Promise<void> {
