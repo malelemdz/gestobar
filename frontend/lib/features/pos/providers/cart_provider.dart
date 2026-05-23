@@ -149,16 +149,23 @@ class CartNotifier extends StateNotifier<CartState> {
     // Si es invitación -> Tarifa por defecto. Si NO es invitación -> Tarifa de Compañía
     final targetTarifaId = newEsInvitacion ? tarifaDefaultId : tarifaCompaniaId;
     
+    // Validar el UUID de la tarifa. Si es inválido/vacío, resolver dinámicamente desde la variante
+    final String resolvedTarifaId = targetTarifaId.isNotEmpty && RegExp(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$').hasMatch(targetTarifaId)
+        ? targetTarifaId
+        : (newEsInvitacion
+            ? item.variant.precios.firstWhere((p) => p.esDefault, orElse: () => item.variant.precios.first).tarifaId
+            : item.variant.precios.firstWhere((p) => !p.esDefault, orElse: () => item.variant.precios.first).tarifaId);
+
     double nuevoPrecio;
     try {
-      nuevoPrecio = item.variant.precios.firstWhere((p) => p.tarifaId == targetTarifaId).precioUnitario;
+      nuevoPrecio = item.variant.precios.firstWhere((p) => p.tarifaId == resolvedTarifaId).precioUnitario;
     } catch (_) {
       nuevoPrecio = newEsInvitacion ? item.variant.precioA : item.variant.precioB;
     }
 
     final updatedItem = item.copyWith(
       esInvitacion: newEsInvitacion,
-      tarifaId: targetTarifaId,
+      tarifaId: resolvedTarifaId,
       precioUnitario: nuevoPrecio,
     );
 
@@ -200,9 +207,17 @@ class CartNotifier extends StateNotifier<CartState> {
       }
 
       final targetTarifaId = hasGlobalDama ? tarifaCompaniaId : tarifaDefaultId;
+      
+      // Validar el UUID de la tarifa. Si es inválido/vacío, resolver dinámicamente desde la variante
+      final String resolvedTarifaId = targetTarifaId.isNotEmpty && RegExp(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$').hasMatch(targetTarifaId)
+          ? targetTarifaId
+          : (hasGlobalDama
+              ? item.variant.precios.firstWhere((p) => !p.esDefault, orElse: () => item.variant.precios.first).tarifaId
+              : item.variant.precios.firstWhere((p) => p.esDefault, orElse: () => item.variant.precios.first).tarifaId);
+
       double nuevoPrecio;
       try {
-        nuevoPrecio = item.variant.precios.firstWhere((p) => p.tarifaId == targetTarifaId).precioUnitario;
+        nuevoPrecio = item.variant.precios.firstWhere((p) => p.tarifaId == resolvedTarifaId).precioUnitario;
       } catch (_) {
         nuevoPrecio = hasGlobalDama ? item.variant.precioB : item.variant.precioA;
       }
@@ -210,7 +225,7 @@ class CartNotifier extends StateNotifier<CartState> {
       return item.copyWith(
         damaId: id ?? '',
         damaNombre: nombre ?? '',
-        tarifaId: targetTarifaId,
+        tarifaId: resolvedTarifaId,
         precioUnitario: nuevoPrecio,
         esInvitacion: false, // Resetear bandera de invitación si quitamos dama
       );

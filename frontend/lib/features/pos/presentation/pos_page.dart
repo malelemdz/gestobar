@@ -1175,26 +1175,18 @@ class _PosPageState extends ConsumerState<PosPage> {
 
     final cartState = ref.read(cartProvider);
     final hasGlobalDama = cartState.selectedDamaId != null && cartState.selectedDamaId!.isNotEmpty;
-    
-    final tarifasState = ref.read(barTarifasProvider);
-    final barState = ref.read(currentBarProvider);
-    
-    final List<TarifaModel> tarifasActivas = tarifasState.maybeWhen(data: (t) => t, orElse: () => []);
-    final String tarifaDefaultId = tarifasActivas.isEmpty ? '' : tarifasActivas.firstWhere((t) => t.esDefault, orElse: () => tarifasActivas.first).id;
-    final String tarifaCompaniaId = barState.maybeWhen(data: (b) => b.tarifaCompaniaId ?? '', orElse: () => '');
-    
-    final targetTarifaId = hasGlobalDama ? tarifaCompaniaId : tarifaDefaultId;
 
     if (product.variantes.length == 1) {
       // Tiene solo una variante, agregar directamente
       final variant = product.variantes.first;
       
-      double precioFinal;
-      try {
-        precioFinal = variant.precios.firstWhere((p) => p.tarifaId == targetTarifaId).precioUnitario;
-      } catch (_) {
-        precioFinal = hasGlobalDama ? variant.precioB : variant.precioA;
-      }
+      // Resolver la tarifa correcta y su precio directamente de la variante, a prueba de fallos de red
+      final activePrice = hasGlobalDama
+          ? variant.precios.firstWhere((p) => !p.esDefault, orElse: () => variant.precios.first)
+          : variant.precios.firstWhere((p) => p.esDefault, orElse: () => variant.precios.first);
+          
+      final targetTarifaId = activePrice.tarifaId;
+      final precioFinal = activePrice.precioUnitario;
 
       ref.read(cartProvider.notifier).addItem(product, variant, tarifaId: targetTarifaId, precioUnitario: precioFinal);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1245,18 +1237,19 @@ class _PosPageState extends ConsumerState<PosPage> {
                   final currencySymbol = ref.read(currencySymbolProvider);
                   final currencyIso = ref.read(currencyIsoProvider);
                   
-                  double precio;
-                  try {
-                    precio = variant.precios.firstWhere((p) => p.tarifaId == targetTarifaId).precioUnitario;
-                  } catch (_) {
-                    precio = hasGlobalDama ? variant.precioB : variant.precioA;
-                  }
+                  // Resolver la tarifa correcta y su precio directamente de la variante, a prueba de fallos de red
+                  final activePrice = hasGlobalDama
+                      ? variant.precios.firstWhere((p) => !p.esDefault, orElse: () => variant.precios.first)
+                      : variant.precios.firstWhere((p) => p.esDefault, orElse: () => variant.precios.first);
+                      
+                  final variantTarifaId = activePrice.tarifaId;
+                  final precio = activePrice.precioUnitario;
 
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: InkWell(
                       onTap: () {
-                        ref.read(cartProvider.notifier).addItem(product, variant, tarifaId: targetTarifaId, precioUnitario: precio);
+                        ref.read(cartProvider.notifier).addItem(product, variant, tarifaId: variantTarifaId, precioUnitario: precio);
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

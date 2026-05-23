@@ -134,13 +134,12 @@ class CatalogRepository {
       if (montoTarjeta != null) 'monto_tarjeta': montoTarjeta,
       if (montoTrQr != null) 'monto_tr_qr': montoTrQr,
       'items': items.map((item) {
-        String finalTarifaId = item.tarifaId;
+        final String finalTarifaId = item.tarifaId;
         
-        // Si tarifaId viene vacío o no es un UUID válido, intentamos resolverlo
+        // Validación estricta de UUID en checkout
         final bool isValidUuid = RegExp(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$').hasMatch(finalTarifaId);
-        if (!isValidUuid && item.variant.precios.isNotEmpty) {
-          final defaultPrice = item.variant.precios.firstWhere((p) => p.esDefault, orElse: () => item.variant.precios.first);
-          finalTarifaId = defaultPrice.tarifaId;
+        if (!isValidUuid) {
+          throw Exception('El producto "${item.product.nombre}" no tiene una tarifa válida asignada para proceder con el cobro.');
         }
 
         return {
