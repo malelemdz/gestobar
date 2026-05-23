@@ -11,6 +11,7 @@ import '../providers/menu_admin_provider.dart';
 import '../data/models/bar_model.dart';
 import '../providers/tarifas_provider.dart';
 import '../data/models/tarifa_model.dart';
+import '../../pos/providers/catalog_provider.dart';
 import '../../../core/widgets/premium_fab.dart';
 
 class ConfigPage extends ConsumerStatefulWidget {
@@ -321,6 +322,9 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
         _originalTimezone = _currentTimezone;
         ref.invalidate(currentBarProvider);
         ref.invalidate(menuAdminProvider);
+        ref.invalidate(productsProvider);
+        ref.invalidate(filteredProductsProvider);
+        ref.invalidate(posFilteredProductsProvider);
         
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
