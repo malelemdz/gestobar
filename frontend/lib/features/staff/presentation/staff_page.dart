@@ -359,7 +359,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.04),
                             borderRadius: BorderRadius.circular(4),
@@ -375,12 +375,14 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                               fontSize: 8,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
+                              height: 1.0,
+                              leadingDistribution: TextLeadingDistribution.even,
                             ),
                           ),
                         ),
                         const SizedBox(width: 6),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                           decoration: BoxDecoration(
                             color: roleColor.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(4),
@@ -393,6 +395,8 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                               fontSize: 8,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
+                              height: 1.0,
+                              leadingDistribution: TextLeadingDistribution.even,
                             ),
                           ),
                         ),
