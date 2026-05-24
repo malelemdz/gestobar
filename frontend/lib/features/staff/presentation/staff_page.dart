@@ -195,7 +195,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 420,
-                            mainAxisExtent: 112,
+                            mainAxisExtent: 100,
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
                           ),
@@ -288,7 +288,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -354,7 +354,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 5),
                     // Line 2: Username and Role Chip side-by-side!
                     Row(
                       children: [
@@ -402,7 +402,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 5),
                     // Line 3: DNI (no icon)
                     Text(
                       user.identificacion?.isNotEmpty == true ? 'DNI: ${user.identificacion!}' : 'DNI No reg.',
