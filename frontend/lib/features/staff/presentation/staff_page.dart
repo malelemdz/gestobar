@@ -192,7 +192,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         }
 
                         return GridView.builder(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 420,
                             mainAxisExtent: 100,
@@ -239,7 +239,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         }
 
                         return ListView.builder(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                           itemCount: roles.length,
                           itemBuilder: (context, index) {
                             final role = roles[index];
