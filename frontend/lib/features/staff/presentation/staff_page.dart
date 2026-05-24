@@ -403,40 +403,15 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                       ],
                     ),
                     const SizedBox(height: 4),
-                    // Line 3: Celular
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(Icons.phone, size: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
-                        const SizedBox(width: 4),
-                        Text(
-                          user.celular?.isNotEmpty == true ? user.celular! : 'Sin celular',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
-                            height: 1.0,
-                            leadingDistribution: TextLeadingDistribution.even,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    // Line 4: DNI
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(Icons.badge, size: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
-                        const SizedBox(width: 4),
-                        Text(
-                          user.identificacion?.isNotEmpty == true ? user.identificacion! : 'DNI No reg.',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
-                            height: 1.0,
-                            leadingDistribution: TextLeadingDistribution.even,
-                          ),
-                        ),
-                      ],
+                    // Line 3: DNI (no icon)
+                    Text(
+                      user.identificacion?.isNotEmpty == true ? 'DNI: ${user.identificacion!}' : 'DNI No reg.',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
+                        height: 1.0,
+                        leadingDistribution: TextLeadingDistribution.even,
+                      ),
                     ),
                   ],
                 ),
