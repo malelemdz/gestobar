@@ -336,141 +336,70 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                 ),
               ),
               const SizedBox(width: 12),
-              // Column 2: Text details, Switch and Actions
+              // Column 2: Text details (All 4 lines together in one Column)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Line 1: Nombre completo
+                    Text(
+                      '${user.nombre} ${user.apellido}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    // Line 2: Username and Role Chip side-by-side!
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${user.nombre} ${user.apellido}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              // Username and Role Chip side-by-side!
-                              Row(
-                                children: [
-                                  Text(
-                                    '@${user.username}',
-                                    style: TextStyle(
-                                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
-                                      fontSize: 11,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: roleColor.withOpacity(0.12),
-                                      borderRadius: BorderRadius.circular(4),
-                                      border: Border.all(color: roleColor.withOpacity(0.3), width: 0.8),
-                                    ),
-                                    child: Text(
-                                      user.rolNombre.toUpperCase(),
-                                      style: TextStyle(
-                                        color: roleColor,
-                                        fontSize: 8,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.04),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.12),
+                              width: 0.8,
+                            ),
+                          ),
+                          child: Text(
+                            '@${user.username.toLowerCase()}',
+                            style: TextStyle(
+                              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
+                              fontSize: 8,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        // Switch and action buttons stacked on the right!
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(
-                              height: 24,
-                              width: 38,
-                              child: Transform.scale(
-                                scale: 0.65,
-                                child: Switch(
-                                  value: user.estado,
-                                  activeColor: const Color(0xFF00F0FF),
-                                  activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
-                                  inactiveThumbColor: Colors.grey,
-                                  inactiveTrackColor: Colors.white10,
-                                  onChanged: (val) async {
-                                    if (isMe && !val) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('No puedes deshabilitar tu propio usuario.'),
-                                          backgroundColor: Colors.orange,
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    final confirm = await _showStatusConfirmationBottomSheet(
-                                      context: context,
-                                      user: user,
-                                      targetState: val,
-                                    );
-                                    if (confirm == true) {
-                                      ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
-                                    }
-                                  },
-                                ),
-                              ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: roleColor.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: roleColor.withOpacity(0.3), width: 0.8),
+                          ),
+                          child: Text(
+                            user.rolNombre.toUpperCase(),
+                            style: TextStyle(
+                              color: roleColor,
+                              fontSize: 8,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
                             ),
-                            const SizedBox(height: 6),
-                            // Action Buttons under Switch
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Tooltip(
-                                  message: 'Cambiar Contraseña',
-                                  child: InkWell(
-                                    onTap: () => _showResetPasswordBottomSheet(context, user),
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(4.0),
-                                      child: Icon(Icons.vpn_key_outlined, size: 16, color: Colors.amber),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Tooltip(
-                                  message: 'Editar',
-                                  child: InkWell(
-                                    onTap: () => _showAddEditStaffDialog(context, user),
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(4.0),
-                                      child: Icon(Icons.edit_outlined, size: 16, color: Colors.blueAccent),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 6),
-                    // Contact Info
+                    const SizedBox(height: 4),
+                    // Line 3: Celular
                     Row(
                       children: [
                         Icon(Icons.phone, size: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
@@ -482,7 +411,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                       ],
                     ),
                     const SizedBox(height: 2),
-                    // DNI Row
+                    // Line 4: DNI
                     Row(
                       children: [
                         Icon(Icons.badge, size: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
@@ -495,6 +424,78 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(width: 8),
+              // Column 3: Switch and Action buttons stacked on the right!
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 24,
+                    width: 38,
+                    child: Transform.scale(
+                      scale: 0.65,
+                      child: Switch(
+                        value: user.estado,
+                        activeColor: const Color(0xFF00F0FF),
+                        activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
+                        inactiveThumbColor: Colors.grey,
+                        inactiveTrackColor: Colors.white10,
+                        onChanged: (val) async {
+                          if (isMe && !val) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('No puedes deshabilitar tu propio usuario.'),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                            return;
+                          }
+                          final confirm = await _showStatusConfirmationBottomSheet(
+                            context: context,
+                            user: user,
+                            targetState: val,
+                          );
+                          if (confirm == true) {
+                            ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  // Action Buttons under Switch
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Tooltip(
+                        message: 'Cambiar Contraseña',
+                        child: InkWell(
+                          onTap: () => _showResetPasswordBottomSheet(context, user),
+                          borderRadius: BorderRadius.circular(4),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: Icon(Icons.vpn_key_outlined, size: 16, color: Colors.amber),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Tooltip(
+                        message: 'Editar',
+                        child: InkWell(
+                          onTap: () => _showAddEditStaffDialog(context, user),
+                          borderRadius: BorderRadius.circular(4),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: Icon(Icons.edit_outlined, size: 16, color: Colors.blueAccent),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
