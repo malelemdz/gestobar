@@ -66,12 +66,12 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
       backgroundColor: Colors.transparent,
       floatingActionButton: _activeTab == 0
           ? PremiumFAB(
-              label: 'NUEVO USUARIO',
+              label: 'Nuevo usuario',
               icon: Icons.person_add_alt_1_outlined,
               onPressed: () => _showAddEditStaffDialog(context, null),
             )
           : PremiumFAB(
-              label: 'NUEVO ROL',
+              label: 'Nuevo rol',
               icon: Icons.add_moderator_outlined,
               onPressed: () => _showAddEditRoleDialog(context, null),
             ),
@@ -84,7 +84,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
             children: [
               // Search & Custom Tab bar Selector (Starts directly with search, no titles!)
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -191,10 +191,10 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         }
 
                         return GridView.builder(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 420,
-                            mainAxisExtent: 180,
+                            mainAxisExtent: 140,
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
                           ),
@@ -238,7 +238,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         }
 
                         return ListView.builder(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                           itemCount: roles.length,
                           itemBuilder: (context, index) {
                             final role = roles[index];
@@ -284,7 +284,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.all(14.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -303,7 +303,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           ),
                         ),
                         child: CircleAvatar(
-                          radius: 32,
+                          radius: 26,
                           backgroundColor: Colors.black26,
                           backgroundImage: (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
                               ? NetworkImage(ApiConstants.resolveImageUrl(user.fotoUrl)!)
@@ -314,7 +314,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                   style: TextStyle(
                                     color: user.estado ? roleColor : Colors.grey,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 22,
+                                    fontSize: 18,
                                   ),
                                 )
                               : null,
@@ -327,17 +327,17 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                               color: Colors.black45,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.block, color: Colors.redAccent, size: 24),
+                            child: const Icon(Icons.block, color: Colors.redAccent, size: 20),
                           ),
                         ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   // Neon switch for status
                   Row(
                     children: [
                       Transform.scale(
-                        scale: 0.7,
+                        scale: 0.65,
                         child: Switch(
                           value: user.estado,
                           activeColor: const Color(0xFF00F0FF),
@@ -352,7 +352,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                       Text(
                         user.estado ? 'ACTIVO' : 'INAC',
                         style: TextStyle(
-                          fontSize: 9,
+                          fontSize: 8,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 0.5,
                           color: user.estado ? const Color(0xFF00F0FF) : Colors.grey,
@@ -362,7 +362,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                   ),
                 ],
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               // Column 2: Text details and actions
               Expanded(
                 child: Column(
@@ -380,7 +380,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15,
+                                  fontSize: 14,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -389,7 +389,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                 '@${user.username}',
                                 style: TextStyle(
                                   color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
-                                  fontSize: 12,
+                                  fontSize: 11,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -397,19 +397,20 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                             ],
                           ),
                         ),
+                        const SizedBox(width: 4),
                         // Role Chip
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
                             color: roleColor.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(4),
                             border: Border.all(color: roleColor.withOpacity(0.3), width: 0.8),
                           ),
                           child: Text(
                             user.rolNombre.toUpperCase(),
                             style: TextStyle(
                               color: roleColor,
-                              fontSize: 9,
+                              fontSize: 8,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
                             ),
@@ -417,26 +418,26 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         ),
                       ],
                     ),
-                    const Spacer(),
+                    const SizedBox(height: 6),
                     // Contact Info
                     Row(
                       children: [
-                        Icon(Icons.phone, size: 12, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
+                        Icon(Icons.phone, size: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
                         const SizedBox(width: 4),
                         Text(
                           user.celular?.isNotEmpty == true ? user.celular! : 'Sin celular',
-                          style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8)),
+                          style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8)),
                         ),
                       ],
                     ),
                     const SizedBox(height: 2),
                     Row(
                       children: [
-                        Icon(Icons.badge, size: 12, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
+                        Icon(Icons.badge, size: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
                         const SizedBox(width: 4),
                         Text(
                           user.identificacion?.isNotEmpty == true ? user.identificacion! : 'DNI No reg.',
-                          style: TextStyle(fontSize: 11, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8)),
+                          style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8)),
                         ),
                       ],
                     ),
@@ -446,15 +447,15 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.vpn_key_outlined, size: 16, color: Colors.amber),
+                          icon: const Icon(Icons.vpn_key_outlined, size: 15, color: Colors.amber),
                           tooltip: 'Cambiar Contraseña',
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                           onPressed: () => _showResetPasswordBottomSheet(context, user),
                         ),
-                        const SizedBox(width: 14),
+                        const SizedBox(width: 12),
                         IconButton(
-                          icon: const Icon(Icons.edit_outlined, size: 16, color: Colors.blueAccent),
+                          icon: const Icon(Icons.edit_outlined, size: 15, color: Colors.blueAccent),
                           tooltip: 'Editar',
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),

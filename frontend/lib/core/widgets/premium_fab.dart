@@ -38,6 +38,7 @@ class PremiumFAB extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontSize: 14,
           letterSpacing: 0.2,
+          height: 1.0,
         ),
       ),
     );
