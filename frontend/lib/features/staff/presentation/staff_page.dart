@@ -192,12 +192,12 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         }
 
                         return GridView.builder(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 420,
                             mainAxisExtent: 100,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
                           ),
                           itemCount: filteredUsers.length,
                           itemBuilder: (context, index) {
