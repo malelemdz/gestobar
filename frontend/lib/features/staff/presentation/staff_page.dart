@@ -294,7 +294,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
             children: [
               // Column 1: Avatar and switch
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Stack(
                     children: [
@@ -336,7 +336,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  const Spacer(),
                   // Neon switch for status
                   Row(
                     children: [
