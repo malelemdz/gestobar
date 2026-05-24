@@ -685,6 +685,19 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
             final size = MediaQuery.of(context).size;
             final maxModalHeight = size.height * 0.9;
 
+            // Dynamically calculate changes in edit mode
+            final bool hasChanges = !isEdit ||
+                nameController.text.trim() != user.nombre ||
+                lastNameController.text.trim() != user.apellido ||
+                (usernameController.text.trim().toLowerCase() != user.username.toLowerCase()) ||
+                (dniController.text.trim() != (user.identificacion ?? '')) ||
+                (phoneController.text.trim() != (user.celular ?? '')) ||
+                (countryController.text.trim() != (user.nacionalidad ?? 'Bolivia')) ||
+                (addressController.text.trim() != (user.direccion ?? '')) ||
+                selectedGender != (user.genero ?? 'PREFIERO_NO_DECIRLO') ||
+                selectedRoleId != user.rolId ||
+                localImagePath != null;
+
             return Container(
               constraints: BoxConstraints(
                 maxHeight: maxModalHeight,
@@ -733,9 +746,10 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                     ),
                   ),
                   const Divider(color: Colors.white10),
+                  // Scrolling Form Fields Area
                   Expanded(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -789,7 +803,46 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           ),
                           const SizedBox(height: 24),
 
-                          // Form Fields
+                          // Form Fields Layout:
+                          // Line 1: Nombre (Full Width)
+                          Text(
+                            'NOMBRE',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFFB9CACB),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.1,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          _buildStyledField(
+                            controller: nameController,
+                            hintText: 'Ej. Juan',
+                            icon: Icons.person_outline,
+                            onChanged: (_) => setModalState(() {}),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Line 2: Apellido (Full Width)
+                          Text(
+                            'APELLIDO',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFFB9CACB),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.1,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          _buildStyledField(
+                            controller: lastNameController,
+                            hintText: 'Ej. Pérez',
+                            icon: Icons.person_outline,
+                            onChanged: (_) => setModalState(() {}),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Line 3: Row with Username (Compact) & DNI (Compact)
                           Row(
                             children: [
                               Expanded(
@@ -797,7 +850,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'NOMBRE',
+                                      'NOMBRE DE USUARIO',
                                       style: GoogleFonts.plusJakartaSans(
                                         color: const Color(0xFFB9CACB),
                                         fontSize: 10,
@@ -807,9 +860,11 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                     ),
                                     const SizedBox(height: 6),
                                     _buildStyledField(
-                                      controller: nameController,
-                                      hintText: 'Ej. Juan',
-                                      icon: Icons.person_outline,
+                                      controller: usernameController,
+                                      hintText: 'Ej. juan.perez',
+                                      icon: Icons.alternate_email,
+                                      enabled: !isEdit,
+                                      onChanged: (_) => setModalState(() {}),
                                     ),
                                   ],
                                 ),
@@ -820,7 +875,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'APELLIDO',
+                                      'CÉDULA / DNI',
                                       style: GoogleFonts.plusJakartaSans(
                                         color: const Color(0xFFB9CACB),
                                         fontSize: 10,
@@ -830,9 +885,10 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                     ),
                                     const SizedBox(height: 6),
                                     _buildStyledField(
-                                      controller: lastNameController,
-                                      hintText: 'Ej. Pérez',
-                                      icon: Icons.person_outline,
+                                      controller: dniController,
+                                      hintText: 'Ej. 1234567',
+                                      icon: Icons.badge_outlined,
+                                      onChanged: (_) => setModalState(() {}),
                                     ),
                                   ],
                                 ),
@@ -841,33 +897,34 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           ),
                           const SizedBox(height: 16),
 
-                          if (!isEdit)
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'NOMBRE DE USUARIO',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          color: const Color(0xFFB9CACB),
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.1,
-                                        ),
+                          // Line 4: Row with Celular & Password (creation) or Celular & Nacionalidad (edition)
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'CELULAR',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: const Color(0xFFB9CACB),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.1,
                                       ),
-                                      const SizedBox(height: 6),
-                                      _buildStyledField(
-                                        controller: usernameController,
-                                        hintText: 'Ej. juan.perez',
-                                        icon: Icons.alternate_email,
-                                        enabled: true,
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildStyledField(
+                                      controller: phoneController,
+                                      hintText: 'Ej. +591 70000000',
+                                      icon: Icons.phone_android_outlined,
+                                      onChanged: (_) => setModalState(() {}),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 16),
+                              ),
+                              const SizedBox(width: 16),
+                              if (!isEdit)
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -887,141 +944,103 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                         hintText: 'Mínimo 6 caracteres',
                                         icon: Icons.lock_outline,
                                         isPassword: true,
+                                        onChanged: (_) => setModalState(() {}),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              else
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'NACIONALIDAD',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _buildStyledField(
+                                        controller: countryController,
+                                        hintText: 'Ej. Bolivia',
+                                        icon: Icons.flag_outlined,
+                                        onChanged: (_) => setModalState(() {}),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ],
-                            )
-                          else
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'NOMBRE DE USUARIO',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    color: const Color(0xFFB9CACB),
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 0.1,
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Line 5: Row with Nacionalidad & Género (creation) or Rol & Género (edition)
+                          Row(
+                            children: [
+                              if (!isEdit) ...[
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'NACIONALIDAD',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _buildStyledField(
+                                        controller: countryController,
+                                        hintText: 'Ej. Bolivia',
+                                        icon: Icons.flag_outlined,
+                                        onChanged: (_) => setModalState(() {}),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(height: 6),
-                                _buildStyledField(
-                                  controller: usernameController,
-                                  hintText: 'Ej. juan.perez',
-                                  icon: Icons.alternate_email,
-                                  enabled: false,
+                                const SizedBox(width: 16),
+                              ] else ...[
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'ROL',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _buildDropdownField<String>(
+                                        value: selectedRoleId,
+                                        dropdownColor: const Color(0xFF1E2024),
+                                        hint: 'Seleccionar Rol',
+                                        items: rolesList.map((r) {
+                                          return DropdownMenuItem(
+                                            value: r.id,
+                                            child: Text(r.nombre),
+                                          );
+                                        }).toList(),
+                                        onChanged: (val) {
+                                          setModalState(() {
+                                            selectedRoleId = val;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                const SizedBox(width: 16),
                               ],
-                            ),
-                          const SizedBox(height: 16),
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'CÉDULA / DNI',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFFB9CACB),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.1,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    _buildStyledField(
-                                      controller: dniController,
-                                      hintText: 'Ej. 1234567',
-                                      icon: Icons.badge_outlined,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'CELULAR',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFFB9CACB),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.1,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    _buildStyledField(
-                                      controller: phoneController,
-                                      hintText: 'Ej. +591 70000000',
-                                      icon: Icons.phone_android_outlined,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'NACIONALIDAD',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFFB9CACB),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.1,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    _buildStyledField(
-                                      controller: countryController,
-                                      hintText: 'Ej. Bolivia',
-                                      icon: Icons.flag_outlined,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'DIRECCIÓN',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFFB9CACB),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.1,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    _buildStyledField(
-                                      controller: addressController,
-                                      hintText: 'Ej. Av. Siempre Viva 123',
-                                      icon: Icons.home_outlined,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-
-                          Row(
-                            children: [
-                              // Gender
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1036,229 +1055,232 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                       ),
                                     ),
                                     const SizedBox(height: 6),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF0C0E12),
-                                        borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(color: Colors.white.withOpacity(0.08)),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                                      child: DropdownButtonFormField<String>(
-                                        value: selectedGender,
-                                        dropdownColor: const Color(0xFF1E2024),
-                                        style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
-                                        decoration: const InputDecoration(border: InputBorder.none),
-                                        hint: const Text('Género', style: TextStyle(color: Colors.white30, fontSize: 14)),
-                                        items: const [
-                                          DropdownMenuItem(value: 'MASCULINO', child: Text('Masculino')),
-                                          DropdownMenuItem(value: 'FEMENINO', child: Text('Femenino')),
-                                          DropdownMenuItem(value: 'PREFIERO_NO_DECIRLO', child: Text('Prefiero no decirlo')),
-                                        ],
-                                        onChanged: (val) {
-                                          if (val != null) {
-                                            setModalState(() {
-                                              selectedGender = val;
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              // Role
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'ROL',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFFB9CACB),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.1,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF0C0E12),
-                                        borderRadius: BorderRadius.circular(16),
-                                        border: Border.all(color: Colors.white.withOpacity(0.08)),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                                      child: DropdownButtonFormField<String>(
-                                        value: selectedRoleId,
-                                        dropdownColor: const Color(0xFF1E2024),
-                                        style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
-                                        decoration: const InputDecoration(border: InputBorder.none),
-                                        hint: const Text('Seleccionar Rol', style: TextStyle(color: Colors.white30, fontSize: 14)),
-                                        items: rolesList.map((r) {
-                                          return DropdownMenuItem(
-                                            value: r.id,
-                                            child: Text(r.nombre),
-                                          );
-                                        }).toList(),
-                                        onChanged: (val) {
+                                    _buildDropdownField<String>(
+                                      value: selectedGender,
+                                      dropdownColor: const Color(0xFF1E2024),
+                                      hint: 'Género',
+                                      items: const [
+                                        DropdownMenuItem(value: 'MASCULINO', child: Text('Masculino')),
+                                        DropdownMenuItem(value: 'FEMENINO', child: Text('Femenino')),
+                                        DropdownMenuItem(value: 'PREFIERO_NO_DECIRLO', child: Text('Prefiero no decirlo')),
+                                      ],
+                                      onChanged: (val) {
+                                        if (val != null) {
                                           setModalState(() {
-                                            selectedRoleId = val;
+                                            selectedGender = val;
                                           });
-                                        },
-                                        validator: (val) => val == null ? 'Requerido' : null,
-                                      ),
+                                        }
+                                      },
                                     ),
                                   ],
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 16),
 
-                          // Action Buttons
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              OutlinedButton(
-                                onPressed: () => Navigator.pop(context),
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.white10),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                ),
-                                child: Text(
-                                  'Cancelar',
-                                  style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
-                                ),
+                          // Line 6: Rol (Full Width in creation mode, since it doesn't fit in dynamic Row 5)
+                          if (!isEdit) ...[
+                            Text(
+                              'ROL',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFFB9CACB),
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.1,
                               ),
-                              const SizedBox(width: 12),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF00F0FF),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                                ),
-                                onPressed: isSaving
-                                    ? null
-                                    : () async {
-                                        // Validation
-                                        if (nameController.text.trim().isEmpty ||
-                                            lastNameController.text.trim().isEmpty ||
-                                            usernameController.text.trim().isEmpty ||
-                                            selectedRoleId == null) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('Por favor completa todos los campos obligatorios'),
-                                              backgroundColor: Colors.orangeAccent,
-                                            ),
-                                          );
-                                          return;
-                                        }
+                            ),
+                            const SizedBox(height: 6),
+                            _buildDropdownField<String>(
+                              value: selectedRoleId,
+                              dropdownColor: const Color(0xFF1E2024),
+                              hint: 'Seleccionar Rol',
+                              items: rolesList.map((r) {
+                                return DropdownMenuItem(
+                                  value: r.id,
+                                  child: Text(r.nombre),
+                                );
+                              }).toList(),
+                              onChanged: (val) {
+                                setModalState(() {
+                                  selectedRoleId = val;
+                                });
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                          ],
 
-                                        if (!isEdit && passwordController.text.isEmpty) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('Por favor ingresa una contraseña'),
-                                              backgroundColor: Colors.orangeAccent,
-                                            ),
-                                          );
-                                          return;
-                                        }
-
-                                        setModalState(() {
-                                          isSaving = true;
-                                        });
-
-                                        try {
-                                          String? remotePhotoUrl = user?.fotoUrl;
-
-                                          // Upload image first if changed
-                                          if (localImagePath != null) {
-                                            remotePhotoUrl = await ref
-                                                .read(staffListProvider.notifier)
-                                                .uploadPhoto(localImagePath!);
-                                          }
-
-                                          final payload = {
-                                            'nombre': nameController.text.trim(),
-                                            'apellido': lastNameController.text.trim(),
-                                            'username': usernameController.text.trim().toLowerCase(),
-                                            'rol_id': selectedRoleId,
-                                            'genero': selectedGender,
-                                            'celular': phoneController.text.trim(),
-                                            'identificacion': dniController.text.trim(),
-                                            'nacionalidad': countryController.text.trim(),
-                                            'direccion': addressController.text.trim(),
-                                            if (remotePhotoUrl != null) 'foto_url': remotePhotoUrl,
-                                          };
-
-                                          if (!isEdit && passwordController.text.isNotEmpty) {
-                                            payload['password'] = passwordController.text;
-                                          }
-
-                                          bool success;
-                                          if (isEdit) {
-                                            success = await ref
-                                                .read(staffListProvider.notifier)
-                                                .updateStaff(user.id, payload);
-                                          } else {
-                                            success = await ref
-                                                .read(staffListProvider.notifier)
-                                                .createStaff(payload);
-                                          }
-
-                                          if (success && mounted) {
-                                            Navigator.pop(context);
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text(isEdit
-                                                    ? 'Empleado actualizado con éxito'
-                                                    : 'Empleado registrado con éxito'),
-                                                backgroundColor: Colors.green,
-                                              ),
-                                            );
-                                          } else {
-                                            setModalState(() {
-                                              isSaving = false;
-                                            });
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                content: Text('Error al guardar el empleado. Comprueba tus datos.'),
-                                                backgroundColor: Colors.redAccent,
-                                              ),
-                                            );
-                                          }
-                                        } catch (e) {
-                                          setModalState(() {
-                                            isSaving = false;
-                                          });
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text('Error: ${e.toString()}'),
-                                              backgroundColor: Colors.redAccent,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                child: isSaving
-                                    ? const SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
-                                      )
-                                    : Text(
-                                        isEdit ? 'GUARDAR CAMBIOS' : 'REGISTRAR EMPLEADO',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF0c0e12),
-                                        ),
-                                      ),
-                              ),
-                            ],
+                          // Line 7: Dirección (Full Width, Long Field)
+                          Text(
+                            'DIRECCIÓN',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFFB9CACB),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.1,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          _buildStyledField(
+                            controller: addressController,
+                            hintText: 'Ej. Av. Siempre Viva 123',
+                            icon: Icons.home_outlined,
+                            onChanged: (_) => setModalState(() {}),
                           ),
                         ],
                       ),
+                    ),
+                  ),
+                  const Divider(color: Colors.white10),
+                  // Fixed Footer with Action Buttons
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF16181C),
+                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24.0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.white10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          ),
+                          child: Text(
+                            'Cancelar',
+                            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: hasChanges ? const Color(0xFF00F0FF) : Colors.white.withOpacity(0.08),
+                            foregroundColor: hasChanges ? const Color(0xFF0C0E12) : Colors.white24,
+                            disabledBackgroundColor: Colors.white.withOpacity(0.04),
+                            disabledForegroundColor: Colors.white12,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                            elevation: 0,
+                          ),
+                          onPressed: (isSaving || !hasChanges)
+                              ? null
+                              : () async {
+                                  // Validation
+                                  if (nameController.text.trim().isEmpty ||
+                                      lastNameController.text.trim().isEmpty ||
+                                      usernameController.text.trim().isEmpty ||
+                                      selectedRoleId == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Por favor completa todos los campos obligatorios'),
+                                        backgroundColor: Colors.orangeAccent,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  if (!isEdit && passwordController.text.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Por favor ingresa una contraseña'),
+                                        backgroundColor: Colors.orangeAccent,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  setModalState(() {
+                                    isSaving = true;
+                                  });
+
+                                  try {
+                                    String? remotePhotoUrl = user?.fotoUrl;
+
+                                    // Upload image first if changed
+                                    if (localImagePath != null) {
+                                      remotePhotoUrl = await ref
+                                          .read(staffListProvider.notifier)
+                                          .uploadPhoto(localImagePath!);
+                                    }
+
+                                    final payload = {
+                                      'nombre': nameController.text.trim(),
+                                      'apellido': lastNameController.text.trim(),
+                                      'username': usernameController.text.trim().toLowerCase(),
+                                      'rol_id': selectedRoleId,
+                                      'genero': selectedGender,
+                                      'celular': phoneController.text.trim(),
+                                      'identificacion': dniController.text.trim(),
+                                      'nacionalidad': countryController.text.trim(),
+                                      'direccion': addressController.text.trim(),
+                                      if (remotePhotoUrl != null) 'foto_url': remotePhotoUrl,
+                                    };
+
+                                    if (!isEdit && passwordController.text.isNotEmpty) {
+                                      payload['password'] = passwordController.text;
+                                    }
+
+                                    bool success;
+                                    if (isEdit) {
+                                      success = await ref
+                                          .read(staffListProvider.notifier)
+                                          .updateStaff(user.id, payload);
+                                    } else {
+                                      success = await ref
+                                          .read(staffListProvider.notifier)
+                                          .createStaff(payload);
+                                    }
+
+                                    if (success && mounted) {
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(isEdit
+                                              ? 'Empleado actualizado con éxito'
+                                              : 'Empleado registrado con éxito'),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                    } else {
+                                      setModalState(() {
+                                        isSaving = false;
+                                      });
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Error al guardar el empleado. Comprueba tus datos.'),
+                                          backgroundColor: Colors.redAccent,
+                                        ),
+                                      );
+                                    }
+                                  } catch (e) {
+                                    setModalState(() {
+                                      isSaving = false;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Error: ${e.toString()}'),
+                                        backgroundColor: Colors.redAccent,
+                                      ),
+                                    );
+                                  }
+                                },
+                          child: isSaving
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white38),
+                                )
+                              : Text(
+                                  isEdit ? 'GUARDAR CAMBIOS' : 'REGISTRAR EMPLEADO',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -1894,31 +1916,104 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
     bool isPassword = false,
     bool enabled = true,
     IconData? icon,
+    void Function(String)? onChanged,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF0C0E12),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+    return TextFormField(
+      controller: controller,
+      maxLines: maxLines,
+      obscureText: isPassword,
+      enabled: enabled,
+      onChanged: onChanged,
+      style: GoogleFonts.inter(
+        color: enabled ? Colors.white : Colors.white54,
+        fontSize: 13,
       ),
-      child: TextFormField(
-        controller: controller,
-        maxLines: maxLines,
-        obscureText: isPassword,
-        enabled: enabled,
-        style: GoogleFonts.inter(
-          color: enabled ? Colors.white : Colors.white54,
-          fontSize: 14,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: const Color(0xFF22252A),
+        prefixIcon: icon != null
+            ? Padding(
+                padding: const EdgeInsets.only(left: 12.0, right: 8.0),
+                child: Icon(icon, color: Colors.white30, size: 16),
+              )
+            : null,
+        prefixIconConstraints: const BoxConstraints(
+          minWidth: 36,
+          minHeight: 16,
         ),
-        decoration: InputDecoration(
-          prefixIcon: icon != null ? Icon(icon, color: Colors.white30, size: 18) : null,
-          hintText: hintText,
-          hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          border: InputBorder.none,
+        hintText: hintText,
+        hintStyle: TextStyle(color: Colors.white.withOpacity(0.2), fontSize: 13),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
         ),
-        validator: validator,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.03), width: 1.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+        ),
       ),
+      validator: validator,
+    );
+  }
+
+  Widget _buildDropdownField<T>({
+    required T? value,
+    required Color dropdownColor,
+    required String hint,
+    required List<DropdownMenuItem<T>> items,
+    required void Function(T?) onChanged,
+    String? Function(T?)? validator,
+  }) {
+    return DropdownButtonFormField<T>(
+      value: value,
+      dropdownColor: dropdownColor,
+      style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: const Color(0xFF22252A),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+        ),
+      ),
+      hint: Text(hint, style: const TextStyle(color: Colors.white30, fontSize: 13)),
+      items: items,
+      onChanged: onChanged,
+      validator: validator,
     );
   }
 }
