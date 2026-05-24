@@ -94,6 +94,7 @@ export class SeedService {
         apellido: 'Admin',
         rol_id: superAdminRole!.id,
         bar_id: null,
+        genero: 'PREFIERO_NO_DECIRLO',
         estado: true,
       });
       superAdmin = await this.userRepository.save(superAdmin);
@@ -150,6 +151,7 @@ export class SeedService {
         apellido: 'Administrador',
         rol_id: adminRole!.id,
         bar_id: bar.id,
+        genero: 'PREFIERO_NO_DECIRLO',
         estado: true,
       });
       await this.userRepository.save(admin);
@@ -165,6 +167,7 @@ export class SeedService {
         apellido: 'Cajero',
         rol_id: barmanRole!.id,
         bar_id: bar.id,
+        genero: 'PREFIERO_NO_DECIRLO',
         estado: true,
       });
       await this.userRepository.save(barman);
@@ -181,6 +184,7 @@ export class SeedService {
         rol_id: damaRole!.id,
         bar_id: bar.id,
         celular: '77012345',
+        genero: 'PREFIERO_NO_DECIRLO',
         estado: true,
       });
       await this.userRepository.save(dama);

@@ -35,7 +35,6 @@ export class UsersService {
     return await this.userRepository.find({ relations: ['rol'] });
   }
 
-
   async findOne(id: string): Promise<User> {
     const user = await this.userRepository.findOne({ 
       where: { id },
@@ -47,17 +46,48 @@ export class UsersService {
     return user;
   }
 
+  async findByBar(barId: string): Promise<User[]> {
+    return await this.userRepository.find({
+      where: { bar_id: barId },
+      relations: ['rol'],
+      order: { nombre: 'ASC' }
+    });
+  }
+
   async findByUsername(username: string): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { username },
-      select: ['id', 'username', 'password', 'rol_id', 'bar_id', 'nombre', 'apellido', 'foto_url', 'celular'],
+      select: ['id', 'username', 'password', 'rol_id', 'bar_id', 'nombre', 'apellido', 'foto_url', 'celular', 'estado'],
       relations: ['rol'],
     });
   }
 
   async update(id: string, updateData: Partial<User>): Promise<User> {
     const user = await this.findOne(id);
+    
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10);
+    }
+    
     Object.assign(user, updateData);
     return await this.userRepository.save(user);
   }
+
+  async remove(id: string): Promise<User> {
+    const user = await this.findOne(id);
+    user.estado = false;
+    return await this.userRepository.save(user);
+  }
+
+  async updateProfile(id: string, password?: string, foto_url?: string): Promise<User> {
+    const user = await this.findOne(id);
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+    if (foto_url !== undefined) {
+      user.foto_url = foto_url;
+    }
+    return await this.userRepository.save(user);
+  }
 }
+

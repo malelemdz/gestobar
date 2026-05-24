@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsUUID, IsIn } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -44,4 +44,9 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   direccion?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsIn(['MASCULINO', 'FEMENINO', 'PREFIERO_NO_DECIRLO'])
+  genero?: string;
 }

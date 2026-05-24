@@ -37,6 +37,9 @@ export class User {
   @Column({ nullable: true })
   direccion: string;
 
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  genero: string | null;
+
   @Column({ default: true })
   estado: boolean;
 

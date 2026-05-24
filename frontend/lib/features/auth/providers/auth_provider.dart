@@ -75,27 +75,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  /// Actualiza el perfil del usuario autenticado en caliente en el estado y almacenamiento
-  Future<void> updateProfile({String? nombre, String? celular, String? fotoUrl}) async {
+  /// Actualiza el perfil del usuario autenticado en caliente en el estado y almacenamiento (foto y opcionalmente password)
+  Future<void> updateProfile({String? password, String? fotoUrl}) async {
     final currentState = state;
     if (currentState is AuthAuthenticated) {
-      final updatedUser = UserModel(
-        id: currentState.user.id,
-        username: currentState.user.username,
-        nombre: nombre ?? currentState.user.nombre,
-        rolId: currentState.user.rolId,
-        rolNombre: currentState.user.rolNombre,
-        barId: currentState.user.barId,
-        fotoUrl: fotoUrl ?? currentState.user.fotoUrl,
-        celular: celular ?? currentState.user.celular,
-      );
+      final Map<String, dynamic> updates = {};
+      if (password != null && password.isNotEmpty) {
+        updates['password'] = password;
+      }
+      if (fotoUrl != null) {
+        updates['foto_url'] = fotoUrl;
+      }
 
-      // Guardar en base de datos llamando al backend
-      await _repository.updateUser(currentState.user.id, {
-        if (nombre != null) 'nombre': nombre,
-        if (celular != null) 'celular': celular,
-        if (fotoUrl != null) 'foto_url': fotoUrl,
-      });
+      // Guardar en base de datos llamando al endpoint de autogestión
+      final updatedUser = await _repository.updateSelfProfile(updates);
 
       // Actualizar en el llavero/Keychain seguro
       await _storage.write(ApiConstants.keyUserProfile, jsonEncode(updatedUser.toJson()));

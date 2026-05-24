@@ -105,11 +105,28 @@ class AuthRepository {
       throw Exception('No se pudo conectar con el servidor para actualizar el perfil');
     }
   }
-}
 
+  /// Actualiza el propio perfil del usuario logueado usando el endpoint de autogestión
+  Future<UserModel> updateSelfProfile(Map<String, dynamic> data) async {
+    try {
+      final response = await _dio.patch('/users/profile/update', data: data);
+      return UserModel.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      final errorResponse = e.response?.data;
+      String errorMessage = 'Error al actualizar tu perfil';
+      if (errorResponse != null && errorResponse['message'] != null) {
+        errorMessage = errorResponse['message'].toString();
+      }
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('No se pudo conectar con el servidor para actualizar el perfil');
+    }
+  }
+}
 
 // Inyección del repositorio con Riverpod
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final dio = ref.watch(dioProvider);
   return AuthRepository(dio);
 });
+
