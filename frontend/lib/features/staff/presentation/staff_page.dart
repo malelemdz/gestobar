@@ -338,52 +338,55 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                   ),
                   const Spacer(),
                   // Neon switch for status
-                  Row(
-                    children: [
-                      SizedBox(
-                        height: 24,
-                        width: 38,
-                        child: Transform.scale(
-                          scale: 0.65,
-                          child: Switch(
-                            value: user.estado,
-                            activeColor: const Color(0xFF00F0FF),
-                            activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
-                            inactiveThumbColor: Colors.grey,
-                            inactiveTrackColor: Colors.white10,
-                            onChanged: (val) async {
-                              if (isMe && !val) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('No puedes deshabilitar tu propio usuario.'),
-                                    backgroundColor: Colors.orange,
-                                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: 24,
+                          width: 38,
+                          child: Transform.scale(
+                            scale: 0.65,
+                            child: Switch(
+                              value: user.estado,
+                              activeColor: const Color(0xFF00F0FF),
+                              activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
+                              inactiveThumbColor: Colors.grey,
+                              inactiveTrackColor: Colors.white10,
+                              onChanged: (val) async {
+                                if (isMe && !val) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('No puedes deshabilitar tu propio usuario.'),
+                                      backgroundColor: Colors.orange,
+                                    ),
+                                  );
+                                  return;
+                                }
+                                final confirm = await _showStatusConfirmationBottomSheet(
+                                  context: context,
+                                  user: user,
+                                  targetState: val,
                                 );
-                                return;
-                              }
-                              final confirm = await _showStatusConfirmationBottomSheet(
-                                context: context,
-                                user: user,
-                                targetState: val,
-                              );
-                              if (confirm == true) {
-                                ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
-                              }
-                            },
+                                if (confirm == true) {
+                                  ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
+                                }
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        user.estado ? 'ACTIVO' : 'INAC',
-                        style: TextStyle(
-                          fontSize: 8,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                          color: user.estado ? const Color(0xFF00F0FF) : Colors.grey,
+                        const SizedBox(width: 4),
+                        Text(
+                          user.estado ? 'ACTIVO' : 'INAC',
+                          style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                            color: user.estado ? const Color(0xFF00F0FF) : Colors.grey,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
