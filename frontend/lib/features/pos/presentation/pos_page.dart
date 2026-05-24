@@ -15,6 +15,7 @@ import '../../../core/utils/currency_helper.dart';
 import '../../admin/providers/bar_provider.dart';
 import '../../admin/providers/tarifas_provider.dart';
 import '../../admin/data/models/tarifa_model.dart';
+import '../../../core/constants/api_constants.dart';
 class PosPage extends ConsumerStatefulWidget {
   const PosPage({super.key});
 
@@ -421,7 +422,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                 children: [
                   if (product.fotoUrl != null && product.fotoUrl!.isNotEmpty)
                     Image.network(
-                      product.fotoUrl!,
+                      ApiConstants.resolveImageUrl(product.fotoUrl)!,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => _buildPlaceholderDrinkIcon(),
                     )

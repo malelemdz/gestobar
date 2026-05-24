@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../admin/providers/menu_admin_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/auth_state.dart';
+import '../../../core/constants/api_constants.dart';
 
 class PerfilPage extends ConsumerStatefulWidget {
   const PerfilPage({super.key});
@@ -96,7 +97,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                   radius: 54.0,
                   backgroundColor: theme.colorScheme.surfaceVariant,
                   backgroundImage: (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
-                      ? NetworkImage(user.fotoUrl!)
+                      ? NetworkImage(ApiConstants.resolveImageUrl(user.fotoUrl)!)
                       : null,
                   child: (user.fotoUrl == null || user.fotoUrl!.isEmpty)
                       ? Text(

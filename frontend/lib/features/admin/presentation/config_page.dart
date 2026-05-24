@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/constants/api_constants.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/currency_helper.dart';
 import '../providers/bar_provider.dart';
@@ -906,7 +907,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> with SingleTickerProvid
                     child: _isUploading 
                       ? const Center(child: CircularProgressIndicator())
                       : _logoUrl != null && _logoUrl!.isNotEmpty
-                        ? ClipOval(child: Image.network('http://127.0.0.1:3000$_logoUrl', fit: BoxFit.cover, errorBuilder: (_,__,___) => Icon(Icons.image, size: 40, color: AppTheme.liquidOnSurfaceVariant)))
+                        ? ClipOval(child: Image.network(ApiConstants.resolveImageUrl(_logoUrl)!, fit: BoxFit.cover, errorBuilder: (_,__,___) => Icon(Icons.image, size: 40, color: AppTheme.liquidOnSurfaceVariant)))
                         : Icon(Icons.add_a_photo, size: 40, color: AppTheme.liquidOnSurfaceVariant),
                   ),
                 ),

@@ -26,8 +26,9 @@ export class UploadsService {
     const filename = `${uuidv4()}.webp`;
     const filepath = path.join(uploadsDir, filename);
 
-    // Procesar y comprimir a webp (80% calidad)
+    // Procesar, redimensionar a resolución estándar web y comprimir a webp (80% calidad)
     await sharp(file.buffer)
+      .resize({ width: 800, height: 800, fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 80 })
       .toFile(filepath);
 

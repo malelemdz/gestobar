@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../core/constants/api_constants.dart';
 import '../../../core/utils/currency_helper.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../pos/models/category_model.dart';
@@ -591,7 +593,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                 children: [
                   if (product.fotoUrl != null && product.fotoUrl!.isNotEmpty)
                     Image.network(
-                      product.fotoUrl!,
+                      ApiConstants.resolveImageUrl(product.fotoUrl)!,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => _buildPlaceholderDrinkIcon(),
                     )
@@ -1220,6 +1222,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
   late TextEditingController _descriptionController;
   String? _selectedCategoryId;
   String? _fotoUrl;
+  String? _localImagePath;
   bool _isUploadingImage = false;
   bool _isDisponible = true;
 
@@ -1275,6 +1278,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
       if (file == null) return;
 
       setState(() {
+        _localImagePath = file.path;
         _isUploadingImage = true;
       });
 
@@ -1454,9 +1458,14 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                     child: Stack(
                                       fit: StackFit.expand,
                                       children: [
-                                        if (_fotoUrl != null && _fotoUrl!.isNotEmpty)
+                                        if (_localImagePath != null)
+                                          Image.file(
+                                            File(_localImagePath!),
+                                            fit: BoxFit.cover,
+                                          )
+                                        else if (_fotoUrl != null && _fotoUrl!.isNotEmpty)
                                           Image.network(
-                                            _fotoUrl!,
+                                            ApiConstants.resolveImageUrl(_fotoUrl)!,
                                             fit: BoxFit.cover,
                                             errorBuilder: (context, error, stackTrace) {
                                               return Column(

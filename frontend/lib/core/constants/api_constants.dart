@@ -16,6 +16,14 @@ class ApiConstants {
     return 'http://localhost:3000';
   }
 
+  static String? resolveImageUrl(String? url) {
+    if (url == null || url.isEmpty) return null;
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    return '$baseUrl$url';
+  }
+
   static String get wsUrl {
     return baseUrl;
   }

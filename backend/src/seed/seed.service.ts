@@ -116,20 +116,27 @@ export class SeedService {
       bar = await this.barRepository.save(bar);
     }
 
-    // 4.5 Crear Tarifas por Defecto
-    let tarifaGeneral = await this.tarifaRepository.findOne({ where: { nombre: 'General', bar_id: bar.id } });
+    // 4.5 Obtener o Crear la única Tarifa por Defecto (Normal) para el bar
+    let tarifaGeneral = await this.tarifaRepository.findOne({ where: { es_default: true, bar_id: bar.id } });
     if (!tarifaGeneral) {
-      tarifaGeneral = await this.tarifaRepository.save(this.tarifaRepository.create({ nombre: 'General', es_default: true, bar_id: bar.id }));
+      tarifaGeneral = await this.tarifaRepository.findOne({ where: { nombre: 'Normal', bar_id: bar.id } });
+    }
+    if (!tarifaGeneral) {
+      tarifaGeneral = await this.tarifaRepository.save(this.tarifaRepository.create({ nombre: 'Normal', es_default: true, bar_id: bar.id }));
     }
     
-    let tarifaCompania = await this.tarifaRepository.findOne({ where: { nombre: 'Compañía', bar_id: bar.id } });
+    // Buscar si ya existe la tarifa de compañía en la base de datos (sin crearla)
+    let tarifaCompania = await this.tarifaRepository.findOne({ where: { nombre: 'Compania', bar_id: bar.id } });
     if (!tarifaCompania) {
-      tarifaCompania = await this.tarifaRepository.save(this.tarifaRepository.create({ nombre: 'Compañía', es_default: false, bar_id: bar.id }));
+      tarifaCompania = await this.tarifaRepository.findOne({ where: { nombre: 'Compañía', bar_id: bar.id } });
     }
 
     // Asignar al bar
     bar.modulo_damas_activo = true;
-    bar.tarifa_compania_id = tarifaCompania.id;
+    const companiaTarifaId = tarifaCompania ? tarifaCompania.id : tarifaGeneral.id;
+    if (tarifaCompania) {
+      bar.tarifa_compania_id = tarifaCompania.id;
+    }
     await this.barRepository.save(bar);
 
     // 5. Crear Staff del Bar Asociado
@@ -224,14 +231,14 @@ export class SeedService {
             nombre: 'Vaso Simple', 
             precios: [
               { tarifa_id: tarifaGeneral.id, precio_unitario: 30.0 },
-              { tarifa_id: tarifaCompania.id, precio_unitario: 55.0 }
+              { tarifa_id: companiaTarifaId, precio_unitario: 55.0 }
             ] 
           },
           { 
             nombre: 'Jarra 1L', 
             precios: [
               { tarifa_id: tarifaGeneral.id, precio_unitario: 75.0 },
-              { tarifa_id: tarifaCompania.id, precio_unitario: 120.0 }
+              { tarifa_id: companiaTarifaId, precio_unitario: 120.0 }
             ] 
           },
         ],
@@ -241,20 +248,20 @@ export class SeedService {
         categoria_id: catTragos.id,
         nombre: 'Whisky Red Label',
         descripcion: 'Johnnie Walker Etiqueta Roja en las rocas o puro.',
-        foto_url: 'https://images.unsplash.com/photo-1527281497458-47f6516f5c81?w=500',
+        foto_url: 'https://images.unsplash.com/photo-1514218240783-940066a4b6c7?w=500',
         variantes: [
           { 
             nombre: 'Medida en Vaso', 
             precios: [
               { tarifa_id: tarifaGeneral.id, precio_unitario: 35.0 },
-              { tarifa_id: tarifaCompania.id, precio_unitario: 60.0 }
+              { tarifa_id: companiaTarifaId, precio_unitario: 60.0 }
             ]
           },
           { 
             nombre: 'Botella 750ml', 
             precios: [
               { tarifa_id: tarifaGeneral.id, precio_unitario: 380.0 },
-              { tarifa_id: tarifaCompania.id, precio_unitario: 550.0 }
+              { tarifa_id: companiaTarifaId, precio_unitario: 550.0 }
             ]
           },
         ],
@@ -270,7 +277,7 @@ export class SeedService {
             nombre: 'Copa Estándar', 
             precios: [
               { tarifa_id: tarifaGeneral.id, precio_unitario: 25.0 },
-              { tarifa_id: tarifaCompania.id, precio_unitario: 50.0 }
+              { tarifa_id: companiaTarifaId, precio_unitario: 50.0 }
             ]
           },
         ],
@@ -286,14 +293,14 @@ export class SeedService {
             nombre: 'Botella Fria', 
             precios: [
               { tarifa_id: tarifaGeneral.id, precio_unitario: 20.0 },
-              { tarifa_id: tarifaCompania.id, precio_unitario: 40.0 }
+              { tarifa_id: companiaTarifaId, precio_unitario: 40.0 }
             ]
           },
           { 
             nombre: 'Balde x 5 unidades', 
             precios: [
               { tarifa_id: tarifaGeneral.id, precio_unitario: 90.0 },
-              { tarifa_id: tarifaCompania.id, precio_unitario: 180.0 }
+              { tarifa_id: companiaTarifaId, precio_unitario: 180.0 }
             ]
           },
         ],
@@ -309,7 +316,7 @@ export class SeedService {
             nombre: 'Botella Grande', 
             precios: [
               { tarifa_id: tarifaGeneral.id, precio_unitario: 18.0 },
-              { tarifa_id: tarifaCompania.id, precio_unitario: 35.0 }
+              { tarifa_id: companiaTarifaId, precio_unitario: 35.0 }
             ]
           },
         ],
@@ -325,7 +332,7 @@ export class SeedService {
             nombre: 'Lata 250ml', 
             precios: [
               { tarifa_id: tarifaGeneral.id, precio_unitario: 25.0 },
-              { tarifa_id: tarifaCompania.id, precio_unitario: 45.0 }
+              { tarifa_id: companiaTarifaId, precio_unitario: 45.0 }
             ]
           },
         ],
@@ -341,7 +348,7 @@ export class SeedService {
             nombre: 'Vidrio 350ml', 
             precios: [
               { tarifa_id: tarifaGeneral.id, precio_unitario: 10.0 },
-              { tarifa_id: tarifaCompania.id, precio_unitario: 20.0 }
+              { tarifa_id: companiaTarifaId, precio_unitario: 20.0 }
             ]
           },
         ],
