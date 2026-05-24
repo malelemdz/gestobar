@@ -17,6 +17,10 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
+    if (!user.estado) {
+      throw new UnauthorizedException('El usuario está deshabilitado. Contacte a su administrador.');
+    }
+
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas');

@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../core/widgets/premium_fab.dart';
 import '../../admin/providers/staff_provider.dart';
 import '../../admin/data/models/role_model.dart';
 import '../../auth/models/user_model.dart';
@@ -19,11 +21,19 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  int _activeTab = 0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        setState(() {
+          _activeTab = _tabController.index;
+        });
+      }
+    });
   }
 
   @override
@@ -54,6 +64,17 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      floatingActionButton: _activeTab == 0
+          ? PremiumFAB(
+              label: 'NUEVO USUARIO',
+              icon: Icons.person_add_alt_1_outlined,
+              onPressed: () => _showAddEditStaffDialog(context, null),
+            )
+          : PremiumFAB(
+              label: 'NUEVO ROL',
+              icon: Icons.add_moderator_outlined,
+              onPressed: () => _showAddEditRoleDialog(context, null),
+            ),
       body: Container(
         decoration: BoxDecoration(
           color: theme.colorScheme.background.withOpacity(0.4),
@@ -61,141 +82,66 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
         child: SafeArea(
           child: Column(
             children: [
-              // Glassmorphic Header & TabBar
-              Container(
-                padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface.withOpacity(0.05),
-                  border: Border(
-                    bottom: BorderSide(
-                      color: theme.colorScheme.onSurface.withOpacity(0.08),
-                      width: 1.0,
-                    ),
-                  ),
-                ),
+              // Search & Custom Tab bar Selector (Starts directly with search, no titles!)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'ADMINISTRACIÓN DE PERSONAL',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.2,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              'Gestiona tu equipo, roles dinámicos y permisos',
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
-                              ),
-                            ),
-                          ],
+                    TextField(
+                      controller: _searchController,
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                      decoration: InputDecoration(
+                        hintText: _activeTab == 0
+                            ? 'Buscar por nombre, apellido o usuario...'
+                            : 'Buscar roles...',
+                        hintStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
+                        prefixIcon: Icon(Icons.search, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5), size: 20),
+                        suffixIcon: _searchQuery.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear, size: 18, color: Colors.white),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() {
+                                    _searchQuery = '';
+                                  });
+                                },
+                              )
+                            : null,
+                        filled: true,
+                        fillColor: theme.colorScheme.onSurface.withOpacity(0.03),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: theme.colorScheme.onSurface.withOpacity(0.08)),
                         ),
-                        // Add buttons inside header depending on tab
-                        AnimatedBuilder(
-                          animation: _tabController,
-                          builder: (context, _) {
-                            if (_tabController.index == 0) {
-                              return ElevatedButton.icon(
-                                onPressed: () => _showAddEditStaffDialog(context, null),
-                                icon: const Icon(Icons.person_add_alt_1_outlined, size: 18),
-                                label: const Text('NUEVO USUARIO'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF00F0FF),
-                                  foregroundColor: Colors.black,
-                                  textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            } else {
-                              return ElevatedButton.icon(
-                                onPressed: () => _showAddEditRoleDialog(context, null),
-                                icon: const Icon(Icons.add_moderator_outlined, size: 18),
-                                label: const Text('NUEVO ROL'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFE040FB),
-                                  foregroundColor: Colors.white,
-                                  textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              );
-                            }
-                          },
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // Search bar for Staff Tab
-                    AnimatedBuilder(
-                      animation: _tabController,
-                      builder: (context, _) {
-                        if (_tabController.index == 0) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: TextField(
-                              controller: _searchController,
-                              style: const TextStyle(color: Colors.white, fontSize: 14),
-                              decoration: InputDecoration(
-                                hintText: 'Buscar por nombre, apellido o usuario...',
-                                hintStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
-                                prefixIcon: Icon(Icons.search, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5), size: 20),
-                                suffixIcon: _searchQuery.isNotEmpty
-                                    ? IconButton(
-                                        icon: const Icon(Icons.clear, size: 18, color: Colors.white),
-                                        onPressed: () {
-                                          _searchController.clear();
-                                          setState(() {
-                                            _searchQuery = '';
-                                          });
-                                        },
-                                      )
-                                    : null,
-                                filled: true,
-                                fillColor: theme.colorScheme.onSurface.withOpacity(0.03),
-                                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(color: theme.colorScheme.onSurface.withOpacity(0.08)),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
-                                ),
-                              ),
-                              onChanged: (val) {
-                                setState(() {
-                                  _searchQuery = val.trim();
-                                });
-                              },
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
+                      ),
+                      onChanged: (val) {
+                        setState(() {
+                          _searchQuery = val.trim();
+                        });
                       },
                     ),
-                    TabBar(
-                      controller: _tabController,
-                      labelColor: const Color(0xFF00F0FF),
-                      unselectedLabelColor: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
-                      indicatorColor: const Color(0xFF00F0FF),
-                      indicatorWeight: 3.0,
-                      labelStyle: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1),
-                      tabs: const [
-                        Tab(text: 'USUARIOS'),
-                        Tab(text: 'ROLES'),
-                      ],
+                    const SizedBox(height: 12),
+                    // Custom Tab switcher matching Caja's premium style
+                    Container(
+                      height: 46,
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF181A1E),
+                        borderRadius: BorderRadius.circular(23),
+                        border: Border.all(color: Colors.white.withOpacity(0.03)),
+                      ),
+                      child: Row(
+                        children: [
+                          _buildTabButton(0, 'USUARIOS', Icons.people_outline),
+                          _buildTabButton(1, 'ROLES', Icons.security_outlined),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -504,7 +450,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           tooltip: 'Cambiar Contraseña',
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
-                          onPressed: () => _showResetPasswordDialog(context, user),
+                          onPressed: () => _showResetPasswordBottomSheet(context, user),
                         ),
                         const SizedBox(width: 14),
                         IconButton(
@@ -513,14 +459,6 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                           onPressed: () => _showAddEditStaffDialog(context, user),
-                        ),
-                        const SizedBox(width: 14),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
-                          tooltip: 'Eliminar (Deshabilitar)',
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          onPressed: () => _showDeleteConfirmation(context, user),
                         ),
                       ],
                     ),
@@ -645,11 +583,66 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
   }
 
   // =========================================================================
-  // MODALS & DIALOGS
+  // 💴 BOTÓN DE PESTAÑA PERSONALIZADO
+  // =========================================================================
+  Widget _buildTabButton(int index, String label, IconData icon) {
+    final bool isActive = _activeTab == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          _tabController.animateTo(index);
+          setState(() {
+            _activeTab = index;
+          });
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: 38,
+          decoration: BoxDecoration(
+            color: isActive
+                ? const Color(0xFF00F0FF)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: isActive
+                ? [
+                    BoxShadow(
+                      color: const Color(0xFF00F0FF).withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: isActive ? Colors.black : Colors.white30,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  color: isActive ? Colors.black : Colors.white30,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // =========================================================================
+  // MODALS & BOTTOM SHEETS
   // =========================================================================
 
   Future<void> _showAddEditStaffDialog(BuildContext context, UserModel? user) async {
-    final theme = Theme.of(context);
     final bool isEdit = user != null;
 
     final nameController = TextEditingController(text: user?.nombre);
@@ -677,403 +670,587 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
+            final viewInsets = MediaQuery.of(context).viewInsets;
+            final size = MediaQuery.of(context).size;
+            final maxModalHeight = size.height * 0.9;
+
             return Container(
-              height: MediaQuery.of(context).size.height * 0.9,
+              constraints: BoxConstraints(
+                maxHeight: maxModalHeight,
+              ),
+              margin: EdgeInsets.only(bottom: viewInsets.bottom),
               decoration: BoxDecoration(
-                color: const Color(0xFF0A0F1D).withOpacity(0.95),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                border: Border.all(color: Colors.white10, width: 1.0),
+                color: const Color(0xFF1E2024), // Level 2 Modal
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+                border: Border(
+                  top: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+                ),
               ),
-              padding: EdgeInsets.only(
-                left: 20,
-                right: 20,
-                top: 20,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 12),
+                  Center(
+                    child: Container(
+                      width: 48,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          isEdit ? 'EDITAR PERSONAL' : 'NUEVO EMPLEADO',
-                          style: const TextStyle(
+                          isEdit ? 'Editar Personal' : 'Nuevo Empleado',
+                          style: GoogleFonts.plusJakartaSans(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.close, color: Colors.white70),
+                          icon: const Icon(Icons.close, color: Colors.white54),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
                     ),
-                    const Divider(color: Colors.white10),
-                    const SizedBox(height: 16),
-
-                    // Avatar picker with zero latency
-                    Center(
-                      child: Stack(
+                  ),
+                  const Divider(color: Colors.white10),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: const Color(0xFF00F0FF), width: 1.5),
-                            ),
-                            child: CircleAvatar(
-                              radius: 46,
-                              backgroundColor: Colors.black45,
-                              backgroundImage: localImagePath != null
-                                  ? FileImage(File(localImagePath!)) as ImageProvider
-                                  : (user?.fotoUrl != null && user!.fotoUrl!.isNotEmpty)
-                                      ? NetworkImage(ApiConstants.resolveImageUrl(user.fotoUrl)!)
-                                      : null,
-                              child: localImagePath == null && (user?.fotoUrl == null || user!.fotoUrl!.isEmpty)
-                                  ? const Icon(Icons.person, size: 40, color: Colors.white38)
-                                  : null,
+                          // Avatar picker with zero latency
+                          Center(
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: const Color(0xFF00F0FF), width: 1.5),
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 46,
+                                    backgroundColor: Colors.black45,
+                                    backgroundImage: localImagePath != null
+                                        ? FileImage(File(localImagePath!)) as ImageProvider
+                                        : (user?.fotoUrl != null && user!.fotoUrl!.isNotEmpty)
+                                            ? NetworkImage(ApiConstants.resolveImageUrl(user.fotoUrl)!)
+                                            : null,
+                                    child: localImagePath == null && (user?.fotoUrl == null || user!.fotoUrl!.isEmpty)
+                                        ? const Icon(Icons.person, size: 40, color: Colors.white38)
+                                        : null,
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      final picker = ImagePicker();
+                                      final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+                                      if (img != null) {
+                                        setModalState(() {
+                                          localImagePath = img.path;
+                                        });
+                                      }
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF00F0FF),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(Icons.camera_alt, size: 16, color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: InkWell(
-                              onTap: () async {
-                                final picker = ImagePicker();
-                                final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-                                if (img != null) {
-                                  setModalState(() {
-                                    localImagePath = img.path;
-                                  });
-                                }
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(6),
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF00F0FF),
-                                  shape: BoxShape.circle,
+                          const SizedBox(height: 24),
+
+                          // Form Fields
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'NOMBRE',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: const Color(0xFFB9CACB),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.1,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildStyledField(
+                                      controller: nameController,
+                                      hintText: 'Ej. Juan',
+                                      icon: Icons.person_outline,
+                                    ),
+                                  ],
                                 ),
-                                child: const Icon(Icons.camera_alt, size: 16, color: Colors.black),
                               ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'APELLIDO',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: const Color(0xFFB9CACB),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.1,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildStyledField(
+                                      controller: lastNameController,
+                                      hintText: 'Ej. Pérez',
+                                      icon: Icons.person_outline,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+
+                          if (!isEdit)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'NOMBRE DE USUARIO',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _buildStyledField(
+                                        controller: usernameController,
+                                        hintText: 'Ej. juan.perez',
+                                        icon: Icons.alternate_email,
+                                        enabled: true,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'CONTRASEÑA',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _buildStyledField(
+                                        controller: passwordController,
+                                        hintText: 'Mínimo 6 caracteres',
+                                        icon: Icons.lock_outline,
+                                        isPassword: true,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                          else
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'NOMBRE DE USUARIO',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    color: const Color(0xFFB9CACB),
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.1,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                _buildStyledField(
+                                  controller: usernameController,
+                                  hintText: 'Ej. juan.perez',
+                                  icon: Icons.alternate_email,
+                                  enabled: false,
+                                ),
+                              ],
                             ),
+                          const SizedBox(height: 16),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'CÉDULA / DNI',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: const Color(0xFFB9CACB),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.1,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildStyledField(
+                                      controller: dniController,
+                                      hintText: 'Ej. 1234567',
+                                      icon: Icons.badge_outlined,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'CELULAR',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: const Color(0xFFB9CACB),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.1,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildStyledField(
+                                      controller: phoneController,
+                                      hintText: 'Ej. +591 70000000',
+                                      icon: Icons.phone_android_outlined,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'NACIONALIDAD',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: const Color(0xFFB9CACB),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.1,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildStyledField(
+                                      controller: countryController,
+                                      hintText: 'Ej. Bolivia',
+                                      icon: Icons.flag_outlined,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'DIRECCIÓN',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: const Color(0xFFB9CACB),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.1,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    _buildStyledField(
+                                      controller: addressController,
+                                      hintText: 'Ej. Av. Siempre Viva 123',
+                                      icon: Icons.home_outlined,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+
+                          Row(
+                            children: [
+                              // Gender
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'GÉNERO',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: const Color(0xFFB9CACB),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.1,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF0C0E12),
+                                        borderRadius: BorderRadius.circular(16),
+                                        border: Border.all(color: Colors.white.withOpacity(0.08)),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      child: DropdownButtonFormField<String>(
+                                        value: selectedGender,
+                                        dropdownColor: const Color(0xFF1E2024),
+                                        style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+                                        decoration: const InputDecoration(border: InputBorder.none),
+                                        hint: const Text('Género', style: TextStyle(color: Colors.white30, fontSize: 14)),
+                                        items: const [
+                                          DropdownMenuItem(value: 'MASCULINO', child: Text('Masculino')),
+                                          DropdownMenuItem(value: 'FEMENINO', child: Text('Femenino')),
+                                          DropdownMenuItem(value: 'PREFIERO_NO_DECIRLO', child: Text('Prefiero no decirlo')),
+                                        ],
+                                        onChanged: (val) {
+                                          if (val != null) {
+                                            setModalState(() {
+                                              selectedGender = val;
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              // Role
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'ROL',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: const Color(0xFFB9CACB),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.1,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF0C0E12),
+                                        borderRadius: BorderRadius.circular(16),
+                                        border: Border.all(color: Colors.white.withOpacity(0.08)),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      child: DropdownButtonFormField<String>(
+                                        value: selectedRoleId,
+                                        dropdownColor: const Color(0xFF1E2024),
+                                        style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+                                        decoration: const InputDecoration(border: InputBorder.none),
+                                        hint: const Text('Seleccionar Rol', style: TextStyle(color: Colors.white30, fontSize: 14)),
+                                        items: rolesList.map((r) {
+                                          return DropdownMenuItem(
+                                            value: r.id,
+                                            child: Text(r.nombre),
+                                          );
+                                        }).toList(),
+                                        onChanged: (val) {
+                                          setModalState(() {
+                                            selectedRoleId = val;
+                                          });
+                                        },
+                                        validator: (val) => val == null ? 'Requerido' : null,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 32),
+
+                          // Action Buttons
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              OutlinedButton(
+                                onPressed: () => Navigator.pop(context),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Colors.white10),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                ),
+                                child: Text(
+                                  'Cancelar',
+                                  style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF00F0FF),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                                ),
+                                onPressed: isSaving
+                                    ? null
+                                    : () async {
+                                        // Validation
+                                        if (nameController.text.trim().isEmpty ||
+                                            lastNameController.text.trim().isEmpty ||
+                                            usernameController.text.trim().isEmpty ||
+                                            selectedRoleId == null) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Por favor completa todos los campos obligatorios'),
+                                              backgroundColor: Colors.orangeAccent,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        if (!isEdit && passwordController.text.isEmpty) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Por favor ingresa una contraseña'),
+                                              backgroundColor: Colors.orangeAccent,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        setModalState(() {
+                                          isSaving = true;
+                                        });
+
+                                        try {
+                                          String? remotePhotoUrl = user?.fotoUrl;
+
+                                          // Upload image first if changed
+                                          if (localImagePath != null) {
+                                            remotePhotoUrl = await ref
+                                                .read(staffListProvider.notifier)
+                                                .uploadPhoto(localImagePath!);
+                                          }
+
+                                          final payload = {
+                                            'nombre': nameController.text.trim(),
+                                            'apellido': lastNameController.text.trim(),
+                                            'username': usernameController.text.trim().toLowerCase(),
+                                            'rol_id': selectedRoleId,
+                                            'genero': selectedGender,
+                                            'celular': phoneController.text.trim(),
+                                            'identificacion': dniController.text.trim(),
+                                            'nacionalidad': countryController.text.trim(),
+                                            'direccion': addressController.text.trim(),
+                                            if (remotePhotoUrl != null) 'foto_url': remotePhotoUrl,
+                                          };
+
+                                          if (!isEdit && passwordController.text.isNotEmpty) {
+                                            payload['password'] = passwordController.text;
+                                          }
+
+                                          bool success;
+                                          if (isEdit) {
+                                            success = await ref
+                                                .read(staffListProvider.notifier)
+                                                .updateStaff(user.id, payload);
+                                          } else {
+                                            success = await ref
+                                                .read(staffListProvider.notifier)
+                                                .createStaff(payload);
+                                          }
+
+                                          if (success && mounted) {
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text(isEdit
+                                                    ? 'Empleado actualizado con éxito'
+                                                    : 'Empleado registrado con éxito'),
+                                                backgroundColor: Colors.green,
+                                              ),
+                                            );
+                                          } else {
+                                            setModalState(() {
+                                              isSaving = false;
+                                            });
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                content: Text('Error al guardar el empleado. Comprueba tus datos.'),
+                                                backgroundColor: Colors.redAccent,
+                                              ),
+                                            );
+                                          }
+                                        } catch (e) {
+                                          setModalState(() {
+                                            isSaving = false;
+                                          });
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('Error: ${e.toString()}'),
+                                              backgroundColor: Colors.redAccent,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                child: isSaving
+                                    ? const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                                      )
+                                    : Text(
+                                        isEdit ? 'GUARDAR CAMBIOS' : 'REGISTRAR EMPLEADO',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF0c0e12),
+                                        ),
+                                      ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
-
-                    // Form Fields
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildModalTextField(
-                            theme,
-                            'Nombre',
-                            nameController,
-                            icon: Icons.person_outline,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildModalTextField(
-                            theme,
-                            'Apellido',
-                            lastNameController,
-                            icon: Icons.person_outline,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildModalTextField(
-                            theme,
-                            'Nombre de Usuario',
-                            usernameController,
-                            icon: Icons.alternate_email,
-                            enabled: !isEdit, // No editable al editar
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildModalTextField(
-                            theme,
-                            isEdit ? 'Nueva Contraseña (Opcional)' : 'Contraseña',
-                            passwordController,
-                            icon: Icons.lock_outline,
-                            isPassword: true,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildModalTextField(
-                            theme,
-                            'Cédula / DNI',
-                            dniController,
-                            icon: Icons.badge_outlined,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildModalTextField(
-                            theme,
-                            'Celular',
-                            phoneController,
-                            icon: Icons.phone_android_outlined,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildModalTextField(
-                            theme,
-                            'Nacionalidad',
-                            countryController,
-                            icon: Icons.flag_outlined,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildModalTextField(
-                            theme,
-                            'Dirección',
-                            addressController,
-                            icon: Icons.home_outlined,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Dropdowns for Role & Gender
-                    Row(
-                      children: [
-                        // Gender
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Género',
-                                style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                              ),
-                              const SizedBox(height: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.03),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.white10),
-                                ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                    value: selectedGender,
-                                    dropdownColor: const Color(0xFF0F162A),
-                                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                                    isExpanded: true,
-                                    items: const [
-                                      DropdownMenuItem(value: 'MASCULINO', child: Text('Masculino')),
-                                      DropdownMenuItem(value: 'FEMENINO', child: Text('Femenino')),
-                                      DropdownMenuItem(value: 'PREFIERO_NO_DECIRLO', child: Text('Prefiero no decirlo')),
-                                    ],
-                                    onChanged: (val) {
-                                      if (val != null) {
-                                        setModalState(() {
-                                          selectedGender = val;
-                                        });
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        // Role
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Rol',
-                                style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                              ),
-                              const SizedBox(height: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.03),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.white10),
-                                ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                    value: selectedRoleId,
-                                    hint: const Text('Seleccionar Rol', style: TextStyle(color: Colors.white30, fontSize: 14)),
-                                    dropdownColor: const Color(0xFF0F162A),
-                                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                                    isExpanded: true,
-                                    items: rolesList.map((r) {
-                                      return DropdownMenuItem(
-                                        value: r.id,
-                                        child: Text(r.nombre),
-                                      );
-                                    }).toList(),
-                                    onChanged: (val) {
-                                      setModalState(() {
-                                        selectedRoleId = val;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-
-                    // Submit
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00F0FF),
-                          foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: isSaving
-                            ? null
-                            : () async {
-                                // Validation
-                                if (nameController.text.isEmpty ||
-                                    lastNameController.text.isEmpty ||
-                                    usernameController.text.isEmpty ||
-                                    selectedRoleId == null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Por favor completa todos los campos obligatorios'),
-                                      backgroundColor: Colors.orangeAccent,
-                                    ),
-                                  );
-                                  return;
-                                }
-
-                                if (!isEdit && passwordController.text.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Por favor ingresa una contraseña'),
-                                      backgroundColor: Colors.orangeAccent,
-                                    ),
-                                  );
-                                  return;
-                                }
-
-                                setModalState(() {
-                                  isSaving = true;
-                                });
-
-                                try {
-                                  String? remotePhotoUrl = user?.fotoUrl;
-
-                                  // Upload image first if changed
-                                  if (localImagePath != null) {
-                                    remotePhotoUrl = await ref
-                                        .read(staffListProvider.notifier)
-                                        .uploadPhoto(localImagePath!);
-                                  }
-
-                                  final payload = {
-                                    'nombre': nameController.text.trim(),
-                                    'apellido': lastNameController.text.trim(),
-                                    'username': usernameController.text.trim().toLowerCase(),
-                                    'rol_id': selectedRoleId,
-                                    'genero': selectedGender,
-                                    'celular': phoneController.text.trim(),
-                                    'identificacion': dniController.text.trim(),
-                                    'nacionalidad': countryController.text.trim(),
-                                    'direccion': addressController.text.trim(),
-                                    if (remotePhotoUrl != null) 'foto_url': remotePhotoUrl,
-                                  };
-
-                                  if (passwordController.text.isNotEmpty) {
-                                    payload['password'] = passwordController.text;
-                                  }
-
-                                  bool success;
-                                  if (isEdit) {
-                                    success = await ref
-                                        .read(staffListProvider.notifier)
-                                        .updateStaff(user.id, payload);
-                                  } else {
-                                    success = await ref
-                                        .read(staffListProvider.notifier)
-                                        .createStaff(payload);
-                                  }
-
-                                  if (success && mounted) {
-                                    Navigator.pop(context);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(isEdit
-                                            ? 'Empleado actualizado con éxito'
-                                            : 'Empleado registrado con éxito'),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                  } else {
-                                    setModalState(() {
-                                      isSaving = false;
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Error al guardar el empleado. Comprueba tus datos.'),
-                                        backgroundColor: Colors.redAccent,
-                                      ),
-                                    );
-                                  }
-                                } catch (e) {
-                                  setModalState(() {
-                                    isSaving = false;
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Error: ${e.toString()}'),
-                                      backgroundColor: Colors.redAccent,
-                                    ),
-                                  );
-                                }
-                              },
-                        child: isSaving
-                            ? const CircularProgressIndicator(color: Colors.black)
-                            : Text(
-                                isEdit ? 'GUARDAR CAMBIOS' : 'REGISTRAR EMPLEADO',
-                                style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
-                              ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },
@@ -1083,7 +1260,6 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
   }
 
   Future<void> _showAddEditRoleDialog(BuildContext context, RoleModel? role) async {
-    final theme = Theme.of(context);
     final bool isEdit = role != null;
 
     final nameController = TextEditingController(text: role?.nombre);
@@ -1101,172 +1277,256 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
+            final viewInsets = MediaQuery.of(context).viewInsets;
+            final size = MediaQuery.of(context).size;
+            final maxModalHeight = size.height * 0.8;
+
             return Container(
-              height: MediaQuery.of(context).size.height * 0.8,
-              decoration: BoxDecoration(
-                color: const Color(0xFF0A0F1D).withOpacity(0.95),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                border: Border.all(color: Colors.white10, width: 1.0),
+              constraints: BoxConstraints(
+                maxHeight: maxModalHeight,
               ),
-              padding: EdgeInsets.only(
-                left: 20,
-                right: 20,
-                top: 20,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+              margin: EdgeInsets.only(bottom: viewInsets.bottom),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E2024), // Level 2 Modal
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+                border: Border(
+                  top: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+                ),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        isEdit ? 'EDITAR ROL PERSONALIZADO' : 'NUEVO ROL PERSONALIZADO',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
+                  const SizedBox(height: 12),
+                  Center(
+                    child: Container(
+                      width: 48,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          isEdit ? 'Editar Rol' : 'Nuevo Rol Personalizado',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close, color: Colors.white70),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ],
+                        IconButton(
+                          icon: const Icon(Icons.close, color: Colors.white54),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
                   ),
                   const Divider(color: Colors.white10),
-                  const SizedBox(height: 16),
-
-                  _buildModalTextField(
-                    theme,
-                    'Nombre del Rol (Ej: Ayudante de Barra)',
-                    nameController,
-                    icon: Icons.security,
-                  ),
-                  const SizedBox(height: 20),
-
-                  Text(
-                    'Asignar Permisos de Acceso',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
                   Expanded(
-                    child: permissionsAsync.when(
-                      loading: () => const Center(child: CircularProgressIndicator()),
-                      error: (err, _) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent))),
-                      data: (permissions) {
-                        return ListView.builder(
-                          itemCount: permissions.length,
-                          itemBuilder: (context, index) {
-                            final perm = permissions[index];
-                            final isChecked = selectedPermissionIds.contains(perm.id);
-
-                            return CheckboxListTile(
-                              title: Text(
-                                perm.nombre,
-                                style: const TextStyle(color: Colors.white, fontSize: 14),
-                              ),
-                              value: isChecked,
-                              activeColor: const Color(0xFFE040FB),
-                              checkColor: Colors.white,
-                              onChanged: (val) {
-                                setModalState(() {
-                                  if (val == true) {
-                                    selectedPermissionIds.add(perm.id);
-                                  } else {
-                                    selectedPermissionIds.remove(perm.id);
-                                  }
-                                });
-                              },
-                              controlAffinity: ListTileControlAffinity.leading,
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Submit
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFE040FB),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: isSaving
-                          ? null
-                          : () async {
-                              if (nameController.text.trim().isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Por favor escribe un nombre para el rol'),
-                                    backgroundColor: Colors.orangeAccent,
-                                  ),
-                                );
-                                return;
-                              }
-
-                              setModalState(() {
-                                isSaving = true;
-                              });
-
-                              bool success;
-                              if (isEdit) {
-                                success = await ref
-                                    .read(rolesListProvider.notifier)
-                                    .updateRole(
-                                      role.id,
-                                      nameController.text.trim(),
-                                      selectedPermissionIds,
-                                    );
-                              } else {
-                                success = await ref
-                                    .read(rolesListProvider.notifier)
-                                    .createRole(
-                                      nameController.text.trim(),
-                                      selectedPermissionIds,
-                                    );
-                              }
-
-                              if (success && mounted) {
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(isEdit
-                                        ? 'Rol actualizado correctamente'
-                                        : 'Rol personalizado creado con éxito'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                              } else {
-                                setModalState(() {
-                                  isSaving = false;
-                                });
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Error al guardar el rol personalizado'),
-                                    backgroundColor: Colors.redAccent,
-                                  ),
-                                );
-                              }
-                            },
-                      child: isSaving
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              isEdit ? 'GUARDAR ROL' : 'CREAR ROL PERSONALIZADO',
-                              style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            'NOMBRE DEL ROL',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFFB9CACB),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.1,
                             ),
+                          ),
+                          const SizedBox(height: 6),
+                          _buildStyledField(
+                            controller: nameController,
+                            hintText: 'Ej. Ayudante de Barra',
+                            icon: Icons.security,
+                          ),
+                          const SizedBox(height: 24),
+                          Text(
+                            'ASIGNAR PERMISOS DE ACCESO',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFFB9CACB),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.1,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // List of permissions
+                          Container(
+                            constraints: const BoxConstraints(maxHeight: 250),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0C0E12),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: Colors.white.withOpacity(0.08)),
+                            ),
+                            child: permissionsAsync.when(
+                              loading: () => const Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
+                                ),
+                              ),
+                              error: (err, _) => Center(
+                                child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent)),
+                              ),
+                              data: (permissions) {
+                                if (permissions.isEmpty) {
+                                  return Center(
+                                    child: Text(
+                                      'No hay permisos disponibles',
+                                      style: GoogleFonts.inter(color: Colors.white30, fontSize: 13),
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: permissions.length,
+                                  itemBuilder: (context, index) {
+                                    final perm = permissions[index];
+                                    final isChecked = selectedPermissionIds.contains(perm.id);
+
+                                    return Theme(
+                                      data: Theme.of(context).copyWith(
+                                        unselectedWidgetColor: Colors.white24,
+                                      ),
+                                      child: CheckboxListTile(
+                                        title: Text(
+                                          perm.nombre,
+                                          style: GoogleFonts.inter(
+                                            color: Colors.white,
+                                            fontSize: 13,
+                                            fontWeight: isChecked ? FontWeight.bold : FontWeight.normal,
+                                          ),
+                                        ),
+                                        value: isChecked,
+                                        activeColor: const Color(0xFF00F0FF),
+                                        checkColor: Colors.black,
+                                        onChanged: (val) {
+                                          setModalState(() {
+                                            if (val == true) {
+                                              selectedPermissionIds.add(perm.id);
+                                            } else {
+                                              selectedPermissionIds.remove(perm.id);
+                                            }
+                                          });
+                                        },
+                                        controlAffinity: ListTileControlAffinity.leading,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+
+                          // Actions
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              OutlinedButton(
+                                onPressed: () => Navigator.pop(context),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Colors.white10),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                ),
+                                child: Text(
+                                  'Cancelar',
+                                  style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF00F0FF),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                                ),
+                                onPressed: isSaving
+                                    ? null
+                                    : () async {
+                                        if (nameController.text.trim().isEmpty) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Por favor escribe un nombre para el rol'),
+                                              backgroundColor: Colors.orangeAccent,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        setModalState(() {
+                                          isSaving = true;
+                                        });
+
+                                        bool success;
+                                        if (isEdit) {
+                                          success = await ref
+                                              .read(rolesListProvider.notifier)
+                                              .updateRole(
+                                                role.id,
+                                                nameController.text.trim(),
+                                                selectedPermissionIds,
+                                              );
+                                        } else {
+                                          success = await ref
+                                              .read(rolesListProvider.notifier)
+                                              .createRole(
+                                                nameController.text.trim(),
+                                                selectedPermissionIds,
+                                              );
+                                        }
+
+                                        if (success && mounted) {
+                                          Navigator.pop(context);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(isEdit
+                                                  ? 'Rol actualizado correctamente'
+                                                  : 'Rol personalizado creado con éxito'),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        } else {
+                                          setModalState(() {
+                                            isSaving = false;
+                                          });
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Error al guardar el rol personalizado'),
+                                              backgroundColor: Colors.redAccent,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                child: isSaving
+                                    ? const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                                      )
+                                    : Text(
+                                        isEdit ? 'GUARDAR ROL' : 'CREAR ROL',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF0c0e12),
+                                        ),
+                                      ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -1278,128 +1538,185 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
     );
   }
 
-  Future<void> _showResetPasswordDialog(BuildContext context, UserModel user) async {
-    final theme = Theme.of(context);
+  Future<void> _showResetPasswordBottomSheet(BuildContext context, UserModel user) async {
     final passwordController = TextEditingController();
     bool isSaving = false;
 
-    await showDialog(
+    await showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              backgroundColor: const Color(0xFF0F162A),
-              title: Text('RESTABLECER CONTRASEÑA', style: theme.textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
-              content: Column(
+          builder: (context, setModalState) {
+            final viewInsets = MediaQuery.of(context).viewInsets;
+            final size = MediaQuery.of(context).size;
+            final maxModalHeight = size.height * 0.7;
+
+            return Container(
+              constraints: BoxConstraints(
+                maxHeight: maxModalHeight,
+              ),
+              margin: EdgeInsets.only(bottom: viewInsets.bottom),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E2024), // Level 2 Modal
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+                border: Border(
+                  top: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+                ),
+              ),
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    'Escribe una nueva contraseña para ${user.nombre}. El usuario deberá usar esta clave para ingresar en su siguiente inicio de sesión.',
-                    style: TextStyle(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8), fontSize: 13),
+                  const SizedBox(height: 12),
+                  Center(
+                    child: Container(
+                      width: 48,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  _buildModalTextField(
-                    theme,
-                    'Nueva Contraseña',
-                    passwordController,
-                    icon: Icons.lock,
-                    isPassword: true,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Restablecer Contraseña',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, color: Colors.white54),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(color: Colors.white10),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            'Escribe una nueva contraseña para ${user.nombre}. El usuario deberá usar esta clave para ingresar en su siguiente inicio de sesión.',
+                            style: GoogleFonts.inter(
+                              color: Colors.white70,
+                              fontSize: 13,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          Text(
+                            'NUEVA CONTRASEÑA',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFFB9CACB),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.1,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          _buildStyledField(
+                            controller: passwordController,
+                            hintText: 'Mínimo 6 caracteres',
+                            icon: Icons.lock_outline,
+                            isPassword: true,
+                          ),
+                          const SizedBox(height: 32),
+
+                          // Actions
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              OutlinedButton(
+                                onPressed: () => Navigator.pop(context),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Colors.white10),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                ),
+                                child: Text(
+                                  'Cancelar',
+                                  style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF00F0FF),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                                ),
+                                onPressed: isSaving
+                                    ? null
+                                    : () async {
+                                        if (passwordController.text.trim().isEmpty) {
+                                          return;
+                                        }
+
+                                        setModalState(() {
+                                          isSaving = true;
+                                        });
+
+                                        final success = await ref
+                                            .read(staffListProvider.notifier)
+                                            .updateStaff(user.id, {
+                                          'password': passwordController.text.trim(),
+                                        });
+
+                                        if (success && mounted) {
+                                          Navigator.pop(context);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Contraseña restablecida con éxito'),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        } else {
+                                          setModalState(() {
+                                            isSaving = false;
+                                          });
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Error al restablecer la contraseña'),
+                                              backgroundColor: Colors.redAccent,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                child: isSaving
+                                    ? const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                                      )
+                                    : Text(
+                                        'RESTABLECER',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFF0c0e12),
+                                        ),
+                                      ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('CANCELAR', style: TextStyle(color: Colors.white70)),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00F0FF),
-                    foregroundColor: Colors.black,
-                  ),
-                  onPressed: isSaving
-                      ? null
-                      : () async {
-                          if (passwordController.text.trim().isEmpty) {
-                            return;
-                          }
-
-                          setState(() {
-                            isSaving = true;
-                          });
-
-                          final success = await ref
-                              .read(staffListProvider.notifier)
-                              .updateStaff(user.id, {
-                            'password': passwordController.text.trim(),
-                          });
-
-                          if (success && mounted) {
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Contraseña restablecida con éxito'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          } else {
-                            setState(() {
-                              isSaving = false;
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Error al restablecer la contraseña'),
-                                backgroundColor: Colors.redAccent,
-                              ),
-                            );
-                          }
-                        },
-                  child: isSaving ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black)) : const Text('RESTABLECER'),
-                ),
-              ],
             );
           },
-        );
-      },
-    );
-  }
-
-  Future<void> _showDeleteConfirmation(BuildContext context, UserModel user) async {
-    final theme = Theme.of(context);
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF0F162A),
-          title: const Text('¿INHABILITAR EMPLEADO?', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
-          content: Text(
-            'El empleado ${user.nombre} será deshabilitado (Soft Delete). No podrá iniciar sesión ni acceder al sistema, pero su registro histórico se mantendrá intacto para auditoría y comisiones.',
-            style: TextStyle(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8), fontSize: 13),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('CANCELAR', style: TextStyle(color: Colors.white70)),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white),
-              onPressed: () async {
-                final success = await ref.read(staffListProvider.notifier).deleteStaff(user.id);
-                if (success && mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Empleado inhabilitado con éxito'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                }
-              },
-              child: const Text('INHABILITAR'),
-            ),
-          ],
         );
       },
     );
@@ -1411,7 +1728,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF0F162A),
+          backgroundColor: const Color(0xFF1E2024),
           title: const Text('¿ELIMINAR ROL?', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
           content: Text(
             '¿Estás seguro de que deseas eliminar el rol "${role.nombre}"? Los usuarios que posean este rol deberán ser reasignados.',
@@ -1444,50 +1761,39 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
     );
   }
 
-  Widget _buildModalTextField(
-    ThemeData theme,
-    String label,
-    TextEditingController controller, {
-    IconData? icon,
+  Widget _buildStyledField({
+    required TextEditingController controller,
+    required String hintText,
+    int maxLines = 1,
+    String? Function(String?)? validator,
     bool isPassword = false,
     bool enabled = true,
+    IconData? icon,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF0C0E12),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
+      ),
+      child: TextFormField(
+        controller: controller,
+        maxLines: maxLines,
+        obscureText: isPassword,
+        enabled: enabled,
+        style: GoogleFonts.inter(
+          color: enabled ? Colors.white : Colors.white54,
+          fontSize: 14,
         ),
-        const SizedBox(height: 6),
-        TextField(
-          controller: controller,
-          enabled: enabled,
-          obscureText: isPassword,
-          style: TextStyle(
-            color: enabled ? Colors.white : Colors.white54,
-            fontSize: 14,
-          ),
-          decoration: InputDecoration(
-            prefixIcon: icon != null ? Icon(icon, color: Colors.white38, size: 18) : null,
-            filled: true,
-            fillColor: Colors.white.withOpacity(0.03),
-            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.white12),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.white10),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
-            ),
-          ),
+        decoration: InputDecoration(
+          prefixIcon: icon != null ? Icon(icon, color: Colors.white30, size: 18) : null,
+          hintText: hintText,
+          hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          border: InputBorder.none,
         ),
-      ],
+        validator: validator,
+      ),
     );
   }
 }

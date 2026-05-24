@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../admin/providers/menu_admin_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/auth_state.dart';
@@ -101,8 +102,6 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
   }
 
   Future<void> _showChangePasswordBottomSheet(BuildContext context) async {
-    final theme = Theme.of(context);
-    
     // Clear fields before showing
     _currentPasswordController.clear();
     _newPasswordController.clear();
@@ -115,192 +114,263 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
+            final viewInsets = MediaQuery.of(context).viewInsets;
+            final size = MediaQuery.of(context).size;
+            final maxModalHeight = size.height * 0.85;
+
             return Container(
+              constraints: BoxConstraints(
+                maxHeight: maxModalHeight,
+              ),
+              margin: EdgeInsets.only(bottom: viewInsets.bottom),
               decoration: BoxDecoration(
-                color: const Color(0xFF0A0F1D).withOpacity(0.95),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                border: Border.all(color: Colors.white10, width: 1.0),
-              ),
-              padding: EdgeInsets.only(
-                left: 20,
-                right: 20,
-                top: 20,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-              ),
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'CAMBIAR CONTRASEÑA',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.close, color: Colors.white70, size: 20),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      ),
-                      const Divider(color: Colors.white10),
-                      const SizedBox(height: 16),
-                      
-                      TextFormField(
-                        controller: _currentPasswordController,
-                        obscureText: _obscureCurrent,
-                        style: const TextStyle(color: Colors.white, fontSize: 14),
-                        decoration: InputDecoration(
-                          labelText: 'Contraseña Actual',
-                          labelStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6)),
-                          prefixIcon: const Icon(Icons.lock_outline, size: 20),
-                          suffixIcon: IconButton(
-                            icon: Icon(_obscureCurrent ? Icons.visibility_off : Icons.visibility, size: 18),
-                            onPressed: () => setModalState(() => _obscureCurrent = !_obscureCurrent),
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white10),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFF00F0FF)),
-                          ),
-                        ),
-                        validator: (val) {
-                          if (val == null || val.isEmpty) return 'Por favor escribe tu clave actual';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      
-                      TextFormField(
-                        controller: _newPasswordController,
-                        obscureText: _obscureNew,
-                        style: const TextStyle(color: Colors.white, fontSize: 14),
-                        decoration: InputDecoration(
-                          labelText: 'Nueva Contraseña',
-                          labelStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6)),
-                          prefixIcon: const Icon(Icons.lock_outline, size: 20),
-                          suffixIcon: IconButton(
-                            icon: Icon(_obscureNew ? Icons.visibility_off : Icons.visibility, size: 18),
-                            onPressed: () => setModalState(() => _obscureNew = !_obscureNew),
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white10),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFF00F0FF)),
-                          ),
-                        ),
-                        validator: (val) {
-                          if (val == null || val.isEmpty) return 'Por favor escribe una nueva clave';
-                          if (val.length < 6) return 'Debe tener al menos 6 caracteres';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      
-                      TextFormField(
-                        controller: _confirmPasswordController,
-                        obscureText: _obscureConfirm,
-                        style: const TextStyle(color: Colors.white, fontSize: 14),
-                        decoration: InputDecoration(
-                          labelText: 'Confirmar Nueva Contraseña',
-                          labelStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6)),
-                          prefixIcon: const Icon(Icons.lock_outline, size: 20),
-                          suffixIcon: IconButton(
-                            icon: Icon(_obscureConfirm ? Icons.visibility_off : Icons.visibility, size: 18),
-                            onPressed: () => setModalState(() => _obscureConfirm = !_obscureConfirm),
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white10),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFF00F0FF)),
-                          ),
-                        ),
-                        validator: (val) {
-                          if (val != _newPasswordController.text) return 'Las contraseñas no coinciden';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                      
-                      SizedBox(
-                        width: double.infinity,
-                        height: 46,
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF00F0FF),
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: _isUpdatingPassword
-                              ? null
-                              : () async {
-                                  if (!_formKey.currentState!.validate()) return;
-                                  
-                                  setModalState(() {
-                                    _isUpdatingPassword = true;
-                                  });
-                                  
-                                  try {
-                                    await ref.read(authProvider.notifier).updateProfile(
-                                          password: _newPasswordController.text,
-                                        );
-                                    if (mounted) {
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Contraseña actualizada con éxito'),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
-                                    }
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Error: ${e.toString()}'),
-                                        backgroundColor: Colors.redAccent,
-                                      ),
-                                    );
-                                  } finally {
-                                    setModalState(() {
-                                      _isUpdatingPassword = false;
-                                    });
-                                  }
-                                },
-                          icon: const Icon(Icons.save_outlined),
-                          label: _isUpdatingPassword
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
-                                )
-                              : const Text(
-                                  'ACTUALIZAR CONTRASEÑA',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                        ),
-                      ),
-                    ],
-                  ),
+                color: const Color(0xFF1E2024), // Level 2 Modal
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+                border: Border(
+                  top: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
                 ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 12),
+                  Center(
+                    child: Container(
+                      width: 48,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Cambiar Contraseña',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, color: Colors.white54),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(color: Colors.white10),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'CONTRASEÑA ACTUAL',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFFB9CACB),
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            _buildStyledField(
+                              controller: _currentPasswordController,
+                              hintText: 'Escribe tu contraseña actual',
+                              obscureText: _obscureCurrent,
+                              prefixIcon: Icons.lock_outline,
+                              suffixIcon: IconButton(
+                                icon: Icon(_obscureCurrent ? Icons.visibility_off : Icons.visibility, size: 18, color: Colors.white54),
+                                onPressed: () => setModalState(() => _obscureCurrent = !_obscureCurrent),
+                              ),
+                              validator: (val) {
+                                if (val == null || val.isEmpty) return 'Por favor escribe tu clave actual';
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+
+                            Text(
+                              'NUEVA CONTRASEÑA',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFFB9CACB),
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            _buildStyledField(
+                              controller: _newPasswordController,
+                              hintText: 'Mínimo 6 caracteres',
+                              obscureText: _obscureNew,
+                              prefixIcon: Icons.lock_outline,
+                              suffixIcon: IconButton(
+                                icon: Icon(_obscureNew ? Icons.visibility_off : Icons.visibility, size: 18, color: Colors.white54),
+                                onPressed: () => setModalState(() => _obscureNew = !_obscureNew),
+                              ),
+                              validator: (val) {
+                                if (val == null || val.isEmpty) return 'Por favor escribe una nueva clave';
+                                if (val.length < 6) return 'Debe tener al menos 6 caracteres';
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+
+                            Text(
+                              'CONFIRMAR NUEVA CONTRASEÑA',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFFB9CACB),
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            _buildStyledField(
+                              controller: _confirmPasswordController,
+                              hintText: 'Repite tu nueva contraseña',
+                              obscureText: _obscureConfirm,
+                              prefixIcon: Icons.lock_outline,
+                              suffixIcon: IconButton(
+                                icon: Icon(_obscureConfirm ? Icons.visibility_off : Icons.visibility, size: 18, color: Colors.white54),
+                                onPressed: () => setModalState(() => _obscureConfirm = !_obscureConfirm),
+                              ),
+                              validator: (val) {
+                                if (val != _newPasswordController.text) return 'Las contraseñas no coinciden';
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 32),
+
+                            // Actions Row
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                OutlinedButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(color: Colors.white10),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                  ),
+                                  child: Text(
+                                    'Cancelar',
+                                    style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF00F0FF),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                                  ),
+                                  onPressed: _isUpdatingPassword
+                                      ? null
+                                      : () async {
+                                          if (!_formKey.currentState!.validate()) return;
+                                          
+                                          setModalState(() {
+                                            _isUpdatingPassword = true;
+                                          });
+                                          
+                                          try {
+                                            await ref.read(authProvider.notifier).updateProfile(
+                                                  password: _newPasswordController.text,
+                                                );
+                                            if (mounted) {
+                                              Navigator.pop(context);
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text('Contraseña actualizada con éxito'),
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                              );
+                                            }
+                                          } catch (e) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text('Error: ${e.toString()}'),
+                                                backgroundColor: Colors.redAccent,
+                                              ),
+                                            );
+                                          } finally {
+                                            setModalState(() {
+                                              _isUpdatingPassword = false;
+                                            });
+                                          }
+                                        },
+                                  child: _isUpdatingPassword
+                                      ? const SizedBox(
+                                          width: 16,
+                                          height: 16,
+                                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                                        )
+                                      : Text(
+                                          'ACTUALIZAR',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontWeight: FontWeight.bold,
+                                            color: const Color(0xFF0c0e12),
+                                          ),
+                                        ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             );
           },
         );
       },
+    );
+  }
+
+  Widget _buildStyledField({
+    required TextEditingController controller,
+    required String hintText,
+    int maxLines = 1,
+    String? Function(String?)? validator,
+    bool obscureText = false,
+    Widget? suffixIcon,
+    IconData? prefixIcon,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF0C0E12),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
+      ),
+      child: TextFormField(
+        controller: controller,
+        maxLines: maxLines,
+        obscureText: obscureText,
+        style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+        decoration: InputDecoration(
+          prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: Colors.white30, size: 18) : null,
+          suffixIcon: suffixIcon,
+          hintText: hintText,
+          hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          border: InputBorder.none,
+        ),
+        validator: validator,
+      ),
     );
   }
 
