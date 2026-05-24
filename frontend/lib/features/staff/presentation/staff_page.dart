@@ -260,6 +260,9 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
   Widget _buildStaffBentoCard(BuildContext context, UserModel user) {
     final theme = Theme.of(context);
     final roleColor = _getRoleColor(user.rolNombre);
+    final authState = ref.watch(authProvider);
+    final currentUser = authState is AuthAuthenticated ? authState.user : null;
+    final isMe = currentUser?.id == user.id;
 
     return Container(
       decoration: BoxDecoration(
@@ -286,11 +289,11 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Column 1: Avatar and switch
               Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Stack(
                     children: [
@@ -332,30 +335,44 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   // Neon switch for status
                   Row(
                     children: [
-                      Transform.scale(
-                        scale: 0.65,
-                        child: Switch(
-                          value: user.estado,
-                          activeColor: const Color(0xFF00F0FF),
-                          activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
-                          inactiveThumbColor: Colors.grey,
-                          inactiveTrackColor: Colors.white10,
-                          onChanged: (val) async {
-                            final confirm = await _showStatusConfirmationBottomSheet(
-                              context: context,
-                              user: user,
-                              targetState: val,
-                            );
-                            if (confirm == true) {
-                              ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
-                            }
-                          },
+                      SizedBox(
+                        height: 24,
+                        width: 38,
+                        child: Transform.scale(
+                          scale: 0.65,
+                          child: Switch(
+                            value: user.estado,
+                            activeColor: const Color(0xFF00F0FF),
+                            activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
+                            inactiveThumbColor: Colors.grey,
+                            inactiveTrackColor: Colors.white10,
+                            onChanged: (val) async {
+                              if (isMe && !val) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('No puedes deshabilitar tu propio usuario.'),
+                                    backgroundColor: Colors.orange,
+                                  ),
+                                );
+                                return;
+                              }
+                              final confirm = await _showStatusConfirmationBottomSheet(
+                                context: context,
+                                user: user,
+                                targetState: val,
+                              );
+                              if (confirm == true) {
+                                ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
+                              }
+                            },
+                          ),
                         ),
                       ),
+                      const SizedBox(width: 4),
                       Text(
                         user.estado ? 'ACTIVO' : 'INAC',
                         style: TextStyle(
@@ -1775,10 +1792,10 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
     required bool targetState,
   }) {
     final confirmColor = targetState ? const Color(0xFF00F0FF) : Colors.redAccent;
-    final title = targetState ? '¿HABILITAR EMPLEADO?' : '¿DESHABILITAR EMPLEADO?';
+    final title = targetState ? '¿HABILITAR USUARIO?' : '¿DESHABILITAR USUARIO?';
     final description = targetState
-        ? '¿Estás seguro de que deseas habilitar a ${user.nombre} ${user.apellido}? El usuario podrá volver a ingresar al sistema y realizar todas sus funciones asignadas.'
-        : '¿Estás seguro de que deseas deshabilitar a ${user.nombre} ${user.apellido}? El usuario ya no podrá iniciar sesión y se bloquearán sus operaciones de inmediato.';
+        ? '¿Estás seguro de que deseas habilitar al usuario ${user.nombre} ${user.apellido}? Podrá volver a ingresar al sistema y realizar todas sus funciones asignadas.'
+        : '¿Estás seguro de que deseas deshabilitar al usuario ${user.nombre} ${user.apellido}? Ya no podrá iniciar sesión y se bloquearán sus operaciones de inmediato.';
     final confirmText = targetState ? 'Habilitar' : 'Deshabilitar';
     final icon = targetState ? Icons.check_circle_outline : Icons.block_outlined;
 
