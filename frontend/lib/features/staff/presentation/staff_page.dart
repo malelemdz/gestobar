@@ -84,7 +84,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
             children: [
               // Search & Custom Tab bar Selector (Starts directly with search, no titles!)
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -194,7 +194,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 420,
-                            mainAxisExtent: 140,
+                            mainAxisExtent: 148,
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
                           ),
@@ -284,7 +284,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -344,8 +344,15 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
                           inactiveThumbColor: Colors.grey,
                           inactiveTrackColor: Colors.white10,
-                          onChanged: (val) {
-                            ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
+                          onChanged: (val) async {
+                            final confirm = await _showStatusConfirmationBottomSheet(
+                              context: context,
+                              user: user,
+                              targetState: val,
+                            );
+                            if (confirm == true) {
+                              ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
+                            }
                           },
                         ),
                       ),
@@ -1757,6 +1764,120 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
               child: const Text('ELIMINAR ROL'),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  Future<bool?> _showStatusConfirmationBottomSheet({
+    required BuildContext context,
+    required UserModel user,
+    required bool targetState,
+  }) {
+    final confirmColor = targetState ? const Color(0xFF00F0FF) : Colors.redAccent;
+    final title = targetState ? '¿HABILITAR EMPLEADO?' : '¿DESHABILITAR EMPLEADO?';
+    final description = targetState
+        ? '¿Estás seguro de que deseas habilitar a ${user.nombre} ${user.apellido}? El usuario podrá volver a ingresar al sistema y realizar todas sus funciones asignadas.'
+        : '¿Estás seguro de que deseas deshabilitar a ${user.nombre} ${user.apellido}? El usuario ya no podrá iniciar sesión y se bloquearán sus operaciones de inmediato.';
+    final confirmText = targetState ? 'Habilitar' : 'Deshabilitar';
+    final icon = targetState ? Icons.check_circle_outline : Icons.block_outlined;
+
+    return showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: const Color(0xFF1E2024),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 48,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: confirmColor.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(icon, color: confirmColor, size: 24),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 16,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  description,
+                  style: GoogleFonts.inter(
+                    color: Colors.white70,
+                    fontSize: 14,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(
+                        'Cancelar',
+                        style: GoogleFonts.inter(
+                          color: Colors.white60,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: confirmColor,
+                        foregroundColor: targetState ? const Color(0xFF0C0E12) : Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        confirmText,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
