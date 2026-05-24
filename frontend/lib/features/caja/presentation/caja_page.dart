@@ -13,6 +13,8 @@ import '../../../features/auth/providers/auth_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../../core/local_db/hive_entities/sync_queue_hive.dart';
 import '../../../core/local_db/hive_provider.dart'; // import syncWorkerProvider
+import '../providers/ventas_activas_provider.dart';
+import '../models/venta_model.dart';
 
 class CajaPage extends ConsumerStatefulWidget {
   const CajaPage({super.key});
@@ -43,6 +45,8 @@ class _CajaPageState extends ConsumerState<CajaPage> {
     final cajaState = ref.watch(cajaStateProvider);
     final currencySymbol = ref.watch(currencySymbolProvider);
     final currencyIso = ref.watch(currencyIsoProvider);
+    final ventasState = ref.watch(ventasActivasProvider);
+    final List<VentaModel> activeVentas = ventasState.ventas;
 
     return Scaffold(
       backgroundColor: const Color(0xFF121214), // Midnight background
@@ -58,7 +62,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                 // PANEL CENTRAL ACTIVO (APERTURA O CIERRE)
                 // ==========================================
                 estado.abierta
-                    ? _buildOpenCajaPanel(estado.caja!, theme, currencySymbol, currencyIso)
+                    ? _buildOpenCajaPanel(estado.caja!, activeVentas, theme, currencySymbol, currencyIso)
                     : _buildClosedCajaPanel(theme, currencySymbol, currencyIso),
               ],
             ),
@@ -251,7 +255,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
   // 📚 2. PANEL DE CAJA ABIERTA (Desglose de 9 Métricas, Caja Chica y Bitácora)
   // =========================================================================
-  Widget _buildOpenCajaPanel(CajaModel caja, ThemeData theme, String currencySymbol, String currencyIso) {
+  Widget _buildOpenCajaPanel(CajaModel caja, List<VentaModel> activeVentas, ThemeData theme, String currencySymbol, String currencyIso) {
     final String barmanNombre = caja.aperturaUsuario != null
         ? caja.aperturaUsuario!.nombre
         : 'Barman Encargado';
@@ -489,7 +493,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                 ),
                 itemBuilder: (context, index) => cards[index],
               )
-            : _buildMovimientosList(caja.movimientos, currencySymbol, currencyIso),
+            : _buildMovimientosList(caja.movimientos, activeVentas, currencySymbol, currencyIso),
       ],
     );
   }
@@ -628,10 +632,46 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   }
 
   // =========================================================================
-  // 📚 3. BITÁCORA DE MOVIMIENTOS EN VIVO
+  // 📚 3. CRONOLOGÍA DE EVENTOS Y MOVIMIENTOS UNIFICADA
   // =========================================================================
-  Widget _buildMovimientosList(List<CajaMovimientoModel> movimientos, String symbol, String iso) {
-    if (movimientos.isEmpty) {
+  Widget _buildMovimientosList(List<CajaMovimientoModel> movimientos, List<VentaModel> ventas, String symbol, String iso) {
+    // 1. Unificar y ordenar cronológicamente DESC
+    final List<EventoMovimiento> eventos = [];
+    
+    for (final m in movimientos) {
+      eventos.add(EventoMovimiento(
+        id: m.id,
+        tipo: m.tipo, // 'INGRESO' o 'EGRESO'
+        fecha: m.createdAt,
+        monto: m.monto,
+        metodoPago: m.metodoPago,
+        concepto: m.concepto,
+        cajero: m.usuario?.nombre ?? 'Cajero',
+        original: m,
+      ));
+    }
+
+    for (final v in ventas) {
+      final String conceptoVenta = v.detalles.isNotEmpty
+          ? v.detalles.map((d) => '${d.cantidad}x ${d.productoNombre}').join(', ')
+          : 'Venta POS';
+
+      eventos.add(EventoMovimiento(
+        id: v.id,
+        tipo: 'VENTA',
+        fecha: v.fecha,
+        monto: v.total,
+        metodoPago: v.metodoPago,
+        concepto: conceptoVenta,
+        cajero: v.usuario?.nombre ?? 'Cajero',
+        original: v,
+      ));
+    }
+
+    // Ordenar de más reciente a más antiguo
+    eventos.sort((a, b) => b.fecha.compareTo(a.fecha));
+
+    if (eventos.isEmpty) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 32),
         decoration: BoxDecoration(
@@ -641,7 +681,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
         ),
         child: Center(
           child: Text(
-            'Sin movimientos de caja chica registrados en este turno.',
+            'Sin eventos ni movimientos registrados en este turno.',
             style: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 11),
           ),
         ),
@@ -659,7 +699,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'BITÁCORA DE CAJA CHICA (TURNO ABIERTO)',
+            'BITÁCORA UNIFICADA DE EVENTOS (TIEMPO REAL)',
             style: GoogleFonts.plusJakartaSans(
               color: Colors.white54,
               fontSize: 10,
@@ -671,63 +711,494 @@ class _CajaPageState extends ConsumerState<CajaPage> {
           ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: movimientos.length,
+            itemCount: eventos.length,
             separatorBuilder: (context, index) => const Divider(color: Colors.white10, height: 1),
             itemBuilder: (context, index) {
-              final m = movimientos[index];
-              final bool isIngreso = m.tipo == 'INGRESO';
-              final time = DateFormat('hh:mm a').format(m.createdAt.toLocal());
-              final formattedMonto = CurrencyHelper.formatAmount(m.monto, iso);
+              final ev = eventos[index];
+              final String tipo = ev.tipo;
+              final bool isIngreso = tipo == 'INGRESO';
+              final bool isEgreso = tipo == 'EGRESO';
+              final bool isVenta = tipo == 'VENTA';
+              
+              final time = DateFormat('hh:mm a').format(ev.fecha.toLocal());
+              final formattedMonto = CurrencyHelper.formatAmount(ev.monto, iso);
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: isIngreso
-                            ? const Color(0xFF00FF66).withOpacity(0.1)
-                            : Colors.redAccent.withOpacity(0.1),
-                        shape: BoxShape.circle,
+              Color iconBgColor = Colors.white.withOpacity(0.05);
+              Color iconColor = Colors.white;
+              IconData icon = Icons.info_outline;
+
+              if (isIngreso) {
+                iconBgColor = const Color(0xFF00FF66).withOpacity(0.1);
+                iconColor = const Color(0xFF00FF66);
+                icon = Icons.arrow_upward;
+              } else if (isEgreso) {
+                iconBgColor = Colors.redAccent.withOpacity(0.1);
+                iconColor = Colors.redAccent;
+                icon = Icons.arrow_downward;
+              } else if (isVenta) {
+                iconBgColor = const Color(0xFF7000FF).withOpacity(0.1);
+                iconColor = const Color(0xFF00F0FF);
+                icon = Icons.receipt_long_outlined;
+              }
+
+              return InkWell(
+                onTap: () => _openMovementDetailBottomSheet(ev),
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 4.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: iconBgColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          icon,
+                          color: iconColor,
+                          size: 16,
+                        ),
                       ),
-                      child: Icon(
-                        isIngreso ? Icons.arrow_upward : Icons.arrow_downward,
-                        color: isIngreso ? const Color(0xFF00FF66) : Colors.redAccent,
-                        size: 16,
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              isVenta ? 'VENTA POS • TICKET' : ev.concepto,
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            if (isVenta)
+                              Text(
+                                ev.concepto,
+                                style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 11),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            Text(
+                              'Vía ${ev.metodoPago} • $time por ${ev.cajero}',
+                              style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 10),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            m.concepto,
-                            style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
-                          ),
-                          Text(
-                            'Vía ${m.metodoPago} • $time por ${m.usuario?.nombre ?? 'Cajero'}',
-                            style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 10),
-                          ),
-                        ],
+                      const SizedBox(width: 8),
+                      Text(
+                        '${isIngreso ? '+' : '-'} $symbol $formattedMonto',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: isIngreso ? const Color(0xFF00FF66) : (isVenta ? const Color(0xFF00F0FF) : Colors.redAccent),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 13,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '${isIngreso ? '+' : '-'} $symbol $formattedMonto',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: isIngreso ? const Color(0xFF00FF66) : Colors.redAccent,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
           ),
         ],
       ),
+    );
+  }
+
+  // =========================================================================
+  // 📚 BOTTOM SHEET PARA DETALLE DE TICKET / MOVIMIENTO DE CAJA
+  // =========================================================================
+  void _openMovementDetailBottomSheet(EventoMovimiento ev) {
+    final currencySymbol = ref.read(currencySymbolProvider);
+    final currencyIso = ref.read(currencyIsoProvider);
+    final isVenta = ev.tipo == 'VENTA';
+    
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+          decoration: const BoxDecoration(
+            color: Color(0xFF1E2024),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                isVenta ? 'TICKET DE COMPRA' : 'DETALLE DE CAJA CHICA',
+                style: GoogleFonts.plusJakartaSans(
+                  color: isVenta ? const Color(0xFF00F0FF) : (ev.tipo == 'INGRESO' ? const Color(0xFF00FF66) : Colors.redAccent),
+                  fontWeight: FontWeight.w900,
+                  fontSize: 12,
+                  letterSpacing: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+
+              // Contenido Dinámico
+              isVenta
+                  ? _buildTicketDetails(ev.original as VentaModel, currencySymbol, currencyIso)
+                  : _buildManualMovementDetails(ev.original as CajaMovimientoModel, currencySymbol, currencyIso),
+              
+              const SizedBox(height: 24),
+              
+              ElevatedButton(
+                onPressed: () => Navigator.pop(ctx),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white.withOpacity(0.04),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                  ),
+                ),
+                child: Text(
+                  'CERRAR TICKET',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTicketDetails(VentaModel venta, String symbol, String iso) {
+    final String barmanNombre = venta.usuario != null
+        ? venta.usuario!.nombre
+        : 'Cajero';
+
+    final String fecha = DateFormat('dd/MM/yyyy • hh:mm a').format(venta.fecha.toLocal());
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withOpacity(0.04)),
+          ),
+          child: Column(
+            children: [
+              _buildTicketDetailRow('Ticket ID:', venta.id.substring(0, 8).toUpperCase(), Colors.white70),
+              const SizedBox(height: 6),
+              _buildTicketDetailRow('Cajero:', barmanNombre, Colors.white),
+              const SizedBox(height: 6),
+              _buildTicketDetailRow('Fecha y Hora:', fecha, Colors.white54),
+              const SizedBox(height: 6),
+              _buildTicketDetailRow('Canal de Pago:', venta.metodoPago, const Color(0xFF00F0FF)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        Text(
+          'ARTÍCULOS CONSUMIDOS',
+          style: GoogleFonts.plusJakartaSans(
+            color: Colors.white54,
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.8,
+          ),
+        ),
+        const SizedBox(height: 8),
+
+        ListView.separated(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: venta.detalles.length,
+          separatorBuilder: (context, index) => Divider(color: Colors.white.withOpacity(0.05), height: 1),
+          itemBuilder: (context, index) {
+            final d = venta.detalles[index];
+            final String variantName = d.variante?.nombre ?? 'Genérico';
+            final String productName = d.productoNombre;
+            final String name = '$productName ($variantName)';
+            
+            final double subtotal = d.precioUnitario * d.cantidad;
+            final formattedSubtotal = CurrencyHelper.formatAmount(subtotal, iso);
+            final formattedPrice = CurrencyHelper.formatAmount(d.precioUnitario, iso);
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${d.cantidad}x $symbol $formattedPrice',
+                        style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 11),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        '$symbol $formattedSubtotal',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (d.dama != null || d.esInvitacion) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(
+                          d.esInvitacion ? Icons.card_giftcard : Icons.female,
+                          size: 11,
+                          color: d.esInvitacion ? const Color(0xFF00FF66) : const Color(0xFFFF00D6),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          d.esInvitacion
+                              ? 'Invitación Especial (Sin comisión)'
+                              : 'Asignado a: ${d.dama!.nombre} (Comisión: $symbol ${CurrencyHelper.formatAmount(d.comisionDama * d.cantidad, iso)})',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: d.esInvitacion ? const Color(0xFF00FF66) : const Color(0xFFFF00D6),
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 16),
+        const Divider(color: Colors.white10),
+        const SizedBox(height: 10),
+
+        if (venta.metodoPago == 'MIXTO') ...[
+          _buildTicketDetailRow('Pago Efectivo:', '$symbol ${CurrencyHelper.formatAmount(venta.montoEfectivo, iso)}', Colors.white54),
+          const SizedBox(height: 4),
+          _buildTicketDetailRow('Pago Tarjeta:', '$symbol ${CurrencyHelper.formatAmount(venta.montoTarjeta, iso)}', Colors.white54),
+          const SizedBox(height: 4),
+          _buildTicketDetailRow('Pago Transf/QR:', '$symbol ${CurrencyHelper.formatAmount(venta.montoTrQr, iso)}', Colors.white54),
+          const SizedBox(height: 8),
+        ],
+
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF7000FF).withOpacity(0.08),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFF7000FF).withOpacity(0.2)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'TOTAL COBRADO:',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFF00F0FF),
+                  fontWeight: FontWeight.w900,
+                  fontSize: 12,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              Text(
+                '$symbol ${CurrencyHelper.formatAmount(venta.total, iso)}',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFF00F0FF),
+                  fontWeight: FontWeight.w900,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildManualMovementDetails(CajaMovimientoModel m, String symbol, String iso) {
+    final String barmanNombre = m.usuario != null
+        ? m.usuario!.nombre
+        : 'Cajero';
+
+    final String fecha = DateFormat('dd/MM/yyyy • hh:mm a').format(m.createdAt.toLocal());
+    final bool isIngreso = m.tipo == 'INGRESO';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isIngreso ? const Color(0xFF00FF66).withOpacity(0.08) : Colors.redAccent.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: isIngreso ? const Color(0xFF00FF66).withOpacity(0.2) : Colors.redAccent.withOpacity(0.2)),
+          ),
+          child: Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  isIngreso ? Icons.arrow_upward : Icons.arrow_downward,
+                  color: isIngreso ? const Color(0xFF00FF66) : Colors.redAccent,
+                  size: 14,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  isIngreso ? 'INGRESO DE CAJA CHICA' : 'EGRESO DE CAJA CHICA',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: isIngreso ? const Color(0xFF00FF66) : Colors.redAccent,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 11,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withOpacity(0.04)),
+          ),
+          child: Column(
+            children: [
+              _buildTicketDetailRow('Cajero:', barmanNombre, Colors.white),
+              const SizedBox(height: 6),
+              _buildTicketDetailRow('Fecha y Hora:', fecha, Colors.white54),
+              const SizedBox(height: 6),
+              _buildTicketDetailRow('Método Utilizado:', m.metodoPago, Colors.white70),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        Text(
+          'CONCEPTO / DESCRIPCIÓN',
+          style: GoogleFonts.plusJakartaSans(
+            color: Colors.white54,
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.8,
+          ),
+        ),
+        const SizedBox(height: 8),
+
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.02),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.white.withOpacity(0.05)),
+          ),
+          child: Text(
+            m.concepto.isNotEmpty ? m.concepto : 'Sin descripción registrada.',
+            style: GoogleFonts.plusJakartaSans(
+              color: Colors.white,
+              fontSize: 12,
+              height: 1.4,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isIngreso ? const Color(0xFF00FF66).withOpacity(0.05) : Colors.redAccent.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: isIngreso ? const Color(0xFF00FF66).withOpacity(0.1) : Colors.redAccent.withOpacity(0.1)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'MONTO OPERACIÓN:',
+                style: GoogleFonts.plusJakartaSans(
+                  color: isIngreso ? const Color(0xFF00FF66) : Colors.redAccent,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 12,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              Text(
+                '${isIngreso ? '+' : '-'} $symbol ${CurrencyHelper.formatAmount(m.monto, iso)}',
+                style: GoogleFonts.plusJakartaSans(
+                  color: isIngreso ? const Color(0xFF00FF66) : Colors.redAccent,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTicketDetailRow(String label, String value, Color valueColor) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.plusJakartaSans(
+            color: Colors.white30,
+            fontSize: 11,
+          ),
+        ),
+        Text(
+          value,
+          style: GoogleFonts.plusJakartaSans(
+            color: valueColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 11,
+          ),
+        ),
+      ],
     );
   }
 
@@ -1466,4 +1937,26 @@ class _CajaPageState extends ConsumerState<CajaPage> {
       ),
     );
   }
+}
+
+class EventoMovimiento {
+  final String id;
+  final String tipo; // 'VENTA', 'INGRESO', 'EGRESO'
+  final DateTime fecha;
+  final double monto;
+  final String metodoPago;
+  final String concepto;
+  final String cajero;
+  final dynamic original; // CajaMovimientoModel o VentaModel
+
+  EventoMovimiento({
+    required this.id,
+    required this.tipo,
+    required this.fecha,
+    required this.monto,
+    required this.metodoPago,
+    required this.concepto,
+    required this.cajero,
+    required this.original,
+  });
 }

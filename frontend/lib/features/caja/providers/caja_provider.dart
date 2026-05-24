@@ -1,18 +1,50 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import '../../admin/providers/bar_provider.dart';
 import '../models/caja_model.dart';
 import '../repository/caja_repository.dart';
+import '../../../core/network/socket_service.dart';
 
 class CajaNotifier extends StateNotifier<AsyncValue<EstadoCajaResponse>> {
   final CajaRepository _repository;
+  final SocketService _socketService;
+  final String? _barId;
+  bool _isListeningSockets = false;
 
-  CajaNotifier(this._repository) : super(const AsyncValue.loading()) {
+  CajaNotifier(this._repository, this._socketService, this._barId) : super(const AsyncValue.loading()) {
     refreshEstado();
+    if (_barId != null) {
+      _initSockets();
+    }
+  }
+
+  Future<void> _initSockets() async {
+    if (_isListeningSockets || _barId == null) return;
+    try {
+      final socket = await _socketService.connect();
+      
+      // Escuchar tanto nuevas ventas como nuevos movimientos manuales en tiempo real
+      socket.on('nueva_venta_bar_$_barId', (data) {
+        debugPrint('⚡ [CajaNotifier] ¡Pulso de venta recibido! Refrescando balance...');
+        refreshEstado(silent: true);
+      });
+
+      socket.on('nuevo_movimiento_bar_$_barId', (data) {
+        debugPrint('⚡ [CajaNotifier] ¡Pulso de caja-movimiento recibido! Refrescando balance...');
+        refreshEstado(silent: true);
+      });
+
+      _isListeningSockets = true;
+    } catch (e) {
+      debugPrint('⚠️ No se pudieron inicializar sockets en CajaNotifier: $e');
+    }
   }
 
   /// Consulta el estado actual de la caja en el servidor
-  Future<void> refreshEstado() async {
-    state = const AsyncValue.loading();
+  Future<void> refreshEstado({bool silent = false}) async {
+    if (!silent) {
+      state = const AsyncValue.loading();
+    }
     try {
       final estado = await _repository.getEstado();
       state = AsyncValue.data(estado);
@@ -66,13 +98,32 @@ class CajaNotifier extends StateNotifier<AsyncValue<EstadoCajaResponse>> {
       rethrow;
     }
   }
+
+  @override
+  void dispose() {
+    if (_isListeningSockets && _barId != null) {
+      try {
+        _socketService.socket?.off('nueva_venta_bar_$_barId');
+        _socketService.socket?.off('nuevo_movimiento_bar_$_barId');
+      } catch (_) {}
+    }
+    super.dispose();
+  }
 }
 
 // Proveedor reactivo del estado de caja activo
 final cajaStateProvider =
     StateNotifierProvider<CajaNotifier, AsyncValue<EstadoCajaResponse>>((ref) {
   final repository = ref.watch(cajaRepositoryProvider);
-  return CajaNotifier(repository);
+  final socketService = ref.watch(socketServiceProvider);
+  final barState = ref.watch(currentBarProvider);
+  
+  final barId = barState.maybeWhen(
+    data: (bar) => bar.id,
+    orElse: () => null,
+  );
+
+  return CajaNotifier(repository, socketService, barId);
 });
 
 // Proveedor del historial completo de turnos cerrados

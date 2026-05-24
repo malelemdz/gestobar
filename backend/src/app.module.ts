@@ -22,6 +22,7 @@ import { UploadsModule } from './uploads/uploads.module';
 import { ClsModule } from 'nestjs-cls';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuditInterceptor } from './auditoria/audit.interceptor';
+import { SocketModule } from './socket/socket.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -63,6 +64,7 @@ import { AuditInterceptor } from './auditoria/audit.interceptor';
     EstadisticasModule,
     TarifasModule,
     UploadsModule,
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [

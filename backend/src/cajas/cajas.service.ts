@@ -8,6 +8,7 @@ import { CierreCajaDto } from './dto/cierre-caja.dto';
 import { CreateMovimientoDto } from './dto/create-movimiento.dto';
 import { AuditoriaService } from '../auditoria/auditoria.service';
 import { UserPayload } from '../auth/decorators/active-user.decorator';
+import { SocketGateway } from '../socket/socket.gateway';
 
 @Injectable()
 export class CajasService {
@@ -18,6 +19,7 @@ export class CajasService {
     private readonly movimientoRepository: Repository<CajaMovimiento>,
     private readonly dataSource: DataSource,
     private readonly auditoriaService: AuditoriaService,
+    private readonly socketGateway: SocketGateway,
   ) {}
 
   async getActiveCaja(barId: string): Promise<Caja> {
@@ -303,6 +305,9 @@ export class CajasService {
         concepto: savedMov.concepto,
       },
     });
+
+    // Avisar en tiempo real a todos los clientes suscritos al Bar
+    this.socketGateway.server.emit(`nuevo_movimiento_bar_${barId}`, savedMov);
 
     return savedMov;
   }

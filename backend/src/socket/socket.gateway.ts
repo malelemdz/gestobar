@@ -12,16 +12,16 @@ import { Server, Socket } from 'socket.io';
     origin: '*',
   },
 })
-export class VentasGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
   handleConnection(client: Socket) {
-    console.log(`Cliente conectado a WebSockets: ${client.id}`);
+    console.log(`Cliente conectado a WebSockets (Global): ${client.id}`);
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`Cliente desconectado de WebSockets: ${client.id}`);
+    console.log(`Cliente desconectado de WebSockets (Global): ${client.id}`);
   }
 
   @SubscribeMessage('suscribir_dama')
@@ -37,5 +37,10 @@ export class VentasGateway implements OnGatewayConnection, OnGatewayDisconnect {
   notificarComision(damaId: string, data: any) {
     // Enviar evento de comisión en tiempo real únicamente a la Dama correspondiente
     this.server.to(damaId).emit('nueva_comision', data);
+  }
+
+  emitirEventoBar(barId: string, eventName: string, data: any) {
+    // Emite un evento filtrado por el ID del Bar para mantener el aislamiento
+    this.server.emit(`${eventName}_bar_${barId}`, data);
   }
 }

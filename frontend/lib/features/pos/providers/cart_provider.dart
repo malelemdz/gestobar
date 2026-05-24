@@ -88,23 +88,9 @@ class CartNotifier extends StateNotifier<CartState> {
   CartNotifier() : super(CartState());
 
   /// Añade una variante al carrito
-  void addItem(ProductModel product, VariantModel variant, {required String tarifaId, required double precioUnitario}) {
-    // Buscamos si existe ya un ítem idéntico (misma variante, misma tarifa, misma dama, mismo estado de invitación)
-    final index = state.items.indexWhere((item) =>
-        item.variant.id == variant.id &&
-        item.tarifaId == tarifaId &&
-        item.damaId == state.selectedDamaId &&
-        item.esInvitacion == false);
-
-    if (index >= 0) {
-      final existingItem = state.items[index];
-      final updatedItem = existingItem.copyWith(
-        quantity: existingItem.quantity + 1,
-      );
-      final newItems = List<CartItem>.from(state.items);
-      newItems[index] = updatedItem;
-      state = state.copyWith(items: newItems);
-    } else {
+  void addItem(ProductModel product, VariantModel variant, {required String tarifaId, required double precioUnitario, bool splitSameVariants = false}) {
+    if (splitSameVariants) {
+      // Si está activa la separación, añadimos como ítem individual de cantidad 1
       final newItem = CartItem(
         product: product,
         variant: variant,
@@ -116,14 +102,51 @@ class CartNotifier extends StateNotifier<CartState> {
         esInvitacion: false,
       );
       state = state.copyWith(items: [...state.items, newItem]);
+    } else {
+      // De lo contrario, agrupamos por coincidencia
+      final index = state.items.indexWhere((item) =>
+          item.variant.id == variant.id &&
+          item.tarifaId == tarifaId &&
+          item.damaId == state.selectedDamaId &&
+          item.esInvitacion == false);
+
+      if (index >= 0) {
+        final existingItem = state.items[index];
+        final updatedItem = existingItem.copyWith(
+          quantity: existingItem.quantity + 1,
+        );
+        final newItems = List<CartItem>.from(state.items);
+        newItems[index] = updatedItem;
+        state = state.copyWith(items: newItems);
+      } else {
+        final newItem = CartItem(
+          product: product,
+          variant: variant,
+          quantity: 1,
+          precioUnitario: precioUnitario,
+          tarifaId: tarifaId,
+          damaId: state.selectedDamaId,
+          damaNombre: state.selectedDamaNombre,
+          esInvitacion: false,
+        );
+        state = state.copyWith(items: [...state.items, newItem]);
+      }
     }
   }
 
   /// Incrementa o decrementa la cantidad de un ítem por su índice en el carrito
-  void updateQuantityByIndex(int index, int delta) {
+  void updateQuantityByIndex(int index, int delta, {bool splitSameVariants = false}) {
     if (index < 0 || index >= state.items.length) return;
 
     final existingItem = state.items[index];
+
+    if (delta > 0 && splitSameVariants) {
+      // Si incrementamos y está activa la separación, creamos una nueva fila idéntica con cantidad 1
+      final newItem = existingItem.copyWith(quantity: 1);
+      state = state.copyWith(items: [...state.items, newItem]);
+      return;
+    }
+
     final newQuantity = existingItem.quantity + delta;
 
     if (newQuantity <= 0) {
@@ -200,7 +223,20 @@ class CartNotifier extends StateNotifier<CartState> {
   void setDama(String? id, String? nombre, {required String tarifaCompaniaId, required String tarifaDefaultId}) {
     final bool hasGlobalDama = id != null && id.isNotEmpty;
 
-    final newItems = state.items.map((item) {
+    // 1. Expandir ítems si se asigna una dama y el ítem tiene cantidad > 1
+    final List<CartItem> baseItems = [];
+    for (final item in state.items) {
+      if (hasGlobalDama && item.quantity > 1) {
+        for (int i = 0; i < item.quantity; i++) {
+          baseItems.add(item.copyWith(quantity: 1));
+        }
+      } else {
+        baseItems.add(item);
+      }
+    }
+
+    // 2. Mapear y re-calcular precios para todos los ítems
+    final newItems = baseItems.map((item) {
       if (item.esInvitacion) {
         // Si ya era una invitación explícita, se mantiene a precio default pero actualizamos el ID de la dama
         return item.copyWith(damaId: id ?? '', damaNombre: nombre ?? '');

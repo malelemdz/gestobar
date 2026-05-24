@@ -74,6 +74,7 @@ class DetalleVentaModel {
   final bool esInvitacion;
   final VariantModel? variante;
   final UserModel? dama;
+  final String productoNombre;
 
   DetalleVentaModel({
     required this.id,
@@ -86,9 +87,15 @@ class DetalleVentaModel {
     required this.esInvitacion,
     this.variante,
     this.dama,
+    required this.productoNombre,
   });
 
   factory DetalleVentaModel.fromJson(Map<String, dynamic> json) {
+    String pNombre = 'Producto';
+    if (json['variante'] != null && json['variante']['producto'] != null) {
+      pNombre = json['variante']['producto']['nombre'] as String? ?? 'Producto';
+    }
+
     return DetalleVentaModel(
       id: json['id'] as String? ?? '',
       varianteId: json['variante_id'] as String? ?? '',
@@ -108,6 +115,7 @@ class DetalleVentaModel {
       dama: json['dama'] != null
           ? UserModel.fromJson(json['dama'] as Map<String, dynamic>)
           : null,
+      productoNombre: pNombre,
     );
   }
 }

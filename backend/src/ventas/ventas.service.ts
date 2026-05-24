@@ -6,7 +6,7 @@ import { DetalleVenta } from './entities/detalle-venta.entity';
 import { Variant } from '../products/entities/variant.entity';
 import { CajasService } from '../cajas/cajas.service';
 import { BarsService } from '../bars/bars.service';
-import { VentasGateway } from './ventas.gateway';
+import { SocketGateway } from '../socket/socket.gateway';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { AuditoriaService } from '../auditoria/auditoria.service';
 import { UserPayload } from '../auth/decorators/active-user.decorator';
@@ -22,7 +22,7 @@ export class VentasService {
     private readonly variantRepository: Repository<Variant>,
     private readonly cajasService: CajasService,
     private readonly barsService: BarsService,
-    private readonly ventasGateway: VentasGateway,
+    private readonly socketGateway: SocketGateway,
     private readonly auditoriaService: AuditoriaService,
   ) {}
 
@@ -162,7 +162,7 @@ export class VentasService {
         });
 
         if (variant) {
-          this.ventasGateway.notificarComision(d.dama_id, {
+          this.socketGateway.notificarComision(d.dama_id, {
             tipo: d.es_invitacion ? 'INVITACION' : 'COMISION',
             mensaje: d.es_invitacion
               ? `¡Te han invitado una bebida: ${variant.producto.nombre} (${variant.nombre})!`
@@ -183,7 +183,7 @@ export class VentasService {
     }
 
     // 6. Sincronización en Tiempo Real: Avisar a todos los Cajeros del Bar
-    this.ventasGateway.server.emit(`nueva_venta_bar_${barId}`, savedVenta);
+    this.socketGateway.server.emit(`nueva_venta_bar_${barId}`, savedVenta);
 
     return savedVenta;
   }

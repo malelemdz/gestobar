@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -58,7 +59,7 @@ class _PosPageState extends ConsumerState<PosPage> {
           .toList();
     });
 
-    return Scaffold(
+    final scaffold = Scaffold(
       backgroundColor: const Color(0xFF121214), // Midnight background
       body: SafeArea(
         child: LayoutBuilder(
@@ -122,6 +123,73 @@ class _PosPageState extends ConsumerState<PosPage> {
         },
       ),
       ),
+    );
+
+    return Stack(
+      children: [
+        scaffold,
+        if (_isCheckingOut)
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1E2024).withOpacity(0.8),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.2), width: 1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF00F0FF).withOpacity(0.1),
+                            blurRadius: 30,
+                            spreadRadius: 2,
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
+                              strokeWidth: 4,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'PROCESANDO PAGO...',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 2.0,
+                              fontSize: 13,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Por favor espera un momento',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white38,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -809,7 +877,12 @@ class _PosPageState extends ConsumerState<PosPage> {
                                     IconButton(
                                       icon: const Icon(Icons.add_circle_outline, color: Colors.white54, size: 20),
                                       onPressed: () {
-                                        ref.read(cartProvider.notifier).updateQuantityByIndex(index, 1);
+                                        final barStateVal = ref.read(currentBarProvider);
+                                        final bool splitSameVariantsVal = barStateVal.maybeWhen(
+                                          data: (bar) => bar.moduloDamasActivo && (cart.selectedDamaId != null && cart.selectedDamaId!.isNotEmpty),
+                                          orElse: () => false,
+                                        );
+                                        ref.read(cartProvider.notifier).updateQuantityByIndex(index, 1, splitSameVariants: splitSameVariantsVal);
                                       },
                                       padding: EdgeInsets.zero,
                                       constraints: const BoxConstraints(),
@@ -1176,6 +1249,12 @@ class _PosPageState extends ConsumerState<PosPage> {
     final cartState = ref.read(cartProvider);
     final hasGlobalDama = cartState.selectedDamaId != null && cartState.selectedDamaId!.isNotEmpty;
 
+    final barState = ref.read(currentBarProvider);
+    final bool splitSameVariants = barState.maybeWhen(
+      data: (bar) => bar.moduloDamasActivo && hasGlobalDama,
+      orElse: () => false,
+    );
+
     if (product.variantes.length == 1) {
       // Tiene solo una variante, agregar directamente
       final variant = product.variantes.first;
@@ -1188,7 +1267,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       final targetTarifaId = activePrice.tarifaId;
       final precioFinal = activePrice.precioUnitario;
 
-      ref.read(cartProvider.notifier).addItem(product, variant, tarifaId: targetTarifaId, precioUnitario: precioFinal);
+      ref.read(cartProvider.notifier).addItem(product, variant, tarifaId: targetTarifaId, precioUnitario: precioFinal, splitSameVariants: splitSameVariants);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -1249,7 +1328,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: InkWell(
                       onTap: () {
-                        ref.read(cartProvider.notifier).addItem(product, variant, tarifaId: variantTarifaId, precioUnitario: precio);
+                        ref.read(cartProvider.notifier).addItem(product, variant, tarifaId: variantTarifaId, precioUnitario: precio, splitSameVariants: splitSameVariants);
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
