@@ -260,7 +260,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
 
   Widget _buildStaffBentoCard(BuildContext context, UserModel user) {
     final theme = Theme.of(context);
-    final roleColor = _getRoleColor(user.rolNombre);
+    final accentColor = user.estado ? const Color(0xFF00F0FF) : Colors.redAccent;
     final authState = ref.watch(authProvider);
     final currentUser = authState is AuthAuthenticated ? authState.user : null;
     final isMe = currentUser?.id == user.id;
@@ -270,15 +270,13 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
         color: theme.colorScheme.surface.withOpacity(0.03),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: user.estado
-              ? roleColor.withOpacity(0.15)
-              : theme.colorScheme.onSurface.withOpacity(0.08),
+          color: accentColor.withOpacity(0.15),
           width: 1.2,
         ),
         boxShadow: user.estado
             ? [
                 BoxShadow(
-                  color: roleColor.withOpacity(0.03),
+                  color: accentColor.withOpacity(0.03),
                   blurRadius: 10,
                   spreadRadius: 2,
                 )
@@ -300,7 +298,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: user.estado ? roleColor.withOpacity(0.4) : Colors.grey.withOpacity(0.3),
+                          color: accentColor.withOpacity(0.4),
                           width: 2.0,
                         ),
                       ),
@@ -314,7 +312,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                             ? Text(
                                 user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
                                 style: TextStyle(
-                                  color: user.estado ? roleColor : Colors.grey,
+                                  color: accentColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
                                 ),
@@ -322,21 +320,11 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                             : null,
                       ),
                     ),
-                    if (!user.estado)
-                      Positioned.fill(
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.black45,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.block, color: Colors.redAccent, size: 20),
-                        ),
-                      ),
                   ],
                 ),
               ),
               const SizedBox(width: 12),
-              // Column 2: Text details (All 4 lines together in one Column)
+              // Column 2: Text details (All 3 lines together in one Column)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -384,14 +372,14 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                           decoration: BoxDecoration(
-                            color: roleColor.withOpacity(0.12),
+                            color: accentColor.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: roleColor.withOpacity(0.3), width: 0.8),
+                            border: Border.all(color: accentColor.withOpacity(0.3), width: 0.8),
                           ),
                           child: Text(
                             user.rolNombre.toUpperCase(),
                             style: TextStyle(
-                              color: roleColor,
+                              color: accentColor,
                               fontSize: 8,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
