@@ -158,17 +158,21 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.close, color: Colors.white54),
-                          onPressed: () => Navigator.pop(context),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          borderRadius: BorderRadius.circular(20),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(Icons.close, color: Colors.white54, size: 20),
+                          ),
                         ),
                       ],
                     ),
                   ),
                   const Divider(color: Colors.white10),
-                  Expanded(
+                  Flexible(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
                       child: Form(
                         key: _formKey,
                         child: Column(
@@ -251,85 +255,97 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 32),
-
-                            // Actions Row
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                OutlinedButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  style: OutlinedButton.styleFrom(
-                                    side: const BorderSide(color: Colors.white10),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                  ),
-                                  child: Text(
-                                    'Cancelar',
-                                    style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF00F0FF),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                                  ),
-                                  onPressed: _isUpdatingPassword
-                                      ? null
-                                      : () async {
-                                          if (!_formKey.currentState!.validate()) return;
-                                          
-                                          setModalState(() {
-                                            _isUpdatingPassword = true;
-                                          });
-                                          
-                                          try {
-                                            await ref.read(authProvider.notifier).updateProfile(
-                                                  password: _newPasswordController.text,
-                                                );
-                                            if (mounted) {
-                                              Navigator.pop(context);
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text('Contraseña actualizada con éxito'),
-                                                  backgroundColor: Colors.green,
-                                                ),
-                                              );
-                                            }
-                                          } catch (e) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text('Error: ${e.toString()}'),
-                                                backgroundColor: Colors.redAccent,
-                                              ),
-                                            );
-                                          } finally {
-                                            setModalState(() {
-                                              _isUpdatingPassword = false;
-                                            });
-                                          }
-                                        },
-                                  child: _isUpdatingPassword
-                                      ? const SizedBox(
-                                          width: 16,
-                                          height: 16,
-                                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
-                                        )
-                                      : Text(
-                                          'ACTUALIZAR',
-                                          style: GoogleFonts.plusJakartaSans(
-                                            fontWeight: FontWeight.bold,
-                                            color: const Color(0xFF0c0e12),
-                                          ),
-                                        ),
-                                ),
-                              ],
-                            ),
                           ],
                         ),
                       ),
+                    ),
+                  ),
+                  const Divider(height: 1, color: Colors.white10),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(
+                      24, 
+                      16, 
+                      24, 
+                      16 + MediaQuery.of(context).padding.bottom
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF16181C),
+                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(24.0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.white10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          ),
+                          child: Text(
+                            'Cancelar',
+                            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF00F0FF),
+                            foregroundColor: const Color(0xFF0C0E12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                            elevation: 0,
+                          ),
+                          onPressed: _isUpdatingPassword
+                              ? null
+                              : () async {
+                                  if (!_formKey.currentState!.validate()) return;
+                                  
+                                  setModalState(() {
+                                    _isUpdatingPassword = true;
+                                  });
+                                  
+                                  try {
+                                    await ref.read(authProvider.notifier).updateProfile(
+                                          password: _newPasswordController.text,
+                                        );
+                                    if (mounted) {
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Contraseña actualizada con éxito'),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                    }
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Error: ${e.toString()}'),
+                                        backgroundColor: Colors.redAccent,
+                                      ),
+                                    );
+                                  } finally {
+                                    setModalState(() {
+                                      _isUpdatingPassword = false;
+                                    });
+                                  }
+                                },
+                          child: _isUpdatingPassword
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                                )
+                              : Text(
+                                  'ACTUALIZAR',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xFF0c0e12),
+                                  ),
+                                ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -350,27 +366,53 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
     Widget? suffixIcon,
     IconData? prefixIcon,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF0C0E12),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+    return TextFormField(
+      controller: controller,
+      maxLines: maxLines,
+      obscureText: obscureText,
+      style: GoogleFonts.inter(
+        color: Colors.white,
+        fontSize: 13,
       ),
-      child: TextFormField(
-        controller: controller,
-        maxLines: maxLines,
-        obscureText: obscureText,
-        style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
-        decoration: InputDecoration(
-          prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: Colors.white30, size: 18) : null,
-          suffixIcon: suffixIcon,
-          hintText: hintText,
-          hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          border: InputBorder.none,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: const Color(0xFF22252A),
+        prefixIcon: prefixIcon != null
+            ? Padding(
+                padding: const EdgeInsets.only(left: 12.0, right: 8.0),
+                child: Icon(prefixIcon, color: Colors.white30, size: 16),
+              )
+            : null,
+        prefixIconConstraints: const BoxConstraints(
+          minWidth: 36,
+          minHeight: 16,
         ),
-        validator: validator,
+        suffixIcon: suffixIcon,
+        hintText: hintText,
+        hintStyle: TextStyle(color: Colors.white.withOpacity(0.2), fontSize: 13),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+        ),
       ),
+      validator: validator,
     );
   }
 

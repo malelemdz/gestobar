@@ -183,7 +183,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                 Icon(Icons.people_outline, size: 48, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
                                 const SizedBox(height: 12),
                                 Text(
-                                  'No se encontraron empleados',
+                                  'No se encontraron usuarios',
                                   style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
                                 ),
                               ],
@@ -655,6 +655,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
 
   Future<void> _showAddEditStaffDialog(BuildContext context, UserModel? user) async {
     final bool isEdit = user != null;
+    final formKey = GlobalKey<FormState>();
 
     final nameController = TextEditingController(text: user?.nombre);
     final lastNameController = TextEditingController(text: user?.apellido);
@@ -715,6 +716,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 12),
+                  // Thin slide indicator
                   Center(
                     child: Container(
                       width: 48,
@@ -725,22 +727,27 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                       ),
                     ),
                   ),
+                  // Compact Title Header
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          isEdit ? 'Editar Personal' : 'Nuevo Empleado',
+                          isEdit ? 'Editar Usuario' : 'Nuevo Usuario',
                           style: GoogleFonts.plusJakartaSans(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.close, color: Colors.white54),
-                          onPressed: () => Navigator.pop(context),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          borderRadius: BorderRadius.circular(20),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(Icons.close, color: Colors.white54, size: 20),
+                          ),
                         ),
                       ],
                     ),
@@ -750,337 +757,113 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                   Expanded(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Avatar picker with zero latency
-                          Center(
-                            child: Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: const Color(0xFF00F0FF), width: 1.5),
-                                  ),
-                                  child: CircleAvatar(
-                                    radius: 46,
-                                    backgroundColor: Colors.black45,
-                                    backgroundImage: localImagePath != null
-                                        ? FileImage(File(localImagePath!)) as ImageProvider
-                                        : (user?.fotoUrl != null && user!.fotoUrl!.isNotEmpty)
-                                            ? NetworkImage(ApiConstants.resolveImageUrl(user.fotoUrl)!)
-                                            : null,
-                                    child: localImagePath == null && (user?.fotoUrl == null || user!.fotoUrl!.isEmpty)
-                                        ? const Icon(Icons.person, size: 40, color: Colors.white38)
-                                        : null,
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      final picker = ImagePicker();
-                                      final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-                                      if (img != null) {
-                                        setModalState(() {
-                                          localImagePath = img.path;
-                                        });
-                                      }
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFF00F0FF),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(Icons.camera_alt, size: 16, color: Colors.black),
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Avatar picker with zero latency
+                            Center(
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: const Color(0xFF00F0FF), width: 1.5),
+                                    ),
+                                    child: CircleAvatar(
+                                      radius: 46,
+                                      backgroundColor: Colors.black45,
+                                      backgroundImage: localImagePath != null
+                                          ? FileImage(File(localImagePath!)) as ImageProvider
+                                          : (user?.fotoUrl != null && user!.fotoUrl!.isNotEmpty)
+                                              ? NetworkImage(ApiConstants.resolveImageUrl(user.fotoUrl)!)
+                                              : null,
+                                      child: localImagePath == null && (user?.fotoUrl == null || user!.fotoUrl!.isEmpty)
+                                          ? const Icon(Icons.person, size: 40, color: Colors.white38)
+                                          : null,
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-
-                          // Form Fields Layout:
-                          // Line 1: Nombre (Full Width)
-                          Text(
-                            'NOMBRE',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFFB9CACB),
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.1,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          _buildStyledField(
-                            controller: nameController,
-                            hintText: 'Ej. Juan',
-                            icon: Icons.person_outline,
-                            onChanged: (_) => setModalState(() {}),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Line 2: Apellido (Full Width)
-                          Text(
-                            'APELLIDO',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFFB9CACB),
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.1,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          _buildStyledField(
-                            controller: lastNameController,
-                            hintText: 'Ej. Pérez',
-                            icon: Icons.person_outline,
-                            onChanged: (_) => setModalState(() {}),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Line 3: Row with Username (Compact) & DNI (Compact)
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'NOMBRE DE USUARIO',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFFB9CACB),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.1,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    _buildStyledField(
-                                      controller: usernameController,
-                                      hintText: 'Ej. juan.perez',
-                                      icon: Icons.alternate_email,
-                                      enabled: !isEdit,
-                                      onChanged: (_) => setModalState(() {}),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'CÉDULA / DNI',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFFB9CACB),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.1,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    _buildStyledField(
-                                      controller: dniController,
-                                      hintText: 'Ej. 1234567',
-                                      icon: Icons.badge_outlined,
-                                      onChanged: (_) => setModalState(() {}),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Line 4: Row with Celular & Password (creation) or Celular & Nacionalidad (edition)
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'CELULAR',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFFB9CACB),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.1,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    _buildStyledField(
-                                      controller: phoneController,
-                                      hintText: 'Ej. +591 70000000',
-                                      icon: Icons.phone_android_outlined,
-                                      onChanged: (_) => setModalState(() {}),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              if (!isEdit)
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'CONTRASEÑA',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          color: const Color(0xFFB9CACB),
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.1,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      _buildStyledField(
-                                        controller: passwordController,
-                                        hintText: 'Mínimo 6 caracteres',
-                                        icon: Icons.lock_outline,
-                                        isPassword: true,
-                                        onChanged: (_) => setModalState(() {}),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              else
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'NACIONALIDAD',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          color: const Color(0xFFB9CACB),
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.1,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      _buildStyledField(
-                                        controller: countryController,
-                                        hintText: 'Ej. Bolivia',
-                                        icon: Icons.flag_outlined,
-                                        onChanged: (_) => setModalState(() {}),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Line 5: Row with Nacionalidad & Género (creation) or Rol & Género (edition)
-                          Row(
-                            children: [
-                              if (!isEdit) ...[
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'NACIONALIDAD',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          color: const Color(0xFFB9CACB),
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.1,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      _buildStyledField(
-                                        controller: countryController,
-                                        hintText: 'Ej. Bolivia',
-                                        icon: Icons.flag_outlined,
-                                        onChanged: (_) => setModalState(() {}),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                              ] else ...[
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'ROL',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          color: const Color(0xFFB9CACB),
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 0.1,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      _buildDropdownField<String>(
-                                        value: selectedRoleId,
-                                        dropdownColor: const Color(0xFF1E2024),
-                                        hint: 'Seleccionar Rol',
-                                        items: rolesList.map((r) {
-                                          return DropdownMenuItem(
-                                            value: r.id,
-                                            child: Text(r.nombre),
-                                          );
-                                        }).toList(),
-                                        onChanged: (val) {
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        final picker = ImagePicker();
+                                        final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+                                        if (img != null) {
                                           setModalState(() {
-                                            selectedRoleId = val;
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                              ],
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'GÉNERO',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFFB9CACB),
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.1,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    _buildDropdownField<String>(
-                                      value: selectedGender,
-                                      dropdownColor: const Color(0xFF1E2024),
-                                      hint: 'Género',
-                                      items: const [
-                                        DropdownMenuItem(value: 'MASCULINO', child: Text('Masculino')),
-                                        DropdownMenuItem(value: 'FEMENINO', child: Text('Femenino')),
-                                        DropdownMenuItem(value: 'PREFIERO_NO_DECIRLO', child: Text('Prefiero no decirlo')),
-                                      ],
-                                      onChanged: (val) {
-                                        if (val != null) {
-                                          setModalState(() {
-                                            selectedGender = val;
+                                            localImagePath = img.path;
                                           });
                                         }
                                       },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFF00F0FF),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(Icons.camera_alt, size: 16, color: Colors.black),
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
+                            ),
+                            const SizedBox(height: 24),
 
-                          // Line 6: Rol (Full Width in creation mode, since it doesn't fit in dynamic Row 5)
-                          if (!isEdit) ...[
+                            // Form Fields Layout:
+                            // Line 1: Nombre (Full Width)
+                            Text(
+                              'NOMBRE',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFFB9CACB),
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            _buildStyledField(
+                              controller: nameController,
+                              hintText: 'Ej. Juan',
+                              icon: Icons.person_outline,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'El nombre es obligatorio';
+                                }
+                                return null;
+                              },
+                              onChanged: (_) => setModalState(() {}),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Line 2: Apellido (Full Width)
+                            Text(
+                              'APELLIDO',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFFB9CACB),
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            _buildStyledField(
+                              controller: lastNameController,
+                              hintText: 'Ej. Pérez',
+                              icon: Icons.person_outline,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'El apellido es obligatorio';
+                                }
+                                return null;
+                              },
+                              onChanged: (_) => setModalState(() {}),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Line 3: ROL (Full Width) - Right below Apellido!
                             Text(
                               'ROL',
                               style: GoogleFonts.plusJakartaSans(
@@ -1101,6 +884,12 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                   child: Text(r.nombre),
                                 );
                               }).toList(),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'El rol es obligatorio';
+                                }
+                                return null;
+                              },
                               onChanged: (val) {
                                 setModalState(() {
                                   selectedRoleId = val;
@@ -1108,36 +897,273 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                               },
                             ),
                             const SizedBox(height: 16),
-                          ],
 
-                          // Line 7: Dirección (Full Width, Long Field)
-                          Text(
-                            'DIRECCIÓN',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFFB9CACB),
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.1,
+                            // Line 4: Row with Username (Compact) & Contraseña (both creation and edition!)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'NOMBRE DE USUARIO',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _buildStyledField(
+                                        controller: usernameController,
+                                        hintText: 'Ej. juan.perez',
+                                        icon: Icons.alternate_email,
+                                        enabled: true, // Enabled in edit mode as well!
+                                        validator: (value) {
+                                          if (value == null || value.trim().isEmpty) {
+                                            return 'El nombre de usuario es obligatorio';
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (_) => setModalState(() {}),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'CONTRASEÑA',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      if (isEdit)
+                                        _buildStyledField(
+                                          controller: TextEditingController(text: '••••••••'),
+                                          hintText: 'Toca para cambiar',
+                                          icon: Icons.lock_outline,
+                                          isPassword: true,
+                                          readOnly: true,
+                                          onTap: () {
+                                            _showResetPasswordBottomSheet(context, user);
+                                          },
+                                        )
+                                      else
+                                        _buildStyledField(
+                                          controller: passwordController,
+                                          hintText: 'Mínimo 6 caracteres',
+                                          icon: Icons.lock_outline,
+                                          isPassword: true,
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'La contraseña es obligatoria';
+                                            }
+                                            if (value.length < 6) {
+                                              return 'Mínimo 6 caracteres';
+                                            }
+                                            return null;
+                                          },
+                                          onChanged: (_) => setModalState(() {}),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          _buildStyledField(
-                            controller: addressController,
-                            hintText: 'Ej. Av. Siempre Viva 123',
-                            icon: Icons.home_outlined,
-                            onChanged: (_) => setModalState(() {}),
-                          ),
-                        ],
+                            const SizedBox(height: 16),
+
+                            // Line 5: Row with Celular & DNI (both creation and edition!)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'CELULAR',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _buildStyledField(
+                                        controller: phoneController,
+                                        hintText: 'Ej. +591 70000000',
+                                        icon: Icons.phone_android_outlined,
+                                        validator: (value) {
+                                          if (value == null || value.trim().isEmpty) {
+                                            return 'El celular es obligatorio';
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (_) => setModalState(() {}),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'CÉDULA / DNI',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _buildStyledField(
+                                        controller: dniController,
+                                        hintText: 'Ej. 1234567',
+                                        icon: Icons.badge_outlined,
+                                        validator: (value) {
+                                          if (value == null || value.trim().isEmpty) {
+                                            return 'El DNI es obligatorio';
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (_) => setModalState(() {}),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Line 6: Row with Nacionalidad & Género (both creation and edition!)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'NACIONALIDAD',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _buildStyledField(
+                                        controller: countryController,
+                                        hintText: 'Ej. Bolivia',
+                                        icon: Icons.flag_outlined,
+                                        validator: (value) {
+                                          if (value == null || value.trim().isEmpty) {
+                                            return 'La nacionalidad es obligatoria';
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (_) => setModalState(() {}),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'GÉNERO',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: const Color(0xFFB9CACB),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      _buildDropdownField<String>(
+                                        value: selectedGender,
+                                        dropdownColor: const Color(0xFF1E2024),
+                                        hint: 'Género',
+                                        items: const [
+                                          DropdownMenuItem(value: 'MASCULINO', child: Text('Masculino')),
+                                          DropdownMenuItem(value: 'FEMENINO', child: Text('Femenino')),
+                                          DropdownMenuItem(value: 'PREFIERO_NO_DECIRLO', child: Text('Prefiero no decirlo')),
+                                        ],
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'El género es obligatorio';
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (val) {
+                                          if (val != null) {
+                                            setModalState(() {
+                                              selectedGender = val;
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Line 7: Dirección (Full Width, Long Field)
+                            Text(
+                              'DIRECCIÓN',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFFB9CACB),
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            _buildStyledField(
+                              controller: addressController,
+                              hintText: 'Ej. Av. Siempre Viva 123',
+                              icon: Icons.home_outlined,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'La dirección es obligatoria';
+                                }
+                                return null;
+                              },
+                              onChanged: (_) => setModalState(() {}),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   const Divider(color: Colors.white10),
-                  // Fixed Footer with Action Buttons
+                  // Fixed Footer with Action Buttons and Safe Area Indicator Bottom Padding
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF16181C),
-                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24.0)),
+                    padding: EdgeInsets.fromLTRB(
+                      24, 
+                      16, 
+                      24, 
+                      16 + MediaQuery.of(context).padding.bottom
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF16181C),
+                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(24.0)),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -1169,23 +1195,14 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                               ? null
                               : () async {
                                   // Validation
-                                  if (nameController.text.trim().isEmpty ||
-                                      lastNameController.text.trim().isEmpty ||
-                                      usernameController.text.trim().isEmpty ||
-                                      selectedRoleId == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Por favor completa todos los campos obligatorios'),
-                                        backgroundColor: Colors.orangeAccent,
-                                      ),
-                                    );
+                                  if (!formKey.currentState!.validate()) {
                                     return;
                                   }
 
-                                  if (!isEdit && passwordController.text.isEmpty) {
+                                  if (!isEdit && localImagePath == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Text('Por favor ingresa una contraseña'),
+                                        content: Text('Por favor selecciona una foto de perfil'),
                                         backgroundColor: Colors.orangeAccent,
                                       ),
                                     );
@@ -1239,8 +1256,8 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           content: Text(isEdit
-                                              ? 'Empleado actualizado con éxito'
-                                              : 'Empleado registrado con éxito'),
+                                              ? 'Usuario actualizado con éxito'
+                                              : 'Usuario registrado con éxito'),
                                           backgroundColor: Colors.green,
                                         ),
                                       );
@@ -1250,7 +1267,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                       });
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
-                                          content: Text('Error al guardar el empleado. Comprueba tus datos.'),
+                                          content: Text('Error al guardar el usuario. Comprueba tus datos.'),
                                           backgroundColor: Colors.redAccent,
                                         ),
                                       );
@@ -1274,7 +1291,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                   child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white38),
                                 )
                               : Text(
-                                  isEdit ? 'GUARDAR CAMBIOS' : 'REGISTRAR EMPLEADO',
+                                  isEdit ? 'GUARDAR CAMBIOS' : 'REGISTRAR USUARIO',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -1354,9 +1371,13 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.close, color: Colors.white54),
-                          onPressed: () => Navigator.pop(context),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          borderRadius: BorderRadius.circular(20),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(Icons.close, color: Colors.white54, size: 20),
+                          ),
                         ),
                       ],
                     ),
@@ -1364,7 +1385,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                   const Divider(color: Colors.white10),
                   Expanded(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -1460,106 +1481,118 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                               },
                             ),
                           ),
-                          const SizedBox(height: 32),
-
-                          // Actions
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              OutlinedButton(
-                                onPressed: () => Navigator.pop(context),
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.white10),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                ),
-                                child: Text(
-                                  'Cancelar',
-                                  style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF00F0FF),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                                ),
-                                onPressed: isSaving
-                                    ? null
-                                    : () async {
-                                        if (nameController.text.trim().isEmpty) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('Por favor escribe un nombre para el rol'),
-                                              backgroundColor: Colors.orangeAccent,
-                                            ),
-                                          );
-                                          return;
-                                        }
-
-                                        setModalState(() {
-                                          isSaving = true;
-                                        });
-
-                                        bool success;
-                                        if (isEdit) {
-                                          success = await ref
-                                              .read(rolesListProvider.notifier)
-                                              .updateRole(
-                                                role.id,
-                                                nameController.text.trim(),
-                                                selectedPermissionIds,
-                                              );
-                                        } else {
-                                          success = await ref
-                                              .read(rolesListProvider.notifier)
-                                              .createRole(
-                                                nameController.text.trim(),
-                                                selectedPermissionIds,
-                                              );
-                                        }
-
-                                        if (success && mounted) {
-                                          Navigator.pop(context);
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text(isEdit
-                                                  ? 'Rol actualizado correctamente'
-                                                  : 'Rol personalizado creado con éxito'),
-                                              backgroundColor: Colors.green,
-                                            ),
-                                          );
-                                        } else {
-                                          setModalState(() {
-                                            isSaving = false;
-                                          });
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('Error al guardar el rol personalizado'),
-                                              backgroundColor: Colors.redAccent,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                child: isSaving
-                                    ? const SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
-                                      )
-                                    : Text(
-                                        isEdit ? 'GUARDAR ROL' : 'CREAR ROL',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF0c0e12),
-                                        ),
-                                      ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
+                    ),
+                  ),
+                  const Divider(height: 1, color: Colors.white10),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(
+                      24, 
+                      16, 
+                      24, 
+                      16 + MediaQuery.of(context).padding.bottom
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF16181C),
+                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(24.0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.white10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          ),
+                          child: Text(
+                            'Cancelar',
+                            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF00F0FF),
+                            foregroundColor: const Color(0xFF0C0E12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                            elevation: 0,
+                          ),
+                          onPressed: isSaving
+                              ? null
+                              : () async {
+                                  if (nameController.text.trim().isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Por favor escribe un nombre para el rol'),
+                                        backgroundColor: Colors.orangeAccent,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  setModalState(() {
+                                    isSaving = true;
+                                  });
+
+                                  bool success;
+                                  if (isEdit) {
+                                    success = await ref
+                                        .read(rolesListProvider.notifier)
+                                        .updateRole(
+                                          role.id,
+                                          nameController.text.trim(),
+                                          selectedPermissionIds,
+                                        );
+                                  } else {
+                                    success = await ref
+                                        .read(rolesListProvider.notifier)
+                                        .createRole(
+                                          nameController.text.trim(),
+                                          selectedPermissionIds,
+                                        );
+                                  }
+
+                                  if (success && mounted) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(isEdit
+                                            ? 'Rol actualizado correctamente'
+                                            : 'Rol personalizado creado con éxito'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  } else {
+                                    setModalState(() {
+                                      isSaving = false;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Error al guardar el rol personalizado'),
+                                        backgroundColor: Colors.redAccent,
+                                      ),
+                                    );
+                                  }
+                                },
+                          child: isSaving
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                                )
+                              : Text(
+                                  isEdit ? 'GUARDAR ROL' : 'CREAR ROL',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xFF0c0e12),
+                                  ),
+                                ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -1573,6 +1606,8 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
 
   Future<void> _showResetPasswordBottomSheet(BuildContext context, UserModel user) async {
     final passwordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
     bool isSaving = false;
 
     await showModalBottomSheet(
@@ -1626,124 +1661,178 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.close, color: Colors.white54),
-                          onPressed: () => Navigator.pop(context),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          borderRadius: BorderRadius.circular(20),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(Icons.close, color: Colors.white54, size: 20),
+                          ),
                         ),
                       ],
                     ),
                   ),
                   const Divider(color: Colors.white10),
-                  Expanded(
+                  Flexible(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            'Escribe una nueva contraseña para ${user.nombre}. El usuario deberá usar esta clave para ingresar en su siguiente inicio de sesión.',
-                            style: GoogleFonts.inter(
-                              color: Colors.white70,
-                              fontSize: 13,
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          Text(
-                            'NUEVA CONTRASEÑA',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFFB9CACB),
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.1,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          _buildStyledField(
-                            controller: passwordController,
-                            hintText: 'Mínimo 6 caracteres',
-                            icon: Icons.lock_outline,
-                            isPassword: true,
-                          ),
-                          const SizedBox(height: 32),
-
-                          // Actions
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              OutlinedButton(
-                                onPressed: () => Navigator.pop(context),
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.white10),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                ),
-                                child: Text(
-                                  'Cancelar',
-                                  style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
-                                ),
+                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Escribe una nueva contraseña para ${user.nombre}. El usuario deberá usar esta clave para ingresar en su siguiente inicio de sesión.',
+                              style: GoogleFonts.inter(
+                                color: Colors.white70,
+                                fontSize: 13,
                               ),
-                              const SizedBox(width: 12),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF00F0FF),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                                ),
-                                onPressed: isSaving
-                                    ? null
-                                    : () async {
-                                        if (passwordController.text.trim().isEmpty) {
-                                          return;
-                                        }
-
-                                        setModalState(() {
-                                          isSaving = true;
-                                        });
-
-                                        final success = await ref
-                                            .read(staffListProvider.notifier)
-                                            .updateStaff(user.id, {
-                                          'password': passwordController.text.trim(),
-                                        });
-
-                                        if (success && mounted) {
-                                          Navigator.pop(context);
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('Contraseña restablecida con éxito'),
-                                              backgroundColor: Colors.green,
-                                            ),
-                                          );
-                                        } else {
-                                          setModalState(() {
-                                            isSaving = false;
-                                          });
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('Error al restablecer la contraseña'),
-                                              backgroundColor: Colors.redAccent,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                child: isSaving
-                                    ? const SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
-                                      )
-                                    : Text(
-                                        'RESTABLECER',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFF0c0e12),
-                                        ),
-                                      ),
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              'NUEVA CONTRASEÑA',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFFB9CACB),
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.1,
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            const SizedBox(height: 6),
+                            _buildStyledField(
+                              controller: passwordController,
+                              hintText: 'Mínimo 6 caracteres',
+                              icon: Icons.lock_outline,
+                              isPassword: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'La contraseña es obligatoria';
+                                }
+                                if (value.length < 6) {
+                                  return 'Mínimo 6 caracteres';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'CONFIRMAR NUEVA CONTRASEÑA',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFFB9CACB),
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            _buildStyledField(
+                              controller: confirmPasswordController,
+                              hintText: 'Repite la nueva contraseña',
+                              icon: Icons.lock_outline,
+                              isPassword: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Confirma la contraseña';
+                                }
+                                if (value != passwordController.text) {
+                                  return 'Las contraseñas no coinciden';
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
                       ),
+                    ),
+                  ),
+                  const Divider(height: 1, color: Colors.white10),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(
+                      24, 
+                      16, 
+                      24, 
+                      16 + MediaQuery.of(context).padding.bottom
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF16181C),
+                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(24.0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.white10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          ),
+                          child: Text(
+                            'Cancelar',
+                            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF00F0FF),
+                            foregroundColor: const Color(0xFF0C0E12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                            elevation: 0,
+                          ),
+                          onPressed: isSaving
+                              ? null
+                              : () async {
+                                  if (!formKey.currentState!.validate()) {
+                                    return;
+                                  }
+
+                                  setModalState(() {
+                                    isSaving = true;
+                                  });
+
+                                  final success = await ref
+                                      .read(staffListProvider.notifier)
+                                      .updateStaff(user.id, {
+                                    'password': passwordController.text.trim(),
+                                  });
+
+                                  if (success && mounted) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Contraseña restablecida con éxito'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  } else {
+                                    setModalState(() {
+                                      isSaving = false;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Error al restablecer la contraseña'),
+                                        backgroundColor: Colors.redAccent,
+                                      ),
+                                    );
+                                  }
+                                },
+                          child: isSaving
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                                )
+                              : Text(
+                                  'RESTABLECER',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xFF0c0e12),
+                                  ),
+                                ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -1915,14 +2004,18 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
     String? Function(String?)? validator,
     bool isPassword = false,
     bool enabled = true,
+    bool readOnly = false,
     IconData? icon,
     void Function(String)? onChanged,
+    void Function()? onTap,
   }) {
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
       obscureText: isPassword,
       enabled: enabled,
+      readOnly: readOnly,
+      onTap: onTap,
       onChanged: onChanged,
       style: GoogleFonts.inter(
         color: enabled ? Colors.white : Colors.white54,
