@@ -195,7 +195,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 420,
-                            mainAxisExtent: 136,
+                            mainAxisExtent: 112,
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
                           ),
@@ -290,58 +290,108 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Column 1: Avatar and switch
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: user.estado ? roleColor.withOpacity(0.4) : Colors.grey.withOpacity(0.3),
-                            width: 2.0,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          radius: 26,
-                          backgroundColor: Colors.black26,
-                          backgroundImage: (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
-                              ? NetworkImage(ApiConstants.resolveImageUrl(user.fotoUrl)!)
-                              : null,
-                          child: (user.fotoUrl == null || user.fotoUrl!.isEmpty)
-                              ? Text(
-                                  user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
-                                  style: TextStyle(
-                                    color: user.estado ? roleColor : Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                )
-                              : null,
+              // Column 1: Avatar
+              Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: user.estado ? roleColor.withOpacity(0.4) : Colors.grey.withOpacity(0.3),
+                          width: 2.0,
                         ),
                       ),
-                      if (!user.estado)
-                        Positioned.fill(
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.black45,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(Icons.block, color: Colors.redAccent, size: 20),
+                      child: CircleAvatar(
+                        radius: 26,
+                        backgroundColor: Colors.black26,
+                        backgroundImage: (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
+                            ? NetworkImage(ApiConstants.resolveImageUrl(user.fotoUrl)!)
+                            : null,
+                        child: (user.fotoUrl == null || user.fotoUrl!.isEmpty)
+                            ? Text(
+                                user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
+                                style: TextStyle(
+                                  color: user.estado ? roleColor : Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              )
+                            : null,
+                      ),
+                    ),
+                    if (!user.estado)
+                      Positioned.fill(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.black45,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.block, color: Colors.redAccent, size: 20),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Column 2: Text details, Switch and Actions
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${user.nombre} ${user.apellido}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                '@${user.username}',
+                                style: TextStyle(
+                                  color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
+                                  fontSize: 11,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 4),
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: roleColor.withOpacity(0.12),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(color: roleColor.withOpacity(0.3), width: 0.8),
+                                ),
+                                child: Text(
+                                  user.rolNombre.toUpperCase(),
+                                  style: TextStyle(
+                                    color: roleColor,
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                    ],
-                  ),
-                  const Spacer(),
-                  // Neon switch for status
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4.0),
-                    child: Row(
-                      children: [
+                        const SizedBox(width: 8),
+                        // Neon switch for status on the top right (no text!)
                         SizedBox(
                           height: 24,
                           width: 38,
@@ -375,75 +425,6 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                             ),
                           ),
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          user.estado ? 'ACTIVO' : 'INAC',
-                          style: TextStyle(
-                            fontSize: 8,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                            color: user.estado ? const Color(0xFF00F0FF) : Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 12),
-              // Column 2: Text details and actions
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${user.nombre} ${user.apellido}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Text(
-                                '@${user.username}',
-                                style: TextStyle(
-                                  color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
-                                  fontSize: 11,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        // Role Chip
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: roleColor.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: roleColor.withOpacity(0.3), width: 0.8),
-                          ),
-                          child: Text(
-                            user.rolNombre.toUpperCase(),
-                            style: TextStyle(
-                              color: roleColor,
-                              fontSize: 8,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -459,43 +440,47 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                       ],
                     ),
                     const SizedBox(height: 2),
+                    // DNI Row with Action Buttons aligned on the right!
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(Icons.badge, size: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
-                        const SizedBox(width: 4),
-                        Text(
-                          user.identificacion?.isNotEmpty == true ? user.identificacion! : 'DNI No reg.',
-                          style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8)),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    // Action Buttons (Row)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Tooltip(
-                          message: 'Cambiar Contraseña',
-                          child: InkWell(
-                            onTap: () => _showResetPasswordBottomSheet(context, user),
-                            borderRadius: BorderRadius.circular(4),
-                            child: const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: Icon(Icons.vpn_key_outlined, size: 16, color: Colors.amber),
+                        Row(
+                          children: [
+                            Icon(Icons.badge, size: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
+                            const SizedBox(width: 4),
+                            Text(
+                              user.identificacion?.isNotEmpty == true ? user.identificacion! : 'DNI No reg.',
+                              style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8)),
                             ),
-                          ),
+                          ],
                         ),
-                        const SizedBox(width: 16),
-                        Tooltip(
-                          message: 'Editar',
-                          child: InkWell(
-                            onTap: () => _showAddEditStaffDialog(context, user),
-                            borderRadius: BorderRadius.circular(4),
-                            child: const Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: Icon(Icons.edit_outlined, size: 16, color: Colors.blueAccent),
+                        // Action Buttons on the right
+                        Row(
+                          children: [
+                            Tooltip(
+                              message: 'Cambiar Contraseña',
+                              child: InkWell(
+                                onTap: () => _showResetPasswordBottomSheet(context, user),
+                                borderRadius: BorderRadius.circular(4),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(4.0),
+                                  child: Icon(Icons.vpn_key_outlined, size: 16, color: Colors.amber),
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 12),
+                            Tooltip(
+                              message: 'Editar',
+                              child: InkWell(
+                                onTap: () => _showAddEditStaffDialog(context, user),
+                                borderRadius: BorderRadius.circular(4),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(4.0),
+                                  child: Icon(Icons.edit_outlined, size: 16, color: Colors.blueAccent),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
