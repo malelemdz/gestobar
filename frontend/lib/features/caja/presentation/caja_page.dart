@@ -791,7 +791,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '${isIngreso ? '+' : '-'} $symbol $formattedMonto',
+                        '${(isIngreso || isVenta) ? '+' : '-'} $symbol $formattedMonto',
                         style: GoogleFonts.plusJakartaSans(
                           color: isIngreso ? const Color(0xFF00FF66) : (isVenta ? const Color(0xFF00F0FF) : Colors.redAccent),
                           fontWeight: FontWeight.w900,
