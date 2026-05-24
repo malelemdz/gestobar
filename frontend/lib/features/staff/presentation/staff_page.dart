@@ -360,70 +360,112 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              Text(
-                                '@${user.username}',
-                                style: TextStyle(
-                                  color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
-                                  fontSize: 11,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 4),
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: roleColor.withOpacity(0.12),
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(color: roleColor.withOpacity(0.3), width: 0.8),
-                                ),
-                                child: Text(
-                                  user.rolNombre.toUpperCase(),
-                                  style: TextStyle(
-                                    color: roleColor,
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 0.5,
+                              const SizedBox(height: 2),
+                              // Username and Role Chip side-by-side!
+                              Row(
+                                children: [
+                                  Text(
+                                    '@${user.username}',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
+                                      fontSize: 11,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: roleColor.withOpacity(0.12),
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(color: roleColor.withOpacity(0.3), width: 0.8),
+                                    ),
+                                    child: Text(
+                                      user.rolNombre.toUpperCase(),
+                                      style: TextStyle(
+                                        color: roleColor,
+                                        fontSize: 8,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(width: 8),
-                        // Neon switch for status on the top right (no text!)
-                        SizedBox(
-                          height: 24,
-                          width: 38,
-                          child: Transform.scale(
-                            scale: 0.65,
-                            child: Switch(
-                              value: user.estado,
-                              activeColor: const Color(0xFF00F0FF),
-                              activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
-                              inactiveThumbColor: Colors.grey,
-                              inactiveTrackColor: Colors.white10,
-                              onChanged: (val) async {
-                                if (isMe && !val) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('No puedes deshabilitar tu propio usuario.'),
-                                      backgroundColor: Colors.orange,
-                                    ),
-                                  );
-                                  return;
-                                }
-                                final confirm = await _showStatusConfirmationBottomSheet(
-                                  context: context,
-                                  user: user,
-                                  targetState: val,
-                                );
-                                if (confirm == true) {
-                                  ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
-                                }
-                              },
+                        // Switch and action buttons stacked on the right!
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 24,
+                              width: 38,
+                              child: Transform.scale(
+                                scale: 0.65,
+                                child: Switch(
+                                  value: user.estado,
+                                  activeColor: const Color(0xFF00F0FF),
+                                  activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
+                                  inactiveThumbColor: Colors.grey,
+                                  inactiveTrackColor: Colors.white10,
+                                  onChanged: (val) async {
+                                    if (isMe && !val) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('No puedes deshabilitar tu propio usuario.'),
+                                          backgroundColor: Colors.orange,
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    final confirm = await _showStatusConfirmationBottomSheet(
+                                      context: context,
+                                      user: user,
+                                      targetState: val,
+                                    );
+                                    if (confirm == true) {
+                                      ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
+                                    }
+                                  },
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 6),
+                            // Action Buttons under Switch
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Tooltip(
+                                  message: 'Cambiar Contraseña',
+                                  child: InkWell(
+                                    onTap: () => _showResetPasswordBottomSheet(context, user),
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(4.0),
+                                      child: Icon(Icons.vpn_key_outlined, size: 16, color: Colors.amber),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Tooltip(
+                                  message: 'Editar',
+                                  child: InkWell(
+                                    onTap: () => _showAddEditStaffDialog(context, user),
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(4.0),
+                                      child: Icon(Icons.edit_outlined, size: 16, color: Colors.blueAccent),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -440,47 +482,14 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                       ],
                     ),
                     const SizedBox(height: 2),
-                    // DNI Row with Action Buttons aligned on the right!
+                    // DNI Row
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.badge, size: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
-                            const SizedBox(width: 4),
-                            Text(
-                              user.identificacion?.isNotEmpty == true ? user.identificacion! : 'DNI No reg.',
-                              style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8)),
-                            ),
-                          ],
-                        ),
-                        // Action Buttons on the right
-                        Row(
-                          children: [
-                            Tooltip(
-                              message: 'Cambiar Contraseña',
-                              child: InkWell(
-                                onTap: () => _showResetPasswordBottomSheet(context, user),
-                                borderRadius: BorderRadius.circular(4),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(4.0),
-                                  child: Icon(Icons.vpn_key_outlined, size: 16, color: Colors.amber),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Tooltip(
-                              message: 'Editar',
-                              child: InkWell(
-                                onTap: () => _showAddEditStaffDialog(context, user),
-                                borderRadius: BorderRadius.circular(4),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(4.0),
-                                  child: Icon(Icons.edit_outlined, size: 16, color: Colors.blueAccent),
-                                ),
-                              ),
-                            ),
-                          ],
+                        Icon(Icons.badge, size: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
+                        const SizedBox(width: 4),
+                        Text(
+                          user.identificacion?.isNotEmpty == true ? user.identificacion! : 'DNI No reg.',
+                          style: TextStyle(fontSize: 10, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8)),
                         ),
                       ],
                     ),
