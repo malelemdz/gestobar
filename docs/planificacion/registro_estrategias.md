@@ -74,3 +74,29 @@ En Android, la versión `0.13.1` aplicaba un auto-cropping muy agresivo eliminan
 
 ### ✅ Estrategia Exitosa: flutter_launcher_icons v0.14.3+
 Se procedió a igualar la dependencia con una aplicación exitosa previa (*Restaurafy*) actualizando a la versión `v0.14.3`. Esta versión moderna respeta nativamente el padding transparente de los iconos adaptativos sin necesidad de alterar los assets con scripts externos, resolviendo la deformación visual de raíz.
+
+---
+
+## 6. Saneamiento de Datos, WS y Tubería de Imágenes (24-05-2026)
+
+### Saneamiento de Base de Datos y Prevención de Duplicados en Tarifas
+*   **❌ Estrategia Fallida (Seeding Forzado):** Sembrar tarifas fijas (`General` y `Compañía` con acento) en cada ciclo de arranque del semilla sin verificar tarifas preexistentes. Esto resultó en que el bar tuviera dos tarifas configuradas como "default" simultáneamente en la base de datos, desasociando el bar de su tarifa de compañía original y causando un colapso total (`500 Internal Server Error`) al cargar la pantalla de Ajustes.
+*   **✅ Estrategia Exitosa:** 
+    1. Desarrollar y ejecutar un script manual Node/pg de saneamiento en caliente para restaurar el bar apuntándolo a su tarifa original `Compania` y marcar `Normal` como el único default.
+    2. Optimizar y blindar la lógica en `seed.service.ts` para que se apegue estrictamente a la regla de oro: **nunca sembrar tarifas secundarias**, únicamente la tarifa default `Normal` si el bar carece de ella, realizando búsquedas puramente pasivas para comisiones y compañoneras.
+*   **Lección:** En entornos de base de datos relacionales con reglas lógicas estrictas (ej. un único default), el seeding debe ser condicional y de solo lectura si la base de datos ya contiene registros del cliente.
+
+### Tubería y Carga de Imágenes en Flutter
+*   **❌ Estrategia Fallida (Rutas Relativas en Mobile):** Almacenar rutas de subida relativas (ej. `/uploads/productos/uuid.webp`) y cargarlas directamente en el dispositivo móvil usando `Image.network(url)`. El framework no sabe a qué host IP pertenece el recurso, resultando en fallos masivos de carga e iconos rotos.
+*   **✅ Estrategia Exitosa:** Diseñar un resolvedor dinámico `ApiConstants.resolveImageUrl()` en el frontend. Si la ruta es relativa, automáticamente le concatena el `baseUrl` del servidor NestJS según el entorno operativo de ejecución (ej. detectando `10.0.2.2` en Android Emulator o `localhost` en simuladores de iOS/macOS).
+*   **Lección:** Mobile y Web manejan la resolución de IPs locales de manera distinta. Los activos subidos localmente siempre deben ser resueltos con ayudantes sensibles al entorno de red.
+
+### Vista Previa de Carga de Archivos
+*   **❌ Estrategia Fallida (Feedback Lento):** Esperar a que la petición multipart de red finalice y devuelva la URL del servidor para recién pintar la imagen en el contenedor. Esto resultaba en una experiencia de usuario lenta y propensa a incertidumbres.
+*   **✅ Estrategia Exitosa (Latencia Cero):** Capturar instantáneamente la ruta del archivo local del dispositivo (`_localImagePath`) al seleccionarlo con `ImagePicker` y renderizarlo inmediatamente con `Image.file(File(_localImagePath))` acompañado de una máscara de carga translúcida y un spinner en lo que la red finaliza.
+*   **Lección:** Ofrecer feedback visual instantáneo (latencia cero) al usuario mediante previsualizaciones locales hace que la aplicación se sienta sumamente premium y receptiva, aun en condiciones de redes móviles lentas.
+
+### Optimización y Redimensionamiento en Servidor
+*   **❌ Estrategia Fallida (Solo Conversión WebP):** Convertir las fotos a formato WebP pero conservar sus dimensiones físicas intactas. Si un usuario subía una foto en 4K (4000x3000px) de varios megabytes, el servidor sufría picos de memoria y el archivo seguía siendo innecesariamente grande.
+*   **✅ Estrategia Exitosa (Sharp Resize):** Inyectar `.resize({ width: 800, height: 800, fit: 'inside', withoutEnlargement: true })` en la tubería de compresión de `uploads.service.ts` antes de generar el WebP. Esto estandariza las imágenes a una escala ideal para pantallas móviles y web, reduciendo el peso de almacenamiento a menos del 10% del original sin pérdidas visuales apreciables.
+*   **Lección:** El servidor debe actuar como un filtro activo de optimización de recursos, impidiendo que fotos crudas de cámaras modernas degraden el rendimiento del almacenamiento y la transferencia de datos.

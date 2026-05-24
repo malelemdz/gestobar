@@ -271,3 +271,28 @@ backend/src/
 
 ### 3. Íconos Adaptativos Perfectos
 - Se actualizó `flutter_launcher_icons` de `^0.13.1` a `^0.14.3` para regenerar la iconografía de Android/iOS nativa, solventando el bug del auto-cropping sin usar scripts de parches de píxeles.
+
+---
+
+## [24-05-2026] - Módulo de Caja Avanzado, Feedback POS, Split de Variantes y Gestión de Imágenes
+
+### 1. Módulo de Caja Chica y Bitácora Unificada
+*   **[NEW] Entidad CajaMovimiento:** Creada en la base de datos PostgreSQL (`caja-movimiento.entity.ts`) con soporte para flujos manuales de caja chica (`INGRESO` y `EGRESO`), descripción textual, cajero responsable y método de pago (Efectivo, Tarjeta, QR/Transferencia).
+*   **Cierre de Caja Autónomo:** Modificado `POST /cajas/cierre` en el backend para auto-calcular el balance neto esperado del turno (`monto_inicial` + ventas POS + ingresos manuales - egresos manuales) de forma 100% interna y registrar la diferencia física contra el arqueo, eliminando la calculadora manual del frontend.
+*   **Bitácora Cronológica Unificada:** Rediseñado el flujo en `caja_page.dart` para fusionar movimientos manuales y ventas POS en tiempo real en una única línea de tiempo (DESC), clasificados estéticamente con iconos y colores ciber-neón (violeta para POS, verde para ingresos, rojo para egresos).
+*   **Modales de Detalle (Bottom Sheets):** Creados paneles emergentes interactivos para examinar al detalle cualquier transacción: los de caja chica exponen la justificación y cajero; los de ventas POS dibujan un ticket de compra completo (desglose de ítems, Dama comisionada/invitación y división mixta de pagos).
+
+### 2. Feedback POS y Doble Condicional de Split
+*   **Backdrop Filter de Confirmación:** Envoltura del punto de venta en un `Stack` reactivo. Al presionar confirmar pago, se levanta una pantalla glassmorphic de desenfoque (`BackdropFilter` de 10px) con un indicador de carga y el texto *"PROCESANDO PAGO..."*, impidiendo dobles toques accidentales ante demoras de red.
+*   **Split de Variantes en POS:** Desarrollado un motor reactivo en `CartNotifier` (`cart_provider.dart`) que separa variantes repetidas en filas independientes con cantidad 1 en el carrito, habilitado únicamente bajo la condición estricta: `moduloDamasActivo == true` (en Configuración del Bar) **Y** existiendo una Dama de compañía asignada al ticket.
+*   **Retrospección de Split:** Al asignar una Dama a una cuenta que ya contiene bebidas generales agrupadas (ej. cantidad 3), el sistema las "explota" automáticamente en 3 líneas independientes de cantidad 1 para permitir su comisionamiento o invitación personalizada retroactiva.
+
+### 3. WebSocket Global y Sincronización en Tiempo Real
+*   **Migración a SocketGateway Global:** Eliminado el antiguo gateway limitado a "ventas" y creado un `SocketGateway` global en la raíz de NestJS. El tráfico se aísla de forma lógica y segura mediante salas dinámicas basadas en el ID de bar (`nueva_venta_bar_${barId}`, `nuevo_movimiento_bar_${barId}`).
+*   **Sincronización en Vivo en Frontend:** Conectado `CajaNotifier` a los canales WebSocket correspondientes. Cada venta o movimiento manual emitido actualiza silenciosamente las 10 cifras Bento del panel de caja de manera instantánea, sin molestar al cajero con pantallas de carga.
+
+### 4. Redimensionamiento, Compresión y Vista Previa de Imágenes
+*   **Backend (Sharp Resizing & WebP):** El servicio `uploads.service.ts` fue dotado de redimensionamiento automático profesional a resolución estándar web (máx 800px ancho/alto, `fit: 'inside'`, sin ampliar imágenes pequeñas) y compresión unificada WebP (80% calidad). Admite cualquier formato común enviado por usuarios (PNG, JPG, JPEG, HEIC, etc.).
+*   **Frontend (Vista Previa Instantánea):** Al elegir una imagen del carrete en `menu_page.dart`, se retiene su path de memoria física local (`_localImagePath`), dibujando al instante la foto en la tarjeta mediante `Image.file(File(_localImagePath))` mientras se completa la subida.
+*   **Ayudante Base URL Resolver:** Creado `ApiConstants.resolveImageUrl()` para auto-completar dinámicamente las rutas relativas devueltas por el servidor (`/uploads/...`) según la plataforma de red del cliente, implementado a lo largo de las vistas de POS, Menú, Ajustes y Perfil de Usuario.
+*   **Resolución Error 500 y Blindaje de Semilla:** Corregido el bug de la semilla que creaba tarifas duplicadas conflictivas (con dos defaults en DB). Se eliminaron las tarifas adicionales `General` y `Compañía` erróneas, se restauró el bar a sus tarifas e IDs preexistentes (`Normal` y `Compania`), y se actualizó `seed.service.ts` para respetar la regla de oro: **nunca sembrar tarifas secundarias**, únicamente la tarifa default `Normal` si el bar carece de ella.
