@@ -195,7 +195,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 420,
-                            mainAxisExtent: 132,
+                            mainAxisExtent: 136,
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
                           ),
@@ -471,20 +471,28 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.vpn_key_outlined, size: 15, color: Colors.amber),
-                          tooltip: 'Cambiar Contraseña',
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          onPressed: () => _showResetPasswordBottomSheet(context, user),
+                        Tooltip(
+                          message: 'Cambiar Contraseña',
+                          child: InkWell(
+                            onTap: () => _showResetPasswordBottomSheet(context, user),
+                            borderRadius: BorderRadius.circular(4),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: Icon(Icons.vpn_key_outlined, size: 16, color: Colors.amber),
+                            ),
+                          ),
                         ),
-                        const SizedBox(width: 12),
-                        IconButton(
-                          icon: const Icon(Icons.edit_outlined, size: 15, color: Colors.blueAccent),
-                          tooltip: 'Editar',
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          onPressed: () => _showAddEditStaffDialog(context, user),
+                        const SizedBox(width: 16),
+                        Tooltip(
+                          message: 'Editar',
+                          child: InkWell(
+                            onTap: () => _showAddEditStaffDialog(context, user),
+                            borderRadius: BorderRadius.circular(4),
+                            child: const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: Icon(Icons.edit_outlined, size: 16, color: Colors.blueAccent),
+                            ),
+                          ),
                         ),
                       ],
                     ),
