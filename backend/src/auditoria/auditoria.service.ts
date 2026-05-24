@@ -12,7 +12,7 @@ export class AuditoriaService {
   ) {}
 
   async registrar(logData: {
-    barId: string;
+    barId: string | null;
     usuarioId: string;
     rolNombre: string;
     accion: string;

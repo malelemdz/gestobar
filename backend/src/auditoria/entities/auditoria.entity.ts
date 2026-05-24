@@ -7,10 +7,10 @@ export class Auditoria {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'uuid' })
-  bar_id: string;
+  @Column({ type: 'uuid', nullable: true })
+  bar_id: string | null;
 
-  @ManyToOne(() => Bar, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Bar, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'bar_id' })
   bar: Bar;
 

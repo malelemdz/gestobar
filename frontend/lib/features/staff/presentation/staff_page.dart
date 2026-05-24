@@ -195,7 +195,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 420,
-                            mainAxisExtent: 148,
+                            mainAxisExtent: 132,
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
                           ),

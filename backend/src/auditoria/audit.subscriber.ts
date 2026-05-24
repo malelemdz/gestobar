@@ -44,8 +44,10 @@ export class AuditSubscriber implements EntitySubscriberInterface {
     const modulo = this.getModuleName(event.metadata.tableName);
     const nombre = event.entity?.nombre || event.entity?.name || event.entity?.id || 'Registro';
 
+    const barId = user.barId || event.entity?.bar_id || event.entity?.barId || null;
+
     await this.auditoriaService.registrar({
-      barId: user.barId,
+      barId,
       usuarioId: user.userId,
       rolNombre: user.rolName || 'Desconocido',
       accion: 'Crear',
@@ -79,8 +81,10 @@ export class AuditSubscriber implements EntitySubscriberInterface {
 
     if (Object.keys(cambios).length === 0) return;
 
+    const barId = user.barId || event.entity?.bar_id || event.databaseEntity?.bar_id || event.entity?.barId || event.databaseEntity?.barId || null;
+
     await this.auditoriaService.registrar({
-      barId: user.barId,
+      barId,
       usuarioId: user.userId,
       rolNombre: user.rolName || 'Desconocido',
       accion: 'Editar',
@@ -101,8 +105,10 @@ export class AuditSubscriber implements EntitySubscriberInterface {
     const modulo = this.getModuleName(event.metadata.tableName);
     const nombre = event.databaseEntity?.nombre || event.databaseEntity?.id || 'Registro';
 
+    const barId = user.barId || event.databaseEntity?.bar_id || event.databaseEntity?.barId || null;
+
     await this.auditoriaService.registrar({
-      barId: user.barId,
+      barId,
       usuarioId: user.userId,
       rolNombre: user.rolName || 'Desconocido',
       accion: 'Eliminar',
