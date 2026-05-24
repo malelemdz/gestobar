@@ -1455,7 +1455,31 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                       fit: StackFit.expand,
                                       children: [
                                         if (_fotoUrl != null && _fotoUrl!.isNotEmpty)
-                                          Image.network(_fotoUrl!, fit: BoxFit.cover)
+                                          Image.network(
+                                            _fotoUrl!,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.broken_image_outlined,
+                                                    color: Colors.redAccent.withOpacity(0.4),
+                                                    size: 32,
+                                                  ),
+                                                  const SizedBox(height: 6),
+                                                  Text(
+                                                    'Foto no disponible (Toca para cambiar)',
+                                                    style: GoogleFonts.inter(
+                                                      color: Colors.white30,
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  )
+                                                ],
+                                              );
+                                            },
+                                          )
                                         else
                                           Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
