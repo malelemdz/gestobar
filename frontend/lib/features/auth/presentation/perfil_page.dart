@@ -547,41 +547,75 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
           ),
           const SizedBox(height: 24.0),
 
-          // Bento Section 1: Read-Only Profile Details
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'DATOS DE PERFIL (SOLO LECTURA)',
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.1,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8.0),
-
-          // 2x4 Grid of Details
-          GridView.count(
-            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 1.7,
+          _buildTechnicalSection(
+            title: 'Cuenta y Seguridad',
+            accentColor: roleColor,
             children: [
-              _buildBentoItem(context, Icons.alternate_email, 'Usuario', '@${user.username}'),
-              _buildBentoItem(context, Icons.phone_android, 'Celular', user.celular?.isNotEmpty == true ? user.celular! : 'No registrado'),
-              _buildBentoItem(context, Icons.badge_outlined, 'DNI / Identificación', user.identificacion?.isNotEmpty == true ? user.identificacion! : 'No registrado'),
-              _buildBentoItem(context, Icons.flag_outlined, 'Nacionalidad', user.nacionalidad?.isNotEmpty == true ? user.nacionalidad! : 'Bolivia'),
-              _buildBentoItem(context, Icons.wc_outlined, 'Género', user.genero == 'MASCULINO' ? 'Masculino' : user.genero == 'FEMENINO' ? 'Femenino' : 'Prefiero no decirlo'),
-              _buildBentoItem(context, Icons.location_on_outlined, 'Dirección', user.direccion?.isNotEmpty == true ? user.direccion! : 'No registrada'),
-              _buildBentoItem(context, Icons.apartment_outlined, 'Sucursal ID', user.barId?.isNotEmpty == true ? user.barId!.substring(0, 8) : 'Global'),
-              _buildBentoItem(context, Icons.security_outlined, 'Rango Acceso', user.rolNombre),
+              _buildTechnicalRow(
+                icon: Icons.alternate_email,
+                label: 'Nombre de Usuario',
+                value: '@${user.username}',
+                accentColor: roleColor,
+              ),
+              _buildTechnicalRow(
+                icon: Icons.security_outlined,
+                label: 'Rango de Acceso / Rol',
+                value: user.rolNombre.toUpperCase(),
+                accentColor: roleColor,
+              ),
+              _buildTechnicalRow(
+                icon: Icons.apartment_outlined,
+                label: 'Sucursal bar asignado',
+                value: user.barId?.isNotEmpty == true ? (user.barId!.length > 8 ? user.barId!.substring(0, 8) : user.barId!) : 'Global / Principal',
+                accentColor: roleColor,
+                showDivider: false,
+              ),
             ],
           ),
 
-          const SizedBox(height: 32.0),
+          _buildTechnicalSection(
+            title: 'Datos Personales y de Contacto',
+            accentColor: roleColor,
+            children: [
+              _buildTechnicalRow(
+                icon: Icons.badge_outlined,
+                label: 'DNI / Cédula de Identificación',
+                value: user.identificacion?.isNotEmpty == true ? user.identificacion! : 'No registrado',
+                accentColor: roleColor,
+              ),
+              _buildTechnicalRow(
+                icon: Icons.phone_android,
+                label: 'Celular / Teléfono',
+                value: user.celular?.isNotEmpty == true ? user.celular! : 'No registrado',
+                accentColor: roleColor,
+              ),
+              _buildTechnicalRow(
+                icon: Icons.flag_outlined,
+                label: 'Nacionalidad',
+                value: user.nacionalidad?.isNotEmpty == true ? user.nacionalidad! : 'No registrado',
+                accentColor: roleColor,
+              ),
+              _buildTechnicalRow(
+                icon: Icons.wc_outlined,
+                label: 'Género',
+                value: user.genero == 'MASCULINO'
+                    ? 'Masculino'
+                    : user.genero == 'FEMENINO'
+                        ? 'Femenino'
+                        : 'Prefiero no decirlo',
+                accentColor: roleColor,
+              ),
+              _buildTechnicalRow(
+                icon: Icons.location_on_outlined,
+                label: 'Dirección Domiciliaria',
+                value: user.direccion?.isNotEmpty == true ? user.direccion! : 'No registrada',
+                accentColor: roleColor,
+                showDivider: false,
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12.0),
 
           // Outlined Button to Change Password via Bottom Sheet
           SizedBox(
@@ -611,52 +645,132 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
     );
   }
 
-  Widget _buildBentoItem(BuildContext context, IconData icon, String title, String value) {
-    final theme = Theme.of(context);
+  Widget _buildTechnicalSection({
+    required String title,
+    required Color accentColor,
+    required List<Widget> children,
+  }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+      margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface.withOpacity(0.015),
-        borderRadius: BorderRadius.circular(12.0),
-        border: Border.all(
-          color: theme.colorScheme.onSurface.withOpacity(0.04),
-          width: 0.8,
-        ),
+        color: const Color(0xFF16181C), // Deep steel background
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.05), width: 1.0),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withOpacity(0.02),
+            blurRadius: 10,
+            spreadRadius: 1,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              Icon(icon, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.4), size: 14.0),
-              const SizedBox(width: 4.0),
-              Expanded(
-                child: Text(
-                  title,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
-                    fontSize: 9,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.015),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              border: Border(
+                bottom: BorderSide(color: Colors.white.withOpacity(0.05), width: 1.0),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 3,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: accentColor,
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  title.toUpperCase(),
+                  style: GoogleFonts.plusJakartaSans(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              children: children,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTechnicalRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    Color? accentColor,
+    bool showDivider = true,
+  }) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: (accentColor ?? const Color(0xFF00F0FF)).withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  color: accentColor ?? const Color(0xFF00F0FF),
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label.toUpperCase(),
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white.withOpacity(0.4),
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      value,
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 4.0),
-          Text(
-            value,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              fontSize: 12.0,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+        ),
+        if (showDivider)
+          Divider(
+            color: Colors.white.withOpacity(0.03),
+            height: 1,
+            thickness: 1,
           ),
-        ],
-      ),
+      ],
     );
   }
 }
