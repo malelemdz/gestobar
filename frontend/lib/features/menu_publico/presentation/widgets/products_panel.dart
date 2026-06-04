@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../pos/providers/catalog_provider.dart';
+import '../../../../core/widgets/shimmer_placeholder.dart';
 import 'admin_product_card.dart';
 
 class ProductsPanel extends ConsumerWidget {
@@ -24,9 +25,6 @@ class ProductsPanel extends ConsumerWidget {
     });
 
     return filteredProducts.when(
-    final productsState = ref.watch(filteredProductsProvider(searchQuery));
-
-    return productsState.when(
       data: (products) {
         if (products.isEmpty) {
           return Center(
