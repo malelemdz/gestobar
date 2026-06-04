@@ -57,7 +57,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
         child: cajaState.when(
           data: (estado) {
             return SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
               padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 24.0), // Paddings coincidentes con POS/Menú
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -108,7 +108,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
             );
           },
           error: (err, stack) => SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
             child: SizedBox(
               height: MediaQuery.of(context).size.height - 150,
               child: Center(

@@ -59,7 +59,7 @@ class AuditoriaPage extends ConsumerWidget {
             ),
           ),
           error: (err, stack) => SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
             child: SizedBox(
               height: MediaQuery.of(context).size.height - 150,
               child: Center(
@@ -70,7 +70,7 @@ class AuditoriaPage extends ConsumerWidget {
           data: (logs) {
             if (logs.isEmpty) {
               return SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
+                physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height - 150,
                   child: Center(
@@ -89,7 +89,7 @@ class AuditoriaPage extends ConsumerWidget {
 
             return ListView.builder(
               padding: const EdgeInsets.all(16.0),
-              physics: const AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
               itemCount: logs.length,
               itemBuilder: (context, index) {
                 final log = logs[index];
