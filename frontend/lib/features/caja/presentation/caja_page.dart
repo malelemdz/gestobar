@@ -16,6 +16,7 @@ import 'dialogs/cierre_confirmation_bottom_sheet.dart';
 import 'dialogs/cierre_summary_dialog.dart';
 import 'dialogs/add_movement_bottom_sheet.dart';
 import 'dialogs/movement_detail_bottom_sheet.dart';
+import 'package:gestobar/core/widgets/shimmer_placeholder.dart';
 
 class CajaPage extends ConsumerStatefulWidget {
   const CajaPage({super.key});
@@ -75,9 +76,28 @@ class _CajaPageState extends ConsumerState<CajaPage> {
             ),
           );
         },
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: Color(0xFF00F0FF)),
-        ),
+        loading: () {
+          return const SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ShimmerPlaceholder(
+                  width: double.infinity,
+                  height: 280,
+                  borderRadius: BorderRadius.all(Radius.circular(32)),
+                ),
+                SizedBox(height: 24),
+                ShimmerPlaceholder(
+                  width: double.infinity,
+                  height: 420,
+                  borderRadius: BorderRadius.all(Radius.circular(32)),
+                ),
+              ],
+            ),
+          );
+        },
         error: (err, stack) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

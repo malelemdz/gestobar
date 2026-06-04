@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../providers/catalog_provider.dart';
 import 'product_card.dart';
+import 'package:gestobar/core/widgets/shimmer_placeholder.dart';
 
 class CatalogSection extends ConsumerStatefulWidget {
   const CatalogSection({super.key});
@@ -181,11 +182,26 @@ class _CatalogSectionState extends ConsumerState<CatalogSection> {
                   },
                 );
               },
-              loading: () => const Center(
-                child: CircularProgressIndicator(
-                  color: Color(0xFF00F0FF),
-                ),
-              ),
+              loading: () {
+                return GridView.builder(
+                  padding: const EdgeInsets.only(bottom: 86.0),
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 220,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.72,
+                  ),
+                  itemCount: 8,
+                  itemBuilder: (context, index) {
+                    return const ShimmerPlaceholder(
+                      width: double.infinity,
+                      height: double.infinity,
+                      borderRadius: BorderRadius.all(Radius.circular(24.0)),
+                    );
+                  },
+                );
+              },
               error: (err, stack) => Center(
                 child: Text(
                   'Error al cargar catálogo: $err',

@@ -24,28 +24,21 @@ class ProductsPanel extends ConsumerWidget {
     });
 
     return filteredProducts.when(
+    final productsState = ref.watch(filteredProductsProvider(searchQuery));
+
+    return productsState.when(
       data: (products) {
         if (products.isEmpty) {
           return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.local_bar, size: 48, color: Colors.white.withOpacity(0.15)),
-                const SizedBox(height: 12),
-                Text(
-                  'No hay productos registrados',
-                  style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white.withOpacity(0.4),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+            child: Text(
+              'No se encontraron productos',
+              style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 13),
             ),
           );
         }
 
         return GridView.builder(
+          padding: const EdgeInsets.only(bottom: 86.0),
           physics: const BouncingScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 220,
@@ -60,7 +53,26 @@ class ProductsPanel extends ConsumerWidget {
           },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF00F0FF))),
+      loading: () {
+        return GridView.builder(
+          padding: const EdgeInsets.only(bottom: 86.0),
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 220,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            childAspectRatio: 0.72,
+          ),
+          itemCount: 8,
+          itemBuilder: (context, index) {
+            return const ShimmerPlaceholder(
+              width: double.infinity,
+              height: double.infinity,
+              borderRadius: BorderRadius.all(Radius.circular(24.0)),
+            );
+          },
+        );
+      },
       error: (err, st) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
     );
   }

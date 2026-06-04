@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/widgets/premium_fab.dart';
+import '../../../core/widgets/shimmer_placeholder.dart';
 import '../../admin/providers/staff_provider.dart';
+
 
 import 'widgets/staff_bento_card.dart';
 import 'widgets/role_list_tile.dart';
@@ -156,9 +158,18 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                   children: [
                     // PERSONAL TAB
                     staffState.when(
-                      loading: () => const Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
+                      loading: () => GridView.builder(
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 420,
+                          mainAxisExtent: 100,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                        ),
+                        itemCount: 6,
+                        itemBuilder: (context, index) => const ShimmerPlaceholder(
+                          width: double.infinity,
+                          height: 100,
                         ),
                       ),
                       error: (err, _) => Center(
@@ -231,9 +242,16 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
 
                     // ROLES TAB
                     rolesState.when(
-                      loading: () => const Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFE040FB)),
+                      loading: () => ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                        itemCount: 5,
+                        itemBuilder: (context, index) => const Padding(
+                          padding: EdgeInsets.only(bottom: 12.0),
+                          child: ShimmerPlaceholder(
+                            width: double.infinity,
+                            height: 58,
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
                         ),
                       ),
                       error: (err, _) => Center(

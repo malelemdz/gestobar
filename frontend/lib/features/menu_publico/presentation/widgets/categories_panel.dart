@@ -5,8 +5,10 @@ import '../../../pos/models/category_model.dart';
 import '../../../pos/providers/catalog_provider.dart';
 import '../../../admin/providers/menu_admin_provider.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/shimmer_placeholder.dart';
 import '../dialogs/add_edit_category_dialog.dart';
 import '../dialogs/bottom_confirmation_sheet.dart';
+
 
 // =========================================================================
 // 🏷️ CATEGORIES SIDEBAR (TABLET / DESKTOP PANEL)
@@ -196,7 +198,19 @@ class CategoriesPanel extends ConsumerWidget {
                   },
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFF00F0FF))),
+              loading: () => ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 6,
+                itemBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: ShimmerPlaceholder(
+                    width: double.infinity,
+                    height: 44,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
               error: (err, st) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
             ),
           ),
@@ -295,7 +309,22 @@ class MobileCategoriesCarousel extends ConsumerWidget {
           ],
         );
       },
-      loading: () => const SizedBox(height: 38),
+      loading: () => SizedBox(
+        height: 38,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 5,
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ShimmerPlaceholder(
+              width: index == 0 ? 60 : 90,
+              height: 38,
+              borderRadius: BorderRadius.circular(100),
+            ),
+          ),
+        ),
+      ),
       error: (err, st) => const SizedBox(height: 38),
     );
   }
