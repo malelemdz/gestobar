@@ -92,7 +92,6 @@ class MainDashboardView extends ConsumerWidget {
                       onBackPressed: () {
                         ref.read(activeViewProvider.notifier).state = NavigationHelper.getDefaultViewForRole(role);
                       },
-                      onMenuPressed: () {},
                       onProfilePressed: () {
                         ref.read(activeViewProvider.notifier).state = 'perfil';
                       },
@@ -136,9 +135,6 @@ class MainDashboardView extends ConsumerWidget {
                 user: user,
                 onBackPressed: () {
                   ref.read(activeViewProvider.notifier).state = NavigationHelper.getDefaultViewForRole(role);
-                },
-                onMenuPressed: () {
-                  Scaffold.of(context).openDrawer();
                 },
                 onProfilePressed: () {
                   ref.read(activeViewProvider.notifier).state = 'perfil';

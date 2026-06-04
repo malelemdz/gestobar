@@ -10,7 +10,6 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String role;
   final UserModel user;
   final VoidCallback onBackPressed;
-  final VoidCallback onMenuPressed;
   final VoidCallback onProfilePressed;
   final VoidCallback onSelectBarPressed;
 
@@ -23,7 +22,6 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.role,
     required this.user,
     required this.onBackPressed,
-    required this.onMenuPressed,
     required this.onProfilePressed,
     required this.onSelectBarPressed,
   });
@@ -51,7 +49,9 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
       } else {
         leadingWidget = IconButton(
           icon: const Icon(Icons.menu, color: Color(0xFF00F0FF)),
-          onPressed: onMenuPressed,
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
         );
       }
     }
