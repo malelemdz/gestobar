@@ -28,9 +28,10 @@ class ProductsPanel extends ConsumerWidget {
       color: const Color(0xFF00F0FF),
       backgroundColor: const Color(0xFF1E2024),
       onRefresh: () async {
-        ref.invalidate(categoriesProvider);
-        ref.invalidate(productsProvider);
-        await Future.delayed(const Duration(milliseconds: 800));
+        await Future.wait([
+          ref.refresh(categoriesProvider.future),
+          ref.refresh(productsProvider.future),
+        ]).catchError((_) => []);
       },
       child: filteredProducts.when(
         data: (products) {

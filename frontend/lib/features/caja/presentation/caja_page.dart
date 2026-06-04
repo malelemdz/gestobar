@@ -50,7 +50,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
         backgroundColor: const Color(0xFF1E2024),
         onRefresh: () async {
           await Future.wait([
-            ref.read(cajaStateProvider.notifier).refreshEstado(),
+            ref.read(cajaStateProvider.notifier).refreshEstado(silent: true),
             ref.read(ventasActivasProvider.notifier).refresh(),
           ]);
         },

@@ -42,8 +42,7 @@ class AuditoriaPage extends ConsumerWidget {
         color: AppTheme.liquidPrimary,
         backgroundColor: const Color(0xFF1E2024),
         onRefresh: () async {
-          ref.invalidate(auditoriaListProvider);
-          await ref.read(auditoriaListProvider.future);
+          await ref.refresh(auditoriaListProvider.future);
         },
         child: auditoriaAsync.when(
           loading: () => ListView.builder(
