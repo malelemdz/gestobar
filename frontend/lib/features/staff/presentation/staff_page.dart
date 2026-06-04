@@ -341,7 +341,8 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                         );
                       },
                     ),
-                  ],
+                  ),
+                ],
                 ),
               ),
             ],
