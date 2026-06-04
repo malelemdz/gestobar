@@ -7,6 +7,8 @@ import '../../admin/providers/menu_admin_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/auth_state.dart';
 import '../../../core/constants/api_constants.dart';
+import '../../../core/widgets/styled_text_field.dart';
+import '../../staff/presentation/widgets/technical_sheet_widgets.dart';
 
 class PerfilPage extends ConsumerStatefulWidget {
   const PerfilPage({super.key});
@@ -188,11 +190,11 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                               ),
                             ),
                             const SizedBox(height: 6),
-                            _buildStyledField(
+                            StyledTextField(
                               controller: _currentPasswordController,
                               hintText: 'Escribe tu contraseña actual',
-                              obscureText: _obscureCurrent,
-                              prefixIcon: Icons.lock_outline,
+                              isPassword: _obscureCurrent,
+                              icon: Icons.lock_outline,
                               suffixIcon: IconButton(
                                 icon: Icon(_obscureCurrent ? Icons.visibility_off : Icons.visibility, size: 18, color: Colors.white54),
                                 onPressed: () => setModalState(() => _obscureCurrent = !_obscureCurrent),
@@ -214,11 +216,11 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                               ),
                             ),
                             const SizedBox(height: 6),
-                            _buildStyledField(
+                            StyledTextField(
                               controller: _newPasswordController,
                               hintText: 'Mínimo 6 caracteres',
-                              obscureText: _obscureNew,
-                              prefixIcon: Icons.lock_outline,
+                              isPassword: _obscureNew,
+                              icon: Icons.lock_outline,
                               suffixIcon: IconButton(
                                 icon: Icon(_obscureNew ? Icons.visibility_off : Icons.visibility, size: 18, color: Colors.white54),
                                 onPressed: () => setModalState(() => _obscureNew = !_obscureNew),
@@ -241,11 +243,11 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                               ),
                             ),
                             const SizedBox(height: 6),
-                            _buildStyledField(
+                            StyledTextField(
                               controller: _confirmPasswordController,
                               hintText: 'Repite tu nueva contraseña',
-                              obscureText: _obscureConfirm,
-                              prefixIcon: Icons.lock_outline,
+                              isPassword: _obscureConfirm,
+                              icon: Icons.lock_outline,
                               suffixIcon: IconButton(
                                 icon: Icon(_obscureConfirm ? Icons.visibility_off : Icons.visibility, size: 18, color: Colors.white54),
                                 onPressed: () => setModalState(() => _obscureConfirm = !_obscureConfirm),
@@ -354,65 +356,6 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
           },
         );
       },
-    );
-  }
-
-  Widget _buildStyledField({
-    required TextEditingController controller,
-    required String hintText,
-    int maxLines = 1,
-    String? Function(String?)? validator,
-    bool obscureText = false,
-    Widget? suffixIcon,
-    IconData? prefixIcon,
-  }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      obscureText: obscureText,
-      style: GoogleFonts.inter(
-        color: Colors.white,
-        fontSize: 13,
-      ),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: const Color(0xFF22252A),
-        prefixIcon: prefixIcon != null
-            ? Padding(
-                padding: const EdgeInsets.only(left: 12.0, right: 8.0),
-                child: Icon(prefixIcon, color: Colors.white30, size: 16),
-              )
-            : null,
-        prefixIconConstraints: const BoxConstraints(
-          minWidth: 36,
-          minHeight: 16,
-        ),
-        suffixIcon: suffixIcon,
-        hintText: hintText,
-        hintStyle: TextStyle(color: Colors.white.withOpacity(0.2), fontSize: 13),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.0),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
-        ),
-      ),
-      validator: validator,
     );
   }
 
@@ -547,23 +490,23 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
           ),
           const SizedBox(height: 24.0),
 
-          _buildTechnicalSection(
+          TechnicalSection(
             title: 'Cuenta y Seguridad',
             accentColor: roleColor,
             children: [
-              _buildTechnicalRow(
+              TechnicalRow(
                 icon: Icons.alternate_email,
                 label: 'Nombre de Usuario',
                 value: '@${user.username}',
                 accentColor: roleColor,
               ),
-              _buildTechnicalRow(
+              TechnicalRow(
                 icon: Icons.security_outlined,
                 label: 'Rango de Acceso / Rol',
                 value: user.rolNombre.toUpperCase(),
                 accentColor: roleColor,
               ),
-              _buildTechnicalRow(
+              TechnicalRow(
                 icon: Icons.apartment_outlined,
                 label: 'Sucursal bar asignado',
                 value: user.barId?.isNotEmpty == true ? (user.barId!.length > 8 ? user.barId!.substring(0, 8) : user.barId!) : 'Global / Principal',
@@ -573,29 +516,29 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
             ],
           ),
 
-          _buildTechnicalSection(
+          TechnicalSection(
             title: 'Datos Personales y de Contacto',
             accentColor: roleColor,
             children: [
-              _buildTechnicalRow(
+              TechnicalRow(
                 icon: Icons.badge_outlined,
                 label: 'DNI / Cédula de Identificación',
                 value: user.identificacion?.isNotEmpty == true ? user.identificacion! : 'No registrado',
                 accentColor: roleColor,
               ),
-              _buildTechnicalRow(
+              TechnicalRow(
                 icon: Icons.phone_android,
                 label: 'Celular / Teléfono',
                 value: user.celular?.isNotEmpty == true ? user.celular! : 'No registrado',
                 accentColor: roleColor,
               ),
-              _buildTechnicalRow(
+              TechnicalRow(
                 icon: Icons.flag_outlined,
                 label: 'Nacionalidad',
                 value: user.nacionalidad?.isNotEmpty == true ? user.nacionalidad! : 'No registrado',
                 accentColor: roleColor,
               ),
-              _buildTechnicalRow(
+              TechnicalRow(
                 icon: Icons.wc_outlined,
                 label: 'Género',
                 value: user.genero == 'MASCULINO'
@@ -605,7 +548,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                         : 'Prefiero no decirlo',
                 accentColor: roleColor,
               ),
-              _buildTechnicalRow(
+              TechnicalRow(
                 icon: Icons.location_on_outlined,
                 label: 'Dirección Domiciliaria',
                 value: user.direccion?.isNotEmpty == true ? user.direccion! : 'No registrada',
@@ -642,135 +585,6 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildTechnicalSection({
-    required String title,
-    required Color accentColor,
-    required List<Widget> children,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF16181C), // Deep steel background
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05), width: 1.0),
-        boxShadow: [
-          BoxShadow(
-            color: accentColor.withOpacity(0.02),
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.015),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              border: Border(
-                bottom: BorderSide(color: Colors.white.withOpacity(0.05), width: 1.0),
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 3,
-                  height: 14,
-                  decoration: BoxDecoration(
-                    color: accentColor,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  title.toUpperCase(),
-                  style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.0,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
-              children: children,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTechnicalRow({
-    required IconData icon,
-    required String label,
-    required String value,
-    Color? accentColor,
-    bool showDivider = true,
-  }) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: (accentColor ?? const Color(0xFF00F0FF)).withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  icon,
-                  color: accentColor ?? const Color(0xFF00F0FF),
-                  size: 16,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label.toUpperCase(),
-                      style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white.withOpacity(0.4),
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      value,
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (showDivider)
-          Divider(
-            color: Colors.white.withOpacity(0.03),
-            height: 1,
-            thickness: 1,
-          ),
-      ],
     );
   }
 }

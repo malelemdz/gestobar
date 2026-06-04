@@ -1,0 +1,415 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import '../../../../core/utils/currency_helper.dart';
+import '../../models/caja_model.dart';
+import '../../models/evento_movimiento.dart';
+import '../../models/venta_model.dart';
+import 'movimientos_list_widgets.dart';
+
+class OpenCajaPanel extends StatefulWidget {
+  final CajaModel caja;
+  final List<VentaModel> activeVentas;
+  final String currencySymbol;
+  final String currencyIso;
+  final bool isLoading;
+  final void Function(String cajaId) onCerrarCaja;
+  final void Function(String tipo) onAddMovement;
+  final void Function(String cajaId) onDamasBreakdown;
+  final void Function(EventoMovimiento ev) onMovementDetail;
+
+  const OpenCajaPanel({
+    super.key,
+    required this.caja,
+    required this.activeVentas,
+    required this.currencySymbol,
+    required this.currencyIso,
+    required this.isLoading,
+    required this.onCerrarCaja,
+    required this.onAddMovement,
+    required this.onDamasBreakdown,
+    required this.onMovementDetail,
+  });
+
+  @override
+  State<OpenCajaPanel> createState() => _OpenCajaPanelState();
+}
+
+class _OpenCajaPanelState extends State<OpenCajaPanel> {
+  int _activeTab = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final String barmanNombre = widget.caja.aperturaUsuario != null
+        ? widget.caja.aperturaUsuario!.nombre
+        : 'Barman Encargado';
+
+    final String fecha = DateFormat('dd/MM/yyyy • hh:mm a').format(widget.caja.fechaApertura.toLocal());
+    final bool isTablet = MediaQuery.of(context).size.width >= 750;
+
+    final double totalVentasPos = widget.caja.totalVentasEfectivo + widget.caja.totalVentasTarjeta + widget.caja.totalVentasTrQr;
+
+    // Bento Grid setup
+    final List<Widget> cards = [
+      _buildFinancieraCard('Fondo de Caja (Inicial)', widget.caja.montoInicial, widget.currencySymbol, const Color(0xFF00F0FF), widget.currencyIso, Icons.account_balance_wallet_outlined),
+      _buildFinancieraCard('Total Esperado en Gaveta', widget.caja.totalEsperadoGaveta, widget.currencySymbol, const Color(0xFF00F0FF), widget.currencyIso, Icons.move_to_inbox_outlined),
+      _buildFinancieraCard('Ventas Efectivo POS', widget.caja.totalVentasEfectivo, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.payments_outlined),
+      _buildFinancieraCard('Ventas Tarjeta POS', widget.caja.totalVentasTarjeta, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.credit_card_outlined),
+      _buildFinancieraCard('Ventas TR / QR POS', widget.caja.totalVentasTrQr, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.mobile_friendly_outlined),
+      _buildFinancieraCard('Ventas Totales POS', totalVentasPos, widget.currencySymbol, const Color(0xFF00FF66), widget.currencyIso, Icons.analytics_outlined),
+      _buildFinancieraCard('Ganancia Neta del Bar', widget.caja.gananciaNetaBar, widget.currencySymbol, const Color(0xFF7000FF), widget.currencyIso, Icons.trending_up_outlined),
+      _buildFinancieraCard(
+        'Comisiones Damas',
+        widget.caja.totalComisionesDamas,
+        widget.currencySymbol,
+        const Color(0xFFFF00D6),
+        widget.currencyIso,
+        Icons.female_outlined,
+        onTap: () => widget.onDamasBreakdown(widget.caja.id),
+      ),
+      _buildFinancieraCard('Ingresos Manuales', widget.caja.totalIngresosManuales, widget.currencySymbol, const Color(0xFF00FFCC), widget.currencyIso, Icons.add_circle_outline),
+      _buildFinancieraCard('Egresos Caja Chica', widget.caja.totalEgresosManuales, widget.currencySymbol, Colors.redAccent, widget.currencyIso, Icons.remove_circle_outline),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // 1. Ficha del turno superior (Caja Abierta y Cerrar Caja)
+        Container(
+          padding: const EdgeInsets.all(20.0),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E2024),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: Colors.white.withOpacity(0.04)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF00F0FF).withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.lock_open, color: Color(0xFF00F0FF), size: 22),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'CAJA ABIERTA',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 14,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        Text(
+                          'Iniciado por $barmanNombre • $fecha',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white.withOpacity(0.4),
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Botón de Cierre
+              InkWell(
+                onTap: widget.isLoading ? null : () => widget.onCerrarCaja(widget.caja.id),
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  height: 46,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF7000FF), Color(0xFFFF00D6)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFFF00D6).withOpacity(0.12),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      'CERRAR CAJA',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 12,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // 2. Botones de Caja Chica Pill-Shaped
+        Row(
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () => widget.onAddMovement('INGRESO'),
+                borderRadius: BorderRadius.circular(30),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF00FF66),
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF00FF66).withOpacity(0.2),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.add_circle, size: 16, color: Color(0xFF121214)),
+                      const SizedBox(width: 8),
+                      Text(
+                        'INGRESO CHICA',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: const Color(0xFF121214),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 11,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: InkWell(
+                onTap: () => widget.onAddMovement('EGRESO'),
+                borderRadius: BorderRadius.circular(30),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.redAccent.withOpacity(0.2),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.remove_circle, size: 16, color: Color(0xFF121214)),
+                      const SizedBox(width: 8),
+                      Text(
+                        'EGRESO CHICA',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: const Color(0xFF121214),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 11,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 20),
+
+        // 3. Pestañas de Navegación del Turno
+        Container(
+          height: 46,
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: const Color(0xFF181A1E),
+            borderRadius: BorderRadius.circular(23),
+            border: Border.all(color: Colors.white.withOpacity(0.03)),
+          ),
+          child: Row(
+            children: [
+              _buildTabButton(0, 'BALANCE', Icons.analytics_outlined),
+              _buildTabButton(1, 'MOVIMIENTOS', Icons.swap_vert_outlined),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // 4. Contenido Activo
+        _activeTab == 0
+            ? GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: cards.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: isTablet ? 3 : 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: isTablet ? 2.5 : 2.0,
+                ),
+                itemBuilder: (context, index) => cards[index],
+              )
+            : MovimientosList(
+                movimientos: widget.caja.movimientos,
+                ventas: widget.activeVentas,
+                currencySymbol: widget.currencySymbol,
+                currencyIso: widget.currencyIso,
+                onMovementDetail: widget.onMovementDetail,
+              ),
+      ],
+    );
+  }
+
+  Widget _buildTabButton(int index, String label, IconData icon) {
+    final bool isActive = _activeTab == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _activeTab = index;
+          });
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: 38,
+          decoration: BoxDecoration(
+            color: isActive ? const Color(0xFF7000FF) : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: isActive
+                ? [
+                    BoxShadow(
+                      color: const Color(0xFF7000FF).withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: isActive ? Colors.white : Colors.white30,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  color: isActive ? Colors.white : Colors.white30,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFinancieraCard(
+    String title,
+    double amount,
+    String currency,
+    Color accentColor,
+    String currencyIso,
+    IconData icon, {
+    VoidCallback? onTap,
+  }) {
+    final formatted = CurrencyHelper.formatAmount(amount, currencyIso);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E2024),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.03),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    icon,
+                    size: 13,
+                    color: accentColor.withOpacity(0.6),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      title.toUpperCase(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white54,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  if (onTap != null)
+                    const Icon(Icons.arrow_forward_ios, size: 10, color: Color(0xFFFF00D6)),
+                ],
+              ),
+              const SizedBox(height: 5),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '$currency $formatted',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: accentColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
