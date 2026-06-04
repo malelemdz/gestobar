@@ -45,74 +45,90 @@ class _CajaPageState extends ConsumerState<CajaPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF121214), // Midnight background
-      body: cajaState.when(
-        data: (estado) {
-          return SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 24.0), // Paddings coincidentes con POS/Menú
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                estado.abierta
-                    ? OpenCajaPanel(
-                        caja: estado.caja!,
-                        activeVentas: activeVentas,
-                        currencySymbol: currencySymbol,
-                        currencyIso: currencyIso,
-                        isLoading: _isLoading,
-                        onCerrarCaja: _showCierreConfirmationBottomSheet,
-                        onAddMovement: _openAddMovementBottomSheet,
-                        onDamasBreakdown: _openDamasBreakdownBottomSheet,
-                        onMovementDetail: _openMovementDetailBottomSheet,
-                      )
-                    : ClosedCajaPanel(
-                        montoController: _montoController,
-                        isLoading: _isLoading,
-                        currencySymbol: currencySymbol,
-                        currencyIso: currencyIso,
-                        onAbrirCaja: _handleApertura,
-                      ),
-              ],
-            ),
-          );
+      body: RefreshIndicator(
+        color: const Color(0xFF00F0FF),
+        backgroundColor: const Color(0xFF1E2024),
+        onRefresh: () async {
+          await Future.wait([
+            ref.read(cajaStateProvider.notifier).refreshEstado(),
+            ref.read(ventasActivasProvider.notifier).refresh(),
+          ]);
         },
-        loading: () {
-          return const SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ShimmerPlaceholder(
-                  width: double.infinity,
-                  height: 280,
-                  borderRadius: BorderRadius.all(Radius.circular(32)),
+        child: cajaState.when(
+          data: (estado) {
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 24.0), // Paddings coincidentes con POS/Menú
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  estado.abierta
+                      ? OpenCajaPanel(
+                          caja: estado.caja!,
+                          activeVentas: activeVentas,
+                          currencySymbol: currencySymbol,
+                          currencyIso: currencyIso,
+                          isLoading: _isLoading,
+                          onCerrarCaja: _showCierreConfirmationBottomSheet,
+                          onAddMovement: _openAddMovementBottomSheet,
+                          onDamasBreakdown: _openDamasBreakdownBottomSheet,
+                          onMovementDetail: _openMovementDetailBottomSheet,
+                        )
+                      : ClosedCajaPanel(
+                          montoController: _montoController,
+                          isLoading: _isLoading,
+                          currencySymbol: currencySymbol,
+                          currencyIso: currencyIso,
+                          onAbrirCaja: _handleApertura,
+                        ),
+                ],
+              ),
+            );
+          },
+          loading: () {
+            return const SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ShimmerPlaceholder(
+                    width: double.infinity,
+                    height: 280,
+                    borderRadius: BorderRadius.all(Radius.circular(32)),
+                  ),
+                  SizedBox(height: 24),
+                  ShimmerPlaceholder(
+                    width: double.infinity,
+                    height: 420,
+                    borderRadius: BorderRadius.all(Radius.circular(32)),
+                  ),
+                ],
+              ),
+            );
+          },
+          error: (err, stack) => SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height - 150,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Error al cargar estado de caja',
+                      style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: () => ref.read(cajaStateProvider.notifier).refreshEstado(),
+                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7000FF)),
+                      child: Text('Reintentar', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 24),
-                ShimmerPlaceholder(
-                  width: double.infinity,
-                  height: 420,
-                  borderRadius: BorderRadius.all(Radius.circular(32)),
-                ),
-              ],
+              ),
             ),
-          );
-        },
-        error: (err, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Error al cargar estado de caja',
-                style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () => ref.read(cajaStateProvider.notifier).refreshEstado(),
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7000FF)),
-                child: Text('Reintentar', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-              ),
-            ],
           ),
         ),
       ),

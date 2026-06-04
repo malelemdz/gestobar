@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/shimmer_placeholder.dart';
 import '../providers/auditoria_provider.dart';
 import '../data/models/auditoria_model.dart';
 
@@ -37,32 +38,67 @@ class AuditoriaPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: auditoriaAsync.when(
-        loading: () => Center(child: CircularProgressIndicator(color: AppTheme.liquidPrimary)),
-        error: (err, stack) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent))),
-        data: (logs) {
-          if (logs.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.history_toggle_off, size: 64, color: Colors.white.withOpacity(0.2)),
-                  const SizedBox(height: 16),
-                  Text('No hay registros en la bitácora aún', style: TextStyle(color: Colors.white.withOpacity(0.5))),
-                ],
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
-            itemCount: logs.length,
-            itemBuilder: (context, index) {
-              final log = logs[index];
-              return _buildLogCard(log, theme);
-            },
-          );
+      body: RefreshIndicator(
+        color: AppTheme.liquidPrimary,
+        backgroundColor: const Color(0xFF1E2024),
+        onRefresh: () async {
+          ref.invalidate(auditoriaListProvider);
+          await ref.read(auditoriaListProvider.future);
         },
+        child: auditoriaAsync.when(
+          loading: () => ListView.builder(
+            padding: const EdgeInsets.all(16.0),
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 5,
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: ShimmerPlaceholder(
+                width: double.infinity,
+                height: 120,
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+            ),
+          ),
+          error: (err, stack) => SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height - 150,
+              child: Center(
+                child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent)),
+              ),
+            ),
+          ),
+          data: (logs) {
+            if (logs.isEmpty) {
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height - 150,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.history_toggle_off, size: 64, color: Colors.white.withOpacity(0.2)),
+                        const SizedBox(height: 16),
+                        Text('No hay registros en la bitácora aún', style: TextStyle(color: Colors.white.withOpacity(0.5))),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: logs.length,
+              itemBuilder: (context, index) {
+                final log = logs[index];
+                return _buildLogCard(log, theme);
+              },
+            );
+          },
+        ),
       ),
     );
   }

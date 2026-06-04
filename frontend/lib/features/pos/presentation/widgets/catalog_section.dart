@@ -144,68 +144,89 @@ class _CatalogSectionState extends ConsumerState<CatalogSection> {
 
           // Grilla de Productos
           Expanded(
-            child: filteredProducts.when(
-              data: (products) {
-                if (products.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.local_bar, size: 48, color: Colors.white.withOpacity(0.15)),
-                        const SizedBox(height: 12),
-                        Text(
-                          'No hay bebidas disponibles',
-                          style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white.withOpacity(0.4),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+            child: RefreshIndicator(
+              color: const Color(0xFF00F0FF),
+              backgroundColor: const Color(0xFF1E2024),
+              onRefresh: () async {
+                ref.invalidate(categoriesProvider);
+                ref.invalidate(productsProvider);
+                await Future.delayed(const Duration(milliseconds: 800));
+              },
+              child: filteredProducts.when(
+                data: (products) {
+                  if (products.isEmpty) {
+                    return SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: SizedBox(
+                        height: 400,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.local_bar, size: 48, color: Colors.white.withOpacity(0.15)),
+                              const SizedBox(height: 12),
+                              Text(
+                                'No hay bebidas disponibles',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white.withOpacity(0.4),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  );
-                }
-
-                return GridView.builder(
-                  padding: const EdgeInsets.only(bottom: 86.0),
-                  physics: const BouncingScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 220,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 0.72,
-                  ),
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    return ProductCard(product: product);
-                  },
-                );
-              },
-              loading: () {
-                return GridView.builder(
-                  padding: const EdgeInsets.only(bottom: 86.0),
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 220,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 0.72,
-                  ),
-                  itemCount: 8,
-                  itemBuilder: (context, index) {
-                    return const ShimmerPlaceholder(
-                      width: double.infinity,
-                      height: double.infinity,
-                      borderRadius: BorderRadius.all(Radius.circular(24.0)),
+                      ),
                     );
-                  },
-                );
-              },
-              error: (err, stack) => Center(
-                child: Text(
-                  'Error al cargar catálogo: $err',
-                  style: GoogleFonts.plusJakartaSans(color: Colors.redAccent),
+                  }
+
+                  return GridView.builder(
+                    padding: const EdgeInsets.only(bottom: 86.0),
+                    physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 220,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: 0.72,
+                    ),
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+                      return ProductCard(product: product);
+                    },
+                  );
+                },
+                loading: () {
+                  return GridView.builder(
+                    padding: const EdgeInsets.only(bottom: 86.0),
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 220,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: 0.72,
+                    ),
+                    itemCount: 8,
+                    itemBuilder: (context, index) {
+                      return const ShimmerPlaceholder(
+                        width: double.infinity,
+                        height: double.infinity,
+                        borderRadius: BorderRadius.all(Radius.circular(24.0)),
+                      );
+                    },
+                  );
+                },
+                error: (err, stack) => SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: 400,
+                    child: Center(
+                      child: Text(
+                        'Error al cargar catálogo: $err',
+                        style: GoogleFonts.plusJakartaSans(color: Colors.redAccent),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
