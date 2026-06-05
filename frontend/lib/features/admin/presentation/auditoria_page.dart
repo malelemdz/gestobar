@@ -853,15 +853,15 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
       ),
       builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.6,
-          maxChildSize: 0.9,
-          minChildSize: 0.4,
-          expand: false,
-          builder: (context, scrollController) {
-            return Container(
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Container(
               padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 24.0),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
@@ -895,57 +895,63 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close, color: Colors.white70, size: 18),
-                        style: IconButton.styleFrom(
-                          backgroundColor: Colors.white.withOpacity(0.05),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
                           padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.05),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.close, color: Colors.white70, size: 18),
                         ),
-                        constraints: const BoxConstraints(),
                       ),
                     ],
                   ),
                   const SizedBox(height: 12),
                   const Divider(height: 1, thickness: 0.5, color: Colors.white10),
                   const SizedBox(height: 16),
-                  Expanded(
-                    child: ListView(
-                      controller: scrollController,
-                      children: [
-                        _buildDetailRow(Icons.folder_open_outlined, 'Módulo', _formatModulo(log.modulo)),
-                        _buildDetailRow(Icons.person_outline, 'Usuario', '${log.usuarioNombre ?? "Desconocido"} (${log.rolNombre.toLowerCase()})'),
-                        _buildDetailRow(Icons.calendar_today_outlined, 'Fecha', dateStr),
-                        if (log.ipAddress != null)
-                          _buildDetailRow(Icons.network_wifi_outlined, 'Dirección IP', _formatIpAddress(log.ipAddress)),
-                        if (log.dispositivo != null)
-                          _buildDetailRow(Icons.devices_outlined, 'Dispositivo/User Agent', log.dispositivo!),
-                        
-                        const SizedBox(height: 16),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildDetailRow(Icons.folder_open_outlined, 'Módulo', _formatModulo(log.modulo)),
+                          _buildDetailRow(Icons.person_outline, 'Usuario', '${log.usuarioNombre ?? "Desconocido"} (${log.rolNombre.toLowerCase()})'),
+                          _buildDetailRow(Icons.calendar_today_outlined, 'Fecha', dateStr),
+                          if (log.ipAddress != null)
+                            _buildDetailRow(Icons.network_wifi_outlined, 'Dirección IP', _formatIpAddress(log.ipAddress)),
+                          if (log.dispositivo != null)
+                            _buildDetailRow(Icons.devices_outlined, 'Dispositivo/User Agent', log.dispositivo!),
+                          
+                          const SizedBox(height: 16),
 
-                        _buildLogMetadataDetail(log, currencyIso, currencySymbol),
-                        
-                        // Render detailed changes if 'cambios' exists
-                        if (log.detalles != null && log.detalles!['cambios'] != null) ...[
-                          Text(
-                            'CAMBIOS REALIZADOS',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 12,
-                              color: AppTheme.liquidPrimary,
-                              letterSpacing: 0.5,
+                          _buildLogMetadataDetail(log, currencyIso, currencySymbol),
+                          
+                          // Render detailed changes if 'cambios' exists
+                          if (log.detalles != null && log.detalles!['cambios'] != null) ...[
+                            Text(
+                              'CAMBIOS REALIZADOS',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 12,
+                                color: AppTheme.liquidPrimary,
+                                letterSpacing: 0.5,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          _buildChangesList(log.detalles!['cambios'], currencyIso, currencySymbol),
+                            const SizedBox(height: 12),
+                            _buildChangesList(log.detalles!['cambios'], currencyIso, currencySymbol),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ],
               ),
-            );
-          },
+            ),
+          ),
         );
       },
     );
