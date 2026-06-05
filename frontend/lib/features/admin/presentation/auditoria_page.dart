@@ -60,7 +60,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 12.0, bottom: 0.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 12.0, bottom: 8.0),
             child: Row(
               children: [
                 _buildUserFilterCapsule(filters, staffAsync),
@@ -73,7 +73,6 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
           // Log List
           Expanded(
             child: RefreshIndicator(
@@ -93,7 +92,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
   Widget _buildMainContent(AuditoriaState state, ThemeData theme, String currencyIso, String currencySymbol, String barTimezone) {
     if (state.isLoading) {
       return ListView.builder(
-        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 24.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 24.0),
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 6,
         itemBuilder: (context, index) => Padding(
@@ -162,7 +161,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
 
     return ListView.builder(
       controller: _scrollController,
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 24.0),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 24.0),
       physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
       itemCount: state.logs.length + (state.hasMore ? 1 : 0),
       itemBuilder: (context, index) {
