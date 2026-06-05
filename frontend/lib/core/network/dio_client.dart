@@ -1,7 +1,29 @@
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/api_constants.dart';
 import '../storage/secure_storage_service.dart';
+
+String _getUserAgent() {
+  if (kIsWeb) {
+    return 'Mozilla/5.0 (Web) GestobarApp';
+  }
+  try {
+    if (Platform.isAndroid) {
+      return 'Mozilla/5.0 (Android; Mobile) GestobarApp';
+    } else if (Platform.isIOS) {
+      return 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) GestobarApp';
+    } else if (Platform.isMacOS) {
+      return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) GestobarApp';
+    } else if (Platform.isWindows) {
+      return 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) GestobarApp';
+    } else if (Platform.isLinux) {
+      return 'Mozilla/5.0 (X11; Linux x86_64) GestobarApp';
+    }
+  } catch (_) {}
+  return 'Mozilla/5.0 (Dart) GestobarApp';
+}
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
@@ -12,6 +34,7 @@ final dioProvider = Provider<Dio>((ref) {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'User-Agent': _getUserAgent(),
       },
     ),
   );

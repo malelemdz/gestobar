@@ -66,7 +66,7 @@ class NavigationHelper {
           },
           {
             'view': 'audit',
-            'label': 'Bitácora',
+            'label': 'Auditoría',
             'icon': Icons.security_outlined,
             'icon_active': Icons.security,
           },
@@ -120,7 +120,7 @@ class NavigationHelper {
       case 'staff':
         return 'Staff';
       case 'audit':
-        return 'Audit';
+        return 'Auditoría';
       case 'config':
         return 'Config';
       case 'perfil':

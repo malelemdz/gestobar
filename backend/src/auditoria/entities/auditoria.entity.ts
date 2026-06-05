@@ -14,10 +14,10 @@ export class Auditoria {
   @JoinColumn({ name: 'bar_id' })
   bar: Bar;
 
-  @Column({ type: 'uuid' })
-  usuario_id: string;
+  @Column({ type: 'uuid', nullable: true })
+  usuario_id: string | null;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL' })
+  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'usuario_id' })
   usuario: User;
 

@@ -13,7 +13,7 @@ export class AuditoriaService {
 
   async registrar(logData: {
     barId: string | null;
-    usuarioId: string;
+    usuarioId: string | null;
     rolNombre: string;
     accion: string;
     modulo: string;
@@ -66,8 +66,10 @@ export class AuditoriaService {
       device = 'Escritorio';
     }
 
-    // Detectar Navegador
-    if (ua.includes('chrome') || ua.includes('crios')) {
+    // Detectar Navegador / App
+    if (ua.includes('gestobarapp')) {
+      browser = 'App Gestobar';
+    } else if (ua.includes('chrome') || ua.includes('crios')) {
       browser = 'Chrome';
     } else if (ua.includes('safari') && !ua.includes('chrome') && !ua.includes('crios')) {
       browser = 'Safari';
@@ -106,10 +108,16 @@ export class AuditoriaService {
       where.fecha = LessThanOrEqual(new Date(query.fecha_fin));
     }
 
+    const page = query.page ? parseInt(query.page, 10) : 1;
+    const limit = query.limit ? parseInt(query.limit, 10) : 20;
+    const skip = (page - 1) * limit;
+
     return await this.auditoriaRepository.find({
       where,
       relations: ['usuario'],
       order: { fecha: 'DESC' },
+      take: limit,
+      skip: skip,
     });
   }
 }

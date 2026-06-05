@@ -24,4 +24,12 @@ export class QueryAuditoriaDto {
   @IsDateString({}, { message: 'La fecha de fin debe tener formato de fecha válido (ISO)' })
   @IsOptional()
   fecha_fin?: string;
+
+  @IsString()
+  @IsOptional()
+  page?: string;
+
+  @IsString()
+  @IsOptional()
+  limit?: string;
 }

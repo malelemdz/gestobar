@@ -1,7 +1,7 @@
 class AuditoriaModel {
   final String id;
   final String barId;
-  final String usuarioId;
+  final String? usuarioId;
   final String? usuarioNombre;
   final String rolNombre;
   final String accion;
@@ -14,7 +14,7 @@ class AuditoriaModel {
   AuditoriaModel({
     required this.id,
     required this.barId,
-    required this.usuarioId,
+    this.usuarioId,
     this.usuarioNombre,
     required this.rolNombre,
     required this.accion,
@@ -29,7 +29,7 @@ class AuditoriaModel {
     return AuditoriaModel(
       id: json['id'] ?? '',
       barId: json['bar_id'] ?? '',
-      usuarioId: json['usuario_id'] ?? '',
+      usuarioId: json['usuario_id'],
       usuarioNombre: json['usuario']?['nombre'],
       rolNombre: json['rol_nombre'] ?? '',
       accion: json['accion'] ?? '',

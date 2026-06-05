@@ -1,28 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-import 'core/local_db/hive_provider.dart';
-import 'core/theme/app_theme.dart';
 import 'features/auth/providers/auth_provider.dart';
 import 'features/auth/providers/auth_state.dart';
-import 'features/auth/models/user_model.dart';
+import 'core/local_db/hive_provider.dart';
+import 'core/theme/app_theme.dart';
 
 // Importaciones de los nuevos componentes de vistas modulares
-import 'features/dashboard/presentation/dashboard_page.dart';
-import 'features/pos/presentation/pos_page.dart';
 import 'features/splash/presentation/splash_screen.dart';
 import 'features/auth/presentation/login_view.dart';
 import 'features/dashboard/presentation/main_dashboard_view.dart';
-import 'features/caja/presentation/caja_page.dart';
-import 'features/admin/presentation/auditoria_page.dart';
-import 'features/damas/presentation/dama_page.dart';
 import 'features/admin/presentation/bar_selector_view.dart';
-import 'features/menu_publico/presentation/menu_page.dart';
-import 'features/staff/presentation/staff_page.dart';
-import 'features/admin/presentation/config_page.dart';
-import 'features/auth/presentation/perfil_page.dart';
-import 'features/admin/providers/bar_provider.dart';
 
 void main() async {
   // Asegura que las llamadas a canales nativos de Flutter (como Secure Storage)
