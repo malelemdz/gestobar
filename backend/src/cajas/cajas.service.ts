@@ -156,7 +156,7 @@ export class CajasService {
       detalles: {
         caja_id: savedCaja.id,
         monto_inicial: savedCaja.monto_inicial,
-        mensaje: `Abrió la caja con un monto inicial de $${savedCaja.monto_inicial}`,
+        mensaje: 'Apertura de caja',
       },
       ipAddress: ipAndUa?.ipAddress,
       userAgent: ipAndUa?.userAgent,
@@ -249,7 +249,7 @@ export class CajasService {
         ingresos_manuales: totalIngresosManuales,
         egresos_manuales: totalEgresosManuales,
         balance_esperado: balanceEsperado,
-        mensaje: `Cerró la caja. Monto final registrado: $${savedCaja.monto_final}`,
+        mensaje: 'Cierre de caja',
       },
       ipAddress: ipAndUa?.ipAddress,
       userAgent: ipAndUa?.userAgent,
@@ -305,7 +305,7 @@ export class CajasService {
         tipo: savedMov.tipo,
         metodo_pago: savedMov.metodo_pago,
         concepto: savedMov.concepto,
-        mensaje: `${savedMov.tipo === 'INGRESO' ? 'Ingreso' : 'Egreso'} registrado por $${savedMov.monto} con concepto: ${savedMov.concepto}`,
+        mensaje: savedMov.tipo === 'INGRESO' ? 'Ingreso registrado' : 'Egreso registrado',
       },
     });
 
