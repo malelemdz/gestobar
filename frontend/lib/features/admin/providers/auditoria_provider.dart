@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/network/dio_client.dart';
+import '../../../../core/network/socket_service.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/providers/auth_state.dart';
 import '../data/models/auditoria_model.dart';
@@ -60,15 +61,74 @@ class AuditoriaState {
 class AuditoriaNotifier extends StateNotifier<AuditoriaState> {
   final AuditoriaRepository? _repository;
   final Map<String, String?> _filters;
+  final SocketService _socketService;
+  final String? _barId;
+  bool _isListening = false;
 
-  AuditoriaNotifier(this._repository, this._filters) : super(AuditoriaState(
-    logs: [],
-    page: 1,
-    hasMore: true,
-    isLoading: false,
-    isLoadingMore: false,
-  )) {
+  AuditoriaNotifier(
+    this._repository,
+    this._filters,
+    this._socketService,
+    this._barId,
+  ) : super(AuditoriaState(
+          logs: [],
+          page: 1,
+          hasMore: true,
+          isLoading: false,
+          isLoadingMore: false,
+        )) {
     loadInitial();
+    _initSocket();
+  }
+
+  Future<void> _initSocket() async {
+    if (_isListening || _barId == null) return;
+    try {
+      final socket = await _socketService.connect();
+      socket.on('nuevo_log_bar_$_barId', (data) {
+        if (data != null) {
+          try {
+            final newLog = AuditoriaModel.fromJson(Map<String, dynamic>.from(data));
+            if (_matchesFilters(newLog)) {
+              state = state.copyWith(
+                logs: [newLog, ...state.logs],
+              );
+            }
+          } catch (_) {}
+        }
+      });
+      _isListening = true;
+    } catch (_) {}
+  }
+
+  bool _matchesFilters(AuditoriaModel log) {
+    if (_filters['usuarioId'] != null && log.usuarioId != _filters['usuarioId']) {
+      return false;
+    }
+    if (_filters['modulo'] != null && log.modulo != _filters['modulo']) {
+      return false;
+    }
+    if (_filters['accion'] != null && log.accion != _filters['accion']) {
+      return false;
+    }
+    if (_filters['fechaInicio'] != null && _filters['fechaFin'] != null) {
+      try {
+        final start = DateTime.parse(_filters['fechaInicio']!);
+        final end = DateTime.parse(_filters['fechaFin']!).add(const Duration(days: 1));
+        if (log.fecha.isBefore(start) || log.fecha.isAfter(end)) {
+          return false;
+        }
+      } catch (_) {}
+    }
+    return true;
+  }
+
+  @override
+  void dispose() {
+    if (_isListening && _barId != null) {
+      _socketService.socket?.off('nuevo_log_bar_$_barId');
+    }
+    super.dispose();
   }
 
   Future<void> loadInitial({bool silent = false}) async {
@@ -135,5 +195,13 @@ class AuditoriaNotifier extends StateNotifier<AuditoriaState> {
 final auditoriaListProvider = StateNotifierProvider<AuditoriaNotifier, AuditoriaState>((ref) {
   final repo = ref.watch(auditoriaRepositoryProvider);
   final filters = ref.watch(auditoriaFiltersProvider);
-  return AuditoriaNotifier(repo, filters);
+  final socketService = ref.watch(socketServiceProvider);
+
+  final authState = ref.watch(authProvider);
+  String? barId;
+  if (authState is AuthAuthenticated) {
+    barId = authState.activeBarId ?? authState.user.barId;
+  }
+
+  return AuditoriaNotifier(repo, filters, socketService, barId);
 });

@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
 import { Auditoria } from './entities/auditoria.entity';
 import { QueryAuditoriaDto } from './dto/query-auditoria.dto';
+import { SocketGateway } from '../socket/socket.gateway';
 
 @Injectable()
 export class AuditoriaService {
   constructor(
     @InjectRepository(Auditoria)
     private readonly auditoriaRepository: Repository<Auditoria>,
+    private readonly socketGateway: SocketGateway,
   ) {}
 
   async registrar(logData: {
@@ -34,7 +36,19 @@ export class AuditoriaService {
       dispositivo: dispositivoParsed,
     });
 
-    return await this.auditoriaRepository.save(log);
+    const savedLog = await this.auditoriaRepository.save(log);
+
+    if (savedLog.bar_id) {
+      const logConUsuario = await this.auditoriaRepository.findOne({
+        where: { id: savedLog.id },
+        relations: ['usuario'],
+      });
+      if (logConUsuario) {
+        this.socketGateway.server.emit(`nuevo_log_bar_${savedLog.bar_id}`, logConUsuario);
+      }
+    }
+
+    return savedLog;
   }
 
   private parseUserAgent(userAgent: string | undefined): string | null {
