@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timezone/data/latest.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
 import '../../../../core/network/dio_client.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/providers/auth_state.dart';
@@ -24,6 +26,29 @@ final currentBarProvider = StateNotifierProvider<CurrentBarNotifier, AsyncValue<
     barId: activeBarId,
   );
 });
+
+// Proveedor de la zona horaria configurada del bar activo
+final barTimezoneProvider = Provider<String>((ref) {
+  final barState = ref.watch(currentBarProvider);
+  
+  String getLocalTimezone() {
+    try {
+      if (tz.timeZoneDatabase.locations.isEmpty) {
+        tz_data.initializeTimeZones();
+      }
+      return tz.local.name;
+    } catch (_) {
+      return 'America/La_Paz';
+    }
+  }
+
+  return barState.when(
+    data: (bar) => bar.timezone.isNotEmpty ? bar.timezone : getLocalTimezone(),
+    loading: () => getLocalTimezone(),
+    error: (_, __) => getLocalTimezone(),
+  );
+});
+
 
 class CurrentBarNotifier extends StateNotifier<AsyncValue<BarModel>> {
   final BarsRepository repository;

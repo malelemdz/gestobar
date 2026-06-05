@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/shimmer_placeholder.dart';
 import '../../../core/utils/currency_helper.dart';
+import '../../../core/utils/timezone_helper.dart';
 import '../../caja/providers/caja_provider.dart';
+import '../providers/bar_provider.dart';
 import '../providers/auditoria_provider.dart';
 import '../providers/staff_provider.dart';
 import '../../auth/models/user_model.dart';
@@ -49,6 +51,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     final staffAsync = ref.watch(staffListProvider);
     final currencyIso = ref.watch(currencyIsoProvider);
     final currencySymbol = ref.watch(currencySymbolProvider);
+    final barTimezone = ref.watch(barTimezoneProvider);
     return Scaffold(
       backgroundColor: AppTheme.liquidBg,
       body: Column(
@@ -78,7 +81,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
               onRefresh: () async {
                 await ref.read(auditoriaListProvider.notifier).loadInitial(silent: true);
               },
-              child: _buildMainContent(auditoriaState, theme, currencyIso, currencySymbol),
+              child: _buildMainContent(auditoriaState, theme, currencyIso, currencySymbol, barTimezone),
             ),
           ),
         ],
@@ -86,7 +89,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     );
   }
 
-  Widget _buildMainContent(AuditoriaState state, ThemeData theme, String currencyIso, String currencySymbol) {
+  Widget _buildMainContent(AuditoriaState state, ThemeData theme, String currencyIso, String currencySymbol, String barTimezone) {
     if (state.isLoading) {
       return ListView.builder(
         padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 12.0, bottom: 24.0),
@@ -165,9 +168,9 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
         if (index < state.logs.length) {
           final log = state.logs[index];
           return InkWell(
-            onTap: () => _showLogDetail(context, log, currencyIso, currencySymbol),
+            onTap: () => _showLogDetail(context, log, currencyIso, currencySymbol, barTimezone),
             borderRadius: BorderRadius.circular(16.0),
-            child: _buildLogCard(log, theme, currencyIso, currencySymbol),
+            child: _buildLogCard(log, theme, currencyIso, currencySymbol, barTimezone),
           );
         } else {
           return Padding(
@@ -188,9 +191,10 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     );
   }
 
-  Widget _buildLogCard(AuditoriaModel log, ThemeData theme, String currencyIso, String currencySymbol) {
+  Widget _buildLogCard(AuditoriaModel log, ThemeData theme, String currencyIso, String currencySymbol, String barTimezone) {
     final format = DateFormat('dd MMM, HH:mm:ss');
-    final dateStr = format.format(log.fecha);
+    final localFecha = TimezoneHelper.convertToBarTime(log.fecha, barTimezone);
+    final dateStr = format.format(localFecha);
 
     Color actionColor = AppTheme.liquidPrimary;
     IconData actionIcon = Icons.info_outline;
@@ -821,9 +825,10 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
 
   // --- LOG ENTRY DETAIL VIEWER ---
 
-  void _showLogDetail(BuildContext context, AuditoriaModel log, String currencyIso, String currencySymbol) {
+  void _showLogDetail(BuildContext context, AuditoriaModel log, String currencyIso, String currencySymbol, String barTimezone) {
     final format = DateFormat('dd MMMM yyyy, HH:mm:ss');
-    final dateStr = format.format(log.fecha);
+    final localFecha = TimezoneHelper.convertToBarTime(log.fecha, barTimezone);
+    final dateStr = format.format(localFecha);
 
     Color actionColor = AppTheme.liquidPrimary;
     IconData actionIcon = Icons.info_outline;
@@ -920,7 +925,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                         children: [
                           _buildDetailRow(Icons.folder_open_outlined, 'Módulo', _formatModulo(log.modulo)),
                           _buildDetailRow(Icons.person_outline, 'Usuario', '${log.usuarioNombre ?? "Desconocido"} (${log.rolNombre.toLowerCase()})'),
-                          _buildDetailRow(Icons.calendar_today_outlined, 'Fecha', dateStr),
+                          _buildDetailRow(Icons.calendar_today_outlined, 'Fecha ($barTimezone)', dateStr),
                           if (log.ipAddress != null)
                             _buildDetailRow(Icons.network_wifi_outlined, 'Dirección IP', _formatIpAddress(log.ipAddress)),
                           if (log.dispositivo != null)

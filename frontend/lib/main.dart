@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'features/auth/providers/auth_provider.dart';
 import 'features/auth/providers/auth_state.dart';
 import 'core/local_db/hive_provider.dart';
@@ -16,6 +17,9 @@ void main() async {
   // Asegura que las llamadas a canales nativos de Flutter (como Secure Storage)
   // estén inicializadas antes de que se dibuje el árbol de widgets.
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Inicialización de la base de datos de zonas horarias
+  tz.initializeTimeZones();
   
   // Inicialización ultra-rápida de la caché local NoSQL (Hive)
   await initHive();
