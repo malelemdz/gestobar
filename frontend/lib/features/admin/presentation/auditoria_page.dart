@@ -874,23 +874,30 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 12),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(actionIcon, color: actionColor, size: 22),
-                      const SizedBox(width: 8),
-                      Text(
-                        _formatAction(log.accion),
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.white,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Icon(actionIcon, color: actionColor, size: 20),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _formatMessageWithCurrency(log.detalles?['mensaje'], currencyIso, currencySymbol),
+                          style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.white,
+                            height: 1.3,
+                          ),
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 12),
                       IconButton(
                         onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close, color: Colors.white70, size: 20),
+                        icon: const Icon(Icons.close, color: Colors.white70, size: 18),
                         style: IconButton.styleFrom(
                           backgroundColor: Colors.white.withOpacity(0.05),
                           padding: const EdgeInsets.all(6),
@@ -906,34 +913,6 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                     child: ListView(
                       controller: scrollController,
                       children: [
-                        // Main Message container in a premium card
-                        Container(
-                          padding: const EdgeInsets.all(16.0),
-                          margin: const EdgeInsets.only(bottom: 20.0),
-                          decoration: BoxDecoration(
-                            color: AppTheme.liquidSurfaceContainerHigh,
-                            borderRadius: BorderRadius.circular(12.0),
-                            border: Border.all(color: Colors.white.withOpacity(0.04)),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(Icons.chat_bubble_outline, size: 16, color: actionColor.withOpacity(0.8)),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  _formatMessageWithCurrency(log.detalles?['mensaje'], currencyIso, currencySymbol),
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    height: 1.4,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                         _buildDetailRow(Icons.folder_open_outlined, 'Módulo', _formatModulo(log.modulo)),
                         _buildDetailRow(Icons.person_outline, 'Usuario', '${log.usuarioNombre ?? "Desconocido"} (${log.rolNombre.toLowerCase()})'),
                         _buildDetailRow(Icons.calendar_today_outlined, 'Fecha', dateStr),
