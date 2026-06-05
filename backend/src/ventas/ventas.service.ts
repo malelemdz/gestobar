@@ -147,6 +147,7 @@ export class VentasService {
         total: savedVenta.total,
         metodo_pago: savedVenta.metodo_pago,
         cantidad_items: savedVenta.detalles.length,
+        mensaje: `Venta procesada por un total de $${savedVenta.total} (${savedVenta.metodo_pago})`,
       },
       ipAddress: ipAndUa?.ipAddress,
       userAgent: ipAndUa?.userAgent,

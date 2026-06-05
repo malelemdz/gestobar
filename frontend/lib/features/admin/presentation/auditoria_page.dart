@@ -839,6 +839,8 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                           _buildDetailRow(Icons.devices_outlined, 'Dispositivo/User Agent', log.dispositivo!),
                         
                         const SizedBox(height: 16),
+
+                        _buildLogMetadataDetail(log),
                         
                         // Render detailed changes if 'cambios' exists
                         if (log.detalles != null && log.detalles!['cambios'] != null) ...[
@@ -863,6 +865,146 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
           },
         );
       },
+    );
+  }
+
+  Widget _buildLogMetadataDetail(AuditoriaModel log) {
+    if (log.detalles == null) return const SizedBox.shrink();
+    final det = log.detalles!;
+    
+    final action = log.accion;
+    if (action != 'REGISTRAR_VENTA' && 
+        action != 'APERTURA' && 
+        action != 'CIERRE' && 
+        action != 'REGISTRAR_MOVIMIENTO') {
+      return const SizedBox.shrink();
+    }
+
+    String title = '';
+    List<Widget> items = [];
+
+    if (action == 'REGISTRAR_VENTA') {
+      title = 'DETALLES DE LA VENTA';
+      final total = det['total']?.toString() ?? '0.00';
+      final metodo = det['metodo_pago']?.toString() ?? 'Desconocido';
+      final itemsCount = det['cantidad_items']?.toString() ?? '0';
+      final ventaId = det['venta_id']?.toString() ?? '';
+      
+      items = [
+        _buildMetadataItem('ID Venta', ventaId.length > 8 ? '#${ventaId.substring(0, 8)}' : '#$ventaId', icon: Icons.receipt_long_outlined),
+        _buildMetadataItem('Total Procesado', '\$$total', isHighlight: true, highlightColor: AppTheme.colorSuccess, icon: Icons.monetization_on_outlined),
+        _buildMetadataItem('Método de Pago', metodo, icon: Icons.payment_outlined),
+        _buildMetadataItem('Cantidad de Items', itemsCount, icon: Icons.shopping_bag_outlined),
+      ];
+    } else if (action == 'APERTURA') {
+      title = 'APERTURA DE CAJA';
+      final montoInicial = det['monto_inicial']?.toString() ?? '0.00';
+      final cajaId = det['caja_id']?.toString() ?? '';
+
+      items = [
+        _buildMetadataItem('ID Caja', cajaId.length > 8 ? '#${cajaId.substring(0, 8)}' : '#$cajaId', icon: Icons.folder_open_outlined),
+        _buildMetadataItem('Monto Inicial', '\$$montoInicial', isHighlight: true, highlightColor: AppTheme.liquidPrimary, icon: Icons.account_balance_wallet_outlined),
+      ];
+    } else if (action == 'CIERRE') {
+      title = 'RESUMEN DE CIERRE DE CAJA';
+      final montoInicial = det['monto_inicial']?.toString() ?? '0.00';
+      final montoFinal = det['monto_final']?.toString() ?? '0.00';
+      final ventas = det['ventas_totales']?.toString() ?? '0.00';
+      final comisiones = det['comisiones_pagadas']?.toString() ?? '0.00';
+      final ingresos = det['ingresos_manuales']?.toString() ?? '0.00';
+      final egresos = det['egresos_manuales']?.toString() ?? '0.00';
+      final esperado = det['balance_esperado']?.toString() ?? '0.00';
+      final cajaId = det['caja_id']?.toString() ?? '';
+
+      items = [
+        _buildMetadataItem('ID Caja', cajaId.length > 8 ? '#${cajaId.substring(0, 8)}' : '#$cajaId', icon: Icons.folder_open_outlined),
+        _buildMetadataItem('Monto Inicial', '\$$montoInicial', icon: Icons.account_balance_wallet_outlined),
+        _buildMetadataItem('Ventas Totales (+)', '\$$ventas', highlightColor: AppTheme.colorSuccess, icon: Icons.add_circle_outline),
+        _buildMetadataItem('Ingresos Manuales (+)', '\$$ingresos', icon: Icons.arrow_upward_outlined),
+        _buildMetadataItem('Egresos Manuales (-)', '\$$egresos', icon: Icons.arrow_downward_outlined),
+        _buildMetadataItem('Comisiones Pagadas (-)', '\$$comisiones', highlightColor: AppTheme.colorDanger, icon: Icons.percent_outlined),
+        _buildMetadataItem('Balance Esperado', '\$$esperado', icon: Icons.calculate_outlined),
+        _buildMetadataItem('Monto Final Registrado', '\$$montoFinal', isHighlight: true, highlightColor: AppTheme.liquidPrimary, icon: Icons.price_check_outlined),
+      ];
+    } else if (action == 'REGISTRAR_MOVIMIENTO') {
+      title = 'DETALLES DE MOVIMIENTO';
+      final tipo = det['tipo']?.toString() ?? '';
+      final monto = det['monto']?.toString() ?? '0.00';
+      final concepto = det['concepto']?.toString() ?? 'Sin concepto';
+      final metodo = det['metodo_pago']?.toString() ?? 'Efectivo';
+      final movId = det['movimiento_id']?.toString() ?? '';
+
+      final isIngreso = tipo.toUpperCase() == 'INGRESO';
+      final tipoColor = isIngreso ? AppTheme.colorSuccess : AppTheme.colorDanger;
+      final tipoIcon = isIngreso ? Icons.arrow_upward_outlined : Icons.arrow_downward_outlined;
+
+      items = [
+        _buildMetadataItem('ID Movimiento', movId.length > 8 ? '#${movId.substring(0, 8)}' : '#$movId', icon: Icons.receipt_outlined),
+        _buildMetadataItem('Tipo de Movimiento', isIngreso ? 'Ingreso' : 'Egreso', highlightColor: tipoColor, icon: tipoIcon),
+        _buildMetadataItem('Monto', '\$$monto', isHighlight: true, highlightColor: tipoColor, icon: Icons.monetization_on_outlined),
+        _buildMetadataItem('Concepto', concepto, icon: Icons.label_outline),
+        _buildMetadataItem('Método de Pago', metodo, icon: Icons.payment_outlined),
+      ];
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.plusJakartaSans(
+            fontWeight: FontWeight.w800,
+            fontSize: 12,
+            color: AppTheme.liquidPrimary,
+            letterSpacing: 0.5,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          decoration: BoxDecoration(
+            color: AppTheme.liquidSurfaceContainerHigh,
+            borderRadius: BorderRadius.circular(16.0),
+            border: Border.all(color: Colors.white.withOpacity(0.04)),
+          ),
+          child: Column(
+            children: items,
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildMetadataItem(String label, String value, {bool isHighlight = false, Color? highlightColor, IconData? icon}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 16, color: (highlightColor ?? Colors.white70).withOpacity(0.7)),
+            const SizedBox(width: 8),
+          ],
+          Expanded(
+            child: Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                color: Colors.white70,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: isHighlight ? FontWeight.bold : FontWeight.w600,
+              color: isHighlight ? (highlightColor ?? AppTheme.liquidPrimary) : (highlightColor ?? Colors.white),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

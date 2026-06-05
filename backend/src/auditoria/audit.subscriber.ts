@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, EntitySubscriberInterface, InsertEvent, UpdateEvent, RemoveEvent, EventSubscriber } from 'typeorm';
+import { DataSource, EntitySubscriberInterface, InsertEvent, UpdateEvent, RemoveEvent } from 'typeorm';
 import { ClsService } from 'nestjs-cls';
 import { AuditoriaService } from './auditoria.service';
 
@@ -14,24 +14,54 @@ export class AuditSubscriber implements EntitySubscriberInterface {
   }
 
   private shouldAudit(tableName?: string): boolean {
-    return !!tableName && tableName !== 'auditoria';
+    if (!tableName) return false;
+    const excluded = ['auditoria', 'ventas', 'detalle_ventas', 'cajas', 'caja_movimientos'];
+    return !excluded.includes(tableName);
   }
 
   private getModuleName(tableName: string): string {
     const names: Record<string, string> = {
-      products: 'Productos',
-      categories: 'Categorías',
-      bars: 'Configuración de Local',
+      productos: 'Productos',
+      categorias: 'Categorías',
+      bares: 'Configuración de Local',
       tarifas: 'Tarifas',
-      users: 'Usuarios',
-      ventas: 'Ventas',
-      detalle_ventas: 'Ventas',
+      usuarios: 'Usuarios',
+      roles: 'Roles',
+      permisos: 'Permisos',
       variantes: 'Variantes',
       variantes_precios: 'Precios',
-      cajas: 'Cajas',
-      roles: 'Roles'
     };
     return names[tableName] || tableName;
+  }
+
+  private getSingularName(tableName: string): { name: string; article: string } {
+    const singulars: Record<string, { name: string; article: string }> = {
+      productos: { name: 'producto', article: 'el' },
+      categorias: { name: 'categoría', article: 'la' },
+      bares: { name: 'configuración del local', article: 'la' },
+      tarifas: { name: 'tarifa', article: 'la' },
+      usuarios: { name: 'usuario', article: 'el' },
+      roles: { name: 'rol', article: 'el' },
+      permisos: { name: 'permiso', article: 'el' },
+      variantes: { name: 'variante', article: 'la' },
+      variantes_precios: { name: 'precio', article: 'el' },
+    };
+    return singulars[tableName] || { name: 'registro', article: 'el' };
+  }
+
+  private getEntityDisplayName(entity: any, tableName: string): string {
+    if (!entity) return 'Registro';
+    if (tableName === 'variantes_precios') {
+      return `$${entity.precio_unitario || '0.00'}`;
+    }
+    return (
+      entity.nombre ||
+      entity.name ||
+      entity.username ||
+      entity.concepto ||
+      entity.id ||
+      'Registro'
+    );
   }
 
   async afterInsert(event: InsertEvent<any>) {
@@ -42,7 +72,9 @@ export class AuditSubscriber implements EntitySubscriberInterface {
     if (!user) return;
 
     const modulo = this.getModuleName(event.metadata.tableName);
-    const nombre = event.entity?.nombre || event.entity?.name || event.entity?.id || 'Registro';
+    const singularInfo = this.getSingularName(event.metadata.tableName);
+    const displayName = this.getEntityDisplayName(event.entity, event.metadata.tableName);
+    const mensaje = `Creó ${singularInfo.article} ${singularInfo.name}: ${displayName}`;
 
     const barId = user.barId || event.entity?.bar_id || event.entity?.barId || null;
 
@@ -52,7 +84,7 @@ export class AuditSubscriber implements EntitySubscriberInterface {
       rolNombre: user.rolName || 'Desconocido',
       accion: 'Crear',
       modulo,
-      detalles: { mensaje: `Creó un registro: ${nombre}`, id: event.entity?.id },
+      detalles: { mensaje, id: event.entity?.id },
       ipAddress: this.cls.get('ip'),
       userAgent: this.cls.get('userAgent'),
     });
@@ -66,7 +98,9 @@ export class AuditSubscriber implements EntitySubscriberInterface {
     if (!user) return;
 
     const modulo = this.getModuleName(event.metadata.tableName);
-    const nombre = event.entity?.nombre || event.databaseEntity?.nombre || event.databaseEntity?.id || 'Registro';
+    const singularInfo = this.getSingularName(event.metadata.tableName);
+    const displayName = this.getEntityDisplayName(event.entity || event.databaseEntity, event.metadata.tableName);
+    const mensaje = `Actualizó ${singularInfo.article} ${singularInfo.name}: ${displayName}`;
 
     const cambios: any = {};
     if (event.databaseEntity && event.entity && event.updatedColumns) {
@@ -89,7 +123,7 @@ export class AuditSubscriber implements EntitySubscriberInterface {
       rolNombre: user.rolName || 'Desconocido',
       accion: 'Editar',
       modulo,
-      detalles: { mensaje: `Actualizó registro: ${nombre}`, cambios },
+      detalles: { mensaje, cambios },
       ipAddress: this.cls.get('ip'),
       userAgent: this.cls.get('userAgent'),
     });
@@ -103,7 +137,9 @@ export class AuditSubscriber implements EntitySubscriberInterface {
     if (!user) return;
 
     const modulo = this.getModuleName(event.metadata.tableName);
-    const nombre = event.databaseEntity?.nombre || event.databaseEntity?.id || 'Registro';
+    const singularInfo = this.getSingularName(event.metadata.tableName);
+    const displayName = this.getEntityDisplayName(event.databaseEntity, event.metadata.tableName);
+    const mensaje = `Eliminó ${singularInfo.article} ${singularInfo.name}: ${displayName}`;
 
     const barId = user.barId || event.databaseEntity?.bar_id || event.databaseEntity?.barId || null;
 
@@ -113,7 +149,7 @@ export class AuditSubscriber implements EntitySubscriberInterface {
       rolNombre: user.rolName || 'Desconocido',
       accion: 'Eliminar',
       modulo,
-      detalles: { mensaje: `Eliminó registro: ${nombre}` },
+      detalles: { mensaje },
       ipAddress: this.cls.get('ip'),
       userAgent: this.cls.get('userAgent'),
     });
