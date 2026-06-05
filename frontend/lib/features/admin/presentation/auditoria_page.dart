@@ -89,7 +89,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
   Widget _buildMainContent(AuditoriaState state, ThemeData theme, String currencyIso, String currencySymbol) {
     if (state.isLoading) {
       return ListView.builder(
-        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 24.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 12.0, bottom: 24.0),
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 6,
         itemBuilder: (context, index) => Padding(
@@ -158,7 +158,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
 
     return ListView.builder(
       controller: _scrollController,
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 24.0),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 12.0, bottom: 24.0),
       physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
       itemCount: state.logs.length + (state.hasMore ? 1 : 0),
       itemBuilder: (context, index) {
