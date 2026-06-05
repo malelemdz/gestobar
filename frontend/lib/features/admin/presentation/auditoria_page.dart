@@ -752,23 +752,24 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     required VoidCallback onTap,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8.0),
+      margin: const EdgeInsets.only(bottom: 6.0),
       decoration: BoxDecoration(
         color: isSelected ? AppTheme.liquidSurfaceContainerHigh : Colors.transparent,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(12.0),
         border: Border.all(
           color: isSelected ? AppTheme.liquidPrimary : Colors.white.withOpacity(0.04),
           width: 1,
         ),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+        dense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 0.0),
         title: Text(
           title,
           style: GoogleFonts.plusJakartaSans(
             color: Colors.white,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-            fontSize: 14,
+            fontSize: 13,
           ),
         ),
         subtitle: subtitle != null
@@ -776,12 +777,12 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                 subtitle,
                 style: GoogleFonts.plusJakartaSans(
                   color: isSelected ? AppTheme.liquidPrimary.withOpacity(0.7) : Colors.white54,
-                  fontSize: 12,
+                  fontSize: 11,
                 ),
               )
             : null,
         trailing: isSelected
-            ? Icon(Icons.check_circle_outline, color: AppTheme.liquidPrimary, size: 20)
+            ? Icon(Icons.check_circle_outline, color: AppTheme.liquidPrimary, size: 18)
             : null,
         onTap: onTap,
       ),
@@ -803,6 +804,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
       initialDateRange: initialRange,
       firstDate: DateTime(2025),
       lastDate: DateTime.now().add(const Duration(days: 1)),
+      locale: const Locale('es', 'ES'),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
