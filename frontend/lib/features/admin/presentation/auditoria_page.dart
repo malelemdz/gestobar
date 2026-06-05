@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/shimmer_placeholder.dart';
+import '../../../core/utils/currency_helper.dart';
+import '../../caja/providers/caja_provider.dart';
 import '../providers/auditoria_provider.dart';
 import '../providers/staff_provider.dart';
 import '../../auth/models/user_model.dart';
@@ -45,6 +47,8 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     final auditoriaState = ref.watch(auditoriaListProvider);
     final filters = ref.watch(auditoriaFiltersProvider);
     final staffAsync = ref.watch(staffListProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
+    final currencySymbol = ref.watch(currencySymbolProvider);
     return Scaffold(
       backgroundColor: AppTheme.liquidBg,
       body: Column(
@@ -74,7 +78,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
               onRefresh: () async {
                 await ref.read(auditoriaListProvider.notifier).loadInitial(silent: true);
               },
-              child: _buildMainContent(auditoriaState, theme),
+              child: _buildMainContent(auditoriaState, theme, currencyIso, currencySymbol),
             ),
           ),
         ],
@@ -82,7 +86,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     );
   }
 
-  Widget _buildMainContent(AuditoriaState state, ThemeData theme) {
+  Widget _buildMainContent(AuditoriaState state, ThemeData theme, String currencyIso, String currencySymbol) {
     if (state.isLoading) {
       return ListView.builder(
         padding: const EdgeInsets.all(16.0),
@@ -161,9 +165,9 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
         if (index < state.logs.length) {
           final log = state.logs[index];
           return InkWell(
-            onTap: () => _showLogDetail(context, log),
+            onTap: () => _showLogDetail(context, log, currencyIso, currencySymbol),
             borderRadius: BorderRadius.circular(16.0),
-            child: _buildLogCard(log, theme),
+            child: _buildLogCard(log, theme, currencyIso, currencySymbol),
           );
         } else {
           return Padding(
@@ -184,7 +188,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     );
   }
 
-  Widget _buildLogCard(AuditoriaModel log, ThemeData theme) {
+  Widget _buildLogCard(AuditoriaModel log, ThemeData theme, String currencyIso, String currencySymbol) {
     final format = DateFormat('dd MMM, HH:mm:ss');
     final dateStr = format.format(log.fecha);
 
@@ -243,7 +247,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
           ),
           const SizedBox(height: 12),
           Text(
-            log.detalles?['mensaje'] ?? 'Acción registrada',
+            _formatMessageWithCurrency(log.detalles?['mensaje'], currencyIso, currencySymbol),
             style: GoogleFonts.plusJakartaSans(
               fontWeight: FontWeight.w600,
               fontSize: 15,
@@ -731,7 +735,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
 
   // --- LOG ENTRY DETAIL VIEWER ---
 
-  void _showLogDetail(BuildContext context, AuditoriaModel log) {
+  void _showLogDetail(BuildContext context, AuditoriaModel log, String currencyIso, String currencySymbol) {
     final format = DateFormat('dd MMMM yyyy, HH:mm:ss');
     final dateStr = format.format(log.fecha);
 
@@ -817,7 +821,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    log.detalles?['mensaje'] ?? 'Detalles de la acción',
+                    _formatMessageWithCurrency(log.detalles?['mensaje'], currencyIso, currencySymbol),
                     style: GoogleFonts.plusJakartaSans(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
@@ -840,7 +844,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                         
                         const SizedBox(height: 16),
 
-                        _buildLogMetadataDetail(log),
+                        _buildLogMetadataDetail(log, currencyIso, currencySymbol),
                         
                         // Render detailed changes if 'cambios' exists
                         if (log.detalles != null && log.detalles!['cambios'] != null) ...[
@@ -854,7 +858,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          _buildChangesList(log.detalles!['cambios']),
+                          _buildChangesList(log.detalles!['cambios'], currencyIso, currencySymbol),
                         ],
                       ],
                     ),
@@ -868,7 +872,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     );
   }
 
-  Widget _buildLogMetadataDetail(AuditoriaModel log) {
+  Widget _buildLogMetadataDetail(AuditoriaModel log, String currencyIso, String currencySymbol) {
     if (log.detalles == null) return const SizedBox.shrink();
     final det = log.detalles!;
     
@@ -885,51 +889,51 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
 
     if (action == 'REGISTRAR_VENTA') {
       title = 'DETALLES DE LA VENTA';
-      final total = det['total']?.toString() ?? '0.00';
+      final totalVal = double.tryParse(det['total']?.toString() ?? '0') ?? 0.0;
       final metodo = det['metodo_pago']?.toString() ?? 'Desconocido';
       final itemsCount = det['cantidad_items']?.toString() ?? '0';
       final ventaId = det['venta_id']?.toString() ?? '';
       
       items = [
         _buildMetadataItem('ID Venta', ventaId.length > 8 ? '#${ventaId.substring(0, 8)}' : '#$ventaId', icon: Icons.receipt_long_outlined),
-        _buildMetadataItem('Total Procesado', '\$$total', isHighlight: true, highlightColor: AppTheme.colorSuccess, icon: Icons.monetization_on_outlined),
+        _buildMetadataItem('Total Procesado', '$currencySymbol${CurrencyHelper.formatAmount(totalVal, currencyIso)}', isHighlight: true, highlightColor: AppTheme.colorSuccess, icon: Icons.monetization_on_outlined),
         _buildMetadataItem('Método de Pago', metodo, icon: Icons.payment_outlined),
         _buildMetadataItem('Cantidad de Items', itemsCount, icon: Icons.shopping_bag_outlined),
       ];
     } else if (action == 'APERTURA') {
       title = 'APERTURA DE CAJA';
-      final montoInicial = det['monto_inicial']?.toString() ?? '0.00';
+      final montoInicialVal = double.tryParse(det['monto_inicial']?.toString() ?? '0') ?? 0.0;
       final cajaId = det['caja_id']?.toString() ?? '';
 
       items = [
         _buildMetadataItem('ID Caja', cajaId.length > 8 ? '#${cajaId.substring(0, 8)}' : '#$cajaId', icon: Icons.folder_open_outlined),
-        _buildMetadataItem('Monto Inicial', '\$$montoInicial', isHighlight: true, highlightColor: AppTheme.liquidPrimary, icon: Icons.account_balance_wallet_outlined),
+        _buildMetadataItem('Monto Inicial', '$currencySymbol${CurrencyHelper.formatAmount(montoInicialVal, currencyIso)}', isHighlight: true, highlightColor: AppTheme.liquidPrimary, icon: Icons.account_balance_wallet_outlined),
       ];
     } else if (action == 'CIERRE') {
       title = 'RESUMEN DE CIERRE DE CAJA';
-      final montoInicial = det['monto_inicial']?.toString() ?? '0.00';
-      final montoFinal = det['monto_final']?.toString() ?? '0.00';
-      final ventas = det['ventas_totales']?.toString() ?? '0.00';
-      final comisiones = det['comisiones_pagadas']?.toString() ?? '0.00';
-      final ingresos = det['ingresos_manuales']?.toString() ?? '0.00';
-      final egresos = det['egresos_manuales']?.toString() ?? '0.00';
-      final esperado = det['balance_esperado']?.toString() ?? '0.00';
+      final montoInicialVal = double.tryParse(det['monto_inicial']?.toString() ?? '0') ?? 0.0;
+      final montoFinalVal = double.tryParse(det['monto_final']?.toString() ?? '0') ?? 0.0;
+      final ventasVal = double.tryParse(det['ventas_totales']?.toString() ?? '0') ?? 0.0;
+      final comisionesVal = double.tryParse(det['comisiones_pagadas']?.toString() ?? '0') ?? 0.0;
+      final ingresosVal = double.tryParse(det['ingresos_manuales']?.toString() ?? '0') ?? 0.0;
+      final egresosVal = double.tryParse(det['egresos_manuales']?.toString() ?? '0') ?? 0.0;
+      final esperadoVal = double.tryParse(det['balance_esperado']?.toString() ?? '0') ?? 0.0;
       final cajaId = det['caja_id']?.toString() ?? '';
 
       items = [
         _buildMetadataItem('ID Caja', cajaId.length > 8 ? '#${cajaId.substring(0, 8)}' : '#$cajaId', icon: Icons.folder_open_outlined),
-        _buildMetadataItem('Monto Inicial', '\$$montoInicial', icon: Icons.account_balance_wallet_outlined),
-        _buildMetadataItem('Ventas Totales (+)', '\$$ventas', highlightColor: AppTheme.colorSuccess, icon: Icons.add_circle_outline),
-        _buildMetadataItem('Ingresos Manuales (+)', '\$$ingresos', icon: Icons.arrow_upward_outlined),
-        _buildMetadataItem('Egresos Manuales (-)', '\$$egresos', icon: Icons.arrow_downward_outlined),
-        _buildMetadataItem('Comisiones Pagadas (-)', '\$$comisiones', highlightColor: AppTheme.colorDanger, icon: Icons.percent_outlined),
-        _buildMetadataItem('Balance Esperado', '\$$esperado', icon: Icons.calculate_outlined),
-        _buildMetadataItem('Monto Final Registrado', '\$$montoFinal', isHighlight: true, highlightColor: AppTheme.liquidPrimary, icon: Icons.price_check_outlined),
+        _buildMetadataItem('Monto Inicial', '$currencySymbol${CurrencyHelper.formatAmount(montoInicialVal, currencyIso)}', icon: Icons.account_balance_wallet_outlined),
+        _buildMetadataItem('Ventas Totales (+)', '$currencySymbol${CurrencyHelper.formatAmount(ventasVal, currencyIso)}', highlightColor: AppTheme.colorSuccess, icon: Icons.add_circle_outline),
+        _buildMetadataItem('Ingresos Manuales (+)', '$currencySymbol${CurrencyHelper.formatAmount(ingresosVal, currencyIso)}', icon: Icons.arrow_upward_outlined),
+        _buildMetadataItem('Egresos Manuales (-)', '$currencySymbol${CurrencyHelper.formatAmount(egresosVal, currencyIso)}', icon: Icons.arrow_downward_outlined),
+        _buildMetadataItem('Comisiones Pagadas (-)', '$currencySymbol${CurrencyHelper.formatAmount(comisionesVal, currencyIso)}', highlightColor: AppTheme.colorDanger, icon: Icons.percent_outlined),
+        _buildMetadataItem('Balance Esperado', '$currencySymbol${CurrencyHelper.formatAmount(esperadoVal, currencyIso)}', icon: Icons.calculate_outlined),
+        _buildMetadataItem('Monto Final Registrado', '$currencySymbol${CurrencyHelper.formatAmount(montoFinalVal, currencyIso)}', isHighlight: true, highlightColor: AppTheme.liquidPrimary, icon: Icons.price_check_outlined),
       ];
     } else if (action == 'REGISTRAR_MOVIMIENTO') {
       title = 'DETALLES DE MOVIMIENTO';
       final tipo = det['tipo']?.toString() ?? '';
-      final monto = det['monto']?.toString() ?? '0.00';
+      final montoVal = double.tryParse(det['monto']?.toString() ?? '0') ?? 0.0;
       final concepto = det['concepto']?.toString() ?? 'Sin concepto';
       final metodo = det['metodo_pago']?.toString() ?? 'Efectivo';
       final movId = det['movimiento_id']?.toString() ?? '';
@@ -941,7 +945,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
       items = [
         _buildMetadataItem('ID Movimiento', movId.length > 8 ? '#${movId.substring(0, 8)}' : '#$movId', icon: Icons.receipt_outlined),
         _buildMetadataItem('Tipo de Movimiento', isIngreso ? 'Ingreso' : 'Egreso', highlightColor: tipoColor, icon: tipoIcon),
-        _buildMetadataItem('Monto', '\$$monto', isHighlight: true, highlightColor: tipoColor, icon: Icons.monetization_on_outlined),
+        _buildMetadataItem('Monto', '$currencySymbol${CurrencyHelper.formatAmount(montoVal, currencyIso)}', isHighlight: true, highlightColor: tipoColor, icon: Icons.monetization_on_outlined),
         _buildMetadataItem('Concepto', concepto, icon: Icons.label_outline),
         _buildMetadataItem('Método de Pago', metodo, icon: Icons.payment_outlined),
       ];
@@ -1046,7 +1050,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     );
   }
 
-  Widget _buildChangesList(Map<String, dynamic> cambios) {
+  Widget _buildChangesList(Map<String, dynamic> cambios, String currencyIso, String currencySymbol) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -1057,8 +1061,28 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
       child: Column(
         children: cambios.entries.map((entry) {
           final field = entry.key;
-          final de = entry.value['de']?.toString() ?? 'vacío';
-          final a = entry.value['a']?.toString() ?? 'vacío';
+          var de = entry.value['de']?.toString() ?? 'vacío';
+          var a = entry.value['a']?.toString() ?? 'vacío';
+
+          final isCurrencyField = field == 'precio' ||
+              field == 'comision' ||
+              field == 'monto' ||
+              field == 'diferencia' ||
+              field == 'precio_unitario' ||
+              field == 'monto_apertura' ||
+              field == 'monto_cierre' ||
+              field == 'monto_real';
+
+          if (isCurrencyField) {
+            final deNum = double.tryParse(de);
+            if (deNum != null) {
+              de = '$currencySymbol${CurrencyHelper.formatAmount(deNum, currencyIso)}';
+            }
+            final aNum = double.tryParse(a);
+            if (aNum != null) {
+              a = '$currencySymbol${CurrencyHelper.formatAmount(aNum, currencyIso)}';
+            }
+          }
           
           return Padding(
             padding: const EdgeInsets.only(bottom: 12.0),
@@ -1127,6 +1151,19 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
   }
 
   // --- TEXT & DATA FORMATTING HELPERS ---
+
+  String _formatMessageWithCurrency(String? message, String currencyIso, String currencySymbol) {
+    if (message == null) return 'Acción registrada';
+    final regExp = RegExp(r'\$([0-9]+(?:\.[0-9]+)?)');
+    
+    return message.replaceAllMapped(regExp, (match) {
+      final valStr = match.group(1);
+      if (valStr == null) return match.group(0)!;
+      final val = double.tryParse(valStr);
+      if (val == null) return match.group(0)!;
+      return '$currencySymbol${CurrencyHelper.formatAmount(val, currencyIso)}';
+    });
+  }
 
   String _formatAction(String action) {
     if (action.isEmpty) return '';
