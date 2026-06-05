@@ -877,50 +877,64 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      Icon(actionIcon, color: actionColor, size: 24),
+                      Icon(actionIcon, color: actionColor, size: 22),
                       const SizedBox(width: 8),
                       Text(
                         _formatAction(log.accion),
                         style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16,
-                          color: actionColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.white,
                         ),
                       ),
                       const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppTheme.liquidSurfaceContainerHigh,
-                          borderRadius: BorderRadius.circular(100),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close, color: Colors.white70, size: 20),
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.white.withOpacity(0.05),
+                          padding: const EdgeInsets.all(6),
                         ),
-                        child: Text(
-                          _formatModulo(log.modulo),
-                          style: GoogleFonts.plusJakartaSans(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 11,
-                            color: AppTheme.liquidOnSurfaceVariant,
-                          ),
-                        ),
+                        constraints: const BoxConstraints(),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    _formatMessageWithCurrency(log.detalles?['mensaje'], currencyIso, currencySymbol),
-                    style: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Divider(color: Colors.white10),
+                  const SizedBox(height: 12),
+                  const Divider(height: 1, thickness: 0.5, color: Colors.white10),
                   const SizedBox(height: 16),
                   Expanded(
                     child: ListView(
                       controller: scrollController,
                       children: [
+                        // Main Message container in a premium card
+                        Container(
+                          padding: const EdgeInsets.all(16.0),
+                          margin: const EdgeInsets.only(bottom: 20.0),
+                          decoration: BoxDecoration(
+                            color: AppTheme.liquidSurfaceContainerHigh,
+                            borderRadius: BorderRadius.circular(12.0),
+                            border: Border.all(color: Colors.white.withOpacity(0.04)),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(Icons.chat_bubble_outline, size: 16, color: actionColor.withOpacity(0.8)),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  _formatMessageWithCurrency(log.detalles?['mensaje'], currencyIso, currencySymbol),
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        _buildDetailRow(Icons.folder_open_outlined, 'Módulo', _formatModulo(log.modulo)),
                         _buildDetailRow(Icons.person_outline, 'Usuario', '${log.usuarioNombre ?? "Desconocido"} (${log.rolNombre.toLowerCase()})'),
                         _buildDetailRow(Icons.calendar_today_outlined, 'Fecha', dateStr),
                         if (log.ipAddress != null)
