@@ -271,7 +271,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
               const Icon(Icons.folder_open, size: 14, color: Colors.white54),
               const SizedBox(width: 4),
               Text(
-                log.modulo,
+                _formatModulo(log.modulo),
                 style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.white70),
               ),
             ],
@@ -472,73 +472,90 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.liquidSurfaceContainerLow,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
       ),
       builder: (context) {
-        return Consumer(
-          builder: (context, ref, child) {
-            final staffAsync = ref.watch(staffListProvider);
-            final selectedId = ref.watch(auditoriaFiltersProvider)['usuarioId'];
-            return Container(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Filtrar por Usuario',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Flexible(
-                    child: staffAsync.when(
-                      loading: () => const Center(
-                        child: CircularProgressIndicator(color: Color(0xFF00F0FF)),
+        return DraggableScrollableSheet(
+          initialChildSize: 0.55,
+          maxChildSize: 0.85,
+          minChildSize: 0.3,
+          expand: false,
+          builder: (context, scrollController) {
+            return Consumer(
+              builder: (context, ref, child) {
+                final staffAsync = ref.watch(staffListProvider);
+                final selectedId = ref.watch(auditoriaFiltersProvider)['usuarioId'];
+                return Container(
+                  padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 40,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: Colors.white24,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                       ),
-                      error: (err, st) => Center(
-                        child: Text('Error al cargar usuarios: $err', style: TextStyle(color: AppTheme.colorDanger)),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Filtrar por Usuario',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
                       ),
-                      data: (users) {
-                        return ListView(
-                          shrinkWrap: true,
-                          children: [
-                            ListTile(
-                              title: Text('Todos los usuarios', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                              selected: selectedId == null,
-                              selectedTileColor: Colors.white.withOpacity(0.05),
-                              onTap: () {
-                                ref.read(auditoriaFiltersProvider.notifier).update((state) => {
-                                  ...state,
-                                  'usuarioId': null,
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                            ...users.map((user) => ListTile(
-                              title: Text(user.nombre, style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                              subtitle: Text(user.rolNombre.toLowerCase(), style: GoogleFonts.plusJakartaSans(color: Colors.white54)),
-                              selected: selectedId == user.id,
-                              selectedTileColor: Colors.white.withOpacity(0.05),
-                              onTap: () {
-                                ref.read(auditoriaFiltersProvider.notifier).update((state) => {
-                                  ...state,
-                                  'usuarioId': user.id,
-                                });
-                                Navigator.pop(context);
-                              },
-                            )),
-                          ],
-                        );
-                      },
-                    ),
+                      const SizedBox(height: 16),
+                      Expanded(
+                        child: staffAsync.when(
+                          loading: () => const Center(
+                            child: CircularProgressIndicator(color: Color(0xFF00F0FF)),
+                          ),
+                          error: (err, st) => Center(
+                            child: Text('Error al cargar usuarios: $err', style: TextStyle(color: AppTheme.colorDanger)),
+                          ),
+                          data: (users) {
+                            return ListView(
+                              controller: scrollController,
+                              children: [
+                                _buildSelectorItem(
+                                  title: 'Todos los usuarios',
+                                  isSelected: selectedId == null,
+                                  onTap: () {
+                                    ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+                                      ...state,
+                                      'usuarioId': null,
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ...users.map((user) => _buildSelectorItem(
+                                  title: user.nombre,
+                                  subtitle: user.rolNombre.toLowerCase(),
+                                  isSelected: selectedId == user.id,
+                                  onTap: () {
+                                    ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+                                      ...state,
+                                      'usuarioId': user.id,
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                )),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             );
           },
         );
@@ -563,58 +580,75 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.liquidSurfaceContainerLow,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
       ),
       builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Filtrar por Acción',
-                style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    ListTile(
-                      title: Text('Todas las acciones', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                      selected: selectedAction == null,
-                      selectedTileColor: Colors.white.withOpacity(0.05),
-                      onTap: () {
-                        ref.read(auditoriaFiltersProvider.notifier).update((state) => {
-                          ...state,
-                          'accion': null,
-                        });
-                        Navigator.pop(context);
-                      },
+        return DraggableScrollableSheet(
+          initialChildSize: 0.55,
+          maxChildSize: 0.85,
+          minChildSize: 0.3,
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    ...actions.map((action) => ListTile(
-                      title: Text(_formatAction(action), style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                      selected: selectedAction == action,
-                      selectedTileColor: Colors.white.withOpacity(0.05),
-                      onTap: () {
-                        ref.read(auditoriaFiltersProvider.notifier).update((state) => {
-                          ...state,
-                          'accion': action,
-                        });
-                        Navigator.pop(context);
-                      },
-                    )),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Filtrar por Acción',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                      controller: scrollController,
+                      children: [
+                        _buildSelectorItem(
+                          title: 'Todas las acciones',
+                          isSelected: selectedAction == null,
+                          onTap: () {
+                            ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+                              ...state,
+                              'accion': null,
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ...actions.map((action) => _buildSelectorItem(
+                          title: _formatAction(action),
+                          isSelected: selectedAction == action,
+                          onTap: () {
+                            ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+                              ...state,
+                              'accion': action,
+                            });
+                            Navigator.pop(context);
+                          },
+                        )),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -637,60 +671,120 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.liquidSurfaceContainerLow,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
       ),
       builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Filtrar por Módulo',
-                style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    ListTile(
-                      title: Text('Todos los módulos', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                      selected: selectedModule == null,
-                      selectedTileColor: Colors.white.withOpacity(0.05),
-                      onTap: () {
-                        ref.read(auditoriaFiltersProvider.notifier).update((state) => {
-                          ...state,
-                          'modulo': null,
-                        });
-                        Navigator.pop(context);
-                      },
+        return DraggableScrollableSheet(
+          initialChildSize: 0.55,
+          maxChildSize: 0.85,
+          minChildSize: 0.3,
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    ...modules.map((mod) => ListTile(
-                      title: Text(mod, style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                      selected: selectedModule == mod,
-                      selectedTileColor: Colors.white.withOpacity(0.05),
-                      onTap: () {
-                        ref.read(auditoriaFiltersProvider.notifier).update((state) => {
-                          ...state,
-                          'modulo': mod,
-                        });
-                        Navigator.pop(context);
-                      },
-                    )),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Filtrar por Módulo',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                      controller: scrollController,
+                      children: [
+                        _buildSelectorItem(
+                          title: 'Todos los módulos',
+                          isSelected: selectedModule == null,
+                          onTap: () {
+                            ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+                              ...state,
+                              'modulo': null,
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ...modules.map((mod) => _buildSelectorItem(
+                          title: mod,
+                          isSelected: selectedModule == mod,
+                          onTap: () {
+                            ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+                              ...state,
+                              'modulo': mod,
+                            });
+                            Navigator.pop(context);
+                          },
+                        )),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
+    );
+  }
+
+  Widget _buildSelectorItem({
+    required String title,
+    String? subtitle,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8.0),
+      decoration: BoxDecoration(
+        color: isSelected ? AppTheme.liquidSurfaceContainerHigh : Colors.transparent,
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(
+          color: isSelected ? AppTheme.liquidPrimary : Colors.white.withOpacity(0.04),
+          width: 1,
+        ),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+        title: Text(
+          title,
+          style: GoogleFonts.plusJakartaSans(
+            color: Colors.white,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+        subtitle: subtitle != null
+            ? Text(
+                subtitle,
+                style: GoogleFonts.plusJakartaSans(
+                  color: isSelected ? AppTheme.liquidPrimary.withOpacity(0.7) : Colors.white54,
+                  fontSize: 12,
+                ),
+              )
+            : null,
+        trailing: isSelected
+            ? Icon(Icons.check_circle_outline, color: AppTheme.liquidPrimary, size: 20)
+            : null,
+        onTap: onTap,
+      ),
     );
   }
 
@@ -809,7 +903,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                           borderRadius: BorderRadius.circular(100),
                         ),
                         child: Text(
-                          log.modulo,
+                          _formatModulo(log.modulo),
                           style: GoogleFonts.plusJakartaSans(
                             fontWeight: FontWeight.bold,
                             fontSize: 11,
@@ -1184,6 +1278,14 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     }
 
     String formatted = action.replaceAll('_', ' ').trim();
+    if (formatted.isEmpty) return '';
+    formatted = formatted.toLowerCase();
+    return formatted[0].toUpperCase() + formatted.substring(1);
+  }
+
+  String _formatModulo(String modulo) {
+    if (modulo.isEmpty) return '';
+    String formatted = modulo.replaceAll('_', ' ').trim();
     if (formatted.isEmpty) return '';
     formatted = formatted.toLowerCase();
     return formatted[0].toUpperCase() + formatted.substring(1);
