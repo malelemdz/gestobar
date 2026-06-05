@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/api_constants.dart';
 import '../storage/secure_storage_service.dart';
 
-String _getUserAgent() {
+String? _getUserAgent() {
   if (kIsWeb) {
-    return 'Mozilla/5.0 (Web) GestobarApp';
+    return null; // Permite que el navegador envíe su User-Agent nativo real
   }
   try {
     if (Platform.isAndroid) {
@@ -26,6 +26,7 @@ String _getUserAgent() {
 }
 
 final dioProvider = Provider<Dio>((ref) {
+  final userAgent = _getUserAgent();
   final dio = Dio(
     BaseOptions(
       baseUrl: ApiConstants.baseUrl,
@@ -34,7 +35,7 @@ final dioProvider = Provider<Dio>((ref) {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': _getUserAgent(),
+        'User-Agent':? userAgent,
       },
     ),
   );
