@@ -38,7 +38,7 @@ export class UsersService {
   async findOne(id: string): Promise<User> {
     const user = await this.userRepository.findOne({ 
       where: { id },
-      relations: ['rol']
+      relations: ['rol', 'rol.permisos']
     });
     if (!user) {
       throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
@@ -58,7 +58,7 @@ export class UsersService {
     return await this.userRepository.findOne({
       where: { username },
       select: ['id', 'username', 'password', 'rol_id', 'bar_id', 'nombre', 'apellido', 'foto_url', 'celular', 'estado'],
-      relations: ['rol'],
+      relations: ['rol', 'rol.permisos'],
     });
   }
 

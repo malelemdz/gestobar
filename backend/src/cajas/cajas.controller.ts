@@ -66,13 +66,13 @@ export class CajasController {
   }
 
   @Get()
-  @Permissions('caja.gestionar')
+  @Permissions('caja.historial')
   findAll(@ActiveBarId() barId: string) {
     return this.cajasService.findAll(barId);
   }
 
   @Get(':id')
-  @Permissions('caja.gestionar')
+  @Permissions('caja.historial')
   findOne(@Param('id', ParseUUIDPipe) id: string, @ActiveBarId() barId: string) {
     return this.cajasService.findOne(id, barId);
   }

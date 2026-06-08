@@ -13,6 +13,7 @@ class UserModel {
   final String? direccion;
   final String? genero;
   final bool estado;
+  final List<String> permisos;
 
   UserModel({
     required this.id,
@@ -29,6 +30,7 @@ class UserModel {
     this.direccion,
     this.genero,
     this.estado = true,
+    this.permisos = const [],
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -57,6 +59,7 @@ class UserModel {
       direccion: json['direccion'] as String?,
       genero: json['genero'] as String?,
       estado: json['estado'] as bool? ?? true,
+      permisos: (json['permisos'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? const [],
     );
   }
 
@@ -76,6 +79,7 @@ class UserModel {
       'direccion': direccion,
       'genero': genero,
       'estado': estado,
+      'permisos': permisos,
     };
   }
 
@@ -94,6 +98,7 @@ class UserModel {
     String? direccion,
     String? genero,
     bool? estado,
+    List<String>? permisos,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -110,6 +115,7 @@ class UserModel {
       direccion: direccion ?? this.direccion,
       genero: genero ?? this.genero,
       estado: estado ?? this.estado,
+      permisos: permisos ?? this.permisos,
     );
   }
 }

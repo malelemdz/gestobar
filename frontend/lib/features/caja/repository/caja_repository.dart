@@ -153,6 +153,41 @@ class CajaRepository {
       throw Exception('No se pudo conectar con el servidor para cargar ventas en vivo');
     }
   }
+
+  /// Obtiene los detalles enriquecidos de una caja por su ID
+  Future<CajaModel> getCajaById(String id) async {
+    try {
+      final response = await _dio.get('/cajas/$id');
+      return CajaModel.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      final errorResponse = e.response?.data;
+      String errorMessage = 'Error al cargar detalles de la caja';
+      if (errorResponse != null && errorResponse['message'] != null) {
+        errorMessage = errorResponse['message'].toString();
+      }
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('No se pudo conectar con el servidor para obtener detalles');
+    }
+  }
+
+  /// Obtiene la lista de ventas de una caja cerrada
+  Future<List<VentaModel>> getVentasByCaja(String cajaId) async {
+    try {
+      final response = await _dio.get('/ventas/caja/$cajaId');
+      final list = response.data['ventas'] as List? ?? [];
+      return list.map((json) => VentaModel.fromJson(json as Map<String, dynamic>)).toList();
+    } on DioException catch (e) {
+      final errorResponse = e.response?.data;
+      String errorMessage = 'Error al cargar ventas del turno';
+      if (errorResponse != null && errorResponse['message'] != null) {
+        errorMessage = errorResponse['message'].toString();
+      }
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('No se pudo conectar con el servidor para obtener las ventas');
+    }
+  }
 }
 
 // Inyección de Riverpod para el repositorio de caja

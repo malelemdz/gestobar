@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 import '../../admin/providers/bar_provider.dart';
 import '../models/caja_model.dart';
+import '../models/venta_model.dart';
 import '../repository/caja_repository.dart';
 import '../../../core/network/socket_service.dart';
 
@@ -149,4 +150,14 @@ final currencyIsoProvider = Provider<String>((ref) {
     loading: () => 'BOB',
     error: (_, __) => 'BOB',
   );
+});
+
+// Proveedor de detalles de una caja cerrada específica
+final cajaDetailsProvider = FutureProvider.family<CajaModel, String>((ref, id) async {
+  return ref.watch(cajaRepositoryProvider).getCajaById(id);
+});
+
+// Proveedor de ventas asociadas a una caja cerrada específica
+final cajaSalesProvider = FutureProvider.family<List<VentaModel>, String>((ref, cajaId) async {
+  return ref.watch(cajaRepositoryProvider).getVentasByCaja(cajaId);
 });

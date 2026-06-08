@@ -270,4 +270,29 @@ export class VentasService {
       })),
     };
   }
+
+  async getVentasByCaja(cajaId: string, barId: string): Promise<any> {
+    const ventas = await this.ventaRepository.find({
+      where: { caja_id: cajaId, bar_id: barId },
+      relations: ['usuario', 'detalles', 'detalles.variante', 'detalles.variante.producto', 'detalles.dama'],
+      order: { fecha: 'DESC' },
+    });
+
+    const totales = ventas.reduce(
+      (acc, v) => {
+        acc.efectivo += Number(v.monto_efectivo) || 0;
+        acc.tarjeta += Number(v.monto_tarjeta) || 0;
+        acc.tr_qr += Number(v.monto_tr_qr) || 0;
+        acc.general += Number(v.total) || 0;
+        return acc;
+      },
+      { efectivo: 0, tarjeta: 0, tr_qr: 0, general: 0 }
+    );
+
+    return {
+      caja_id: cajaId,
+      totales,
+      ventas,
+    };
+  }
 }

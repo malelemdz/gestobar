@@ -359,7 +359,7 @@ export class CajasService {
     });
   }
 
-  async findOne(id: string, barId: string): Promise<Caja> {
+  async findOne(id: string, barId: string): Promise<any> {
     const caja = await this.cajaRepository.findOne({
       where: { id, bar_id: barId },
       relations: ['aperturaUsuario', 'cierreUsuario'],
@@ -367,6 +367,81 @@ export class CajasService {
     if (!caja) {
       throw new NotFoundException(`Caja con ID ${id} no encontrada`);
     }
-    return caja;
+
+    // 1. Obtener agregaciones de ventas POS por canal de pago
+    let totalVentasEfectivo = 0;
+    let totalVentasTarjeta = 0;
+    let totalVentasTrQr = 0;
+    let totalComisionesDamas = 0;
+
+    try {
+      const salesResult = await this.dataSource.query(
+        `SELECT 
+          COALESCE(SUM(monto_efectivo), 0) as efectivo,
+          COALESCE(SUM(monto_tarjeta), 0) as tarjeta,
+          COALESCE(SUM(monto_tr_qr), 0) as tr_qr
+         FROM ventas WHERE caja_id = $1`,
+        [caja.id],
+      );
+      totalVentasEfectivo = parseFloat(salesResult[0]?.efectivo || '0');
+      totalVentasTarjeta = parseFloat(salesResult[0]?.tarjeta || '0');
+      totalVentasTrQr = parseFloat(salesResult[0]?.tr_qr || '0');
+
+      const comResult = await this.dataSource.query(
+        `SELECT COALESCE(SUM(dv.comision_dama * dv.cantidad), 0) as total 
+         FROM detalle_ventas dv 
+         INNER JOIN ventas v ON dv.venta_id = v.id 
+         WHERE v.caja_id = $1`,
+        [caja.id],
+      );
+      totalComisionesDamas = parseFloat(comResult[0]?.total || '0');
+    } catch (e) {
+      // Las tablas ventas o detalle_ventas no existen aún o error.
+    }
+
+    // 2. Obtener agregaciones de caja chica manual (ingresos y egresos)
+    let totalIngresosManuales = 0;
+    let totalEgresosManuales = 0;
+    let movimientos: CajaMovimiento[] = [];
+
+    try {
+      movimientos = await this.movimientoRepository.find({
+        where: { caja_id: caja.id },
+        relations: ['usuario'],
+        order: { created_at: 'DESC' },
+      });
+
+      totalIngresosManuales = movimientos
+        .filter((m) => m.tipo === TipoMovimiento.INGRESO)
+        .reduce((sum, m) => sum + Number(m.monto), 0);
+
+      totalEgresosManuales = movimientos
+        .filter((m) => m.tipo === TipoMovimiento.EGRESO)
+        .reduce((sum, m) => sum + Number(m.monto), 0);
+    } catch (e) {
+      // Error o tabla vacía
+    }
+
+    const totalVentasPOS = totalVentasEfectivo + totalVentasTarjeta + totalVentasTrQr;
+
+    // 3. FÓRMULAS FINANCIERAS SEGREGADAS
+    // Total Esperado en Gaveta = Fondo Inicial + Ventas Totales POS + Ingresos Manuales - Egresos Manuales
+    const totalEsperadoGaveta = caja.monto_inicial + totalVentasPOS + totalIngresosManuales - totalEgresosManuales;
+
+    // Ganancia Neta del Bar = Ventas Totales POS - Comisiones Damas - Egresos Manuales
+    const gananciaNetaBar = totalVentasPOS - totalComisionesDamas - totalEgresosManuales;
+
+    return {
+      ...caja,
+      total_ventas_efectivo: totalVentasEfectivo,
+      total_ventas_tarjeta: totalVentasTarjeta,
+      total_ventas_tr_qr: totalVentasTrQr,
+      total_ingresos_manuales: totalIngresosManuales,
+      total_egresos_manuales: totalEgresosManuales,
+      total_comisiones_damas: totalComisionesDamas,
+      total_esperado_gaveta: totalEsperadoGaveta,
+      ganancia_neta_bar: gananciaNetaBar,
+      movimientos,
+    };
   }
 }

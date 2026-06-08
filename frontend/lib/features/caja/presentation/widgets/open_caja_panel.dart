@@ -6,6 +6,7 @@ import '../../models/caja_model.dart';
 import '../../models/evento_movimiento.dart';
 import '../../models/venta_model.dart';
 import 'movimientos_list_widgets.dart';
+import 'closed_cajas_history_list.dart';
 
 class OpenCajaPanel extends StatefulWidget {
   final CajaModel caja;
@@ -17,6 +18,8 @@ class OpenCajaPanel extends StatefulWidget {
   final void Function(String tipo) onAddMovement;
   final void Function(String cajaId) onDamasBreakdown;
   final void Function(EventoMovimiento ev) onMovementDetail;
+  final bool showHistorialTab;
+  final void Function(String cajaId) onCajaTap;
 
   const OpenCajaPanel({
     super.key,
@@ -29,6 +32,8 @@ class OpenCajaPanel extends StatefulWidget {
     required this.onAddMovement,
     required this.onDamasBreakdown,
     required this.onMovementDetail,
+    required this.showHistorialTab,
+    required this.onCajaTap,
   });
 
   @override
@@ -257,6 +262,8 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
             children: [
               _buildTabButton(0, 'BALANCE', Icons.analytics_outlined),
               _buildTabButton(1, 'MOVIMIENTOS', Icons.swap_vert_outlined),
+              if (widget.showHistorialTab)
+                _buildTabButton(2, 'HISTORIAL', Icons.history),
             ],
           ),
         ),
@@ -277,13 +284,15 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
                 ),
                 itemBuilder: (context, index) => cards[index],
               )
-            : MovimientosList(
-                movimientos: widget.caja.movimientos,
-                ventas: widget.activeVentas,
-                currencySymbol: widget.currencySymbol,
-                currencyIso: widget.currencyIso,
-                onMovementDetail: widget.onMovementDetail,
-              ),
+            : _activeTab == 1
+                ? MovimientosList(
+                    movimientos: widget.caja.movimientos,
+                    ventas: widget.activeVentas,
+                    currencySymbol: widget.currencySymbol,
+                    currencyIso: widget.currencyIso,
+                    onMovementDetail: widget.onMovementDetail,
+                  )
+                : ClosedCajasHistoryList(onCajaTap: widget.onCajaTap),
       ],
     );
   }

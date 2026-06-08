@@ -39,6 +39,12 @@ export class VentasController {
     return this.ventasService.getActiveVentas(barId);
   }
 
+  @Get('caja/:cajaId')
+  @Permissions('caja.historial')
+  getVentasByCaja(@Param('cajaId', ParseUUIDPipe) cajaId: string, @ActiveBarId() barId: string) {
+    return this.ventasService.getVentasByCaja(cajaId, barId);
+  }
+
   @Get()
   @Permissions('reportes.ver')
   findAll(@ActiveBarId() barId: string) {

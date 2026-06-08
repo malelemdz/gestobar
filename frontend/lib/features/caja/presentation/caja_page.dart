@@ -12,11 +12,15 @@ import '../../../core/theme/app_theme.dart';
 import '../providers/ventas_activas_provider.dart';
 import 'widgets/closed_caja_panel.dart';
 import 'widgets/open_caja_panel.dart';
+import 'widgets/closed_cajas_history_list.dart';
 import 'dialogs/cierre_confirmation_bottom_sheet.dart';
 import 'dialogs/cierre_summary_dialog.dart';
 import 'dialogs/add_movement_bottom_sheet.dart';
 import 'dialogs/movement_detail_bottom_sheet.dart';
+import 'dialogs/closed_caja_detail_bottom_sheet.dart';
 import 'package:gestobar/core/widgets/shimmer_placeholder.dart';
+import '../../auth/providers/auth_provider.dart';
+import '../../auth/providers/auth_state.dart';
 
 class CajaPage extends ConsumerStatefulWidget {
   const CajaPage({super.key});
@@ -28,6 +32,7 @@ class CajaPage extends ConsumerStatefulWidget {
 class _CajaPageState extends ConsumerState<CajaPage> {
   final TextEditingController _montoController = TextEditingController();
   bool _isLoading = false;
+  int _activeClosedTab = 0; // 0 for ABRIR CAJA, 1 for HISTORIAL
 
   @override
   void dispose() {
@@ -37,6 +42,12 @@ class _CajaPageState extends ConsumerState<CajaPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+    final user = authState is AuthAuthenticated ? authState.user : null;
+    final bool hasHistorialPermission = user != null &&
+        (user.permisos.contains('caja.historial') ||
+            user.rolNombre.toUpperCase() == 'SUPERADMIN');
+
     final cajaState = ref.watch(cajaStateProvider);
     final currencySymbol = ref.watch(currencySymbolProvider);
     final currencyIso = ref.watch(currencyIsoProvider);
@@ -53,6 +64,9 @@ class _CajaPageState extends ConsumerState<CajaPage> {
             ref.read(cajaStateProvider.notifier).refreshEstado(silent: true),
             ref.read(ventasActivasProvider.notifier).refresh(),
           ]);
+          if (hasHistorialPermission) {
+            ref.invalidate(cajaHistoryProvider);
+          }
         },
         child: cajaState.when(
           data: (estado) {
@@ -73,14 +87,49 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                           onAddMovement: _openAddMovementBottomSheet,
                           onDamasBreakdown: _openDamasBreakdownBottomSheet,
                           onMovementDetail: _openMovementDetailBottomSheet,
+                          showHistorialTab: hasHistorialPermission,
+                          onCajaTap: _openClosedCajaDetailBottomSheet,
                         )
-                      : ClosedCajaPanel(
-                          montoController: _montoController,
-                          isLoading: _isLoading,
-                          currencySymbol: currencySymbol,
-                          currencyIso: currencyIso,
-                          onAbrirCaja: _handleApertura,
-                        ),
+                      : hasHistorialPermission
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Container(
+                                  height: 46,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF181A1E),
+                                    borderRadius: BorderRadius.circular(23),
+                                    border: Border.all(color: Colors.white.withOpacity(0.03)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      _buildClosedTabButton(0, 'ABRIR CAJA', Icons.lock_open_outlined),
+                                      _buildClosedTabButton(1, 'HISTORIAL', Icons.history),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 12.0),
+                                _activeClosedTab == 0
+                                    ? ClosedCajaPanel(
+                                        montoController: _montoController,
+                                        isLoading: _isLoading,
+                                        currencySymbol: currencySymbol,
+                                        currencyIso: currencyIso,
+                                        onAbrirCaja: _handleApertura,
+                                      )
+                                    : ClosedCajasHistoryList(
+                                        onCajaTap: _openClosedCajaDetailBottomSheet,
+                                      ),
+                              ],
+                            )
+                          : ClosedCajaPanel(
+                              montoController: _montoController,
+                              isLoading: _isLoading,
+                              currencySymbol: currencySymbol,
+                              currencyIso: currencyIso,
+                              onAbrirCaja: _handleApertura,
+                            ),
                 ],
               ),
             );
@@ -436,6 +485,74 @@ class _CajaPageState extends ConsumerState<CajaPage> {
           ),
         );
       },
+    );
+  }
+
+  void _openClosedCajaDetailBottomSheet(String cajaId) {
+    final currencySymbol = ref.read(currencySymbolProvider);
+    final currencyIso = ref.read(currencyIsoProvider);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return ClosedCajaDetailBottomSheet(
+          cajaId: cajaId,
+          currencySymbol: currencySymbol,
+          currencyIso: currencyIso,
+        );
+      },
+    );
+  }
+
+  Widget _buildClosedTabButton(int index, String label, IconData icon) {
+    final bool isActive = _activeClosedTab == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _activeClosedTab = index;
+          });
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: 38,
+          decoration: BoxDecoration(
+            color: isActive ? const Color(0xFF7000FF) : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: isActive
+                ? [
+                    BoxShadow(
+                      color: const Color(0xFF7000FF).withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: isActive ? Colors.white : Colors.white30,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  color: isActive ? Colors.white : Colors.white30,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

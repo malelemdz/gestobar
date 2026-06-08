@@ -88,6 +88,7 @@ export class AuthService {
         rol_nombre: user.rol?.nombre || 'STAFF',
         foto_url: user.foto_url,
         celular: user.celular,
+        permisos: user.rol?.permisos?.map(p => p.nombre) || [],
       },
     };
   }
@@ -116,6 +117,7 @@ export class AuthService {
         rol_nombre: user.rol?.nombre || 'STAFF',
         foto_url: user.foto_url,
         celular: user.celular,
+        permisos: user.rol?.permisos?.map(p => p.nombre) || [],
       },
     };
   }
