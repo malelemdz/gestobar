@@ -163,7 +163,7 @@ export class EstadisticasService {
       `SELECT 
          u.id as dama_id,
          u.nombre as dama_nombre,
-         u.email as dama_email,
+         u.username as dama_email,
          COALESCE(SUM(dv.comision_dama * dv.cantidad), 0) as comisiones_acumuladas,
          COALESCE(SUM(CASE WHEN dv.es_invitacion = true THEN dv.cantidad ELSE 0 END), 0) as invitaciones_recibidas,
          COUNT(DISTINCT v.id) as turnos_compania
@@ -171,7 +171,7 @@ export class EstadisticasService {
        INNER JOIN ventas v ON dv.venta_id = v.id
        INNER JOIN usuarios u ON dv.dama_id = u.id
        WHERE v.bar_id = $1 AND v.fecha BETWEEN $2 AND $3
-       GROUP BY u.id, u.nombre, u.email
+       GROUP BY u.id, u.nombre, u.username
        ORDER BY comisiones_acumuladas DESC
        LIMIT 10`,
       [barId, inicio, fin],

@@ -13,7 +13,7 @@ enum AnalyticsDateFilter {
   custom,
 }
 
-final analyticsFilterProvider = StateProvider<AnalyticsDateFilter>((ref) => AnalyticsDateFilter.last30Days);
+final analyticsFilterProvider = StateProvider<AnalyticsDateFilter>((ref) => AnalyticsDateFilter.last7Days);
 
 final analyticsDateRangeProvider = StateProvider<DateTimeRange>((ref) {
   final filter = ref.watch(analyticsFilterProvider);
@@ -36,9 +36,9 @@ final analyticsDateRangeProvider = StateProvider<DateTimeRange>((ref) {
         end: DateTime(now.year, now.month, now.day, 23, 59, 59),
       );
     case AnalyticsDateFilter.custom:
-      // Return the current range or keep the 30-day range as default until picker changes it
+      // Return the current range or keep the 7-day range as default until picker changes it
       return DateTimeRange(
-        start: DateTime(now.year, now.month, now.day - 29),
+        start: DateTime(now.year, now.month, now.day - 6),
         end: DateTime(now.year, now.month, now.day, 23, 59, 59),
       );
   }
