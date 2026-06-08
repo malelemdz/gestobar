@@ -122,6 +122,28 @@ class AuthRepository {
       throw Exception('No se pudo conectar con el servidor para actualizar el perfil');
     }
   }
+
+  /// Renueva el token JWT del usuario utilizando el token actual
+  Future<(String token, UserModel user)> renewToken() async {
+    try {
+      final response = await _dio.post('/auth/renew');
+      final data = response.data as Map<String, dynamic>;
+      final token = data['access_token'] as String;
+      final userJson = data['user'] as Map<String, dynamic>;
+      final user = UserModel.fromJson(userJson);
+      return (token, user);
+    } on DioException catch (e) {
+      final errorResponse = e.response?.data;
+      String errorMessage = 'Error al renovar sesión';
+      if (errorResponse != null && errorResponse['message'] != null) {
+        final message = errorResponse['message'];
+        errorMessage = message is List ? message.join(', ') : message.toString();
+      }
+      throw Exception(errorMessage);
+    } catch (e) {
+      throw Exception('No se pudo conectar con el servidor para renovar la sesión');
+    }
+  }
 }
 
 // Inyección del repositorio con Riverpod

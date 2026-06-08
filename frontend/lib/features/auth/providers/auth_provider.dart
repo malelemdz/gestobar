@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/api_constants.dart';
 import '../../../core/storage/secure_storage_service.dart';
+import '../../../core/network/session_events.dart';
 import '../models/user_model.dart';
 import '../repository/auth_repository.dart';
 import 'auth_state.dart';
@@ -12,6 +13,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   AuthNotifier(this._repository, this._storage) : super(const AuthInitial()) {
     _tryRestoreSession();
+    // Escuchar eventos globales de logout (ej. error 401 interceptado)
+    logoutController.stream.listen((_) {
+      logout();
+    });
   }
 
   /// Intenta recuperar de forma asíncrona la sesión almacenada en el llavero/Keychain
@@ -25,11 +30,33 @@ class AuthNotifier extends StateNotifier<AuthState> {
         final userJson = jsonDecode(userString) as Map<String, dynamic>;
         final user = UserModel.fromJson(userJson);
         
+        // Establecer sesión local de forma optimista
         state = AuthAuthenticated(
           token: token,
           user: user,
           activeBarId: activeBarId ?? user.barId,
         );
+
+        // Intentar renovar el token silenciosamente con el servidor
+        try {
+          final (newToken, freshUser) = await _repository.renewToken();
+
+          await _storage.write(ApiConstants.keyJwtToken, newToken);
+          await _storage.write(ApiConstants.keyUserProfile, jsonEncode(freshUser.toJson()));
+
+          state = AuthAuthenticated(
+            token: newToken,
+            user: freshUser,
+            activeBarId: activeBarId ?? freshUser.barId,
+          );
+        } catch (e) {
+          // Si el servidor indica explícitamente no autorizado/vencido, desloguear
+          final errStr = e.toString();
+          if (errStr.contains('Unauthorized') || errStr.contains('401') || errStr.contains('renovar sesión')) {
+            await logout();
+          }
+          // Si es error de conexión u otro, se mantiene la sesión optimista local
+        }
       } else {
         state = const AuthUnauthenticated();
       }

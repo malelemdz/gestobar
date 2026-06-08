@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/api_constants.dart';
 import '../storage/secure_storage_service.dart';
 
+import 'session_events.dart';
+
 String? _getUserAgent() {
   if (kIsWeb) {
     return null; // Permite que el navegador envíe su User-Agent nativo real
@@ -63,8 +65,7 @@ final dioProvider = Provider<Dio>((ref) {
         // Manejo inteligente de sesión expirada (401 Unauthorized)
         if (error.response?.statusCode == 401) {
           await storage.clearAll();
-          // Nota: El gestor de estado detectará que el token es nulo y forzará
-          // el redibujado de la interfaz hacia el login de forma reactiva.
+          logoutController.add(null);
         }
         return handler.next(error);
       },

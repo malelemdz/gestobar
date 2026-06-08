@@ -91,4 +91,32 @@ export class AuthService {
       },
     };
   }
+
+  async renewToken(userPayload: any, ip?: string, userAgent?: string) {
+    const user = await this.usersService.findOne(userPayload.userId);
+    if (!user || !user.estado) {
+      throw new UnauthorizedException('Usuario no válido o inactivo');
+    }
+
+    const payload = {
+      username: user.username,
+      sub: user.id,
+      rolId: user.rol_id,
+      barId: user.bar_id,
+    };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        username: user.username,
+        rol_id: user.rol_id,
+        bar_id: user.bar_id,
+        nombre: user.nombre,
+        rol_nombre: user.rol?.nombre || 'STAFF',
+        foto_url: user.foto_url,
+        celular: user.celular,
+      },
+    };
+  }
 }
