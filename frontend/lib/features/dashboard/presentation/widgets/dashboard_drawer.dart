@@ -43,10 +43,11 @@ class DashboardDrawer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      width: 48.0,
-                      height: 48.0,
+                      width: 44.0,
+                      height: 44.0,
                       decoration: BoxDecoration(
                         color: const Color(0x2600F0FF),
                         borderRadius: BorderRadius.circular(12.0),
@@ -58,30 +59,33 @@ class DashboardDrawer extends StatelessWidget {
                       child: const Icon(
                         Icons.restaurant,
                         color: Color(0xFF00F0FF),
-                        size: 24.0,
+                        size: 22.0,
                       ),
                     ),
-                    const SizedBox(width: 18.0),
+                    const SizedBox(width: 16.0),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Gestobar',
                             style: GoogleFonts.plusJakartaSans(
                               fontWeight: FontWeight.w800,
-                              fontSize: 24.0,
+                              fontSize: 22.0,
                               color: const Color(0xFFDBFCFF),
                               letterSpacing: -0.5,
+                              height: 1.1,
                             ),
                           ),
-                          const SizedBox(height: 3.0),
+                          const SizedBox(height: 2.0),
                           Text(
                             activeBarName,
                             style: theme.textTheme.labelSmall?.copyWith(
                               fontSize: 11.0,
                               color: const Color(0xFF00F0FF),
                               fontWeight: FontWeight.bold,
+                              height: 1.1,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
