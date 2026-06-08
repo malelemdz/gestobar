@@ -109,7 +109,7 @@ class MovimientosList extends StatelessWidget {
               final bool isEgreso = tipo == 'EGRESO';
               final bool isVenta = tipo == 'VENTA';
 
-              final time = DateFormat('hh:mm a').format(ev.fecha.toLocal());
+              final time = DateFormat('HH:mm').format(ev.fecha.toLocal());
               final formattedMonto = CurrencyHelper.formatAmount(ev.monto, currencyIso);
 
               Color iconBgColor = Colors.white.withOpacity(0.05);

@@ -44,7 +44,7 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
         ? widget.caja.aperturaUsuario!.nombre
         : 'Barman Encargado';
 
-    final String fecha = DateFormat('dd/MM/yyyy • hh:mm a').format(widget.caja.fechaApertura.toLocal());
+    final String fecha = DateFormat('dd/MM/yyyy • HH:mm').format(widget.caja.fechaApertura.toLocal());
     final bool isTablet = MediaQuery.of(context).size.width >= 750;
 
     final double totalVentasPos = widget.caja.totalVentasEfectivo + widget.caja.totalVentasTarjeta + widget.caja.totalVentasTrQr;

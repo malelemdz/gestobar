@@ -150,17 +150,18 @@ class DashboardPage extends ConsumerWidget {
                 letterSpacing: -0.5,
               ),
             ),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 10.0),
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
               crossAxisCount: MediaQuery.of(context).size.width >= 750 ? 4 : 2,
               crossAxisSpacing: 12.0,
               mainAxisSpacing: 12.0,
               childAspectRatio: MediaQuery.of(context).size.width >= 750 ? 1.4 : 1.3,
               children: allowedBentoItems,
             ),
-            const SizedBox(height: 24.0),
+            const SizedBox(height: 16.0),
           ],
 
           // 3. SECCIÓN: ESTADÍSTICAS RÁPIDAS (Solo si el rol tiene acceso)
@@ -174,11 +175,12 @@ class DashboardPage extends ConsumerWidget {
                 letterSpacing: -0.5,
               ),
             ),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 10.0),
             statsAsync.when(
               loading: () => GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
                 crossAxisCount: MediaQuery.of(context).size.width >= 750 ? 4 : 2,
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 12.0,
@@ -210,6 +212,7 @@ class DashboardPage extends ConsumerWidget {
                 return GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
                   crossAxisCount: MediaQuery.of(context).size.width >= 750 ? 4 : 2,
                   crossAxisSpacing: 12.0,
                   mainAxisSpacing: 12.0,
@@ -259,7 +262,7 @@ class DashboardPage extends ConsumerWidget {
                 );
               },
             ),
-            const SizedBox(height: 24.0),
+            const SizedBox(height: 16.0),
           ],
 
           // 4. SECCIÓN: ACTIVIDAD RECIENTE (Solo si el rol tiene acceso)
@@ -273,11 +276,12 @@ class DashboardPage extends ConsumerWidget {
                 letterSpacing: -0.5,
               ),
             ),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 10.0),
             recentAuditAsync.when(
               loading: () => ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
                 itemCount: 3,
                 itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
@@ -325,6 +329,7 @@ class DashboardPage extends ConsumerWidget {
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
                   itemCount: logs.length,
                   itemBuilder: (context, index) {
                     final log = logs[index];

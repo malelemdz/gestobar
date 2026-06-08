@@ -146,6 +146,7 @@ class DashboardSessionCard extends ConsumerWidget {
                     const SizedBox(height: 8.0),
                     Row(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         if (logoUrl != null && logoUrl.isNotEmpty)
                           ClipRRect(
@@ -162,13 +163,44 @@ class DashboardSessionCard extends ConsumerWidget {
                         else
                           _buildFallbackBarLogo(theme),
                         const SizedBox(width: 10.0),
-                        Text(
-                          activeBarId != null ? barName : 'CONSOLA GLOBAL',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 18.0,
-                            color: const Color(0xFF00F0FF),
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              activeBarId != null ? barName : 'CONSOLA GLOBAL',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 18.0,
+                                color: const Color(0xFF00F0FF),
+                              ),
+                            ),
+                            if (activeBarId != null)
+                              barState.maybeWhen(
+                                data: (bar) {
+                                  final list = <String>[];
+                                  if (bar.direccion != null && bar.direccion!.trim().isNotEmpty) {
+                                    list.add(bar.direccion!.trim());
+                                  }
+                                  if (bar.ciudad != null && bar.ciudad!.trim().isNotEmpty) {
+                                    list.add(bar.ciudad!.trim());
+                                  }
+                                  if (list.isEmpty) return const SizedBox.shrink();
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 2.0),
+                                    child: Text(
+                                      list.join(', '),
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 11.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white.withOpacity(0.5),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                orElse: () => const SizedBox.shrink(),
+                              ),
+                          ],
                         ),
                       ],
                     ),
@@ -216,7 +248,7 @@ class _LocalTimeClockState extends State<LocalTimeClock> {
 
   @override
   Widget build(BuildContext context) {
-    final timeStr = DateFormat('hh:mm:ss a').format(_currentTime);
+    final timeStr = DateFormat('HH:mm:ss').format(_currentTime);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [

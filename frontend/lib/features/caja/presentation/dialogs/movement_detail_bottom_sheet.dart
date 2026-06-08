@@ -90,7 +90,7 @@ class MovementDetailBottomSheet extends StatelessWidget {
 
   Widget _buildTicketDetails(VentaModel venta, String symbol, String iso) {
     final String barmanNombre = venta.usuario != null ? venta.usuario!.nombre : 'Cajero';
-    final String fecha = DateFormat('dd/MM/yyyy • hh:mm a').format(venta.fecha.toLocal());
+    final String fecha = DateFormat('dd/MM/yyyy • HH:mm').format(venta.fecha.toLocal());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -253,7 +253,7 @@ class MovementDetailBottomSheet extends StatelessWidget {
 
   Widget _buildManualMovementDetails(CajaMovimientoModel m, String symbol, String iso) {
     final String barmanNombre = m.usuario != null ? m.usuario!.nombre : 'Cajero';
-    final String fecha = DateFormat('dd/MM/yyyy • hh:mm a').format(m.createdAt.toLocal());
+    final String fecha = DateFormat('dd/MM/yyyy • HH:mm').format(m.createdAt.toLocal());
     final bool isIngreso = m.tipo == 'INGRESO';
 
     return Column(
