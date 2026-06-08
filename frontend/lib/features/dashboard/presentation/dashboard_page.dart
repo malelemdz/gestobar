@@ -141,6 +141,16 @@ class DashboardPage extends ConsumerWidget {
 
           // 2. Grilla Bento de Accesos Rápidos Autorizados
           if (allowedBentoItems.isNotEmpty) ...[
+            Text(
+              'Accesos Directos',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 12.0),
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),

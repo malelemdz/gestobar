@@ -15,8 +15,8 @@ class DashboardBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Filtrar 'audit' para no mostrarlo en barra inferior (manteniendo comportamiento original)
-    final filteredItems = navItems.where((item) => item['view'] != 'audit').toList();
+    // Filtrar 'audit' y 'analytics' para no mostrarlos en barra inferior (manteniendo comportamiento original)
+    final filteredItems = navItems.where((item) => item['view'] != 'audit' && item['view'] != 'analytics').toList();
 
     return Container(
       decoration: BoxDecoration(

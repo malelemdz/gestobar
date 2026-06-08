@@ -41,12 +41,6 @@ class NavigationHelper {
             'icon_active': Icons.dashboard,
           },
           {
-            'view': 'analytics',
-            'label': 'Analíticas',
-            'icon': Icons.bar_chart_outlined,
-            'icon_active': Icons.bar_chart,
-          },
-          {
             'view': 'pos',
             'label': 'POS',
             'icon': Icons.point_of_sale_outlined,
@@ -69,6 +63,12 @@ class NavigationHelper {
             'label': 'Staff',
             'icon': Icons.people_alt_outlined,
             'icon_active': Icons.people,
+          },
+          {
+            'view': 'analytics',
+            'label': 'Analíticas',
+            'icon': Icons.bar_chart_outlined,
+            'icon_active': Icons.bar_chart,
           },
           {
             'view': 'audit',
