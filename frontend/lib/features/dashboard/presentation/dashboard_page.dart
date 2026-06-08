@@ -16,10 +16,42 @@ import '../../admin/presentation/dialogs/log_detail_bottom_sheet.dart';
 import '../../admin/providers/auditoria_recent_provider.dart';
 import '../../analytics/providers/analytics_provider.dart';
 import '../../analytics/data/models/analytics_resumen_model.dart';
+import '../../analytics/data/models/product_ranking_model.dart';
+import '../../pos/providers/catalog_provider.dart';
+import '../../caja/providers/ventas_activas_provider.dart';
 import 'utils/navigation_helper.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
+
+  Widget _buildShimmerItem() {
+    return ShimmerPlaceholder(
+      width: double.infinity,
+      height: 100,
+      borderRadius: BorderRadius.circular(24.0),
+    );
+  }
+
+  Widget _buildErrorItem(String label) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.liquidSurfaceContainerLow,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(color: AppTheme.colorDanger.withOpacity(0.2)),
+      ),
+      child: Center(
+        child: Text(
+          'Error $label',
+          style: GoogleFonts.plusJakartaSans(
+            color: Colors.redAccent,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
 
   String _getMaxSaleDay(List<DailySalesModel> trend) {
     if (trend.isEmpty) return 'Sin datos';
@@ -63,6 +95,11 @@ class DashboardPage extends ConsumerWidget {
     // 2. Cargar datos de estadísticas y auditoría si el usuario tiene permiso
     final AsyncValue<AnalyticsResumenModel>? statsAsync =
         canSeeAnalytics ? ref.watch(analyticsResumenProvider) : null;
+    final AsyncValue<List<ProductRankingModel>>? rankingAsync =
+        canSeeAnalytics ? ref.watch(analyticsProductRankingProvider) : null;
+    final productsAsync = ref.watch(productsProvider);
+    final cajaState = ref.watch(cajaStateProvider);
+    final ventasState = ref.watch(ventasActivasProvider);
     final AsyncValue<List<dynamic>>? recentAuditAsync =
         canSeeAudit ? ref.watch(recentAuditoriaProvider) : null;
 
@@ -165,7 +202,7 @@ class DashboardPage extends ConsumerWidget {
           ],
 
           // 3. SECCIÓN: ESTADÍSTICAS RÁPIDAS (Solo si el rol tiene acceso)
-          if (canSeeAnalytics && statsAsync != null) ...[
+          if (canSeeAnalytics && statsAsync != null && rankingAsync != null) ...[
             Text(
               'Estadísticas Rápidas',
               style: GoogleFonts.plusJakartaSans(
@@ -176,91 +213,88 @@ class DashboardPage extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 10.0),
-            statsAsync.when(
-              loading: () => GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                crossAxisCount: MediaQuery.of(context).size.width >= 750 ? 4 : 2,
-                crossAxisSpacing: 12.0,
-                mainAxisSpacing: 12.0,
-                childAspectRatio: MediaQuery.of(context).size.width >= 750 ? 1.4 : 1.3,
-                children: List.generate(
-                  4,
-                  (index) => ShimmerPlaceholder(
-                    width: double.infinity,
-                    height: 100,
-                    borderRadius: BorderRadius.circular(24.0),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              crossAxisCount: MediaQuery.of(context).size.width >= 750 ? 4 : 2,
+              crossAxisSpacing: 12.0,
+              mainAxisSpacing: 12.0,
+              childAspectRatio: MediaQuery.of(context).size.width >= 750 ? 1.4 : 1.3,
+              children: [
+                // 1. PRODUCTOS EN MENÚ
+                productsAsync.when(
+                  data: (list) => DashboardBentoItem(
+                    icon: Icons.inventory_2_outlined,
+                    title: '${list.length} Items',
+                    subtitle: 'Productos en Menú',
+                    color: const Color(0xFF00F0FF),
+                    onTap: () {
+                      ref.read(activeViewProvider.notifier).state = 'menu';
+                    },
                   ),
+                  loading: () => _buildShimmerItem(),
+                  error: (_, __) => _buildErrorItem('Productos'),
                 ),
-              ),
-              error: (err, _) => Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: AppTheme.liquidSurfaceContainerLow,
-                  borderRadius: BorderRadius.circular(24.0),
-                  border: Border.all(color: AppTheme.colorDanger.withOpacity(0.2)),
-                ),
-                child: Text(
-                  'No se pudieron cargar las estadísticas de resumen rápido.',
-                  style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontSize: 13),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              data: (resumen) {
-                final maxDayStr = _getMaxSaleDay(resumen.ventasDiarias);
-                return GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.zero,
-                  crossAxisCount: MediaQuery.of(context).size.width >= 750 ? 4 : 2,
-                  crossAxisSpacing: 12.0,
-                  mainAxisSpacing: 12.0,
-                  childAspectRatio: MediaQuery.of(context).size.width >= 750 ? 1.4 : 1.3,
-                  children: [
-                    DashboardBentoItem(
-                      icon: Icons.monetization_on_outlined,
-                      title: '${resumen.ingresosTotales.toStringAsFixed(2)} $currencySymbol',
-                      subtitle: 'Ingresos Totales',
-                      color: const Color(0xFF00F0FF),
-                      onTap: () {
-                        ref.read(analyticsTabProvider.notifier).state = 0; // Tab Resumen
-                        ref.read(activeViewProvider.notifier).state = 'analytics';
-                      },
-                    ),
-                    DashboardBentoItem(
-                      icon: Icons.account_balance_wallet_outlined,
-                      title: '${resumen.ingresoNetoEstimado.toStringAsFixed(2)} $currencySymbol',
-                      subtitle: 'Ingreso Neto Est.',
+
+                // 2. ACTIVIDAD / MOVIMIENTOS DEL TURNO
+                cajaState.when(
+                  data: (est) {
+                    final int totalMov = est.abierta
+                        ? (est.caja!.movimientos.length + ventasState.ventas.length)
+                        : 0;
+                    return DashboardBentoItem(
+                      icon: Icons.swap_vert_outlined,
+                      title: est.abierta ? '$totalMov mov.' : 'Caja Cerrada',
+                      subtitle: 'Movimientos del Turno',
                       color: const Color(0xFFE040FB),
                       onTap: () {
-                        ref.read(analyticsTabProvider.notifier).state = 0; // Tab Resumen
-                        ref.read(activeViewProvider.notifier).state = 'analytics';
+                        ref.read(activeViewProvider.notifier).state = 'caja';
                       },
-                    ),
-                    DashboardBentoItem(
+                    );
+                  },
+                  loading: () => _buildShimmerItem(),
+                  error: (_, __) => _buildErrorItem('Caja'),
+                ),
+
+                // 3. DÍA MÁS VENDIDO (ÚLTIMOS 30 DÍAS)
+                statsAsync.when(
+                  data: (resumen) {
+                    final maxDayStr = _getMaxSaleDay(resumen.ventasDiarias);
+                    return DashboardBentoItem(
                       icon: Icons.trending_up_rounded,
                       title: maxDayStr,
-                      subtitle: 'Picos de Venta (Día)',
+                      subtitle: 'Día Más Vendido (30d)',
                       color: const Color(0xFFFFB1C3),
                       onTap: () {
-                        ref.read(analyticsTabProvider.notifier).state = 1; // Tab Ventas & Picos
+                        ref.read(analyticsTabProvider.notifier).state = 1; // Tab Tendencias & Picos
                         ref.read(activeViewProvider.notifier).state = 'analytics';
                       },
-                    ),
-                    DashboardBentoItem(
-                      icon: Icons.shopping_bag_outlined,
-                      title: '${resumen.cantidadVentas} ordenes',
-                      subtitle: 'Cantidad Ventas',
+                    );
+                  },
+                  loading: () => _buildShimmerItem(),
+                  error: (_, __) => _buildErrorItem('Picos'),
+                ),
+
+                // 4. PRODUCTO TOP (ÚLTIMOS 30 DÍAS)
+                rankingAsync.when(
+                  data: (list) {
+                    final topProduct = list.isNotEmpty ? list.first.productoNombre : 'Sin datos';
+                    return DashboardBentoItem(
+                      icon: Icons.local_bar_outlined,
+                      title: topProduct,
+                      subtitle: 'Producto Top (30d)',
                       color: const Color(0xFFDBFCFF),
                       onTap: () {
-                        ref.read(analyticsTabProvider.notifier).state = 0; // Tab Resumen
+                        ref.read(analyticsTabProvider.notifier).state = 2; // Tab Productos
                         ref.read(activeViewProvider.notifier).state = 'analytics';
                       },
-                    ),
-                  ],
-                );
-              },
+                    );
+                  },
+                  loading: () => _buildShimmerItem(),
+                  error: (_, __) => _buildErrorItem('Top Prod.'),
+                ),
+              ],
             ),
             const SizedBox(height: 16.0),
           ],
