@@ -8,6 +8,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/shimmer_placeholder.dart';
 import '../dialogs/add_edit_category_dialog.dart';
 import '../dialogs/bottom_confirmation_sheet.dart';
+import '../../../../core/widgets/responsive_modal.dart';
 
 
 // =========================================================================
@@ -597,16 +598,10 @@ void _confirmDeleteCategory(BuildContext context, WidgetRef ref, CategoryModel c
 }
 
 void _openCategoryDialog(BuildContext context, CategoryModel? category) {
-  showModalBottomSheet(
+  showResponsiveDialog(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: const Color(0xFF131518),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
-    builder: (context) {
-      return AddEditCategoryDialog(category: category);
-    },
+    maxWidth: 450,
+    child: AddEditCategoryDialog(category: category),
   );
 }
 

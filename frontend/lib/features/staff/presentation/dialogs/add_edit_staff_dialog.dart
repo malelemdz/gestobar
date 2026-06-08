@@ -8,6 +8,7 @@ import '../../../admin/providers/staff_provider.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/widgets/styled_text_field.dart';
 import 'reset_password_bottom_sheet.dart';
+import '../../../../core/widgets/responsive_modal.dart';
 
 Future<void> showAddEditStaffDialog({
   required BuildContext context,
@@ -55,69 +56,8 @@ Future<void> showAddEditStaffDialog({
         selectedRoleId != user.rolId ||
         localImagePath != null;
 
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: maxModalHeight,
-      ),
-      margin: isDialog ? EdgeInsets.zero : EdgeInsets.only(bottom: viewInsets.bottom),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E2024), // Level 2 Modal
-        borderRadius: isDialog
-            ? BorderRadius.circular(24.0)
-            : const BorderRadius.vertical(top: Radius.circular(24.0)),
-        border: isDialog
-            ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
-            : Border(
-                top: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
-              ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 12),
-          // Thin slide indicator
-          if (!isDialog)
-            Center(
-              child: Container(
-                    width: 48,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                // Compact Title Header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        isEdit ? 'Editar Usuario' : 'Nuevo Usuario',
-                        style: GoogleFonts.plusJakartaSans(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () => Navigator.pop(context),
-                        borderRadius: BorderRadius.circular(20),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(Icons.close, color: Colors.white54, size: 20),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Divider(color: Colors.white10),
-                // Scrolling Form Fields Area
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+    final Widget formBody = SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
                     child: Form(
                       key: formKey,
                       child: Column(
@@ -511,194 +451,160 @@ Future<void> showAddEditStaffDialog({
                         ],
                       ),
                     ),
-                  ),
-                ),
-                const Divider(color: Colors.white10),
-                // Fixed Footer with Action Buttons
-                Container(
-                  padding: EdgeInsets.fromLTRB(
-                    24,
-                    16,
-                    24,
-                    16 + (isDialog ? 0.0 : MediaQuery.of(context).padding.bottom),
-                  ),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF16181C),
-                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(24.0)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      OutlinedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.white10),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        ),
-                        child: Text(
-                          'Cancelar',
-                          style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: hasChanges ? const Color(0xFF00F0FF) : Colors.white.withOpacity(0.08),
-                          foregroundColor: hasChanges ? const Color(0xFF0C0E12) : Colors.white24,
-                          disabledBackgroundColor: Colors.white.withOpacity(0.04),
-                          disabledForegroundColor: Colors.white12,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                          elevation: 0,
-                        ),
-                        onPressed: (isSaving || !hasChanges)
-                            ? null
-                            : () async {
-                                // Validation
-                                if (!formKey.currentState!.validate()) {
-                                  return;
-                                }
+                  );
 
-                                if (!isEdit && localImagePath == null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Por favor selecciona una foto de perfil'),
-                                      backgroundColor: Colors.orangeAccent,
-                                    ),
-                                  );
-                                  return;
-                                }
-
-                                setModalState(() {
-                                  isSaving = true;
-                                });
-
-                                try {
-                                  String? remotePhotoUrl = user?.fotoUrl;
-
-                                  // Upload image first if changed
-                                  if (localImagePath != null) {
-                                    remotePhotoUrl = await ref
-                                        .read(staffListProvider.notifier)
-                                        .uploadPhoto(localImagePath!);
-                                  }
-
-                                  final payload = {
-                                    'nombre': nameController.text.trim(),
-                                    'apellido': lastNameController.text.trim(),
-                                    'username': usernameController.text.trim().toLowerCase(),
-                                    'rol_id': selectedRoleId,
-                                    'genero': selectedGender,
-                                    'celular': phoneController.text.trim(),
-                                    'identificacion': dniController.text.trim(),
-                                    'nacionalidad': countryController.text.trim(),
-                                    'direccion': addressController.text.trim(),
-                                    if (remotePhotoUrl != null) 'foto_url': remotePhotoUrl,
-                                  };
-
-                                  if (!isEdit && passwordController.text.isNotEmpty) {
-                                    payload['password'] = passwordController.text;
-                                  }
-
-                                  bool success;
-                                  if (isEdit) {
-                                    success = await ref
-                                        .read(staffListProvider.notifier)
-                                        .updateStaff(user.id, payload);
-                                  } else {
-                                    success = await ref
-                                        .read(staffListProvider.notifier)
-                                        .createStaff(payload);
-                                  }
-
-                                  if (success && context.mounted) {
-                                    Navigator.pop(context);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(isEdit
-                                            ? 'Usuario actualizado con éxito'
-                                            : 'Usuario registrado con éxito'),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                  } else {
-                                    setModalState(() {
-                                      isSaving = false;
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Error al guardar el usuario. Comprueba tus datos.'),
-                                        backgroundColor: Colors.redAccent,
-                                      ),
-                                    );
-                                  }
-                                } catch (e) {
-                                  setModalState(() {
-                                    isSaving = false;
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Error: ${e.toString()}'),
-                                      backgroundColor: Colors.redAccent,
-                                    ),
-                                  );
-                                }
-                              },
-                        child: isSaving
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white38),
-                              )
-                            : Text(
-                                isEdit ? 'GUARDAR CAMBIOS' : 'REGISTRAR USUARIO',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-    );
-  }
-
-  if (isTabletLandscape) {
-    await showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.85),
-      builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 550),
-            child: StatefulBuilder(
-              builder: (context, setModalState) {
-                return buildModalContent(context, setModalState, true);
-              },
-            ),
+    final Widget footer = Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        OutlinedButton(
+          onPressed: () => Navigator.pop(context),
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: Colors.white10),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           ),
-        );
-      },
+          child: Text(
+            'Cancelar',
+            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(width: 12),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: hasChanges ? const Color(0xFF00F0FF) : Colors.white.withOpacity(0.08),
+            foregroundColor: hasChanges ? const Color(0xFF0C0E12) : Colors.white24,
+            disabledBackgroundColor: Colors.white.withOpacity(0.04),
+            disabledForegroundColor: Colors.white12,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            elevation: 0,
+          ),
+          onPressed: (isSaving || !hasChanges)
+              ? null
+              : () async {
+                  // Validation
+                  if (!formKey.currentState!.validate()) {
+                    return;
+                  }
+
+                  if (!isEdit && localImagePath == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Por favor selecciona una foto de perfil'),
+                        backgroundColor: Colors.orangeAccent,
+                      ),
+                    );
+                    return;
+                  }
+
+                  setModalState(() {
+                    isSaving = true;
+                  });
+
+                  try {
+                    String? remotePhotoUrl = user?.fotoUrl;
+
+                    // Upload image first if changed
+                    if (localImagePath != null) {
+                      remotePhotoUrl = await ref
+                          .read(staffListProvider.notifier)
+                          .uploadPhoto(localImagePath!);
+                    }
+
+                    final payload = {
+                      'nombre': nameController.text.trim(),
+                      'apellido': lastNameController.text.trim(),
+                      'username': usernameController.text.trim().toLowerCase(),
+                      'rol_id': selectedRoleId,
+                      'genero': selectedGender,
+                      'celular': phoneController.text.trim(),
+                      'identificacion': dniController.text.trim(),
+                      'nacionalidad': countryController.text.trim(),
+                      'direccion': addressController.text.trim(),
+                      if (remotePhotoUrl != null) 'foto_url': remotePhotoUrl,
+                    };
+
+                    if (!isEdit && passwordController.text.isNotEmpty) {
+                      payload['password'] = passwordController.text;
+                    }
+
+                    bool success;
+                    if (isEdit) {
+                      success = await ref
+                          .read(staffListProvider.notifier)
+                          .updateStaff(user.id, payload);
+                    } else {
+                      success = await ref
+                          .read(staffListProvider.notifier)
+                          .createStaff(payload);
+                    }
+
+                    if (success && context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(isEdit
+                              ? 'Usuario actualizado con éxito'
+                              : 'Usuario registrado con éxito'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else {
+                      setModalState(() {
+                        isSaving = false;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Error al guardar el usuario. Comprueba tus datos.'),
+                          backgroundColor: Colors.redAccent,
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    setModalState(() {
+                      isSaving = false;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error: ${e.toString()}'),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  }
+                },
+          child: isSaving
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white38),
+                )
+              : Text(
+                  isEdit ? 'GUARDAR CAMBIOS' : 'REGISTRAR USUARIO',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+        ),
+      ],
     );
-  } else {
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return buildModalContent(context, setModalState, false);
-          },
-        );
-      },
+
+    return ResponsiveModalContainer(
+      title: isEdit ? 'Editar Usuario' : 'Nuevo Usuario',
+      isDialog: isDialog,
+      footer: footer,
+      child: formBody,
     );
   }
+
+  await showResponsiveDialog(
+    context: context,
+    maxWidth: 550,
+    child: StatefulBuilder(
+      builder: (context, setModalState) {
+        return buildModalContent(context, setModalState, isTabletLandscape);
+      },
+    ),
+  );
 }
 
 Widget _buildDropdownField<T>({
