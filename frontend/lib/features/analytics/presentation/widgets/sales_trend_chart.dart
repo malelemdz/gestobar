@@ -1,11 +1,13 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:gestobar/core/theme/app_theme.dart';
+import '../../../caja/providers/caja_provider.dart';
 import '../../data/models/analytics_resumen_model.dart';
 
-class SalesTrendChart extends StatelessWidget {
+class SalesTrendChart extends ConsumerWidget {
   final List<DailySalesModel> trend;
 
   const SalesTrendChart({super.key, required this.trend});
@@ -43,7 +45,8 @@ class SalesTrendChart extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currencySymbol = ref.watch(currencySymbolProvider);
     if (trend.isEmpty) {
       return Container(
         margin: const EdgeInsets.all(16.0),
@@ -215,7 +218,7 @@ class SalesTrendChart extends StatelessWidget {
                                 ),
                                 children: [
                                   TextSpan(
-                                    text: '${item.total.toStringAsFixed(2)} Bs',
+                                    text: '${item.total.toStringAsFixed(2)} $currencySymbol',
                                     style: GoogleFonts.plusJakartaSans(
                                       color: const Color(0xFF00F0FF),
                                       fontWeight: FontWeight.bold,
@@ -311,7 +314,7 @@ class SalesTrendChart extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${maxDayVal.toStringAsFixed(2)} Bs',
+                  '${maxDayVal.toStringAsFixed(2)} $currencySymbol',
                   style: GoogleFonts.plusJakartaSans(
                     color: const Color(0xFF00F0FF),
                     fontSize: 18.0,
@@ -367,7 +370,7 @@ class SalesTrendChart extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '${revenue.toStringAsFixed(2)} Bs',
+                            '${revenue.toStringAsFixed(2)} $currencySymbol',
                             style: GoogleFonts.plusJakartaSans(
                               color: Colors.white70,
                               fontSize: 12.0,

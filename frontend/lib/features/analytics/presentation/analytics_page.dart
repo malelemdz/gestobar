@@ -54,13 +54,18 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                     borderRadius: BorderRadius.circular(23),
                     border: Border.all(color: Colors.white.withOpacity(0.03)),
                   ),
-                  child: Row(
-                    children: [
-                      _buildTabButton(0, 'RESUMEN', Icons.analytics_outlined),
-                      _buildTabButton(1, 'TENDENCIAS', Icons.trending_up),
-                      _buildTabButton(2, 'PRODUCTOS', Icons.local_bar_outlined),
-                      _buildTabButton(3, 'STAFF & DAMAS', Icons.people_outline),
-                    ],
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildTabButton(0, 'RESUMEN', Icons.analytics_outlined),
+                        _buildTabButton(1, 'TENDENCIAS', Icons.trending_up),
+                        _buildTabButton(2, 'PRODUCTOS', Icons.local_bar_outlined),
+                        _buildTabButton(3, 'STAFF & DAMAS', Icons.people_outline),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -238,51 +243,51 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     final activeTab = ref.watch(analyticsTabProvider);
     final bool isActive = activeTab == index;
 
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          ref.read(analyticsTabProvider.notifier).state = index;
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          height: 38,
-          decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF00F0FF) : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: isActive
-                ? [
-                    BoxShadow(
-                      color: const Color(0xFF00F0FF).withOpacity(0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 15,
-                color: isActive ? Colors.black : Colors.white30,
-              ),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  label,
-                  style: GoogleFonts.plusJakartaSans(
-                    color: isActive ? Colors.black : Colors.white30,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
+    return GestureDetector(
+      onTap: () {
+        ref.read(analyticsTabProvider.notifier).state = index;
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        height: 38,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: isActive ? const Color(0xFF00F0FF) : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: isActive
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF00F0FF).withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 15,
+              color: isActive ? Colors.black : Colors.white30,
+            ),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  color: isActive ? Colors.black : Colors.white30,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

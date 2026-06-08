@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gestobar/core/theme/app_theme.dart';
 import 'package:gestobar/core/widgets/shimmer_placeholder.dart';
+import '../../../caja/providers/caja_provider.dart';
 import '../../providers/analytics_provider.dart';
 import '../../data/models/product_ranking_model.dart';
 
@@ -57,6 +58,7 @@ class ProductRankingList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rankingAsync = ref.watch(analyticsProductRankingProvider);
+    final currencySymbol = ref.watch(currencySymbolProvider);
 
     return rankingAsync.when(
       loading: () => ListView.builder(
@@ -203,7 +205,7 @@ class ProductRankingList extends ConsumerWidget {
                           ),
                           const SizedBox(height: 2.0),
                           Text(
-                            '${p.totalRecaudado.toStringAsFixed(2)} Bs',
+                            '${p.totalRecaudado.toStringAsFixed(2)} $currencySymbol',
                             style: GoogleFonts.plusJakartaSans(
                               color: const Color(0xFF00F0FF),
                               fontWeight: FontWeight.bold,

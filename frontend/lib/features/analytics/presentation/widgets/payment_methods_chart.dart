@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../caja/providers/caja_provider.dart';
 import '../../data/models/analytics_resumen_model.dart';
 
-class PaymentMethodsChart extends StatelessWidget {
+class PaymentMethodsChart extends ConsumerWidget {
   final List<PaymentMethodBreakdown> breakdown;
 
   const PaymentMethodsChart({super.key, required this.breakdown});
@@ -40,7 +42,8 @@ class PaymentMethodsChart extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currencySymbol = ref.watch(currencySymbolProvider);
     if (breakdown.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(24.0),
@@ -113,7 +116,7 @@ class PaymentMethodsChart extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '${item.total.toStringAsFixed(2)} Bs (${(percent * 100).toStringAsFixed(1)}%)',
+                              '${item.total.toStringAsFixed(2)} $currencySymbol (${(percent * 100).toStringAsFixed(1)}%)',
                               style: GoogleFonts.plusJakartaSans(
                                 color: Colors.white70,
                                 fontSize: 12.0,
