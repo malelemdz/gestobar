@@ -32,124 +32,157 @@ void showLogDetail(BuildContext context, AuditoriaModel log, String currencyIso,
     actionIcon = Icons.gpp_bad_outlined;
   }
 
-  showModalBottomSheet(
-    context: context,
-    backgroundColor: AppTheme.liquidSurfaceContainerLow,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
-    ),
-    builder: (context) {
-      return SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 24.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.white24,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2.0),
-                      child: Icon(actionIcon, color: actionColor, size: 20),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        AuditoriaFormatters.formatMessageWithCurrency(
-                          log.detalles?['mensaje'],
-                          currencyIso,
-                          currencySymbol,
-                        ),
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.white,
-                          height: 1.3,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.close, color: Colors.white70, size: 18),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                const Divider(height: 1, thickness: 0.5, color: Colors.white10),
-                const SizedBox(height: 16),
-                Flexible(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildDetailRow(Icons.folder_open_outlined, 'Módulo', AuditoriaFormatters.formatModulo(log.modulo)),
-                        _buildDetailRow(
-                          Icons.person_outline,
-                          'Usuario',
-                          '${log.usuarioNombre ?? "Desconocido"} (${log.rolNombre.toLowerCase()})',
-                        ),
-                        _buildDetailRow(Icons.calendar_today_outlined, 'Fecha ($barTimezone)', dateStr),
-                        if (log.ipAddress != null)
-                          _buildDetailRow(Icons.network_wifi_outlined, 'Dirección IP', AuditoriaFormatters.formatIpAddress(log.ipAddress)),
-                        if (log.dispositivo != null)
-                          _buildDetailRow(Icons.devices_outlined, 'Dispositivo/User Agent', log.dispositivo!),
-                        
-                        const SizedBox(height: 16),
+  final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
 
-                        _buildLogMetadataDetail(log, currencyIso, currencySymbol),
-                        
-                        // Render detailed changes if 'cambios' exists
-                        if (log.detalles != null && log.detalles!['cambios'] != null) ...[
-                          Text(
-                            'CAMBIOS REALIZADOS',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 12,
-                              color: AppTheme.liquidPrimary,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          _buildChangesList(log.detalles!['cambios'], currencyIso, currencySymbol),
-                        ],
-                      ],
-                    ),
+  Widget buildContent(BuildContext context, bool isDialog) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.liquidSurfaceContainerLow,
+        borderRadius: isDialog
+            ? BorderRadius.circular(24.0)
+            : const BorderRadius.vertical(top: Radius.circular(28.0)),
+        border: isDialog
+            ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+            : null,
+      ),
+      padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 24.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (!isDialog)
+            Center(
+              child: Container(
+                width: 40,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2.0),
+                child: Icon(actionIcon, color: actionColor, size: 20),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  AuditoriaFormatters.formatMessageWithCurrency(
+                    log.detalles?['mensaje'],
+                    currencyIso,
+                    currencySymbol,
+                  ),
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: Colors.white,
+                    height: 1.3,
                   ),
                 ),
-              ],
+              ),
+              const SizedBox(width: 12),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.05),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.close, color: Colors.white70, size: 18),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          const Divider(height: 1, thickness: 0.5, color: Colors.white10),
+          const SizedBox(height: 16),
+          Flexible(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDetailRow(Icons.folder_open_outlined, 'Módulo', AuditoriaFormatters.formatModulo(log.modulo)),
+                  _buildDetailRow(
+                    Icons.person_outline,
+                    'Usuario',
+                    '${log.usuarioNombre ?? "Desconocido"} (${log.rolNombre.toLowerCase()})',
+                  ),
+                  _buildDetailRow(Icons.calendar_today_outlined, 'Fecha ($barTimezone)', dateStr),
+                  if (log.ipAddress != null)
+                    _buildDetailRow(Icons.network_wifi_outlined, 'Dirección IP', AuditoriaFormatters.formatIpAddress(log.ipAddress)),
+                  if (log.dispositivo != null)
+                    _buildDetailRow(Icons.devices_outlined, 'Dispositivo/User Agent', log.dispositivo!),
+                  
+                  const SizedBox(height: 16),
+
+                  _buildLogMetadataDetail(log, currencyIso, currencySymbol),
+                  
+                  // Render detailed changes if 'cambios' exists
+                  if (log.detalles != null && log.detalles!['cambios'] != null) ...[
+                    Text(
+                      'CAMBIOS REALIZADOS',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 12,
+                        color: AppTheme.liquidPrimary,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildChangesList(log.detalles!['cambios'], currencyIso, currencySymbol),
+                  ],
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    },
-  );
+        ],
+      ),
+    );
+  }
+
+  if (isTabletLandscape) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.85),
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: buildContent(context, true),
+          ),
+        );
+      },
+    );
+  } else {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.liquidSurfaceContainerLow,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: buildContent(context, false),
+          ),
+        );
+      },
+    );
+  }
 }
 
 Widget _buildLogMetadataDetail(AuditoriaModel log, String currencyIso, String currencySymbol) {

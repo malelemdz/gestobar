@@ -318,17 +318,40 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   // =========================================================================
 
   void _showCierreConfirmationBottomSheet(String cajaId) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        return CierreConfirmationBottomSheet(
-          cajaId: cajaId,
-          onConfirm: () => _handleCierre(cajaId),
-        );
-      },
-    );
+    final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
+    if (isTabletLandscape) {
+      showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.85),
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: CierreConfirmationBottomSheet(
+                cajaId: cajaId,
+                onConfirm: () => _handleCierre(cajaId),
+                isDialog: true,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (context) {
+          return CierreConfirmationBottomSheet(
+            cajaId: cajaId,
+            onConfirm: () => _handleCierre(cajaId),
+            isDialog: false,
+          );
+        },
+      );
+    }
   }
 
   void _showCierreSummaryDialog(dynamic resumen) {
@@ -351,53 +374,117 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   void _openAddMovementBottomSheet(String tipo) {
     final currencySymbol = ref.read(currencySymbolProvider);
     final currencyIso = ref.read(currencyIsoProvider);
+    final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return AddMovementBottomSheet(
-          tipo: tipo,
-          currencySymbol: currencySymbol,
-          currencyIso: currencyIso,
-          onConfirm: ({required monto, required metodoPago, required concepto}) async {
-            await ref.read(cajaStateProvider.notifier).registrarMovimiento(
-                  monto: monto,
-                  tipo: tipo,
-                  metodoPago: metodoPago,
-                  concepto: concepto,
+    if (isTabletLandscape) {
+      showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.85),
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 450),
+              child: AddMovementBottomSheet(
+                tipo: tipo,
+                currencySymbol: currencySymbol,
+                currencyIso: currencyIso,
+                isDialog: true,
+                onConfirm: ({required monto, required metodoPago, required concepto}) async {
+                  await ref.read(cajaStateProvider.notifier).registrarMovimiento(
+                        monto: monto,
+                        tipo: tipo,
+                        metodoPago: metodoPago,
+                        concepto: concepto,
+                      );
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('✓ Movimiento registrado correctamente.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
+                        backgroundColor: const Color(0xFF7000FF),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) {
+          return AddMovementBottomSheet(
+            tipo: tipo,
+            currencySymbol: currencySymbol,
+            currencyIso: currencyIso,
+            isDialog: false,
+            onConfirm: ({required monto, required metodoPago, required concepto}) async {
+              await ref.read(cajaStateProvider.notifier).registrarMovimiento(
+                    monto: monto,
+                    tipo: tipo,
+                    metodoPago: metodoPago,
+                    concepto: concepto,
+                  );
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('✓ Movimiento registrado correctamente.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
+                    backgroundColor: const Color(0xFF7000FF),
+                  ),
                 );
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('✓ Movimiento registrado correctamente.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                  backgroundColor: const Color(0xFF7000FF),
-                ),
-              );
-            }
-          },
-        );
-      },
-    );
+              }
+            },
+          );
+        },
+      );
+    }
   }
 
   void _openMovementDetailBottomSheet(EventoMovimiento ev) {
     final currencySymbol = ref.read(currencySymbolProvider);
     final currencyIso = ref.read(currencyIsoProvider);
+    final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return MovementDetailBottomSheet(
-          ev: ev,
-          currencySymbol: currencySymbol,
-          currencyIso: currencyIso,
-        );
-      },
-    );
+    if (isTabletLandscape) {
+      showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.85),
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: MovementDetailBottomSheet(
+                ev: ev,
+                currencySymbol: currencySymbol,
+                currencyIso: currencyIso,
+                isDialog: true,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) {
+          return MovementDetailBottomSheet(
+            ev: ev,
+            currencySymbol: currencySymbol,
+            currencyIso: currencyIso,
+            isDialog: false,
+          );
+        },
+      );
+    }
   }
 
   void _openDamasBreakdownBottomSheet(String cajaId) {
@@ -537,19 +624,43 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   void _openClosedCajaDetailBottomSheet(String cajaId) {
     final currencySymbol = ref.read(currencySymbolProvider);
     final currencyIso = ref.read(currencyIsoProvider);
+    final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return ClosedCajaDetailBottomSheet(
-          cajaId: cajaId,
-          currencySymbol: currencySymbol,
-          currencyIso: currencyIso,
-        );
-      },
-    );
+    if (isTabletLandscape) {
+      showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.85),
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: ClosedCajaDetailBottomSheet(
+                cajaId: cajaId,
+                currencySymbol: currencySymbol,
+                currencyIso: currencyIso,
+                isDialog: true,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) {
+          return ClosedCajaDetailBottomSheet(
+            cajaId: cajaId,
+            currencySymbol: currencySymbol,
+            currencyIso: currencyIso,
+            isDialog: false,
+          );
+        },
+      );
+    }
   }
 
   Widget _buildClosedTabButton(int index, String label, IconData icon) {

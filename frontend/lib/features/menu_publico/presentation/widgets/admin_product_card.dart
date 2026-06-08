@@ -218,14 +218,32 @@ class AdminProductCard extends ConsumerWidget {
   }
 
   void _openAddEditProductDialog(BuildContext context, ProductModel? product) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.75),
-      builder: (context) {
-        return AddEditProductDialog(product: product);
-      },
-    );
+    final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
+    if (isTabletLandscape) {
+      showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.85),
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: AddEditProductDialog(product: product, isDialog: true),
+            ),
+          );
+        },
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        barrierColor: Colors.black.withOpacity(0.75),
+        builder: (context) {
+          return AddEditProductDialog(product: product, isDialog: false);
+        },
+      );
+    }
   }
 }

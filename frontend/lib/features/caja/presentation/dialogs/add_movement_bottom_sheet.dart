@@ -7,6 +7,7 @@ class AddMovementBottomSheet extends StatefulWidget {
   final String tipo; // 'INGRESO' o 'EGRESO'
   final String currencySymbol;
   final String currencyIso;
+  final bool isDialog;
   final Future<void> Function({
     required double monto,
     required String metodoPago,
@@ -18,6 +19,7 @@ class AddMovementBottomSheet extends StatefulWidget {
     required this.tipo,
     required this.currencySymbol,
     required this.currencyIso,
+    this.isDialog = false,
     required this.onConfirm,
   });
 
@@ -41,15 +43,20 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF1E2024),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024),
+        borderRadius: widget.isDialog
+            ? BorderRadius.circular(24.0)
+            : const BorderRadius.vertical(top: Radius.circular(16.0)),
+        border: widget.isDialog
+            ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+            : null,
       ),
       padding: EdgeInsets.only(
         left: 16.0,
         right: 16.0,
         top: 16.0,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: widget.isDialog ? 24.0 : MediaQuery.of(context).viewInsets.bottom + 24,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -196,62 +203,67 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
           const SizedBox(height: 12.0),
 
           // Botón de Confirmación
-          ElevatedButton(
-            onPressed: _isSubmitting
-                ? null
-                : () async {
-                    final textMonto = _movMontoCtrl.text.trim();
-                    final textConcepto = _movConceptoCtrl.text.trim();
-                    if (textMonto.isEmpty || textConcepto.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('⚠️ Por favor completa el monto y el concepto.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                          backgroundColor: AppTheme.colorDanger,
-                        ),
-                      );
-                      return;
-                    }
+          Center(
+            child: SizedBox(
+              width: widget.isDialog ? 250.0 : double.infinity,
+              child: ElevatedButton(
+                onPressed: _isSubmitting
+                    ? null
+                    : () async {
+                        final textMonto = _movMontoCtrl.text.trim();
+                        final textConcepto = _movConceptoCtrl.text.trim();
+                        if (textMonto.isEmpty || textConcepto.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('⚠️ Por favor completa el monto y el concepto.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
+                              backgroundColor: AppTheme.colorDanger,
+                            ),
+                          );
+                          return;
+                        }
 
-                    final double montoDouble = CurrencyHelper.parseAmount(textMonto, widget.currencyIso);
-                    if (montoDouble <= 0) return;
+                        final double montoDouble = CurrencyHelper.parseAmount(textMonto, widget.currencyIso);
+                        if (montoDouble <= 0) return;
 
-                    setState(() => _isSubmitting = true);
-                    try {
-                      await widget.onConfirm(
-                        monto: montoDouble,
-                        metodoPago: _selectedMetodoPago,
-                        concepto: textConcepto,
-                      );
-                      if (mounted) Navigator.pop(context); // Close bottom sheet on success
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('⚠️ Error: ${e.toString().replaceAll('Exception: ', '')}', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                            backgroundColor: AppTheme.colorDanger,
-                          ),
-                        );
-                      }
-                    } finally {
-                      if (mounted) setState(() => _isSubmitting = false);
-                    }
-                  },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF7000FF),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        setState(() => _isSubmitting = true);
+                        try {
+                          await widget.onConfirm(
+                            monto: montoDouble,
+                            metodoPago: _selectedMetodoPago,
+                            concepto: textConcepto,
+                          );
+                          if (mounted) Navigator.pop(context); // Close bottom sheet on success
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('⚠️ Error: ${e.toString().replaceAll('Exception: ', '')}', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
+                                backgroundColor: AppTheme.colorDanger,
+                              ),
+                            );
+                          }
+                        } finally {
+                          if (mounted) setState(() => _isSubmitting = false);
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF7000FF),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: _isSubmitting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      )
+                    : Text(
+                        'CONFIRMAR MOVIMIENTO',
+                        style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+              ),
             ),
-            child: _isSubmitting
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                  )
-                : Text(
-                    'CONFIRMAR MOVIMIENTO',
-                    style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 13),
-                  ),
           ),
         ],
       ),

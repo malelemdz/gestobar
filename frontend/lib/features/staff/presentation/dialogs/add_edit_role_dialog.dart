@@ -20,36 +20,37 @@ Future<void> showAddEditRoleDialog({
   // Load available permissions
   final permissionsAsync = ref.read(permissionsListProvider);
 
-  await showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setModalState) {
-          final viewInsets = MediaQuery.of(context).viewInsets;
-          final size = MediaQuery.of(context).size;
-          final maxModalHeight = size.height * 0.8;
+  final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
 
-          return Container(
-            constraints: BoxConstraints(
-              maxHeight: maxModalHeight,
-            ),
-            margin: EdgeInsets.only(bottom: viewInsets.bottom),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1E2024), // Level 2 Modal
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
-              border: Border(
+  Widget buildModalContent(BuildContext context, StateSetter setModalState, bool isDialog) {
+    final viewInsets = MediaQuery.of(context).viewInsets;
+    final size = MediaQuery.of(context).size;
+    final maxModalHeight = size.height * (isDialog ? 0.75 : 0.8);
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: maxModalHeight,
+      ),
+      margin: isDialog ? EdgeInsets.zero : EdgeInsets.only(bottom: viewInsets.bottom),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024), // Level 2 Modal
+        borderRadius: isDialog
+            ? BorderRadius.circular(24.0)
+            : const BorderRadius.vertical(top: Radius.circular(24.0)),
+        border: isDialog
+            ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+            : Border(
                 top: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
               ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 12),
-                Center(
-                  child: Container(
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 12),
+          if (!isDialog)
+            Center(
+              child: Container(
                     width: 48,
                     height: 4,
                     decoration: BoxDecoration(
@@ -191,7 +192,7 @@ Future<void> showAddEditRoleDialog({
                     24,
                     16,
                     24,
-                    16 + MediaQuery.of(context).padding.bottom,
+                    16 + (isDialog ? 0.0 : MediaQuery.of(context).padding.bottom),
                   ),
                   decoration: const BoxDecoration(
                     color: Color(0xFF16181C),
@@ -298,8 +299,39 @@ Future<void> showAddEditRoleDialog({
               ],
             ),
           );
-        },
-      );
-    },
-  );
+        }
+
+  if (isTabletLandscape) {
+    await showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.85),
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 550),
+            child: StatefulBuilder(
+              builder: (context, setModalState) {
+                return buildModalContent(context, setModalState, true);
+              },
+            ),
+          ),
+        );
+      },
+    );
+  } else {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return buildModalContent(context, setModalState, false);
+          },
+        );
+      },
+    );
+  }
 }

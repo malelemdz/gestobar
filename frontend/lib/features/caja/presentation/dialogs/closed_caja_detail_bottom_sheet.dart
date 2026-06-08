@@ -13,12 +13,14 @@ class ClosedCajaDetailBottomSheet extends ConsumerStatefulWidget {
   final String cajaId;
   final String currencySymbol;
   final String currencyIso;
+  final bool isDialog;
 
   const ClosedCajaDetailBottomSheet({
     super.key,
     required this.cajaId,
     required this.currencySymbol,
     required this.currencyIso,
+    this.isDialog = false,
   });
 
   @override
@@ -34,9 +36,14 @@ class _ClosedCajaDetailBottomSheetState extends ConsumerState<ClosedCajaDetailBo
     final cajaSalesState = ref.watch(cajaSalesProvider(widget.cajaId));
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF1E2024),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024),
+        borderRadius: widget.isDialog
+            ? BorderRadius.circular(24.0)
+            : const BorderRadius.vertical(top: Radius.circular(16.0)),
+        border: widget.isDialog
+            ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+            : null,
       ),
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.85,
@@ -45,7 +52,7 @@ class _ClosedCajaDetailBottomSheetState extends ConsumerState<ClosedCajaDetailBo
         left: 16.0,
         right: 16.0,
         top: 16.0,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
+        bottom: widget.isDialog ? 24.0 : MediaQuery.of(context).viewInsets.bottom + 24.0,
       ),
       child: cajaDetailState.when(
         data: (caja) {
@@ -344,148 +351,199 @@ class _ClosedCajaDetailBottomSheetState extends ConsumerState<ClosedCajaDetailBo
   }
 
   void _openMovementDetailBottomSheet(BuildContext context, dynamic ev) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return MovementDetailBottomSheet(
-          ev: ev,
-          currencySymbol: widget.currencySymbol,
-          currencyIso: widget.currencyIso,
-        );
-      },
-    );
+    final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
+    if (isTabletLandscape) {
+      showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.85),
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: MovementDetailBottomSheet(
+                ev: ev,
+                currencySymbol: widget.currencySymbol,
+                currencyIso: widget.currencyIso,
+                isDialog: true,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) {
+          return MovementDetailBottomSheet(
+            ev: ev,
+            currencySymbol: widget.currencySymbol,
+            currencyIso: widget.currencyIso,
+            isDialog: false,
+          );
+        },
+      );
+    }
   }
 
   void _openDamasBreakdownBottomSheet(BuildContext context, String cajaId) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFF1E2024),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-          ),
-          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
+    if (isTabletLandscape) {
+      showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.85),
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: _buildDamasBreakdownContent(context, cajaId, true),
+            ),
+          );
+        },
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (context) {
+          return _buildDamasBreakdownContent(context, cajaId, false);
+        },
+      );
+    }
+  }
+
+  Widget _buildDamasBreakdownContent(BuildContext context, String cajaId, bool isDialog) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024),
+        borderRadius: isDialog
+            ? BorderRadius.circular(24.0)
+            : const BorderRadius.vertical(top: Radius.circular(16.0)),
+        border: isDialog
+            ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+            : null,
+      ),
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Comisiones del Turno por Dama',
-                    style: GoogleFonts.plusJakartaSans(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 15,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.clear, color: Colors.white54, size: 20),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
               Text(
-                'Corresponde a la suma individual de todas las ventas al precio de compañía en este turno.',
-                style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 11),
+                'Comisiones del Turno por Dama',
+                style: GoogleFonts.plusJakartaSans(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 15,
+                ),
               ),
-              const SizedBox(height: 12.0),
-
-              FutureBuilder<List<dynamic>>(
-                future: ref.read(cajaRepositoryProvider).getDamaComisiones(cajaId),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40.0),
-                      child: Center(child: CircularProgressIndicator(color: Color(0xFFFF00D6))),
-                    );
-                  }
-
-                  if (snapshot.hasError) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24.0),
-                      child: Center(
-                        child: Text(
-                          'Error al obtener desglose: ${snapshot.error}',
-                          style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontSize: 12),
-                        ),
-                      ),
-                    );
-                  }
-
-                  final list = snapshot.data ?? [];
-                  if (list.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 40.0),
-                      child: Center(
-                        child: Text(
-                          'No hay comisiones de damas generadas en este turno.',
-                          style: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 12),
-                        ),
-                      ),
-                    );
-                  }
-
-                  return ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: list.length,
-                    separatorBuilder: (context, index) => const Divider(color: Colors.white10),
-                    itemBuilder: (context, index) {
-                      final item = list[index];
-                      final name = item['nombre'] as String? ?? 'Dama';
-                      final com = (item['total_comision'] as num?)?.toDouble() ?? 0.0;
-                      final formattedCom = CurrencyHelper.formatAmount(com, widget.currencyIso);
-
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 18,
-                              backgroundColor: const Color(0xFFFF00D6).withOpacity(0.1),
-                              child: Text(
-                                name.isNotEmpty ? name[0].toUpperCase() : 'D',
-                                style: const TextStyle(color: Color(0xFFFF00D6), fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Text(
-                                name,
-                                style: GoogleFonts.plusJakartaSans(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              '${widget.currencySymbol} $formattedCom',
-                              style: GoogleFonts.plusJakartaSans(
-                                color: const Color(0xFFFF00D6),
-                                fontWeight: FontWeight.w900,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
+              IconButton(
+                icon: const Icon(Icons.clear, color: Colors.white54, size: 20),
+                onPressed: () => Navigator.pop(context),
               ),
             ],
           ),
-        );
-      },
+          const SizedBox(height: 6),
+          Text(
+            'Corresponde a la suma individual de todas las ventas al precio de compañía en este turno.',
+            style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 11),
+          ),
+          const SizedBox(height: 12.0),
+
+          FutureBuilder<List<dynamic>>(
+            future: ref.read(cajaRepositoryProvider).getDamaComisiones(cajaId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 40.0),
+                  child: Center(child: CircularProgressIndicator(color: Color(0xFFFF00D6))),
+                );
+              }
+
+              if (snapshot.hasError) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
+                  child: Center(
+                    child: Text(
+                      'Error al obtener desglose: ${snapshot.error}',
+                      style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontSize: 12),
+                    ),
+                  ),
+                );
+              }
+
+              final list = snapshot.data ?? [];
+              if (list.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 40.0),
+                  child: Center(
+                    child: Text(
+                      'No hay comisiones de damas generadas en este turno.',
+                      style: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 12),
+                    ),
+                  ),
+                );
+              }
+
+              return ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: list.length,
+                separatorBuilder: (context, index) => const Divider(color: Colors.white10),
+                itemBuilder: (context, index) {
+                  final item = list[index];
+                  final name = item['nombre'] as String? ?? 'Dama';
+                  final com = (item['total_comision'] as num?)?.toDouble() ?? 0.0;
+                  final formattedCom = CurrencyHelper.formatAmount(com, widget.currencyIso);
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 18,
+                          backgroundColor: const Color(0xFFFF00D6).withOpacity(0.1),
+                          child: Text(
+                            name.isNotEmpty ? name[0].toUpperCase() : 'D',
+                            style: const TextStyle(color: Color(0xFFFF00D6), fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Text(
+                            name,
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '${widget.currencySymbol} $formattedCom',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: const Color(0xFFFF00D6),
+                            fontWeight: FontWeight.w900,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

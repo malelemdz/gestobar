@@ -56,17 +56,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
       );
     }
 
-    final picked = await showModalBottomSheet<DateTimeRange>(
-      context: context,
-      backgroundColor: AppTheme.liquidSurfaceContainerLow,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
-      ),
-      builder: (context) {
-        return CustomDateRangePicker(initialRange: initialRange);
-      },
-    );
+    final picked = await CustomDateRangePicker.show(context, initialRange);
 
     if (picked != null) {
       ref.read(auditoriaFiltersProvider.notifier).update((state) => {

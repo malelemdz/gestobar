@@ -56,113 +56,141 @@ class ProductCard extends ConsumerWidget {
         ),
       );
     } else {
-      showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        builder: (context) {
-          return Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF1E2024),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Seleccionar formato de bebida',
-                  style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  product.nombre,
-                  style: GoogleFonts.plusJakartaSans(
-                    color: const Color(0xFF00F0FF),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ...product.variantes.map((variant) {
-                  final currencySymbol = ref.read(currencySymbolProvider);
-                  final currencyIso = ref.read(currencyIsoProvider);
-                  
-                  final activePrice = hasGlobalDama
-                      ? variant.precios.firstWhere((p) => !p.esDefault, orElse: () => variant.precios.first)
-                      : variant.precios.firstWhere((p) => p.esDefault, orElse: () => variant.precios.first);
-                      
-                  final variantTarifaId = activePrice.tarifaId;
-                  final precio = activePrice.precioUnitario;
+      final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: InkWell(
-                      onTap: () {
-                        ref.read(cartProvider.notifier).addItem(
-                          product,
-                          variant,
-                          tarifaId: variantTarifaId,
-                          precioUnitario: precio,
-                          splitSameVariants: splitSameVariants,
-                        );
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              '✓ ${product.nombre} (${variant.nombre}) añadido.',
-                              style: GoogleFonts.plusJakartaSans(color: Colors.white),
-                            ),
-                            duration: const Duration(seconds: 1),
-                            backgroundColor: const Color(0xFF7000FF),
+      Widget buildContent(BuildContext context, bool isDialog) {
+        return Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E2024),
+            borderRadius: isDialog
+                ? BorderRadius.circular(24.0)
+                : const BorderRadius.vertical(top: Radius.circular(24)),
+            border: isDialog
+                ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+                : null,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Seleccionar formato de bebida',
+                style: GoogleFonts.plusJakartaSans(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                product.nombre,
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFF00F0FF),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ...product.variantes.map((variant) {
+                final currencySymbol = ref.read(currencySymbolProvider);
+                final currencyIso = ref.read(currencyIsoProvider);
+                
+                final activePrice = hasGlobalDama
+                    ? variant.precios.firstWhere((p) => !p.esDefault, orElse: () => variant.precios.first)
+                    : variant.precios.firstWhere((p) => p.esDefault, orElse: () => variant.precios.first);
+                    
+                final variantTarifaId = activePrice.tarifaId;
+                final precio = activePrice.precioUnitario;
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: InkWell(
+                    onTap: () {
+                      ref.read(cartProvider.notifier).addItem(
+                        product,
+                        variant,
+                        tarifaId: variantTarifaId,
+                        precioUnitario: precio,
+                        splitSameVariants: splitSameVariants,
+                      );
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            '✓ ${product.nombre} (${variant.nombre}) añadido.',
+                            style: GoogleFonts.plusJakartaSans(color: Colors.white),
                           ),
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.04),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.06),
-                            width: 1,
-                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: const Color(0xFF7000FF),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              variant.nombre,
-                              style: GoogleFonts.plusJakartaSans(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                              ),
-                            ),
-                            Text(
-                              '$currencySymbol${CurrencyHelper.formatAmount(precio, currencyIso)}',
-                              style: GoogleFonts.plusJakartaSans(
-                                color: hasGlobalDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.04),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.06),
+                          width: 1,
                         ),
                       ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            variant.nombre,
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                          Text(
+                            '$currencySymbol${CurrencyHelper.formatAmount(precio, currencyIso)}',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: hasGlobalDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  );
-                }),
-              ],
-            ),
-          );
-        },
-      );
+                  ),
+                );
+              }),
+            ],
+          ),
+        );
+      }
+
+      if (isTabletLandscape) {
+        showDialog(
+          context: context,
+          barrierColor: Colors.black.withOpacity(0.85),
+          builder: (context) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: buildContent(context, true),
+              ),
+            );
+          },
+        );
+      } else {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          builder: (context) {
+            return buildContent(context, false);
+          },
+        );
+      }
     }
   }
 

@@ -481,17 +481,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
   }
 
   Future<void> _selectCustomDateRange(BuildContext context, DateTimeRange currentRange) async {
-    final picked = await showModalBottomSheet<DateTimeRange>(
-      context: context,
-      backgroundColor: AppTheme.liquidSurfaceContainerLow,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
-      ),
-      builder: (context) {
-        return CustomDateRangePicker(initialRange: currentRange);
-      },
-    );
+    final picked = await CustomDateRangePicker.show(context, currentRange);
 
     if (picked != null) {
       ref.read(analyticsFilterProvider.notifier).state = AnalyticsDateFilter.custom;

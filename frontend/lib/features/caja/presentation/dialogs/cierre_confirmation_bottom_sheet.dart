@@ -9,11 +9,13 @@ import '../../../../core/theme/app_theme.dart';
 class CierreConfirmationBottomSheet extends ConsumerStatefulWidget {
   final String cajaId;
   final VoidCallback onConfirm;
+  final bool isDialog;
 
   const CierreConfirmationBottomSheet({
     super.key,
     required this.cajaId,
     required this.onConfirm,
+    this.isDialog = false,
   });
 
   @override
@@ -30,9 +32,14 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
     final bool hasUnsynced = syncBox.isNotEmpty;
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF1E2024),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024),
+        borderRadius: widget.isDialog
+            ? BorderRadius.circular(24.0)
+            : const BorderRadius.vertical(top: Radius.circular(16.0)),
+        border: widget.isDialog
+            ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+            : null,
       ),
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
       child: Column(
@@ -129,33 +136,38 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
           ],
 
           // Botones de Acción
-          Row(
-            children: [
-              Expanded(
-                child: TextButton(
-                  child: Text('CANCELAR', style: GoogleFonts.plusJakartaSans(color: Colors.white60, fontWeight: FontWeight.bold)),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: hasUnsynced ? Colors.white10 : const Color(0xFF7000FF),
-                    foregroundColor: hasUnsynced ? Colors.white24 : Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          Center(
+            child: SizedBox(
+              width: widget.isDialog ? 360.0 : double.infinity,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      child: Text('CANCELAR', style: GoogleFonts.plusJakartaSans(color: Colors.white60, fontWeight: FontWeight.bold)),
+                      onPressed: () => Navigator.pop(context),
+                    ),
                   ),
-                  onPressed: hasUnsynced || _isLoading
-                      ? null
-                      : () {
-                          Navigator.pop(context); // Cerrar bottom sheet
-                          widget.onConfirm();
-                        },
-                  child: Text('CONFIRMAR CIERRE', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold)),
-                ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: hasUnsynced ? Colors.white10 : const Color(0xFF7000FF),
+                        foregroundColor: hasUnsynced ? Colors.white24 : Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: hasUnsynced || _isLoading
+                          ? null
+                          : () {
+                              Navigator.pop(context); // Cerrar bottom sheet
+                              widget.onConfirm();
+                            },
+                      child: Text('CONFIRMAR CIERRE', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ],
       ),

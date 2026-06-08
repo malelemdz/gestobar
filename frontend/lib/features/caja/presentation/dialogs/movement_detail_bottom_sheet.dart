@@ -10,12 +10,14 @@ class MovementDetailBottomSheet extends StatelessWidget {
   final EventoMovimiento ev;
   final String currencySymbol;
   final String currencyIso;
+  final bool isDialog;
 
   const MovementDetailBottomSheet({
     super.key,
     required this.ev,
     required this.currencySymbol,
     required this.currencyIso,
+    this.isDialog = false,
   });
 
   @override
@@ -24,25 +26,32 @@ class MovementDetailBottomSheet extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
-      decoration: const BoxDecoration(
-        color: Color(0xFF1E2024),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024),
+        borderRadius: isDialog
+            ? BorderRadius.circular(24.0)
+            : const BorderRadius.vertical(top: Radius.circular(16.0)),
+        border: isDialog
+            ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+            : null,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.white24,
-                borderRadius: BorderRadius.circular(2),
+          if (!isDialog) ...[
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 12.0),
+            const SizedBox(height: 12.0),
+          ],
           Text(
             isVenta ? 'TICKET DE COMPRA' : 'DETALLE DE CAJA CHICA',
             style: GoogleFonts.plusJakartaSans(
@@ -64,22 +73,27 @@ class MovementDetailBottomSheet extends StatelessWidget {
 
           const SizedBox(height: 12.0),
 
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white.withOpacity(0.04),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: Colors.white.withOpacity(0.05)),
-              ),
-            ),
-            child: Text(
-              'CERRAR TICKET',
-              style: GoogleFonts.plusJakartaSans(
-                color: Colors.white70,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
+          Center(
+            child: SizedBox(
+              width: isDialog ? 250.0 : double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white.withOpacity(0.04),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                  ),
+                ),
+                child: Text(
+                  'CERRAR TICKET',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
               ),
             ),
           ),

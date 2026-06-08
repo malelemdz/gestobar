@@ -17,8 +17,9 @@ import '../../../admin/data/models/tarifa_model.dart';
 
 class AddEditProductDialog extends ConsumerStatefulWidget {
   final ProductModel? product;
+  final bool isDialog;
 
-  const AddEditProductDialog({super.key, this.product});
+  const AddEditProductDialog({super.key, this.product, this.isDialog = false});
 
   @override
   ConsumerState<AddEditProductDialog> createState() => _AddEditProductDialogState();
@@ -139,35 +140,41 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
 
     final viewInsets = MediaQuery.of(context).viewInsets;
     final size = MediaQuery.of(context).size;
-    final maxModalHeight = size.height * 0.9;
+    final maxModalHeight = size.height * (widget.isDialog ? 0.85 : 0.9);
 
     return Container(
       constraints: BoxConstraints(
         maxHeight: maxModalHeight,
       ),
-      margin: EdgeInsets.only(bottom: viewInsets.bottom),
+      margin: widget.isDialog ? EdgeInsets.zero : EdgeInsets.only(bottom: viewInsets.bottom),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: const Color(0xFF1E2024), // Level 2 Modal
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
-        border: Border(
-          top: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
-        ),
+        borderRadius: widget.isDialog
+            ? BorderRadius.circular(24.0)
+            : const BorderRadius.vertical(top: Radius.circular(24.0)),
+        border: widget.isDialog
+            ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+            : Border(
+                top: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+              ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 12),
-          Center(
-            child: Container(
-              width: 48,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(2),
+          if (!widget.isDialog)
+            Center(
+              child: Container(
+                width: 48,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
             child: Row(
@@ -642,8 +649,17 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
             ),
           ),
           const Divider(color: Colors.white10),
-          Padding(
-            padding: const EdgeInsets.all(24),
+          Container(
+            padding: EdgeInsets.fromLTRB(
+              24,
+              16,
+              24,
+              16 + (widget.isDialog ? 0.0 : MediaQuery.of(context).padding.bottom),
+            ),
+            decoration: const BoxDecoration(
+              color: Color(0xFF16181C),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(24.0)),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
