@@ -58,6 +58,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
         onPressed: () => _openAddEditProductDialog(context),
       ),
       body: SafeArea(
+        bottom: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final bool isTablet = constraints.maxWidth >= 900;
@@ -78,7 +79,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                                 // Left Bento Pane: Categories (30% or 320px)
                                 Container(
                                   width: 320,
-                                  padding: const EdgeInsets.fromLTRB(24, 0, 12, 24),
+                                  padding: const EdgeInsets.fromLTRB(24, 0, 12, 12),
                                   child: const CategoriesPanel(),
                                 ),
                                 // Elegant vertical divider line
@@ -89,7 +90,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                                 // Right Bento Pane: Products grid (70%)
                                 Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(12, 0, 24, 24),
+                                    padding: const EdgeInsets.fromLTRB(12, 0, 24, 12),
                                     child: ProductsPanel(searchQuery: _searchQuery),
                                   ),
                                 ),

@@ -22,6 +22,190 @@ class AnalyticsPage extends ConsumerStatefulWidget {
 }
 
 class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
+  Widget _buildVerticalFilterChip({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        height: 40,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [AppTheme.liquidSecondary, AppTheme.liquidPrimary],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          color: isSelected ? null : AppTheme.liquidSurface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? AppTheme.liquidPrimary.withOpacity(0.3)
+                : Colors.white.withOpacity(0.05),
+            width: 1,
+          ),
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.plusJakartaSans(
+            color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVerticalCustomFilterChip(
+    BuildContext context,
+    AnalyticsDateFilter activeFilter,
+    DateTimeRange dateRange,
+  ) {
+    final bool isSelected = activeFilter == AnalyticsDateFilter.custom;
+    final format = DateFormat('dd MMM');
+    final label = isSelected
+        ? '${format.format(dateRange.start)} - ${format.format(dateRange.end)}'
+        : 'Personalizado';
+
+    return InkWell(
+      onTap: () => _selectCustomDateRange(context, dateRange),
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [AppTheme.liquidSecondary, AppTheme.liquidPrimary],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          color: isSelected ? null : AppTheme.liquidSurface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? AppTheme.liquidPrimary.withOpacity(0.3)
+                : Colors.white.withOpacity(0.05),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontSize: 12,
+              ),
+            ),
+            Icon(
+              Icons.calendar_today_outlined,
+              size: 14,
+              color: isSelected ? Colors.white : Colors.white.withOpacity(0.4),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVerticalFilterList(
+    BuildContext context,
+    AnalyticsDateFilter activeFilter,
+    DateTimeRange dateRange,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildVerticalFilterChip(
+          label: '7 Días',
+          isSelected: activeFilter == AnalyticsDateFilter.last7Days,
+          onTap: () {
+            ref.read(analyticsFilterProvider.notifier).state = AnalyticsDateFilter.last7Days;
+          },
+        ),
+        const SizedBox(height: 8),
+        _buildVerticalFilterChip(
+          label: '30 Días',
+          isSelected: activeFilter == AnalyticsDateFilter.last30Days,
+          onTap: () {
+            ref.read(analyticsFilterProvider.notifier).state = AnalyticsDateFilter.last30Days;
+          },
+        ),
+        const SizedBox(height: 8),
+        _buildVerticalFilterChip(
+          label: '90 Días',
+          isSelected: activeFilter == AnalyticsDateFilter.last90Days,
+          onTap: () {
+            ref.read(analyticsFilterProvider.notifier).state = AnalyticsDateFilter.last90Days;
+          },
+        ),
+        const SizedBox(height: 8),
+        _buildVerticalCustomFilterChip(context, activeFilter, dateRange),
+      ],
+    );
+  }
+
+  Widget _buildVerticalTabButton(int index, String label, IconData icon) {
+    final activeTab = ref.watch(analyticsTabProvider);
+    final bool isActive = activeTab == index;
+
+    return GestureDetector(
+      onTap: () {
+        ref.read(analyticsTabProvider.notifier).state = index;
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        height: 42,
+        margin: const EdgeInsets.only(bottom: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: isActive ? const Color(0xFF00F0FF) : const Color(0xFF1E2024),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withOpacity(isActive ? 0.0 : 0.04)),
+          boxShadow: isActive
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF00F0FF).withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: isActive ? Colors.black : Colors.white30,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                color: isActive ? Colors.black : Colors.white30,
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.8,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -49,49 +233,111 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
           color: theme.colorScheme.background.withOpacity(0.4),
         ),
         child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 1. Selector de Rango de Fechas (Filtros superiores)
-              _buildFilterBar(context, activeFilter, dateRange),
-              const SizedBox(height: 12.0),
+          bottom: false,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final bool isTabletLandscape = constraints.maxWidth >= 850;
 
-              // 2. Selector de Pestañas Bento
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Container(
-                  height: 46,
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF181A1E),
-                    borderRadius: BorderRadius.circular(23),
-                    border: Border.all(color: Colors.white.withOpacity(0.03)),
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildTabButton(0, 'RESUMEN', Icons.analytics_outlined),
-                        _buildTabButton(1, 'TENDENCIAS', Icons.trending_up),
-                        _buildTabButton(2, 'PRODUCTOS', Icons.local_bar_outlined),
-                        if (showStaffDamas)
-                          _buildTabButton(3, 'DAMAS', Icons.people_outline),
-                      ],
+              if (isTabletLandscape) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Columna izquierda (ancho fijo 280px)
+                    Container(
+                      width: 280,
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          right: BorderSide(color: Colors.white.withOpacity(0.03)),
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'FILTROS DE TIEMPO',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.white30,
+                                fontSize: 9,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            _buildVerticalFilterList(context, activeFilter, dateRange),
+                            const SizedBox(height: 24),
+                            Text(
+                              'SECCIONES DE ANÁLISIS',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.white30,
+                                fontSize: 9,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            _buildVerticalTabButton(0, 'RESUMEN GENERAL', Icons.analytics_outlined),
+                            _buildVerticalTabButton(1, 'TENDENCIA VENTAS', Icons.trending_up),
+                            _buildVerticalTabButton(2, 'RANKING PRODUCTOS', Icons.local_bar_outlined),
+                            if (showStaffDamas)
+                              _buildVerticalTabButton(3, 'RANKING DAMAS', Icons.people_outline),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Columna derecha (Expanded)
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 250),
+                        child: _buildActiveView(activeTab, currencySymbol, currencyIso, showStaffDamas),
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              // Diseño Móvil / Portrait
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildFilterBar(context, activeFilter, dateRange),
+                  const SizedBox(height: 12.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Container(
+                      height: 46,
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF181A1E),
+                        borderRadius: BorderRadius.circular(23),
+                        border: Border.all(color: Colors.white.withOpacity(0.03)),
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildTabButton(0, 'RESUMEN', Icons.analytics_outlined),
+                            _buildTabButton(1, 'TENDENCIAS', Icons.trending_up),
+                            _buildTabButton(2, 'PRODUCTOS', Icons.local_bar_outlined),
+                            if (showStaffDamas)
+                              _buildTabButton(3, 'DAMAS', Icons.people_outline),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-
-              // 3. Cuerpo de la Vista Activa
-              Expanded(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: _buildActiveView(activeTab, currencySymbol, currencyIso, showStaffDamas),
-                ),
-              ),
-            ],
+                  Expanded(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: _buildActiveView(activeTab, currencySymbol, currencyIso, showStaffDamas),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),

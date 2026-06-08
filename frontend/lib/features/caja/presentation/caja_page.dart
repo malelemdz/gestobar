@@ -70,74 +70,120 @@ class _CajaPageState extends ConsumerState<CajaPage> {
         },
         child: cajaState.when(
           data: (estado) {
-            return SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-              padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 24.0), // Paddings coincidentes con POS/Menú
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  estado.abierta
-                      ? OpenCajaPanel(
-                          caja: estado.caja!,
-                          activeVentas: activeVentas,
-                          currencySymbol: currencySymbol,
-                          currencyIso: currencyIso,
-                          isLoading: _isLoading,
-                          onCerrarCaja: _showCierreConfirmationBottomSheet,
-                          onAddMovement: _openAddMovementBottomSheet,
-                          onDamasBreakdown: _openDamasBreakdownBottomSheet,
-                          onMovementDetail: _openMovementDetailBottomSheet,
-                          showHistorialTab: hasHistorialPermission,
-                          onCajaTap: _openClosedCajaDetailBottomSheet,
-                        )
-                      : hasHistorialPermission
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Container(
-                                  height: 46,
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF181A1E),
-                                    borderRadius: BorderRadius.circular(23),
-                                    border: Border.all(color: Colors.white.withOpacity(0.03)),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      _buildClosedTabButton(0, 'ABRIR CAJA', Icons.lock_open_outlined),
-                                      _buildClosedTabButton(1, 'HISTORIAL', Icons.history),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 12.0),
-                                _activeClosedTab == 0
-                                    ? ClosedCajaPanel(
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final bool isTabletLandscape = constraints.maxWidth >= 720;
+                return SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                  padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, isTabletLandscape ? 12.0 : 24.0), // Paddings coincidentes con POS/Menú
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      estado.abierta
+                          ? OpenCajaPanel(
+                              caja: estado.caja!,
+                              activeVentas: activeVentas,
+                              currencySymbol: currencySymbol,
+                              currencyIso: currencyIso,
+                              isLoading: _isLoading,
+                              onCerrarCaja: _showCierreConfirmationBottomSheet,
+                              onAddMovement: _openAddMovementBottomSheet,
+                              onDamasBreakdown: _openDamasBreakdownBottomSheet,
+                              onMovementDetail: _openMovementDetailBottomSheet,
+                              showHistorialTab: hasHistorialPermission,
+                              onCajaTap: _openClosedCajaDetailBottomSheet,
+                            )
+                          : (hasHistorialPermission && isTabletLandscape)
+                              ? Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Columna izquierda (ancho 320px): Formulario de apertura
+                                    SizedBox(
+                                      width: 320,
+                                      child: ClosedCajaPanel(
                                         montoController: _montoController,
                                         isLoading: _isLoading,
                                         currencySymbol: currencySymbol,
                                         currencyIso: currencyIso,
                                         onAbrirCaja: _handleApertura,
-                                      )
-                                    : ClosedCajasHistoryList(
-                                        onCajaTap: _openClosedCajaDetailBottomSheet,
                                       ),
-                              ],
-                            )
-                          : ClosedCajaPanel(
-                              montoController: _montoController,
-                              isLoading: _isLoading,
-                              currencySymbol: currencySymbol,
-                              currencyIso: currencyIso,
-                              onAbrirCaja: _handleApertura,
-                            ),
-                ],
-              ),
+                                    ),
+                                    const SizedBox(width: 20.0),
+                                    // Columna derecha (Expanded): Historial de cajas cerradas
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(bottom: 12.0),
+                                            child: Text(
+                                              'HISTORIAL DE CAJAS CERRADAS',
+                                              style: GoogleFonts.plusJakartaSans(
+                                                color: Colors.white54,
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w900,
+                                                letterSpacing: 0.8,
+                                              ),
+                                            ),
+                                          ),
+                                          ClosedCajasHistoryList(
+                                            onCajaTap: _openClosedCajaDetailBottomSheet,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : hasHistorialPermission
+                                  ? Column(
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: [
+                                        Container(
+                                          height: 46,
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF181A1E),
+                                            borderRadius: BorderRadius.circular(23),
+                                            border: Border.all(color: Colors.white.withOpacity(0.03)),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              _buildClosedTabButton(0, 'ABRIR CAJA', Icons.lock_open_outlined),
+                                              _buildClosedTabButton(1, 'HISTORIAL', Icons.history),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12.0),
+                                        _activeClosedTab == 0
+                                            ? ClosedCajaPanel(
+                                                montoController: _montoController,
+                                                isLoading: _isLoading,
+                                                currencySymbol: currencySymbol,
+                                                currencyIso: currencyIso,
+                                                onAbrirCaja: _handleApertura,
+                                              )
+                                            : ClosedCajasHistoryList(
+                                                onCajaTap: _openClosedCajaDetailBottomSheet,
+                                              ),
+                                      ],
+                                    )
+                                  : ClosedCajaPanel(
+                                      montoController: _montoController,
+                                      isLoading: _isLoading,
+                                      currencySymbol: currencySymbol,
+                                      currencyIso: currencyIso,
+                                      onAbrirCaja: _handleApertura,
+                                    ),
+                    ],
+                  ),
+                );
+              },
             );
           },
           loading: () {
-            return const SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 24.0),
+            return SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, MediaQuery.of(context).size.width >= 720 ? 12.0 : 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

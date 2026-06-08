@@ -74,33 +74,30 @@ class CategoriesPanel extends ConsumerWidget {
                           onTap: () {
                             ref.read(selectedCategoryIdProvider.notifier).state = null;
                           },
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(12),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
                             decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFF1E2024) : Colors.transparent,
-                              borderRadius: BorderRadius.circular(16),
+                              color: isSelected ? const Color(0xFF1E2024) : const Color(0xFF17191C),
+                              borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: isSelected ? const Color(0xFF00F0FF).withOpacity(0.2) : Colors.transparent,
+                                color: isSelected ? const Color(0xFF00F0FF).withOpacity(0.2) : Colors.white.withOpacity(0.03),
                                 width: 1,
                               ),
                             ),
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.grid_view_rounded,
-                                  color: isSelected ? const Color(0xFF00F0FF) : Colors.white24,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  nombre,
-                                  style: GoogleFonts.inter(
-                                    color: isSelected ? Colors.white : Colors.white60,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                    fontSize: 13,
+                                Expanded(
+                                  child: Text(
+                                    nombre,
+                                    style: GoogleFonts.inter(
+                                      color: isSelected ? Colors.white : Colors.white60,
+                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                      fontSize: 13,
+                                    ),
                                   ),
                                 ),
+                                const SizedBox(width: 32), // Match footprint of PopupMenuButton
                               ],
                             ),
                           ),
@@ -116,16 +113,16 @@ class CategoriesPanel extends ConsumerWidget {
                         onTap: () {
                           ref.read(selectedCategoryIdProvider.notifier).state = cat.id;
                         },
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                         child: Opacity(
                           opacity: cat.disponible ? 1.0 : 0.4,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
                             decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFF1E2024) : const Color(0xFF131518),
-                              borderRadius: BorderRadius.circular(16),
+                              color: isSelected ? const Color(0xFF1E2024) : const Color(0xFF17191C),
+                              borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: isSelected ? const Color(0xFF00F0FF).withOpacity(0.2) : Colors.white.withOpacity(0.05),
+                                color: isSelected ? const Color(0xFF00F0FF).withOpacity(0.2) : Colors.white.withOpacity(0.03),
                                 width: 1,
                               ),
                             ),
@@ -148,9 +145,10 @@ class CategoriesPanel extends ConsumerWidget {
                                     borderRadius: BorderRadius.circular(12),
                                     side: BorderSide(color: Colors.white.withOpacity(0.05)),
                                   ),
-                                  icon: const Icon(Icons.more_vert, size: 18, color: Colors.white70),
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: Icon(Icons.more_vert, size: 16, color: Colors.white70),
+                                  ),
                                   onSelected: (value) {
                                     switch (value) {
                                       case 'up':
@@ -269,8 +267,8 @@ class CategoriesPanel extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: ShimmerPlaceholder(
                     width: double.infinity,
-                    height: 44,
-                    borderRadius: BorderRadius.circular(16),
+                    height: 34,
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),

@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/shimmer_placeholder.dart';
 import '../../caja/providers/caja_provider.dart';
 import '../providers/auditoria_provider.dart';
 import '../providers/bar_provider.dart';
+import '../providers/staff_provider.dart';
+import '../../auth/models/user_model.dart';
 import 'dialogs/log_detail_bottom_sheet.dart';
+import 'dialogs/auditoria_filter_selectors.dart';
+import 'utils/auditoria_formatters.dart';
 import 'widgets/auditoria_filter_capsules.dart';
 import 'widgets/auditoria_log_card.dart';
+import 'widgets/custom_date_range_picker.dart';
 
 class AuditoriaPage extends ConsumerStatefulWidget {
   const AuditoriaPage({super.key});
@@ -40,6 +46,255 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     }
   }
 
+  Future<void> _selectDateRange(BuildContext context, WidgetRef ref) async {
+    final filters = ref.read(auditoriaFiltersProvider);
+    DateTimeRange? initialRange;
+    if (filters['fechaInicio'] != null && filters['fechaFin'] != null) {
+      initialRange = DateTimeRange(
+        start: DateTime.parse(filters['fechaInicio']!),
+        end: DateTime.parse(filters['fechaFin']!),
+      );
+    }
+
+    final picked = await showModalBottomSheet<DateTimeRange>(
+      context: context,
+      backgroundColor: AppTheme.liquidSurfaceContainerLow,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
+      ),
+      builder: (context) {
+        return CustomDateRangePicker(initialRange: initialRange);
+      },
+    );
+
+    if (picked != null) {
+      ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+        ...state,
+        'fechaInicio': DateFormat('yyyy-MM-dd').format(picked.start),
+        'fechaFin': DateFormat('yyyy-MM-dd').format(picked.end),
+      });
+    }
+  }
+
+  Widget _buildVerticalFiltersPanel(
+    BuildContext context,
+    Map<String, String?> filters,
+    AsyncValue<List<UserModel>> staffAsync,
+  ) {
+    final selectedUsuarioId = filters['usuarioId'];
+    final selectedAction = filters['accion'];
+    final selectedModule = filters['modulo'];
+    final start = filters['fechaInicio'];
+    final end = filters['fechaFin'];
+    final isDateSelected = start != null && end != null;
+
+    String userLabel = 'Todos';
+    if (selectedUsuarioId != null) {
+      userLabel = staffAsync.maybeWhen(
+        data: (users) {
+          for (final u in users) {
+            if (u.id == selectedUsuarioId) return u.nombre;
+          }
+          return 'Usuario Sel.';
+        },
+        orElse: () => 'Usuario Sel.',
+      );
+    }
+
+    String dateLabel = 'Todas';
+    if (isDateSelected) {
+      try {
+        final startDt = DateTime.parse(start);
+        final endDt = DateTime.parse(end);
+        final format = DateFormat('dd MMM');
+        dateLabel = '${format.format(startDt)} - ${format.format(endDt)}';
+      } catch (_) {}
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'FILTRAR POR USUARIO',
+            style: GoogleFonts.plusJakartaSans(
+              color: Colors.white30,
+              fontSize: 9,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _buildVerticalFilterItem(
+            label: userLabel,
+            isActive: selectedUsuarioId != null,
+            onTap: () => showUserSelector(context, ref),
+            onClear: () {
+              ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+                ...state,
+                'usuarioId': null,
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'FILTRAR POR ACCIÓN',
+            style: GoogleFonts.plusJakartaSans(
+              color: Colors.white30,
+              fontSize: 9,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _buildVerticalFilterItem(
+            label: selectedAction != null ? AuditoriaFormatters.formatAction(selectedAction) : 'Todas',
+            isActive: selectedAction != null,
+            onTap: () => showActionSelector(context, ref),
+            onClear: () {
+              ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+                ...state,
+                'accion': null,
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'FILTRAR POR MÓDULO',
+            style: GoogleFonts.plusJakartaSans(
+              color: Colors.white30,
+              fontSize: 9,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _buildVerticalFilterItem(
+            label: selectedModule ?? 'Todos',
+            isActive: selectedModule != null,
+            onTap: () => showModuleSelector(context, ref),
+            onClear: () {
+              ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+                ...state,
+                'modulo': null,
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'FILTRAR POR RANGO DE FECHAS',
+            style: GoogleFonts.plusJakartaSans(
+              color: Colors.white30,
+              fontSize: 9,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _buildVerticalFilterItem(
+            label: dateLabel,
+            isActive: isDateSelected,
+            onTap: () => _selectDateRange(context, ref),
+            onClear: () {
+              ref.read(auditoriaFiltersProvider.notifier).update((state) => {
+                ...state,
+                'fechaInicio': null,
+                'fechaFin': null,
+              });
+            },
+          ),
+          const SizedBox(height: 24),
+          if (selectedUsuarioId != null || selectedAction != null || selectedModule != null || isDateSelected)
+            InkWell(
+              onTap: () {
+                ref.read(auditoriaFiltersProvider.notifier).state = {
+                  'usuarioId': null,
+                  'accion': null,
+                  'modulo': null,
+                  'fechaInicio': null,
+                  'fechaFin': null,
+                };
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                height: 38,
+                decoration: BoxDecoration(
+                  color: AppTheme.colorDanger.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.colorDanger.withOpacity(0.3)),
+                ),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.filter_alt_off_outlined, color: AppTheme.colorDanger, size: 14),
+                      const SizedBox(width: 8),
+                      Text(
+                        'LIMPIAR TODOS LOS FILTROS',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: AppTheme.colorDanger,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVerticalFilterItem({
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+    required VoidCallback onClear,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 42,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: BoxDecoration(
+          color: isActive ? AppTheme.liquidPrimary.withOpacity(0.08) : const Color(0xFF1E2024),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isActive ? AppTheme.liquidPrimary.withOpacity(0.3) : Colors.white.withOpacity(0.04),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.plusJakartaSans(
+                  color: isActive ? Colors.white : Colors.white70,
+                  fontSize: 12,
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                ),
+              ),
+            ),
+            if (isActive)
+              GestureDetector(
+                onTap: onClear,
+                child: Icon(Icons.close, size: 14, color: AppTheme.colorDanger),
+              )
+            else
+              const Icon(Icons.arrow_drop_down, size: 16, color: Colors.white30),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -47,25 +302,64 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     final currencyIso = ref.watch(currencyIsoProvider);
     final currencySymbol = ref.watch(currencySymbolProvider);
     final barTimezone = ref.watch(barTimezoneProvider);
+    final filters = ref.watch(auditoriaFiltersProvider);
+    final staffAsync = ref.watch(staffListProvider);
 
     return Scaffold(
       backgroundColor: AppTheme.liquidBg,
-      body: Column(
-        children: [
-          // Capsule Filters Horizontal List
-          const AuditoriaFilterCapsules(),
-          // Log List
-          Expanded(
-            child: RefreshIndicator(
-              color: AppTheme.liquidPrimary,
-              backgroundColor: const Color(0xFF1E2024),
-              onRefresh: () async {
-                await ref.read(auditoriaListProvider.notifier).loadInitial(silent: true);
-              },
-              child: _buildMainContent(auditoriaState, theme, currencyIso, currencySymbol, barTimezone),
-            ),
-          ),
-        ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isTabletLandscape = constraints.maxWidth >= 720;
+
+          if (isTabletLandscape) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Columna izquierda (ancho 280px): filtros fijos
+                Container(
+                  width: 280,
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      right: BorderSide(color: Colors.white.withOpacity(0.03)),
+                    ),
+                  ),
+                  child: _buildVerticalFiltersPanel(context, filters, staffAsync),
+                ),
+                // Columna derecha (Expanded): listado de logs
+                Expanded(
+                  child: RefreshIndicator(
+                    color: AppTheme.liquidPrimary,
+                    backgroundColor: const Color(0xFF1E2024),
+                    onRefresh: () async {
+                      await ref.read(auditoriaListProvider.notifier).loadInitial(silent: true);
+                    },
+                    child: _buildMainContent(auditoriaState, theme, currencyIso, currencySymbol, barTimezone, isTabletLandscape),
+                  ),
+                ),
+              ],
+            );
+          }
+
+          // Diseño Móvil / Portrait
+          return Column(
+            children: [
+              // Capsule Filters Horizontal List
+              const AuditoriaFilterCapsules(),
+              // Log List
+              Expanded(
+                child: RefreshIndicator(
+                  color: AppTheme.liquidPrimary,
+                  backgroundColor: const Color(0xFF1E2024),
+                  onRefresh: () async {
+                    await ref.read(auditoriaListProvider.notifier).loadInitial(silent: true);
+                  },
+                  child: _buildMainContent(auditoriaState, theme, currencyIso, currencySymbol, barTimezone, isTabletLandscape),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -76,12 +370,13 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     String currencyIso,
     String currencySymbol,
     String barTimezone,
+    bool isTabletLandscape,
   ) {
     Widget listWidget;
 
     if (state.isLoading) {
       listWidget = ListView.builder(
-        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 24.0),
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: isTabletLandscape ? 12.0 : 24.0),
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 6,
         itemBuilder: (context, index) => Padding(
@@ -145,7 +440,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     } else {
       listWidget = ListView.builder(
         controller: _scrollController,
-        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 24.0),
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: isTabletLandscape ? 12.0 : 24.0),
         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         itemCount: state.logs.length + (state.hasMore ? 1 : 0),
         itemBuilder: (context, index) {

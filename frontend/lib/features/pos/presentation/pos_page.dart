@@ -29,6 +29,7 @@ class _PosPageState extends ConsumerState<PosPage> {
     final scaffold = Scaffold(
       backgroundColor: const Color(0xFF121214), // Midnight background
       body: SafeArea(
+        bottom: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final bool isTablet = constraints.maxWidth >= 900;

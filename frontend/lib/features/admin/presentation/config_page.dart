@@ -647,6 +647,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
               },
             ),
             body: SafeArea(
+              bottom: false,
               child: Form(
                 key: _formKey,
                 child: Column(

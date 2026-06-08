@@ -24,6 +24,7 @@ class _CatalogSectionState extends ConsumerState<CatalogSection> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTablet = MediaQuery.of(context).size.width >= 900;
     final categoriesAsync = ref.watch(posCategoriesProvider);
     final productsAsync = ref.watch(posFilteredProductsProvider);
     final selectedCategoryId = ref.watch(selectedCategoryIdProvider);
@@ -182,7 +183,7 @@ class _CatalogSectionState extends ConsumerState<CatalogSection> {
                   }
 
                   return GridView.builder(
-                    padding: const EdgeInsets.only(bottom: 86.0),
+                    padding: EdgeInsets.only(bottom: isTablet ? 12.0 : 86.0),
                     physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                     gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 220,
@@ -199,7 +200,7 @@ class _CatalogSectionState extends ConsumerState<CatalogSection> {
                 },
                 loading: () {
                   return GridView.builder(
-                    padding: const EdgeInsets.only(bottom: 86.0),
+                    padding: EdgeInsets.only(bottom: isTablet ? 12.0 : 86.0),
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 220,
