@@ -85,13 +85,19 @@ class _PosPageState extends ConsumerState<PosPage> {
         scaffold,
         if (_isCheckingOut)
           Positioned.fill(
-            child: Material(
-              color: Colors.transparent,
-              child: Container(
-                color: Colors.black.withOpacity(0.5),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Center(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Material(
+                    color: Colors.transparent,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
                       decoration: BoxDecoration(
@@ -141,7 +147,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
       ],
