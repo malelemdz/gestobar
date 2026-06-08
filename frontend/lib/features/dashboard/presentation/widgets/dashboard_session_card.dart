@@ -19,17 +19,17 @@ class DashboardSessionCard extends ConsumerWidget {
     required this.barName,
   });
 
-  Widget _buildFallbackBarLogo(ThemeData theme) {
+  Widget _buildFallbackBarLogo(ThemeData theme, {double size = 42.0}) {
     return Container(
-      width: 32.0,
-      height: 32.0,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         color: const Color(0x1A00F0FF),
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(color: const Color(0x3300F0FF)),
       ),
-      child: const Center(
-        child: Icon(Icons.local_bar, size: 16.0, color: Color(0xFF00F0FF)),
+      child: Center(
+        child: Icon(Icons.local_bar, size: size * 0.5, color: const Color(0xFF00F0FF)),
       ),
     );
   }
@@ -153,15 +153,15 @@ class DashboardSessionCard extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(8.0),
                             child: Image.network(
                               logoUrl,
-                              width: 32.0,
-                              height: 32.0,
+                              width: 42.0,
+                              height: 42.0,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
-                                  _buildFallbackBarLogo(theme),
+                                  _buildFallbackBarLogo(theme, size: 42.0),
                             ),
                           )
                         else
-                          _buildFallbackBarLogo(theme),
+                          _buildFallbackBarLogo(theme, size: 42.0),
                         const SizedBox(width: 10.0),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
