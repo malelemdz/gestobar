@@ -31,6 +31,17 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     final dateRange = ref.watch(analyticsDateRangeProvider);
     final currencySymbol = ref.watch(currencySymbolProvider);
     final currencyIso = ref.watch(currencyIsoProvider);
+    final barAsync = ref.watch(currentBarProvider);
+    final bool showStaffDamas = barAsync.maybeWhen(
+      data: (bar) => bar.moduloDamasActivo,
+      orElse: () => false,
+    );
+
+    if (!showStaffDamas && activeTab == 3) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(analyticsTabProvider.notifier).state = 0;
+      });
+    }
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -65,7 +76,8 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                         _buildTabButton(0, 'RESUMEN', Icons.analytics_outlined),
                         _buildTabButton(1, 'TENDENCIAS', Icons.trending_up),
                         _buildTabButton(2, 'PRODUCTOS', Icons.local_bar_outlined),
-                        _buildTabButton(3, 'STAFF & DAMAS', Icons.people_outline),
+                        if (showStaffDamas)
+                          _buildTabButton(3, 'STAFF & DAMAS', Icons.people_outline),
                       ],
                     ),
                   ),
@@ -76,7 +88,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
               Expanded(
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 250),
-                  child: _buildActiveView(activeTab, currencySymbol, currencyIso),
+                  child: _buildActiveView(activeTab, currencySymbol, currencyIso, showStaffDamas),
                 ),
               ),
             ],
@@ -295,7 +307,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     );
   }
 
-  Widget _buildActiveView(int activeTab, String currencySymbol, String currencyIso) {
+  Widget _buildActiveView(int activeTab, String currencySymbol, String currencyIso, bool showStaffDamas) {
     switch (activeTab) {
       case 0:
         return _buildResumenTab(currencySymbol, currencyIso);
@@ -304,7 +316,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
       case 2:
         return const ProductRankingList();
       case 3:
-        return const DamaRankingList();
+        return showStaffDamas ? const DamaRankingList() : _buildResumenTab(currencySymbol, currencyIso);
       default:
         return _buildResumenTab(currencySymbol, currencyIso);
     }
