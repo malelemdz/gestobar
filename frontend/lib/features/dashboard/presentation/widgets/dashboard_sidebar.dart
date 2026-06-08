@@ -30,8 +30,7 @@ class DashboardSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final String displayBarName = activeBarId != null ? barName : 'Gestobar';
-    final String barSubtitle = activeBarId != null ? 'Bar Management' : 'Global Console';
+    final String activeBarName = activeBarId != null ? barName : 'Consola Global';
 
     return Container(
       width: 260.0,
@@ -47,29 +46,60 @@ class DashboardSidebar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Cabecera del Sidebar: Logo y título Neon Lounge
+          // Sleek Sidebar Header with premium Logo Box and branding
           Padding(
-            padding: const EdgeInsets.fromLTRB(24.0, 32.0, 24.0, 24.0),
+            padding: const EdgeInsets.fromLTRB(24.0, 40.0, 24.0, 36.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  displayBarName,
-                  style: theme.textTheme.headlineLarge?.copyWith(
-                    fontSize: 28.0,
-                    fontWeight: FontWeight.w800,
-                    color: theme.colorScheme.primaryContainer,
-                    letterSpacing: -1.0,
-                  ),
-                ),
-                const SizedBox(height: 2.0),
-                Text(
-                  barSubtitle,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontSize: 13.0,
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w400,
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      width: 48.0,
+                      height: 48.0,
+                      decoration: BoxDecoration(
+                        color: const Color(0x2600F0FF),
+                        borderRadius: BorderRadius.circular(12.0),
+                        border: Border.all(
+                          color: const Color(0x3300F0FF),
+                          width: 1.0,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.restaurant,
+                        color: Color(0xFF00F0FF),
+                        size: 24.0,
+                      ),
+                    ),
+                    const SizedBox(width: 18.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Gestobar',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 24.0,
+                              color: const Color(0xFFDBFCFF),
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 3.0),
+                          Text(
+                            activeBarName,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              fontSize: 11.0,
+                              color: const Color(0xFF00F0FF),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -102,46 +132,6 @@ class DashboardSidebar extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Botón de Acción Principal: Nueva Venta / Nueva Orden
-                if (role == 'ADMIN' || role == 'SUPERADMIN' || role == 'BARMAN') ...[
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: Container(
-                      height: 48.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100.0),
-                        color: theme.colorScheme.primaryContainer,
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(100.0),
-                          onTap: () => onViewChanged('pos'),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.add,
-                                size: 20.0,
-                                color: theme.colorScheme.onPrimaryContainer,
-                              ),
-                              const SizedBox(width: 8.0),
-                              Text(
-                                'NUEVA ORDEN',
-                                style: theme.textTheme.labelLarge?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12.0,
-                                  color: theme.colorScheme.onPrimaryContainer,
-                                  letterSpacing: 0.8,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
                 const Divider(color: Color(0xFF282A2E), height: 1.0),
                 const SizedBox(height: 12.0),
 

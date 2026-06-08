@@ -22,6 +22,7 @@ import 'widgets/dashboard_drawer.dart';
 import 'widgets/dashboard_app_bar.dart';
 import 'widgets/dashboard_bottom_bar.dart';
 import 'dialogs/about_dialog.dart';
+import 'dialogs/logout_confirmation_dialog.dart';
 
 /// Provider global para controlar la vista activa del sistema (Soporta navegación ilimitada y profunda)
 final activeViewProvider = StateProvider<String>((ref) => 'dash');
@@ -76,9 +77,7 @@ class MainDashboardView extends ConsumerWidget {
                   onViewChanged: (view) {
                     ref.read(activeViewProvider.notifier).state = view;
                   },
-                  onLogout: () {
-                    ref.read(authProvider.notifier).logout();
-                  },
+                  onLogout: () => _showLogoutDialog(context, ref),
                   onAboutTap: () => _showAboutDialog(context),
                 ),
                 Expanded(
@@ -122,9 +121,7 @@ class MainDashboardView extends ConsumerWidget {
                 onViewChanged: (view) {
                   ref.read(activeViewProvider.notifier).state = view;
                 },
-                onLogout: () {
-                  ref.read(authProvider.notifier).logout();
-                },
+                onLogout: () => _showLogoutDialog(context, ref),
                 onAboutTap: () => _showAboutDialog(context),
               ),
               appBar: DashboardAppBar(
@@ -159,6 +156,20 @@ class MainDashboardView extends ConsumerWidget {
         },
       ),
     );
+  }
+
+  void _showLogoutDialog(BuildContext context, WidgetRef ref) {
+    showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return const LogoutConfirmationDialog();
+      },
+    ).then((confirmed) {
+      if (confirmed == true) {
+        ref.read(authProvider.notifier).logout();
+      }
+    });
   }
 
   void _showAboutDialog(BuildContext context) {
