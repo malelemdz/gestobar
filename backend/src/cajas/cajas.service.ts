@@ -179,7 +179,7 @@ export class CajasService {
     let comisionesTotales = 0;
     let totalIngresosManuales = 0;
     let totalEgresosManuales = 0;
-    let metodosPago = [];
+    let metodosPago: any[] = [];
 
     try {
       const salesResult = await this.dataSource.query(
@@ -198,16 +198,22 @@ export class CajasService {
       comisionesTotales = parseFloat(comResult[0]?.total || '0');
 
       const metodosResult = await this.dataSource.query(
-        `SELECT metodo_pago, SUM(total) as total, COUNT(*) as cantidad 
-         FROM ventas WHERE caja_id = $1 GROUP BY metodo_pago`,
+        `SELECT 
+           COALESCE(SUM(monto_efectivo), 0) as efectivo_total,
+           COUNT(CASE WHEN monto_efectivo > 0 THEN 1 END) as efectivo_cantidad,
+           COALESCE(SUM(monto_tarjeta), 0) as tarjeta_total,
+           COUNT(CASE WHEN monto_tarjeta > 0 THEN 1 END) as tarjeta_cantidad,
+           COALESCE(SUM(monto_tr_qr), 0) as tr_qr_total,
+           COUNT(CASE WHEN monto_tr_qr > 0 THEN 1 END) as tr_qr_cantidad
+         FROM ventas WHERE caja_id = $1`,
         [caja.id],
       );
-      metodosPago = metodosResult.map((r: any) => ({
-        metodo: r.metodo_pago,
-        total: parseFloat(r.total || '0'),
-        amount: parseFloat(r.total || '0'),
-        cantidad: parseInt(r.cantidad || '0'),
-      }));
+      const pm = metodosResult[0] || {};
+      metodosPago = [
+        { metodo: 'EFECTIVO', total: parseFloat(pm.efectivo_total || '0'), amount: parseFloat(pm.efectivo_total || '0'), cantidad: parseInt(pm.efectivo_cantidad || '0') },
+        { metodo: 'TARJETA', total: parseFloat(pm.tarjeta_total || '0'), amount: parseFloat(pm.tarjeta_total || '0'), cantidad: parseInt(pm.tarjeta_cantidad || '0') },
+        { metodo: 'TRANSFERENCIA', total: parseFloat(pm.tr_qr_total || '0'), amount: parseFloat(pm.tr_qr_total || '0'), cantidad: parseInt(pm.tr_qr_cantidad || '0') },
+      ].filter(x => x.total > 0 || x.cantidad > 0);
 
       const movs = await this.movimientoRepository.find({
         where: { caja_id: caja.id },

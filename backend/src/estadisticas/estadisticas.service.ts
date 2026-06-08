@@ -45,24 +45,38 @@ export class EstadisticasService {
 
     const comisionesTotales = parseFloat(commissionsResult[0]?.total || '0');
 
-    // 3. Desglose por Método de Pago
-    const paymentMethods = await this.dataSource.query(
+    // 3. Desglose por Método de Pago (distribuyendo mixto y contando transacciones)
+    const paymentMethodsResult = await this.dataSource.query(
       `SELECT 
-         metodo_pago,
-         COALESCE(SUM(total), 0) as total,
-         COUNT(*) as cantidad
+         COALESCE(SUM(monto_efectivo), 0) as efectivo_total,
+         COUNT(CASE WHEN monto_efectivo > 0 THEN 1 END) as efectivo_cantidad,
+         COALESCE(SUM(monto_tarjeta), 0) as tarjeta_total,
+         COUNT(CASE WHEN monto_tarjeta > 0 THEN 1 END) as tarjeta_cantidad,
+         COALESCE(SUM(monto_tr_qr), 0) as tr_qr_total,
+         COUNT(CASE WHEN monto_tr_qr > 0 THEN 1 END) as tr_qr_cantidad
        FROM ventas
-       WHERE bar_id = $1 AND fecha BETWEEN $2 AND $3
-       GROUP BY metodo_pago
-       ORDER BY total DESC`,
+       WHERE bar_id = $1 AND fecha BETWEEN $2 AND $3`,
       [barId, inicio, fin],
     );
 
-    const desglosePagos = paymentMethods.map((pm: any) => ({
-      metodo: pm.metodo_pago,
-      total: parseFloat(pm.total || '0'),
-      cantidad: parseInt(pm.cantidad || '0'),
-    }));
+    const pm = paymentMethodsResult[0] || {};
+    const desglosePagos = [
+      {
+        metodo: 'EFECTIVO',
+        total: parseFloat(pm.efectivo_total || '0'),
+        cantidad: parseInt(pm.efectivo_cantidad || '0'),
+      },
+      {
+        metodo: 'TARJETA',
+        total: parseFloat(pm.tarjeta_total || '0'),
+        cantidad: parseInt(pm.tarjeta_cantidad || '0'),
+      },
+      {
+        metodo: 'TRANSFERENCIA',
+        total: parseFloat(pm.tr_qr_total || '0'),
+        cantidad: parseInt(pm.tr_qr_cantidad || '0'),
+      },
+    ].filter(p => p.total > 0 || p.cantidad > 0);
 
     // 4. Ventas Diarias (para la gráfica de picos)
     const dailySalesResult = await this.dataSource.query(
@@ -210,12 +224,37 @@ export class EstadisticasService {
     );
     const comisionesTotales = parseFloat(commissionsResult[0]?.total || '0');
 
-    // 4. Métodos de Pago
-    const paymentMethods = await this.dataSource.query(
-      `SELECT metodo_pago, COALESCE(SUM(total), 0) as total, COUNT(*) as cantidad 
-       FROM ventas WHERE caja_id = $1 GROUP BY metodo_pago`,
+    // 4. Métodos de Pago (distribuyendo mixto y contando transacciones)
+    const paymentMethodsResult = await this.dataSource.query(
+      `SELECT 
+         COALESCE(SUM(monto_efectivo), 0) as efectivo_total,
+         COUNT(CASE WHEN monto_efectivo > 0 THEN 1 END) as efectivo_cantidad,
+         COALESCE(SUM(monto_tarjeta), 0) as tarjeta_total,
+         COUNT(CASE WHEN monto_tarjeta > 0 THEN 1 END) as tarjeta_cantidad,
+         COALESCE(SUM(monto_tr_qr), 0) as tr_qr_total,
+         COUNT(CASE WHEN monto_tr_qr > 0 THEN 1 END) as tr_qr_cantidad
+       FROM ventas WHERE caja_id = $1`,
       [cajaId],
     );
+
+    const pm = paymentMethodsResult[0] || {};
+    const desglosePagos = [
+      {
+        metodo: 'EFECTIVO',
+        total: parseFloat(pm.efectivo_total || '0'),
+        cantidad: parseInt(pm.efectivo_cantidad || '0'),
+      },
+      {
+        metodo: 'TARJETA',
+        total: parseFloat(pm.tarjeta_total || '0'),
+        cantidad: parseInt(pm.tarjeta_cantidad || '0'),
+      },
+      {
+        metodo: 'TRANSFERENCIA',
+        total: parseFloat(pm.tr_qr_total || '0'),
+        cantidad: parseInt(pm.tr_qr_cantidad || '0'),
+      },
+    ].filter(p => p.total > 0 || p.cantidad > 0);
 
     const balanceEsperado = parseFloat(c.monto_inicial || '0') + ventasTotales - comisionesTotales;
     const diferencia = c.monto_final !== null ? parseFloat(c.monto_final) - balanceEsperado : null;
@@ -238,11 +277,7 @@ export class EstadisticasService {
         balance_esperado: balanceEsperado,
         diferencia: diferencia,
       },
-      desglose_pagos: paymentMethods.map((pm: any) => ({
-        metodo: pm.metodo_pago,
-        total: parseFloat(pm.total || '0'),
-        cantidad: parseInt(pm.cantidad || '0'),
-      })),
+      desglose_pagos: desglosePagos,
     };
   }
 }

@@ -320,18 +320,18 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
           Row(
             children: [
               Expanded(
-                child: ShimmerPlaceholder(width: double.infinity, height: 110, borderRadius: BorderRadius.circular(24)),
+                child: ShimmerPlaceholder(width: double.infinity, height: 110, borderRadius: BorderRadius.circular(16)),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
-                child: ShimmerPlaceholder(width: double.infinity, height: 110, borderRadius: BorderRadius.circular(24)),
+                child: ShimmerPlaceholder(width: double.infinity, height: 110, borderRadius: BorderRadius.circular(16)),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          ShimmerPlaceholder(width: double.infinity, height: 110, borderRadius: BorderRadius.circular(24)),
-          const SizedBox(height: 24),
-          ShimmerPlaceholder(width: double.infinity, height: 260, borderRadius: BorderRadius.circular(28)),
+          const SizedBox(height: 12),
+          ShimmerPlaceholder(width: double.infinity, height: 110, borderRadius: BorderRadius.circular(16)),
+          const SizedBox(height: 12),
+          ShimmerPlaceholder(width: double.infinity, height: 260, borderRadius: BorderRadius.circular(16)),
         ],
       ),
       error: (err, _) => Center(
@@ -356,7 +356,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                     color: const Color(0xFF00F0FF),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
                 Expanded(
                   child: _buildBentoCard(
                     title: 'Ingreso Neto',
@@ -367,7 +367,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             // Fila 2 de Bento Cards
             Row(
               children: [
@@ -379,7 +379,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                     color: const Color(0xFFFFB1C3),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
                 Expanded(
                   child: _buildBentoCard(
                     title: 'Cantidad Ventas',
@@ -390,7 +390,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
 
             // Métodos de Pago Card
             PaymentMethodsChart(breakdown: resumen.desglosePagos),
@@ -430,10 +430,10 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     required Color color,
   }) {
     return Container(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: const Color(0xFF1E2024),
-        borderRadius: BorderRadius.circular(24.0),
+        borderRadius: BorderRadius.circular(16.0),
         border: Border.all(
           color: Colors.white.withOpacity(0.05),
           width: 1.0,

@@ -48,10 +48,10 @@ class PaymentMethodsChart extends ConsumerWidget {
     final currencyIso = ref.watch(currencyIsoProvider);
     if (breakdown.isEmpty) {
       return Container(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: const Color(0xFF1E2024),
-          borderRadius: BorderRadius.circular(28.0),
+          borderRadius: BorderRadius.circular(16.0),
           border: Border.all(color: Colors.white.withOpacity(0.05)),
         ),
         child: Center(
@@ -66,10 +66,10 @@ class PaymentMethodsChart extends ConsumerWidget {
     final double totalVolume = breakdown.map((e) => e.total).reduce((a, b) => a + b);
 
     return Container(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: const Color(0xFF1E2024),
-        borderRadius: BorderRadius.circular(28.0),
+        borderRadius: BorderRadius.circular(16.0),
         border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
       child: Column(
@@ -83,14 +83,14 @@ class PaymentMethodsChart extends ConsumerWidget {
               color: Colors.white70,
             ),
           ),
-          const SizedBox(height: 20.0),
+          const SizedBox(height: 12.0),
           ...breakdown.map((item) {
             final double percent = totalVolume == 0 ? 0.0 : (item.total / totalVolume);
             final color = _getMethodColor(item.metodo);
             final icon = _getMethodIcon(item.metodo);
 
             return Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
+              padding: const EdgeInsets.only(bottom: 12.0),
               child: Row(
                 children: [
                   Container(
@@ -101,7 +101,7 @@ class PaymentMethodsChart extends ConsumerWidget {
                     ),
                     child: Icon(icon, color: color, size: 20.0),
                   ),
-                  const SizedBox(width: 16.0),
+                  const SizedBox(width: 12.0),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

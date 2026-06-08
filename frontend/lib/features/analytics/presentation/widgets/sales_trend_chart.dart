@@ -52,10 +52,10 @@ class SalesTrendChart extends ConsumerWidget {
     if (trend.isEmpty) {
       return Container(
         margin: const EdgeInsets.all(16.0),
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: const Color(0xFF1E2024),
-          borderRadius: BorderRadius.circular(28.0),
+          borderRadius: BorderRadius.circular(16.0),
           border: Border.all(color: Colors.white.withOpacity(0.05)),
         ),
         child: Column(
@@ -109,10 +109,10 @@ class SalesTrendChart extends ConsumerWidget {
         // 1. Gráfica Lineal de Tendencia
         Container(
           height: 300,
-          padding: const EdgeInsets.fromLTRB(12.0, 24.0, 24.0, 12.0),
+          padding: const EdgeInsets.fromLTRB(12.0, 16.0, 16.0, 12.0),
           decoration: BoxDecoration(
             color: const Color(0xFF1E2024),
-            borderRadius: BorderRadius.circular(28.0),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: Colors.white.withOpacity(0.05)),
           ),
           child: Column(
@@ -268,15 +268,13 @@ class SalesTrendChart extends ConsumerWidget {
             ],
           ),
         ),
-        const SizedBox(height: 24),
-
-        // 2. Resumen Día Más Fuerte
+        const SizedBox(height: 12),
         if (maxDayVal > 0) ...[
           Container(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: const Color(0xFF1E2024),
-              borderRadius: BorderRadius.circular(24.0),
+              borderRadius: BorderRadius.circular(16.0),
               border: Border.all(color: Colors.white.withOpacity(0.05)),
             ),
             child: Row(
@@ -326,15 +324,15 @@ class SalesTrendChart extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 12),
         ],
 
         // 3. Distribución por Día de la Semana
         Container(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: const Color(0xFF1E2024),
-            borderRadius: BorderRadius.circular(28.0),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: Colors.white.withOpacity(0.05)),
           ),
           child: Column(
@@ -348,7 +346,7 @@ class SalesTrendChart extends ConsumerWidget {
                   color: Colors.white70,
                 ),
               ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: 12.0),
               ...List.generate(7, (index) {
                 final int weekday = index + 1;
                 final double revenue = dayOfWeekSales[weekday] ?? 0.0;

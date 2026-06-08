@@ -71,7 +71,7 @@ class ProductRankingList extends ConsumerWidget {
           child: ShimmerPlaceholder(
             width: double.infinity,
             height: 80,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16.0),
           ),
         ),
       ),
@@ -85,10 +85,10 @@ class ProductRankingList extends ConsumerWidget {
         if (products.isEmpty) {
           return Container(
             margin: const EdgeInsets.all(16.0),
-            padding: const EdgeInsets.all(32.0),
+            padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: const Color(0xFF1E2024),
-              borderRadius: BorderRadius.circular(28.0),
+              borderRadius: BorderRadius.circular(16.0),
               border: Border.all(color: Colors.white.withOpacity(0.05)),
             ),
             child: Column(
@@ -125,7 +125,7 @@ class ProductRankingList extends ConsumerWidget {
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: const Color(0xFF1E2024),
-                borderRadius: BorderRadius.circular(20.0),
+                borderRadius: BorderRadius.circular(16.0),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.05),
                   width: 1.0,
