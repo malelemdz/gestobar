@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gestobar/core/theme/app_theme.dart';
 import 'package:gestobar/core/widgets/shimmer_placeholder.dart';
+import 'package:gestobar/core/utils/currency_helper.dart';
 import '../../../caja/providers/caja_provider.dart';
 import '../../providers/analytics_provider.dart';
 import '../../data/models/dama_ranking_model.dart';
@@ -27,6 +28,7 @@ class DamaRankingList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final rankingAsync = ref.watch(analyticsDamaRankingProvider);
     final currencySymbol = ref.watch(currencySymbolProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
 
     return rankingAsync.when(
       loading: () => ListView.builder(
@@ -172,7 +174,7 @@ class DamaRankingList extends ConsumerWidget {
 
                       // Comisiones Acumuladas
                       Text(
-                        '${d.comisionesAcumuladas.toStringAsFixed(2)} $currencySymbol',
+                        CurrencyHelper.formatWithSymbol(d.comisionesAcumuladas, currencySymbol, currencyIso),
                         style: GoogleFonts.plusJakartaSans(
                           color: const Color(0xFF00F0FF),
                           fontWeight: FontWeight.bold,

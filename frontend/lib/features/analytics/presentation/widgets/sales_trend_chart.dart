@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:gestobar/core/theme/app_theme.dart';
+import 'package:gestobar/core/utils/currency_helper.dart';
 import '../../../caja/providers/caja_provider.dart';
 import '../../data/models/analytics_resumen_model.dart';
 
@@ -47,6 +48,7 @@ class SalesTrendChart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currencySymbol = ref.watch(currencySymbolProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
     if (trend.isEmpty) {
       return Container(
         margin: const EdgeInsets.all(16.0),
@@ -218,7 +220,7 @@ class SalesTrendChart extends ConsumerWidget {
                                 ),
                                 children: [
                                   TextSpan(
-                                    text: '${item.total.toStringAsFixed(2)} $currencySymbol',
+                                    text: CurrencyHelper.formatWithSymbol(item.total, currencySymbol, currencyIso),
                                     style: GoogleFonts.plusJakartaSans(
                                       color: const Color(0xFF00F0FF),
                                       fontWeight: FontWeight.bold,
@@ -314,7 +316,7 @@ class SalesTrendChart extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  '${maxDayVal.toStringAsFixed(2)} $currencySymbol',
+                  CurrencyHelper.formatWithSymbol(maxDayVal, currencySymbol, currencyIso),
                   style: GoogleFonts.plusJakartaSans(
                     color: const Color(0xFF00F0FF),
                     fontSize: 18.0,
@@ -370,7 +372,7 @@ class SalesTrendChart extends ConsumerWidget {
                             ),
                           ),
                           Text(
-                            '${revenue.toStringAsFixed(2)} $currencySymbol',
+                            CurrencyHelper.formatWithSymbol(revenue, currencySymbol, currencyIso),
                             style: GoogleFonts.plusJakartaSans(
                               color: Colors.white70,
                               fontSize: 12.0,

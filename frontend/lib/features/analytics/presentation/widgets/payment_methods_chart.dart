@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gestobar/core/utils/currency_helper.dart';
 import '../../../caja/providers/caja_provider.dart';
 import '../../data/models/analytics_resumen_model.dart';
 
@@ -44,6 +45,7 @@ class PaymentMethodsChart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currencySymbol = ref.watch(currencySymbolProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
     if (breakdown.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(24.0),
@@ -116,7 +118,7 @@ class PaymentMethodsChart extends ConsumerWidget {
                               ),
                             ),
                             Text(
-                              '${item.total.toStringAsFixed(2)} $currencySymbol (${(percent * 100).toStringAsFixed(1)}%)',
+                              '${CurrencyHelper.formatWithSymbol(item.total, currencySymbol, currencyIso)} (${(percent * 100).toStringAsFixed(1)}%)',
                               style: GoogleFonts.plusJakartaSans(
                                 color: Colors.white70,
                                 fontSize: 12.0,

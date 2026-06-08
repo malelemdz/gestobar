@@ -7,6 +7,7 @@ import 'package:gestobar/core/widgets/shimmer_placeholder.dart';
 import 'package:gestobar/features/caja/providers/caja_provider.dart'; // currency Providers
 import 'package:gestobar/features/admin/providers/bar_provider.dart';
 import 'package:gestobar/features/admin/presentation/widgets/custom_date_range_picker.dart';
+import 'package:gestobar/core/utils/currency_helper.dart';
 import '../providers/analytics_provider.dart';
 import '../data/models/analytics_resumen_model.dart';
 import 'widgets/sales_trend_chart.dart';
@@ -29,6 +30,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     final activeFilter = ref.watch(analyticsFilterProvider);
     final dateRange = ref.watch(analyticsDateRangeProvider);
     final currencySymbol = ref.watch(currencySymbolProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -74,7 +76,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
               Expanded(
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 250),
-                  child: _buildActiveView(activeTab, currencySymbol),
+                  child: _buildActiveView(activeTab, currencySymbol, currencyIso),
                 ),
               ),
             ],
@@ -293,10 +295,10 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     );
   }
 
-  Widget _buildActiveView(int activeTab, String currencySymbol) {
+  Widget _buildActiveView(int activeTab, String currencySymbol, String currencyIso) {
     switch (activeTab) {
       case 0:
-        return _buildResumenTab(currencySymbol);
+        return _buildResumenTab(currencySymbol, currencyIso);
       case 1:
         return _buildPicosTab();
       case 2:
@@ -304,11 +306,11 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
       case 3:
         return const DamaRankingList();
       default:
-        return _buildResumenTab(currencySymbol);
+        return _buildResumenTab(currencySymbol, currencyIso);
     }
   }
 
-  Widget _buildResumenTab(String currencySymbol) {
+  Widget _buildResumenTab(String currencySymbol, String currencyIso) {
     final resumenAsync = ref.watch(analyticsResumenProvider);
 
     return resumenAsync.when(
@@ -349,7 +351,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                 Expanded(
                   child: _buildBentoCard(
                     title: 'Ingresos Totales',
-                    value: '${resumen.ingresosTotales.toStringAsFixed(2)} $currencySymbol',
+                    value: CurrencyHelper.formatWithSymbol(resumen.ingresosTotales, currencySymbol, currencyIso),
                     icon: Icons.monetization_on_outlined,
                     color: const Color(0xFF00F0FF),
                   ),
@@ -358,7 +360,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                 Expanded(
                   child: _buildBentoCard(
                     title: 'Ingreso Neto',
-                    value: '${resumen.ingresoNetoEstimado.toStringAsFixed(2)} $currencySymbol',
+                    value: CurrencyHelper.formatWithSymbol(resumen.ingresoNetoEstimado, currencySymbol, currencyIso),
                     icon: Icons.account_balance_wallet_outlined,
                     color: const Color(0xFFE040FB),
                   ),
@@ -372,7 +374,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                 Expanded(
                   child: _buildBentoCard(
                     title: 'Comisiones Staff',
-                    value: '${resumen.comisionesPagadas.toStringAsFixed(2)} $currencySymbol',
+                    value: CurrencyHelper.formatWithSymbol(resumen.comisionesPagadas, currencySymbol, currencyIso),
                     icon: Icons.people_outline,
                     color: const Color(0xFFFFB1C3),
                   ),

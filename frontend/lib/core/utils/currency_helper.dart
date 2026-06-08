@@ -121,6 +121,13 @@ class CurrencyHelper {
     return formatter.format(amount).trim();
   }
 
+  /// Formatea la cantidad (double) incluyendo el símbolo de la moneda y respetando
+  /// las reglas de decimales de la misma (ej: "$ 1.500" o "Bs 45,50").
+  static String formatWithSymbol(double amount, String symbol, String iso) {
+    final formatted = formatAmount(amount, iso);
+    return '$symbol $formatted';
+  }
+
   /// Lee un texto ingresado por el usuario y lo convierte de forma segura a Double
   /// dependiendo de las reglas de decimales de la moneda. Evita que "50.000" (Cincuenta mil)
   /// se lea erróneamente como "Cincuenta punto Cero".
