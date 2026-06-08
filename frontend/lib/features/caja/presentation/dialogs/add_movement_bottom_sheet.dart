@@ -43,12 +43,12 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
     return Container(
       decoration: const BoxDecoration(
         color: Color(0xFF1E2024),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 24,
+        left: 16.0,
+        right: 16.0,
+        top: 16.0,
         bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
       child: Column(
@@ -72,7 +72,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12.0),
 
           // Input de Monto
           Text(
@@ -121,7 +121,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12.0),
 
           // Selector de Método de Pago
           Text(
@@ -168,7 +168,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
               );
             }).toList(),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12.0),
 
           // Input de Concepto / Motivo
           Text(
@@ -193,7 +193,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 12.0),
 
           // Botón de Confirmación
           ElevatedButton(

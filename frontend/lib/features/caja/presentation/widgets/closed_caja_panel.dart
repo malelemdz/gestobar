@@ -21,10 +21,10 @@ class ClosedCajaPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: const Color(0xFF1E2024), // surface-container
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16.0),
         border: Border.all(
           color: Colors.white.withOpacity(0.04),
           width: 1,
@@ -50,7 +50,7 @@ class ClosedCajaPanel extends StatelessWidget {
                 ),
                 child: const Icon(Icons.lock_outline, color: Colors.redAccent, size: 28),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12.0),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +76,7 @@ class ClosedCajaPanel extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 12.0),
 
           // Entrada de dinero inicial obligatoria
           Text(
@@ -129,7 +129,7 @@ class ClosedCajaPanel extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 12.0),
 
           // Botón Confirmar Apertura
           InkWell(

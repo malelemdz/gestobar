@@ -76,10 +76,10 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
       children: [
         // 1. Ficha del turno superior (Caja Abierta y Cerrar Caja)
         Container(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: const Color(0xFF1E2024),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: Colors.white.withOpacity(0.04)),
           ),
           child: Column(
@@ -121,7 +121,7 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12.0),
 
               // Botón de Cierre
               InkWell(
@@ -161,7 +161,7 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
           ),
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 12.0),
 
         // 2. Botones de Caja Chica Pill-Shaped
         Row(
@@ -242,7 +242,7 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
           ],
         ),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 12.0),
 
         // 3. Pestañas de Navegación del Turno
         Container(
@@ -261,7 +261,7 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
           ),
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 12.0),
 
         // 4. Contenido Activo
         _activeTab == 0
@@ -271,8 +271,8 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
                 itemCount: cards.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: isTablet ? 3 : 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 12.0,
+                  mainAxisSpacing: 12.0,
                   childAspectRatio: isTablet ? 2.5 : 2.0,
                 ),
                 itemBuilder: (context, index) => cards[index],
@@ -353,12 +353,12 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16.0),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             color: const Color(0xFF1E2024),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(
               color: Colors.white.withOpacity(0.03),
               width: 1,

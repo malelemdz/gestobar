@@ -65,7 +65,7 @@ class MovimientosList extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 32),
         decoration: BoxDecoration(
           color: const Color(0xFF1E2024),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(16.0),
           border: Border.all(color: Colors.white.withOpacity(0.02)),
         ),
         child: Center(
@@ -78,10 +78,10 @@ class MovimientosList extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: const Color(0xFF1E2024),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16.0),
         border: Border.all(color: Colors.white.withOpacity(0.04)),
       ),
       child: Column(
@@ -96,7 +96,7 @@ class MovimientosList extends StatelessWidget {
               letterSpacing: 0.8,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12.0),
           ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -149,7 +149,7 @@ class MovimientosList extends StatelessWidget {
                           size: 16,
                         ),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 12.0),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

@@ -95,13 +95,13 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   ShimmerPlaceholder(
                     width: double.infinity,
                     height: 280,
-                    borderRadius: BorderRadius.all(Radius.circular(32)),
+                    borderRadius: BorderRadius.all(Radius.circular(16.0)),
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: 12.0),
                   ShimmerPlaceholder(
                     width: double.infinity,
                     height: 420,
-                    borderRadius: BorderRadius.all(Radius.circular(32)),
+                    borderRadius: BorderRadius.all(Radius.circular(16.0)),
                   ),
                 ],
               ),

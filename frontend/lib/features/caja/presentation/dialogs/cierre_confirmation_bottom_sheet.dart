@@ -32,9 +32,9 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
     return Container(
       decoration: const BoxDecoration(
         color: Color(0xFF1E2024),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -61,7 +61,7 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
             'Esta acción dará por finalizado el turno activo actual de la caja. El sistema registrará los balances y comisiones generadas de forma automática.',
             style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 12),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12.0),
 
           if (hasUnsynced) ...[
             // Bloqueo de seguridad dinámico con botón para sincronizar ahora
@@ -125,7 +125,7 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12.0),
           ],
 
           // Botones de Acción

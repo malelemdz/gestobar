@@ -23,10 +23,10 @@ class MovementDetailBottomSheet extends StatelessWidget {
     final isVenta = ev.tipo == 'VENTA';
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
       decoration: const BoxDecoration(
         color: Color(0xFF1E2024),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -42,7 +42,7 @@ class MovementDetailBottomSheet extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12.0),
           Text(
             isVenta ? 'TICKET DE COMPRA' : 'DETALLE DE CAJA CHICA',
             style: GoogleFonts.plusJakartaSans(
@@ -55,14 +55,14 @@ class MovementDetailBottomSheet extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12.0),
 
           // Contenido Dinámico
           isVenta
               ? _buildTicketDetails(ev.original as VentaModel, currencySymbol, currencyIso)
               : _buildManualMovementDetails(ev.original as CajaMovimientoModel, currencySymbol, currencyIso),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 12.0),
 
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
@@ -114,7 +114,7 @@ class MovementDetailBottomSheet extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 12.0),
 
         Text(
           'ARTÍCULOS CONSUMIDOS',
@@ -204,7 +204,7 @@ class MovementDetailBottomSheet extends StatelessWidget {
           },
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 12.0),
         const Divider(color: Colors.white10),
         const SizedBox(height: 10),
 
@@ -221,7 +221,7 @@ class MovementDetailBottomSheet extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: const Color(0xFF7000FF).withOpacity(0.08),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: const Color(0xFF7000FF).withOpacity(0.2)),
           ),
           child: Row(
@@ -263,7 +263,7 @@ class MovementDetailBottomSheet extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: isIngreso ? const Color(0xFF00FF66).withOpacity(0.08) : Colors.redAccent.withOpacity(0.08),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: isIngreso ? const Color(0xFF00FF66).withOpacity(0.2) : Colors.redAccent.withOpacity(0.2)),
           ),
           child: Center(
@@ -289,7 +289,7 @@ class MovementDetailBottomSheet extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 12.0),
 
         Container(
           padding: const EdgeInsets.all(16),
@@ -308,7 +308,7 @@ class MovementDetailBottomSheet extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 12.0),
 
         Text(
           'CONCEPTO / DESCRIPCIÓN',
@@ -325,7 +325,7 @@ class MovementDetailBottomSheet extends StatelessWidget {
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.02),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: Colors.white.withOpacity(0.05)),
           ),
           child: Text(
@@ -337,13 +337,13 @@ class MovementDetailBottomSheet extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 12.0),
 
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: isIngreso ? const Color(0xFF00FF66).withOpacity(0.05) : Colors.redAccent.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: isIngreso ? const Color(0xFF00FF66).withOpacity(0.1) : Colors.redAccent.withOpacity(0.1)),
           ),
           child: Row(

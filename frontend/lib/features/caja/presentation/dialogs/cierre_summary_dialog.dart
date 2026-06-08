@@ -30,10 +30,10 @@ class CierreSummaryDialog extends StatelessWidget {
           width: double.infinity,
           constraints: const BoxConstraints(maxWidth: 420),
           margin: const EdgeInsets.symmetric(horizontal: 24),
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: const Color(0xFF1E2024),
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.2), width: 1.5),
           ),
           child: Column(
@@ -73,9 +73,9 @@ class CierreSummaryDialog extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12.0),
               const Divider(color: Colors.white10),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12.0),
 
               // Desglose de saldos final
               _buildSummaryRow('Dinero Inicial (Fondo):', '$currencySymbol ${CurrencyHelper.formatAmount(mInicial, currencyIso)}', Colors.white54),
@@ -88,7 +88,7 @@ class CierreSummaryDialog extends StatelessWidget {
               const SizedBox(height: 10),
               _buildSummaryRow('Dinero Total Entregado:', '$currencySymbol ${CurrencyHelper.formatAmount(esperado, currencyIso)}', Colors.white, isTotal: true),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 12.0),
 
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
