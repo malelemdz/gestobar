@@ -55,10 +55,11 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
             children: [
               // 1. Selector de Rango de Fechas (Filtros superiores)
               _buildFilterBar(context, activeFilter, dateRange),
+              const SizedBox(height: 12.0),
 
               // 2. Selector de Pestañas Bento
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Container(
                   height: 46,
                   padding: const EdgeInsets.all(4),
@@ -77,7 +78,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                         _buildTabButton(1, 'TENDENCIAS', Icons.trending_up),
                         _buildTabButton(2, 'PRODUCTOS', Icons.local_bar_outlined),
                         if (showStaffDamas)
-                          _buildTabButton(3, 'STAFF & DAMAS', Icons.people_outline),
+                          _buildTabButton(3, 'DAMAS', Icons.people_outline),
                       ],
                     ),
                   ),
@@ -106,7 +107,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
       child: Row(
         children: [
           _buildFilterChip(
