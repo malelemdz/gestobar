@@ -350,7 +350,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
               children: [
                 Expanded(
                   child: _buildBentoCard(
-                    title: 'Ingresos Totales',
+                    title: 'Ventas Totales POS',
                     value: CurrencyHelper.formatWithSymbol(resumen.ingresosTotales, currencySymbol, currencyIso),
                     icon: Icons.monetization_on_outlined,
                     color: const Color(0xFF00F0FF),
@@ -359,7 +359,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: _buildBentoCard(
-                    title: 'Ingreso Neto',
+                    title: 'Venta Neta Bar',
                     value: CurrencyHelper.formatWithSymbol(resumen.ingresoNetoEstimado, currencySymbol, currencyIso),
                     icon: Icons.account_balance_wallet_outlined,
                     color: const Color(0xFFE040FB),
