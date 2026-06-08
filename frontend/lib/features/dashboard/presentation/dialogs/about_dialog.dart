@@ -16,7 +16,7 @@ class AboutDialogWidget extends StatelessWidget {
           backgroundColor: const Color(0xFF1E2024),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
-            border: Border.all(
+            side: BorderSide(
               color: Colors.white.withOpacity(0.04),
               width: 1.0,
             ),
