@@ -5,7 +5,7 @@ class NavigationHelper {
     switch (role.toUpperCase()) {
       case 'SUPERADMIN':
       case 'ADMIN':
-        return ['dash', 'pos', 'caja', 'menu', 'staff', 'audit', 'config', 'perfil'];
+        return ['dash', 'pos', 'caja', 'menu', 'staff', 'audit', 'config', 'perfil', 'analytics'];
       case 'BARMAN':
         return ['pos', 'caja', 'perfil'];
       case 'DAMA':
@@ -39,6 +39,12 @@ class NavigationHelper {
             'label': 'Dash',
             'icon': Icons.dashboard_outlined,
             'icon_active': Icons.dashboard,
+          },
+          {
+            'view': 'analytics',
+            'label': 'Analíticas',
+            'icon': Icons.bar_chart_outlined,
+            'icon_active': Icons.bar_chart,
           },
           {
             'view': 'pos',
@@ -111,6 +117,8 @@ class NavigationHelper {
     switch (activeView) {
       case 'dash':
         return 'Dash';
+      case 'analytics':
+        return 'Analíticas';
       case 'pos':
         return 'POS';
       case 'caja':

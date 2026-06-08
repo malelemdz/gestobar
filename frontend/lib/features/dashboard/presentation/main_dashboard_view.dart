@@ -13,6 +13,7 @@ import 'package:gestobar/features/menu_publico/presentation/menu_page.dart';
 import 'package:gestobar/features/staff/presentation/staff_page.dart';
 import 'package:gestobar/features/damas/presentation/dama_page.dart';
 import 'package:gestobar/features/splash/presentation/splash_screen.dart';
+import 'package:gestobar/features/analytics/presentation/analytics_page.dart';
 
 import 'dashboard_page.dart';
 import 'utils/navigation_helper.dart';
@@ -183,6 +184,8 @@ class MainDashboardView extends ConsumerWidget {
         return const StaffPage();
       case 'audit':
         return const AuditoriaPage();
+      case 'analytics':
+        return const AnalyticsPage();
       case 'config':
         return const ConfigPage();
       case 'perfil':

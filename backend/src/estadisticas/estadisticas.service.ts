@@ -64,6 +64,35 @@ export class EstadisticasService {
       cantidad: parseInt(pm.cantidad || '0'),
     }));
 
+    // 4. Ventas Diarias (para la gráfica de picos)
+    const dailySalesResult = await this.dataSource.query(
+      `SELECT 
+         DATE(fecha) as fecha,
+         COALESCE(SUM(total), 0) as total,
+         COUNT(*) as cantidad
+       FROM ventas 
+       WHERE bar_id = $1 AND fecha BETWEEN $2 AND $3
+       GROUP BY DATE(fecha)
+       ORDER BY DATE(fecha) ASC`,
+      [barId, inicio, fin],
+    );
+
+    const ventasDiarias = dailySalesResult.map((ds: any) => {
+      let fechaStr = '';
+      if (ds.fecha instanceof Date) {
+        fechaStr = ds.fecha.toISOString().split('T')[0];
+      } else if (typeof ds.fecha === 'string') {
+        fechaStr = ds.fecha.split('T')[0];
+      } else {
+        fechaStr = String(ds.fecha);
+      }
+      return {
+        fecha: fechaStr,
+        total: parseFloat(ds.total || '0'),
+        cantidad: parseInt(ds.cantidad || '0'),
+      };
+    });
+
     return {
       rango: {
         inicio,
@@ -74,6 +103,7 @@ export class EstadisticasService {
       ingreso_neto_estimado: ingresosTotales - comisionesTotales,
       cantidad_ventas: cantidadVentas,
       desglose_pagos: desglosePagos,
+      ventas_diarias: ventasDiarias,
     };
   }
 
