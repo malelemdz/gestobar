@@ -111,7 +111,7 @@ class DashboardPage extends ConsumerWidget {
         DashboardBentoItem(
           icon: Icons.point_of_sale,
           title: 'POS Ventas',
-          subtitle: 'Ir a facturación',
+          subtitle: 'Registrar ventas',
           color: const Color(0xFF00F0FF),
           onTap: () {
             ref.read(activeViewProvider.notifier).state = 'pos';

@@ -7,6 +7,7 @@ class AboutDialogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return FutureBuilder<PackageInfo>(
       future: PackageInfo.fromPlatform(),
       builder: (context, snapshot) {
@@ -39,21 +40,17 @@ class AboutDialogWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF7000FF).withOpacity(0.1),
+                  color: theme.colorScheme.primary.withOpacity(0.1),
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: const Color(0xFF7000FF).withOpacity(0.2),
-                    width: 1.0,
-                  ),
                 ),
                 child: Image.asset(
                   'assets/icon/isotipo.png',
                   width: 40.0,
                   height: 40.0,
                   errorBuilder: (context, error, stackTrace) {
-                    return const Icon(
+                    return Icon(
                       Icons.local_bar,
-                      color: Color(0xFF00F0FF),
+                      color: theme.colorScheme.primary,
                       size: 40.0,
                     );
                   },
@@ -83,7 +80,7 @@ class AboutDialogWidget extends StatelessWidget {
               const Divider(color: Colors.white10, height: 1.0),
               const SizedBox(height: 12.0),
               Text(
-                'Gestobar es la plataforma definitiva para la gestión inteligente de bares, pubs y discotecas. Optimiza el control de inventario, facturación POS, control de turnos de caja y comisiones en tiempo real, garantizando la máxima velocidad y eficiencia en entornos de alta exigencia.',
+                'Gestobar es la plataforma definitiva para la gestión inteligente de bares, pubs y discotecas. Optimiza el control de inventario, registro de ventas POS, control de turnos de caja y comisiones en tiempo real, garantizando la máxima velocidad y eficiencia en entornos de alta exigencia.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
                   color: Colors.white70,
