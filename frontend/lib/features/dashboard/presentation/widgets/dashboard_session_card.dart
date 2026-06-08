@@ -48,7 +48,7 @@ class DashboardSessionCard extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF1E2024),
-        borderRadius: BorderRadius.circular(32.0),
+        borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
           color: Colors.white.withOpacity(0.05),
           width: 1.0,

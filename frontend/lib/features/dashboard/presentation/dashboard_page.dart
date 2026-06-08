@@ -137,7 +137,7 @@ class DashboardPage extends ConsumerWidget {
             activeBarId: authState.activeBarId,
             barName: barName,
           ),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: 16.0),
 
           // 2. Grilla Bento de Accesos Rápidos Autorizados
           if (allowedBentoItems.isNotEmpty) ...[
@@ -145,12 +145,12 @@ class DashboardPage extends ConsumerWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: MediaQuery.of(context).size.width >= 750 ? 4 : 2,
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
+              crossAxisSpacing: 12.0,
+              mainAxisSpacing: 12.0,
               childAspectRatio: MediaQuery.of(context).size.width >= 750 ? 1.4 : 1.3,
               children: allowedBentoItems,
             ),
-            const SizedBox(height: 28.0),
+            const SizedBox(height: 24.0),
           ],
 
           // 3. SECCIÓN: ESTADÍSTICAS RÁPIDAS (Solo si el rol tiene acceso)
@@ -170,15 +170,15 @@ class DashboardPage extends ConsumerWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: MediaQuery.of(context).size.width >= 750 ? 4 : 2,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
+                crossAxisSpacing: 12.0,
+                mainAxisSpacing: 12.0,
                 childAspectRatio: MediaQuery.of(context).size.width >= 750 ? 1.4 : 1.3,
                 children: List.generate(
                   4,
                   (index) => ShimmerPlaceholder(
                     width: double.infinity,
                     height: 100,
-                    borderRadius: BorderRadius.circular(32.0),
+                    borderRadius: BorderRadius.circular(24.0),
                   ),
                 ),
               ),
@@ -201,8 +201,8 @@ class DashboardPage extends ConsumerWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: MediaQuery.of(context).size.width >= 750 ? 4 : 2,
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
+                  crossAxisSpacing: 12.0,
+                  mainAxisSpacing: 12.0,
                   childAspectRatio: MediaQuery.of(context).size.width >= 750 ? 1.4 : 1.3,
                   children: [
                     DashboardBentoItem(
@@ -249,7 +249,7 @@ class DashboardPage extends ConsumerWidget {
                 );
               },
             ),
-            const SizedBox(height: 28.0),
+            const SizedBox(height: 24.0),
           ],
 
           // 4. SECCIÓN: ACTIVIDAD RECIENTE (Solo si el rol tiene acceso)
