@@ -142,50 +142,113 @@ class CategoriesPanel extends ConsumerWidget {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.arrow_upward, size: 14, color: Colors.white30),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: index > 1
-                                          ? () => _swapCategoriesOrder(ref, cat, sortedCategories[index - 2])
-                                          : null,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    IconButton(
-                                      icon: const Icon(Icons.arrow_downward, size: 14, color: Colors.white30),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: index < sortedCategories.length
-                                          ? () => _swapCategoriesOrder(ref, cat, sortedCategories[index])
-                                          : null,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    IconButton(
-                                      icon: Icon(
-                                        cat.disponible ? Icons.toggle_on : Icons.toggle_off,
-                                        size: 14,
-                                        color: cat.disponible ? const Color(0xFF00F0FF) : Colors.orangeAccent,
+                                PopupMenuButton<String>(
+                                  color: const Color(0xFF1E2024),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                                  ),
+                                  icon: const Icon(Icons.more_vert, size: 18, color: Colors.white70),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  onSelected: (value) {
+                                    switch (value) {
+                                      case 'up':
+                                        _swapCategoriesOrder(ref, cat, sortedCategories[index - 2]);
+                                        break;
+                                      case 'down':
+                                        _swapCategoriesOrder(ref, cat, sortedCategories[index]);
+                                        break;
+                                      case 'toggle':
+                                        _toggleCategoryVisibility(context, ref, cat);
+                                        break;
+                                      case 'edit':
+                                        _openCategoryDialog(context, cat);
+                                        break;
+                                      case 'delete':
+                                        _confirmDeleteCategory(context, ref, cat);
+                                        break;
+                                    }
+                                  },
+                                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                                    PopupMenuItem<String>(
+                                      value: 'up',
+                                      enabled: index > 1,
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.arrow_upward, size: 16, color: index > 1 ? Colors.white70 : Colors.white24),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            'Subir Posición',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 12,
+                                              color: index > 1 ? Colors.white : Colors.white30,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: () => _toggleCategoryVisibility(context, ref, cat),
                                     ),
-                                    const SizedBox(width: 4),
-                                    IconButton(
-                                      icon: const Icon(Icons.edit, size: 14, color: Color(0xFF00F0FF)),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: () => _openCategoryDialog(context, cat),
+                                    PopupMenuItem<String>(
+                                      value: 'down',
+                                      enabled: index < sortedCategories.length,
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.arrow_downward, size: 16, color: index < sortedCategories.length ? Colors.white70 : Colors.white24),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            'Bajar Posición',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 12,
+                                              color: index < sortedCategories.length ? Colors.white : Colors.white30,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(width: 4),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete_outline, size: 14, color: Colors.redAccent),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: () => _confirmDeleteCategory(context, ref, cat),
+                                    PopupMenuItem<String>(
+                                      value: 'toggle',
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            cat.disponible ? Icons.toggle_on : Icons.toggle_off,
+                                            size: 16,
+                                            color: cat.disponible ? const Color(0xFF00F0FF) : Colors.orangeAccent,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            cat.disponible ? 'Desactivar' : 'Activar',
+                                            style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.white),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    PopupMenuItem<String>(
+                                      value: 'edit',
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.edit, size: 16, color: Color(0xFF00F0FF)),
+                                          const SizedBox(width: 8),
+                                          Text('Editar', style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.white)),
+                                        ],
+                                      ),
+                                    ),
+                                    const PopupMenuDivider(height: 1),
+                                    PopupMenuItem<String>(
+                                      value: 'delete',
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            'Eliminar',
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 12,
+                                              color: Colors.redAccent,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),

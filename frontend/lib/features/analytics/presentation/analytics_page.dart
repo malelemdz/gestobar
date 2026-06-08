@@ -9,7 +9,6 @@ import 'package:gestobar/features/admin/providers/bar_provider.dart';
 import 'package:gestobar/features/admin/presentation/widgets/custom_date_range_picker.dart';
 import 'package:gestobar/core/utils/currency_helper.dart';
 import '../providers/analytics_provider.dart';
-import '../data/models/analytics_resumen_model.dart';
 import 'widgets/sales_trend_chart.dart';
 import 'widgets/payment_methods_chart.dart';
 import 'widgets/product_ranking_list.dart';
@@ -354,60 +353,79 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
         ),
       ),
       data: (resumen) {
-        return ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-          physics: const BouncingScrollPhysics(),
-          children: [
-            // Fila 1 de Bento Cards
-            Row(
-              children: [
-                Expanded(
-                  child: _buildBentoCard(
-                    title: 'Ventas Totales POS',
-                    value: CurrencyHelper.formatWithSymbol(resumen.ingresosTotales, currencySymbol, currencyIso),
-                    icon: Icons.monetization_on_outlined,
-                    color: const Color(0xFF00F0FF),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildBentoCard(
-                    title: 'Venta Neta Bar',
-                    value: CurrencyHelper.formatWithSymbol(resumen.ingresoNetoEstimado, currencySymbol, currencyIso),
-                    icon: Icons.account_balance_wallet_outlined,
-                    color: const Color(0xFFE040FB),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            // Fila 2 de Bento Cards
-            Row(
-              children: [
-                Expanded(
-                  child: _buildBentoCard(
-                    title: 'Comisiones Staff',
-                    value: CurrencyHelper.formatWithSymbol(resumen.comisionesPagadas, currencySymbol, currencyIso),
-                    icon: Icons.people_outline,
-                    color: const Color(0xFFFFB1C3),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildBentoCard(
-                    title: 'Cantidad Ventas',
-                    value: '${resumen.cantidadVentas} ordenes',
-                    icon: Icons.shopping_bag_outlined,
-                    color: const Color(0xFFDBFCFF),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final double width = constraints.maxWidth;
+            final bool isWide = width >= 850;
 
-            // Métodos de Pago Card
-            PaymentMethodsChart(breakdown: resumen.desglosePagos),
-          ],
+            final cardVentasTotales = _buildBentoCard(
+              title: 'Ventas Totales POS',
+              value: CurrencyHelper.formatWithSymbol(resumen.ingresosTotales, currencySymbol, currencyIso),
+              icon: Icons.monetization_on_outlined,
+              color: const Color(0xFF00F0FF),
+            );
+
+            final cardVentaNeta = _buildBentoCard(
+              title: 'Venta Neta Bar',
+              value: CurrencyHelper.formatWithSymbol(resumen.ingresoNetoEstimado, currencySymbol, currencyIso),
+              icon: Icons.account_balance_wallet_outlined,
+              color: const Color(0xFFE040FB),
+            );
+
+            final cardComisiones = _buildBentoCard(
+              title: 'Comisiones Staff',
+              value: CurrencyHelper.formatWithSymbol(resumen.comisionesPagadas, currencySymbol, currencyIso),
+              icon: Icons.people_outline,
+              color: const Color(0xFFFFB1C3),
+            );
+
+            final cardCantidadVentas = _buildBentoCard(
+              title: 'Cantidad Ventas',
+              value: '${resumen.cantidadVentas} ordenes',
+              icon: Icons.shopping_bag_outlined,
+              color: const Color(0xFFDBFCFF),
+            );
+
+            return ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              physics: const BouncingScrollPhysics(),
+              children: [
+                if (isWide)
+                  Row(
+                    children: [
+                      Expanded(child: cardVentasTotales),
+                      const SizedBox(width: 12),
+                      Expanded(child: cardVentaNeta),
+                      const SizedBox(width: 12),
+                      Expanded(child: cardComisiones),
+                      const SizedBox(width: 12),
+                      Expanded(child: cardCantidadVentas),
+                    ],
+                  )
+                else ...[
+                  Row(
+                    children: [
+                      Expanded(child: cardVentasTotales),
+                      const SizedBox(width: 12),
+                      Expanded(child: cardVentaNeta),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(child: cardComisiones),
+                      const SizedBox(width: 12),
+                      Expanded(child: cardCantidadVentas),
+                    ],
+                  ),
+                ],
+                const SizedBox(height: 12),
+
+                // Métodos de Pago Card
+                PaymentMethodsChart(breakdown: resumen.desglosePagos),
+              ],
+            );
+          },
         );
       },
     );

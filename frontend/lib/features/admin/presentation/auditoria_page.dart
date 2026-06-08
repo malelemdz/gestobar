@@ -77,8 +77,10 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
     String currencySymbol,
     String barTimezone,
   ) {
+    Widget listWidget;
+
     if (state.isLoading) {
-      return ListView.builder(
+      listWidget = ListView.builder(
         padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 24.0),
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 6,
@@ -91,10 +93,8 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
           ),
         ),
       );
-    }
-
-    if (state.errorMessage != null && state.logs.isEmpty) {
-      return SingleChildScrollView(
+    } else if (state.errorMessage != null && state.logs.isEmpty) {
+      listWidget = SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         child: SizedBox(
           height: MediaQuery.of(context).size.height - 250,
@@ -122,10 +122,8 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
           ),
         ),
       );
-    }
-
-    if (state.logs.isEmpty) {
-      return SingleChildScrollView(
+    } else if (state.logs.isEmpty) {
+      listWidget = SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         child: SizedBox(
           height: MediaQuery.of(context).size.height - 250,
@@ -144,42 +142,49 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
           ),
         ),
       );
-    }
-
-    return ListView.builder(
-      controller: _scrollController,
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 24.0),
-      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-      itemCount: state.logs.length + (state.hasMore ? 1 : 0),
-      itemBuilder: (context, index) {
-        if (index < state.logs.length) {
-          final log = state.logs[index];
-          return InkWell(
-            onTap: () => showLogDetail(context, log, currencyIso, currencySymbol, barTimezone),
-            borderRadius: BorderRadius.circular(16.0),
-            child: AuditoriaLogCard(
-              log: log,
-              currencyIso: currencyIso,
-              currencySymbol: currencySymbol,
-              barTimezone: barTimezone,
-            ),
-          );
-        } else {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24.0),
-            child: Center(
-              child: SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.0,
-                  color: AppTheme.liquidPrimary,
+    } else {
+      listWidget = ListView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 24.0),
+        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+        itemCount: state.logs.length + (state.hasMore ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index < state.logs.length) {
+            final log = state.logs[index];
+            return InkWell(
+              onTap: () => showLogDetail(context, log, currencyIso, currencySymbol, barTimezone),
+              borderRadius: BorderRadius.circular(16.0),
+              child: AuditoriaLogCard(
+                log: log,
+                currencyIso: currencyIso,
+                currencySymbol: currencySymbol,
+                barTimezone: barTimezone,
+              ),
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24.0),
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.0,
+                    color: AppTheme.liquidPrimary,
+                  ),
                 ),
               ),
-            ),
-          );
-        }
-      },
+            );
+          }
+        },
+      );
+    }
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 900),
+        child: listWidget,
+      ),
     );
   }
 }

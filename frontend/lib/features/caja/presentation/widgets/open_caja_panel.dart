@@ -50,7 +50,6 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
         : 'Barman Encargado';
 
     final String fecha = DateFormat('dd/MM/yyyy • HH:mm').format(widget.caja.fechaApertura.toLocal());
-    final bool isTablet = MediaQuery.of(context).size.width >= 750;
 
     final double totalVentasPos = widget.caja.totalVentasEfectivo + widget.caja.totalVentasTarjeta + widget.caja.totalVentasTrQr;
 
@@ -272,17 +271,33 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
 
         // 4. Contenido Activo
         _activeTab == 0
-            ? GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: cards.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: isTablet ? 3 : 2,
-                  crossAxisSpacing: 12.0,
-                  mainAxisSpacing: 12.0,
-                  childAspectRatio: isTablet ? 2.5 : 2.0,
-                ),
-                itemBuilder: (context, index) => cards[index],
+            ? LayoutBuilder(
+                builder: (context, constraints) {
+                  final double width = constraints.maxWidth;
+                  final int cols = width < 650
+                      ? 2
+                      : width < 950
+                          ? 3
+                          : 4;
+                  final double aspect = width < 650
+                      ? 2.0
+                      : width < 950
+                          ? 2.5
+                          : 2.6;
+
+                  return GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: cards.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: cols,
+                      crossAxisSpacing: 12.0,
+                      mainAxisSpacing: 12.0,
+                      childAspectRatio: aspect,
+                    ),
+                    itemBuilder: (context, index) => cards[index],
+                  );
+                },
               )
             : _activeTab == 1
                 ? MovimientosList(

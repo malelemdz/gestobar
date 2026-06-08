@@ -59,7 +59,7 @@ class MainDashboardView extends ConsumerWidget {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final bool isTablet = constraints.maxWidth >= 800;
+          final bool isTablet = constraints.maxWidth >= 1000;
 
           if (isTablet) {
             // ==========================================
