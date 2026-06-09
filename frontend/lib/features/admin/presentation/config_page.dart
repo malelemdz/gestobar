@@ -32,6 +32,7 @@ import 'widgets/tabs/permisos_tab.dart';
 import 'dialogs/tarifa_dialog.dart';
 import 'dialogs/delete_tarifa_dialog.dart';
 import 'dialogs/config_warning_sheet.dart';
+import 'package:gestobar/core/widgets/responsive_modal.dart';
 
 class ConfigPage extends ConsumerStatefulWidget {
   const ConfigPage({super.key});
@@ -72,6 +73,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
   // Control de permisos de pestañas por bar (SuperAdmin control)
   Map<String, bool> _permittedTabs = {};
   Map<String, bool> _initialPermittedTabs = {};
+  int _selectedTabIndex = 0;
 
   void _onInputChanged() {
     setState(() {}); // Re-evaluar cambios pendientes para habilitar el FAB
@@ -179,16 +181,13 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
   }
 
   Future<bool> _showUnifiedWarningModal(bool changedCurrency, bool changedTimezone) async {
-    final result = await showModalBottomSheet<bool>(
+    final result = await showResponsiveDialog<bool>(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return ConfigWarningSheet(
-          changedCurrency: changedCurrency,
-          changedTimezone: changedTimezone,
-        );
-      },
+      maxWidth: 450,
+      child: ConfigWarningSheet(
+        changedCurrency: changedCurrency,
+        changedTimezone: changedTimezone,
+      ),
     );
     return result ?? false;
   }
@@ -635,6 +634,127 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
           );
         }
 
+        final bool isTablet = MediaQuery.of(context).size.width >= 720;
+
+        if (isTablet) {
+          if (_selectedTabIndex >= tabs.length) {
+            _selectedTabIndex = 0;
+          }
+          return Scaffold(
+            floatingActionButton: PremiumFAB(
+              label: 'Guardar',
+              icon: Icons.save,
+              isEnabled: hasChanges,
+              onPressed: () {
+                if (hasChanges) _saveConfig();
+              },
+            ),
+            body: SafeArea(
+              bottom: false,
+              child: Form(
+                key: _formKey,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Left Column: Navigation sidebar
+                    Container(
+                      width: 260,
+                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          right: BorderSide(color: Colors.white.withOpacity(0.04), width: 1.0),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            'CONFIGURACIÓN',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFFB9CACB),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          Expanded(
+                            child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: tabs.length,
+                              itemBuilder: (context, index) {
+                                final tab = tabs[index];
+                                final bool isActive = _selectedTabIndex == index;
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedTabIndex = index;
+                                    });
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 150),
+                                    margin: const EdgeInsets.only(bottom: 8.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                    decoration: BoxDecoration(
+                                      color: isActive ? const Color(0xFF00F0FF).withOpacity(0.06) : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: isActive ? const Color(0xFF00F0FF).withOpacity(0.3) : Colors.transparent,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        AnimatedContainer(
+                                          duration: const Duration(milliseconds: 150),
+                                          width: 3,
+                                          height: isActive ? 16 : 0,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF00F0FF),
+                                            borderRadius: BorderRadius.circular(1.5),
+                                          ),
+                                        ),
+                                        if (isActive) const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            tab['text'] as String,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              color: isActive ? Colors.white : Colors.white38,
+                                              fontSize: 13,
+                                              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.chevron_right,
+                                          size: 16,
+                                          color: isActive ? const Color(0xFF00F0FF) : Colors.white10,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Right Column: Active Tab Content
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                        child: tabs[_selectedTabIndex]['widget'] as Widget,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
+        // Mobile Layout (Standard top TabBar)
         return DefaultTabController(
           length: tabs.length,
           child: Scaffold(
