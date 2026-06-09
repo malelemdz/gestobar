@@ -273,9 +273,23 @@ class _LocalTimeClockState extends State<LocalTimeClock> {
   Widget build(BuildContext context) {
     final timeStr = DateFormat('HH:mm:ss').format(_currentTime);
 
+    debugPrint('=== CLOCK DEBUG ===');
+    debugPrint('DateTime.now(): ${DateTime.now()}');
+    debugPrint('widget.timezone: ${widget.timezone}');
+    debugPrint('_currentTime: $_currentTime');
+    debugPrint('====================');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
+        Text(
+          'NOW: ${DateTime.now().toIso8601String()}',
+          style: const TextStyle(fontSize: 8, color: Colors.redAccent),
+        ),
+        Text(
+          'TZ: ${widget.timezone}',
+          style: const TextStyle(fontSize: 8, color: Colors.lightGreenAccent),
+        ),
         Text(
           _getFormattedDate(_currentTime).toUpperCase(),
           style: GoogleFonts.plusJakartaSans(
