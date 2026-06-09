@@ -369,6 +369,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
     final currencySymbol = ref.read(currencySymbolProvider);
     final currencyIso = ref.read(currencyIsoProvider);
     final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
+    final caja = ref.read(cajaStateProvider).value?.caja;
 
     if (isTabletLandscape) {
       showDialog(
@@ -385,6 +386,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                 currencySymbol: currencySymbol,
                 currencyIso: currencyIso,
                 isDialog: true,
+                caja: caja,
                 onConfirm: ({required monto, required metodoPago, required concepto}) async {
                   await ref.read(cajaStateProvider.notifier).registrarMovimiento(
                         monto: monto,
@@ -416,6 +418,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
             currencySymbol: currencySymbol,
             currencyIso: currencyIso,
             isDialog: false,
+            caja: caja,
             onConfirm: ({required monto, required metodoPago, required concepto}) async {
               await ref.read(cajaStateProvider.notifier).registrarMovimiento(
                     monto: monto,

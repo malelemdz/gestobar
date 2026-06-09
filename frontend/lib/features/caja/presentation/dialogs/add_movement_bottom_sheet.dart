@@ -4,11 +4,14 @@ import '../../../../core/utils/currency_helper.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/custom_toast.dart';
 
+import '../../models/caja_model.dart';
+
 class AddMovementBottomSheet extends StatefulWidget {
   final String tipo; // 'INGRESO' o 'EGRESO'
   final String currencySymbol;
   final String currencyIso;
   final bool isDialog;
+  final CajaModel? caja;
   final Future<void> Function({
     required double monto,
     required String metodoPago,
@@ -21,6 +24,7 @@ class AddMovementBottomSheet extends StatefulWidget {
     required this.currencySymbol,
     required this.currencyIso,
     this.isDialog = false,
+    this.caja,
     required this.onConfirm,
   });
 
@@ -39,6 +43,37 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
     _movMontoCtrl.dispose();
     _movConceptoCtrl.dispose();
     super.dispose();
+  }
+
+  double _getAvailableBalance(String metodo) {
+    if (widget.caja == null) return 0.0;
+    final c = widget.caja!;
+    
+    double balanceEfectivo = c.montoInicial + c.totalVentasEfectivo - c.totalComisionesDamas;
+    double balanceTarjeta = c.totalVentasTarjeta;
+    double balanceTrQr = c.totalVentasTrQr;
+
+    for (var mov in c.movimientos) {
+      final m = mov.metodoPago.toUpperCase();
+      final t = mov.tipo.toUpperCase();
+      final val = mov.monto;
+
+      if (t == 'INGRESO') {
+        if (m == 'EFECTIVO') balanceEfectivo += val;
+        else if (m == 'TARJETA') balanceTarjeta += val;
+        else if (m == 'TRANSFERENCIA' || m == 'TR/QR') balanceTrQr += val;
+      } else if (t == 'EGRESO') {
+        if (m == 'EFECTIVO') balanceEfectivo -= val;
+        else if (m == 'TARJETA') balanceTarjeta -= val;
+        else if (m == 'TRANSFERENCIA' || m == 'TR/QR') balanceTrQr -= val;
+      }
+    }
+
+    if (metodo == 'EFECTIVO') return balanceEfectivo;
+    if (metodo == 'TARJETA') return balanceTarjeta;
+    if (metodo == 'TR/QR' || metodo == 'TRANSFERENCIA') return balanceTrQr;
+    
+    return 0.0;
   }
 
   @override
@@ -138,7 +173,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
           ),
           const SizedBox(height: 6),
           Row(
-            children: ['EFECTIVO', 'TARJETA', 'TRANSFERENCIA'].map((metodo) {
+            children: ['EFECTIVO', 'TARJETA', 'TR/QR'].map((metodo) {
               final bool isSelected = _selectedMetodoPago == metodo;
               return Expanded(
                 child: Padding(
@@ -176,6 +211,34 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
               );
             }).toList(),
           ),
+          const SizedBox(height: 8.0),
+          if (widget.tipo == 'EGRESO' && widget.caja != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Disponible en $_selectedMetodoPago:',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Colors.white38,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    '${widget.currencySymbol} ${CurrencyHelper.formatAmount(_getAvailableBalance(_selectedMetodoPago), widget.currencyIso)}',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: _getAvailableBalance(_selectedMetodoPago) > 0
+                          ? const Color(0xFF00F0FF)
+                          : Colors.redAccent,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           const SizedBox(height: 12.0),
 
           // Input de Concepto / Motivo
@@ -225,11 +288,23 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
                         final double montoDouble = CurrencyHelper.parseAmount(textMonto, widget.currencyIso);
                         if (montoDouble <= 0) return;
 
+                        if (widget.tipo == 'EGRESO') {
+                          final disponible = _getAvailableBalance(_selectedMetodoPago);
+                          if (montoDouble > disponible + 0.01) {
+                            CustomToast.show(
+                              context,
+                              message: 'Saldo insuficiente en $_selectedMetodoPago (${widget.currencySymbol} ${CurrencyHelper.formatAmount(disponible, widget.currencyIso)})',
+                              type: ToastType.warning,
+                            );
+                            return;
+                          }
+                        }
+
                         setState(() => _isSubmitting = true);
                         try {
                           await widget.onConfirm(
                             monto: montoDouble,
-                            metodoPago: _selectedMetodoPago,
+                            metodoPago: _selectedMetodoPago == 'TR/QR' ? 'TRANSFERENCIA' : _selectedMetodoPago,
                             concepto: textConcepto,
                           );
                           if (mounted) Navigator.pop(context); // Close bottom sheet on success
