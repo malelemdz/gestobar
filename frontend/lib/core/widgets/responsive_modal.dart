@@ -49,8 +49,10 @@ class ResponsiveModalContainer extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 12),
-            if (!isDialog)
+            if (isDialog)
+              const SizedBox(height: 16)
+            else ...[
+              const SizedBox(height: 8),
               Center(
                 child: Container(
                   width: 48,
@@ -61,9 +63,11 @@ class ResponsiveModalContainer extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 10),
+            ],
             // Header
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 12, 24, 8),
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 10),
               child: Row(
                 children: [
                   Expanded(
@@ -118,12 +122,12 @@ class ResponsiveModalContainer extends StatelessWidget {
               Container(
                 padding: EdgeInsets.fromLTRB(
                   24,
-                  16,
+                  12,
                   24,
-                  16 + (isDialog ? 0.0 : MediaQuery.of(context).padding.bottom),
+                  12 + (isDialog ? 0.0 : MediaQuery.of(context).padding.bottom),
                 ),
                 decoration: const BoxDecoration(
-                  color: Color(0xFF16181C),
+                  color: Color(0xFF1E2024),
                 ),
                 child: footer!,
               ),
