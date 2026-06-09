@@ -294,6 +294,7 @@ export class CajasService {
       metodo_pago: createMovimientoDto.metodo_pago,
       concepto: createMovimientoDto.concepto,
       usuario_id: user.userId,
+      ...(createMovimientoDto.created_at ? { created_at: new Date(createMovimientoDto.created_at) } : {}),
     });
 
     const savedMov = await this.movimientoRepository.save(nuevoMovimiento);

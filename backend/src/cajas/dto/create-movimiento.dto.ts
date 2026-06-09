@@ -1,4 +1,4 @@
-import { IsNumber, Min, IsEnum, IsString, MinLength } from 'class-validator';
+import { IsNumber, Min, IsEnum, IsString, MinLength, IsOptional } from 'class-validator';
 import { TipoMovimiento, MetodoPagoMovimiento } from '../entities/caja-movimiento.entity';
 
 export class CreateMovimientoDto {
@@ -15,4 +15,8 @@ export class CreateMovimientoDto {
   @IsString({ message: 'El concepto debe ser texto' })
   @MinLength(3, { message: 'El concepto/motivo debe tener al menos 3 caracteres' })
   concepto: string;
+
+  @IsOptional()
+  @IsString()
+  created_at?: string;
 }

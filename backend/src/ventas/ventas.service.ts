@@ -131,6 +131,7 @@ export class VentasService {
       monto_tarjeta,
       monto_tr_qr,
       detalles,
+      ...(createVentaDto.fecha ? { fecha: new Date(createVentaDto.fecha) } : {}),
     });
 
     const savedVenta = await this.ventaRepository.save(venta);

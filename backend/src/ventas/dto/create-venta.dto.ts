@@ -27,4 +27,8 @@ export class CreateVentaDto {
   @IsNumber()
   @Min(0)
   monto_tr_qr?: number;
+
+  @IsOptional()
+  @IsString()
+  fecha?: string;
 }
