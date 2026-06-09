@@ -8,6 +8,7 @@ import '../../../../core/utils/currency_helper.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/styled_text_field.dart';
 import '../../../../core/widgets/responsive_modal.dart';
+import '../../../../core/widgets/custom_toast.dart';
 import '../../../pos/models/category_model.dart';
 import '../../../pos/models/product_model.dart';
 import '../../../pos/providers/catalog_provider.dart';
@@ -100,8 +101,10 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
         setState(() {
           _isUploadingImage = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al subir imagen: $e'), backgroundColor: Colors.redAccent),
+        CustomToast.show(
+          context,
+          message: 'Error al subir imagen: $e',
+          type: ToastType.error,
         );
       }
     }
@@ -710,8 +713,23 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
       }
     }
 
-    if (overallSuccess && mounted) {
-      Navigator.pop(context);
+    if (mounted) {
+      if (overallSuccess) {
+        CustomToast.show(
+          context,
+          message: widget.product == null
+              ? 'Producto registrado con éxito'
+              : 'Producto actualizado con éxito',
+          type: ToastType.success,
+        );
+        Navigator.pop(context);
+      } else {
+        CustomToast.show(
+          context,
+          message: 'Error al guardar el producto',
+          type: ToastType.error,
+        );
+      }
     }
   }
 }

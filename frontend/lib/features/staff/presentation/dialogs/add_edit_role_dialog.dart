@@ -5,6 +5,7 @@ import '../../../admin/data/models/role_model.dart';
 import '../../../admin/providers/staff_provider.dart';
 import '../../../../core/widgets/styled_text_field.dart';
 import '../../../../core/widgets/responsive_modal.dart';
+import '../../../../core/widgets/custom_toast.dart';
 
 Future<void> showAddEditRoleDialog({
   required BuildContext context,
@@ -154,15 +155,13 @@ Future<void> showAddEditRoleDialog({
           onPressed: isSaving
               ? null
               : () async {
-                  final scaffoldMessenger = ScaffoldMessenger.of(context);
                   final navigator = Navigator.of(context);
 
                   if (nameController.text.trim().isEmpty) {
-                    scaffoldMessenger.showSnackBar(
-                      const SnackBar(
-                        content: Text('Por favor escribe un nombre para el rol'),
-                        backgroundColor: Colors.orangeAccent,
-                      ),
+                    CustomToast.show(
+                      context,
+                      message: 'Por favor escribe un nombre para el rol',
+                      type: ToastType.warning,
                     );
                     return;
                   }
@@ -190,24 +189,22 @@ Future<void> showAddEditRoleDialog({
                   }
 
                   if (success) {
-                    navigator.pop();
-                    scaffoldMessenger.showSnackBar(
-                      SnackBar(
-                        content: Text(isEdit
-                            ? 'Rol actualizado correctamente'
-                            : 'Rol personalizado creado con éxito'),
-                        backgroundColor: Colors.green,
-                      ),
+                    CustomToast.show(
+                      context,
+                      message: isEdit
+                          ? 'Rol actualizado correctamente'
+                          : 'Rol personalizado creado con éxito',
+                      type: ToastType.success,
                     );
+                    navigator.pop();
                   } else {
                     setModalState(() {
                       isSaving = false;
                     });
-                    scaffoldMessenger.showSnackBar(
-                      const SnackBar(
-                        content: Text('Error al guardar el rol personalizado'),
-                        backgroundColor: Colors.redAccent,
-                      ),
+                    CustomToast.show(
+                      context,
+                      message: 'Error al guardar el rol personalizado',
+                      type: ToastType.error,
                     );
                   }
                 },

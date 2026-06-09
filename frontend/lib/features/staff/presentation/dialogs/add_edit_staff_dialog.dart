@@ -9,6 +9,7 @@ import '../../../../core/constants/api_constants.dart';
 import '../../../../core/widgets/styled_text_field.dart';
 import 'reset_password_bottom_sheet.dart';
 import '../../../../core/widgets/responsive_modal.dart';
+import '../../../../core/widgets/custom_toast.dart';
 
 Future<void> showAddEditStaffDialog({
   required BuildContext context,
@@ -488,11 +489,10 @@ Future<void> showAddEditStaffDialog({
                   }
 
                   if (!isEdit && localImagePath == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Por favor selecciona una foto de perfil'),
-                        backgroundColor: Colors.orangeAccent,
-                      ),
+                    CustomToast.show(
+                      context,
+                      message: 'Por favor selecciona una foto de perfil',
+                      type: ToastType.warning,
                     );
                     return;
                   }
@@ -540,35 +540,32 @@ Future<void> showAddEditStaffDialog({
                     }
 
                     if (success && context.mounted) {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(isEdit
-                              ? 'Usuario actualizado con éxito'
-                              : 'Usuario registrado con éxito'),
-                          backgroundColor: Colors.green,
-                        ),
+                      CustomToast.show(
+                        context,
+                        message: isEdit
+                            ? 'Usuario actualizado con éxito'
+                            : 'Usuario registrado con éxito',
+                        type: ToastType.success,
                       );
+                      Navigator.pop(context);
                     } else {
                       setModalState(() {
                         isSaving = false;
                       });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Error al guardar el usuario. Comprueba tus datos.'),
-                          backgroundColor: Colors.redAccent,
-                        ),
+                      CustomToast.show(
+                        context,
+                        message: 'Error al guardar el usuario. Comprueba tus datos.',
+                        type: ToastType.error,
                       );
                     }
                   } catch (e) {
                     setModalState(() {
                       isSaving = false;
                     });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Error: ${e.toString()}'),
-                        backgroundColor: Colors.redAccent,
-                      ),
+                    CustomToast.show(
+                      context,
+                      message: 'Error: ${e.toString()}',
+                      type: ToastType.error,
                     );
                   }
                 },
