@@ -74,53 +74,69 @@ class _AddEditCategoryDialogState extends ConsumerState<AddEditCategoryDialog> {
       ),
     );
 
-    final Widget footer = SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () async {
-          if (_nameController.text.trim().isEmpty) return;
-
-          final notifier = ref.read(menuAdminProvider.notifier);
-          bool success = false;
-
-          if (widget.category == null) {
-            final currentCats = ref.read(categoriesProvider).value ?? [];
-            final nextOrder = currentCats.isEmpty
-                ? 1
-                : currentCats.map((c) => c.orden).reduce((a, b) => a > b ? a : b) + 1;
-
-            success = await notifier.createCategory(
-              _nameController.text.trim(),
-              nextOrder,
-            );
-          } else {
-            success = await notifier.updateCategory(
-              widget.category!.id,
-              _nameController.text.trim(),
-              widget.category!.orden,
-            );
-          }
-
-          if (success && mounted) {
-            Navigator.pop(context);
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF00F0FF),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+    final Widget footer = Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          style: TextButton.styleFrom(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+          child: Text(
+            'Cancelar',
+            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
-        child: Text(
-          'Guardar Categoría',
-          style: GoogleFonts.plusJakartaSans(
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF0c0e12),
-            fontSize: 16,
+        const SizedBox(width: 12),
+        ElevatedButton(
+          onPressed: () async {
+            if (_nameController.text.trim().isEmpty) return;
+
+            final navigator = Navigator.of(context);
+            final notifier = ref.read(menuAdminProvider.notifier);
+            bool success = false;
+
+            if (widget.category == null) {
+              final currentCats = ref.read(categoriesProvider).value ?? [];
+              final nextOrder = currentCats.isEmpty
+                  ? 1
+                  : currentCats.map((c) => c.orden).reduce((a, b) => a > b ? a : b) + 1;
+
+              success = await notifier.createCategory(
+                _nameController.text.trim(),
+                nextOrder,
+              );
+            } else {
+              success = await notifier.updateCategory(
+                widget.category!.id,
+                _nameController.text.trim(),
+                widget.category!.orden,
+              );
+            }
+
+            if (success && mounted) {
+              navigator.pop();
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF00F0FF),
+            foregroundColor: const Color(0xFF0C0E12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            elevation: 0,
+          ),
+          child: Text(
+            'Guardar',
+            style: GoogleFonts.plusJakartaSans(
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF0c0e12),
+            ),
           ),
         ),
-      ),
+      ],
     );
 
     return ResponsiveModalContainer(
