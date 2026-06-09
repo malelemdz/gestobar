@@ -80,78 +80,7 @@ class _PosPageState extends ConsumerState<PosPage> {
       ),
     );
 
-    return Stack(
-      children: [
-        scaffold,
-        if (_isCheckingOut)
-          Positioned.fill(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: Container(
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1E2024).withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.2), width: 1.5),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF00F0FF).withOpacity(0.1),
-                            blurRadius: 30,
-                            spreadRadius: 2,
-                          )
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(
-                            width: 48,
-                            height: 48,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
-                              strokeWidth: 4,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            'PROCESANDO PAGO...',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 2.0,
-                              fontSize: 13,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            'Por favor espera un momento',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: Colors.white38,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-      ],
-    );
+    return scaffold;
   }
 
   Widget _buildMobileFloatingCartButton(BuildContext context, CartState cart, String currencyIso) {
@@ -586,6 +515,90 @@ class _PosPageState extends ConsumerState<PosPage> {
     debugPrint('⚡ [POS Checkout] Iniciando proceso de venta para ${cart.items.length} ítems. Método de pago: ${cart.metodoPago}');
     setState(() => _isCheckingOut = true);
 
+    bool dialogClosed = false;
+    BuildContext? dialogContext;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.5),
+      builder: (ctx) {
+        dialogContext = ctx;
+        if (dialogClosed) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (ctx.mounted) Navigator.pop(ctx);
+          });
+        }
+        return PopScope(
+          canPop: false,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    color: Colors.transparent,
+                  ),
+                ),
+              ),
+              Center(
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E2024).withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.2), width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF00F0FF).withOpacity(0.1),
+                          blurRadius: 30,
+                          spreadRadius: 2,
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
+                            strokeWidth: 4,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          'PROCESANDO PAGO...',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 2.0,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Por favor espera un momento',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white38,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
     try {
       final repository = ref.read(catalogRepositoryProvider);
 
@@ -601,6 +614,12 @@ class _PosPageState extends ConsumerState<PosPage> {
 
       ref.read(cartProvider.notifier).clear();
 
+      // Close the loading dialog
+      dialogClosed = true;
+      if (dialogContext != null && dialogContext!.mounted) {
+        Navigator.pop(dialogContext!);
+      }
+
       if (modalContext != null && modalContext.mounted) {
         try {
           if (Navigator.canPop(modalContext)) {
@@ -612,11 +631,19 @@ class _PosPageState extends ConsumerState<PosPage> {
         }
       }
 
-      showSuccessDialog(context);
+      if (mounted) {
+        showSuccessDialog(context);
+      }
     } catch (e, stackTrace) {
       debugPrint('❌ [POS Checkout] Error al realizar venta: $e');
       debugPrint('$stackTrace');
       
+      // Close the loading dialog
+      dialogClosed = true;
+      if (dialogContext != null && dialogContext!.mounted) {
+        Navigator.pop(dialogContext!);
+      }
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
