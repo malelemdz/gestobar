@@ -365,7 +365,7 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
                     ),
                     const SizedBox(height: 8.0),
                     _buildVerticalTabButton(0, 'BALANCE GENERAL', Icons.analytics_outlined),
-                    _buildVerticalTabButton(1, 'BITÁCORA DE EVENTOS', Icons.swap_vert_outlined),
+                    _buildVerticalTabButton(1, 'REGISTRO DE MOVIMIENTOS', Icons.swap_vert_outlined),
                     if (widget.showHistorialTab)
                       _buildVerticalTabButton(2, 'HISTORIAL DE CAJAS', Icons.history),
                   ],
