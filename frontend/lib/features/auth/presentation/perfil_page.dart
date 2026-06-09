@@ -314,12 +314,13 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
     final authState = ref.watch(authProvider) as AuthAuthenticated;
     final user = authState.user;
     final roleColor = _getRoleColor(user.rolNombre);
+    final bool isTablet = MediaQuery.of(context).size.width >= 720;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
+    Widget buildAvatarAndName({required bool showChangePassword}) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(height: 12.0),
           // Interactive Avatar Stack
           Center(
             child: Stack(
@@ -405,6 +406,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4.0),
           Container(
@@ -424,79 +426,161 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
               ),
             ),
           ),
-          const SizedBox(height: 24.0),
+          if (showChangePassword) ...[
+            const SizedBox(height: 32.0),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.lock_reset, color: Color(0xFF00F0FF)),
+                label: const Text(
+                  'CAMBIAR CONTRASEÑA',
+                  style: TextStyle(
+                    color: Color(0xFF00F0FF),
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
+                    fontSize: 12,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFF00F0FF), width: 1.2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () => _showChangePasswordBottomSheet(context),
+              ),
+            ),
+          ],
+        ],
+      );
+    }
 
-          TechnicalSection(
-            title: 'Cuenta y Seguridad',
+    final List<Widget> rightColumnChildren = [
+      TechnicalSection(
+        title: 'Cuenta y Seguridad',
+        accentColor: roleColor,
+        children: [
+          TechnicalRow(
+            icon: Icons.alternate_email,
+            label: 'Nombre de Usuario',
+            value: '@${user.username}',
             accentColor: roleColor,
-            children: [
-              TechnicalRow(
-                icon: Icons.alternate_email,
-                label: 'Nombre de Usuario',
-                value: '@${user.username}',
-                accentColor: roleColor,
-              ),
-              TechnicalRow(
-                icon: Icons.security_outlined,
-                label: 'Rango de Acceso / Rol',
-                value: user.rolNombre.toUpperCase(),
-                accentColor: roleColor,
-              ),
-              TechnicalRow(
-                icon: Icons.apartment_outlined,
-                label: 'Sucursal bar asignado',
-                value: user.barId?.isNotEmpty == true ? (user.barId!.length > 8 ? user.barId!.substring(0, 8) : user.barId!) : 'Global / Principal',
-                accentColor: roleColor,
-                showDivider: false,
-              ),
-            ],
           ),
-
-          TechnicalSection(
-            title: 'Datos Personales y de Contacto',
+          TechnicalRow(
+            icon: Icons.security_outlined,
+            label: 'Rango de Acceso / Rol',
+            value: user.rolNombre.toUpperCase(),
             accentColor: roleColor,
-            children: [
-              TechnicalRow(
-                icon: Icons.badge_outlined,
-                label: 'DNI / Cédula de Identificación',
-                value: user.identificacion?.isNotEmpty == true ? user.identificacion! : 'No registrado',
-                accentColor: roleColor,
-              ),
-              TechnicalRow(
-                icon: Icons.phone_android,
-                label: 'Celular / Teléfono',
-                value: user.celular?.isNotEmpty == true ? user.celular! : 'No registrado',
-                accentColor: roleColor,
-              ),
-              TechnicalRow(
-                icon: Icons.flag_outlined,
-                label: 'Nacionalidad',
-                value: user.nacionalidad?.isNotEmpty == true ? user.nacionalidad! : 'No registrado',
-                accentColor: roleColor,
-              ),
-              TechnicalRow(
-                icon: Icons.wc_outlined,
-                label: 'Género',
-                value: user.genero == 'MASCULINO'
-                    ? 'Masculino'
-                    : user.genero == 'FEMENINO'
-                        ? 'Femenino'
-                        : 'Prefiero no decirlo',
-                accentColor: roleColor,
-              ),
-              TechnicalRow(
-                icon: Icons.location_on_outlined,
-                label: 'Dirección Domiciliaria',
-                value: user.direccion?.isNotEmpty == true ? user.direccion! : 'No registrada',
-                accentColor: roleColor,
-                showDivider: false,
-              ),
-            ],
           ),
+          TechnicalRow(
+            icon: Icons.apartment_outlined,
+            label: 'Sucursal bar asignado',
+            value: user.barId?.isNotEmpty == true
+                ? (user.barId!.length > 8 ? user.barId!.substring(0, 8) : user.barId!)
+                : 'Global / Principal',
+            accentColor: roleColor,
+            showDivider: false,
+          ),
+        ],
+      ),
+      TechnicalSection(
+        title: 'Datos Personales y de Contacto',
+        accentColor: roleColor,
+        children: [
+          TechnicalRow(
+            icon: Icons.badge_outlined,
+            label: 'DNI / Cédula de Identificación',
+            value: user.identificacion?.isNotEmpty == true ? user.identificacion! : 'No registrado',
+            accentColor: roleColor,
+          ),
+          TechnicalRow(
+            icon: Icons.phone_android,
+            label: 'Celular / Teléfono',
+            value: user.celular?.isNotEmpty == true ? user.celular! : 'No registrado',
+            accentColor: roleColor,
+          ),
+          TechnicalRow(
+            icon: Icons.flag_outlined,
+            label: 'Nacionalidad',
+            value: user.nacionalidad?.isNotEmpty == true ? user.nacionalidad! : 'No registrado',
+            accentColor: roleColor,
+          ),
+          TechnicalRow(
+            icon: Icons.wc_outlined,
+            label: 'Género',
+            value: user.genero == 'MASCULINO'
+                ? 'Masculino'
+                : user.genero == 'FEMENINO'
+                    ? 'Femenino'
+                    : 'Prefiero no decirlo',
+            accentColor: roleColor,
+          ),
+          TechnicalRow(
+            icon: Icons.location_on_outlined,
+            label: 'Dirección Domiciliaria',
+            value: user.direccion?.isNotEmpty == true ? user.direccion! : 'No registrada',
+            accentColor: roleColor,
+            showDivider: false,
+          ),
+        ],
+      ),
+    ];
 
+    if (isTablet) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 1100),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Left side: User profile header summary card
+                SizedBox(
+                  width: 320,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 24.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF16181C),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white.withOpacity(0.05), width: 1.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: roleColor.withOpacity(0.02),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: buildAvatarAndName(showChangePassword: true),
+                  ),
+                ),
+                const SizedBox(width: 32),
+                // Right side: Profile data sheets
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: rightColumnChildren,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Mobile Layout
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        children: [
           const SizedBox(height: 12.0),
-
-          // Outlined Button to Change Password via Bottom Sheet
+          buildAvatarAndName(showChangePassword: false),
+          const SizedBox(height: 24.0),
+          ...rightColumnChildren,
+          const SizedBox(height: 12.0),
           SizedBox(
             width: double.infinity,
             height: 48,
