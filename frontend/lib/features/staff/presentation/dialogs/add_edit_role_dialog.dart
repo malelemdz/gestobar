@@ -11,6 +11,7 @@ Future<void> showAddEditRoleDialog({
   required WidgetRef ref,
   RoleModel? role,
 }) async {
+  ref.invalidate(permissionsListProvider);
   final bool isEdit = role != null;
 
   final nameController = TextEditingController(text: role?.nombre);
@@ -18,16 +19,9 @@ Future<void> showAddEditRoleDialog({
 
   bool isSaving = false;
 
-  // Load available permissions
-  final permissionsAsync = ref.read(permissionsListProvider);
-
   final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
 
   Widget buildModalContent(BuildContext context, StateSetter setModalState, bool isDialog) {
-    final viewInsets = MediaQuery.of(context).viewInsets;
-    final size = MediaQuery.of(context).size;
-    final maxModalHeight = size.height * (isDialog ? 0.75 : 0.8);
-
     final Widget roleBody = SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
       child: Column(
@@ -66,58 +60,63 @@ Future<void> showAddEditRoleDialog({
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white.withOpacity(0.08)),
             ),
-            child: permissionsAsync.when(
-              loading: () => const Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
-                ),
-              ),
-              error: (err, _) => Center(
-                child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent)),
-              ),
-              data: (permissions) {
-                if (permissions.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'No hay permisos disponibles',
-                      style: GoogleFonts.inter(color: Colors.white30, fontSize: 13),
+            child: Consumer(
+              builder: (context, ref, child) {
+                final permissionsAsyncVal = ref.watch(permissionsListProvider);
+                return permissionsAsyncVal.when(
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
                     ),
-                  );
-                }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: permissions.length,
-                  itemBuilder: (context, index) {
-                    final perm = permissions[index];
-                    final isChecked = selectedPermissionIds.contains(perm.id);
-
-                    return Theme(
-                      data: Theme.of(context).copyWith(
-                        unselectedWidgetColor: Colors.white24,
-                      ),
-                      child: CheckboxListTile(
-                        title: Text(
-                          perm.nombre,
-                          style: GoogleFonts.inter(
-                            color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: isChecked ? FontWeight.bold : FontWeight.normal,
-                          ),
+                  ),
+                  error: (err, _) => Center(
+                    child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent)),
+                  ),
+                  data: (permissions) {
+                    if (permissions.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No hay permisos disponibles',
+                          style: GoogleFonts.inter(color: Colors.white30, fontSize: 13),
                         ),
-                        value: isChecked,
-                        activeColor: const Color(0xFF00F0FF),
-                        checkColor: Colors.black,
-                        onChanged: (val) {
-                          setModalState(() {
-                            if (val == true) {
-                              selectedPermissionIds.add(perm.id);
-                            } else {
-                              selectedPermissionIds.remove(perm.id);
-                            }
-                          });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
-                      ),
+                      );
+                    }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: permissions.length,
+                      itemBuilder: (context, index) {
+                        final perm = permissions[index];
+                        final isChecked = selectedPermissionIds.contains(perm.id);
+
+                        return Theme(
+                          data: Theme.of(context).copyWith(
+                            unselectedWidgetColor: Colors.white24,
+                          ),
+                          child: CheckboxListTile(
+                            title: Text(
+                              perm.nombre,
+                              style: GoogleFonts.inter(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: isChecked ? FontWeight.bold : FontWeight.normal,
+                              ),
+                            ),
+                            value: isChecked,
+                            activeColor: const Color(0xFF00F0FF),
+                            checkColor: Colors.black,
+                            onChanged: (val) {
+                              setModalState(() {
+                                if (val == true) {
+                                  selectedPermissionIds.add(perm.id);
+                                } else {
+                                  selectedPermissionIds.remove(perm.id);
+                                }
+                              });
+                            },
+                            controlAffinity: ListTileControlAffinity.leading,
+                          ),
+                        );
+                      },
                     );
                   },
                 );
@@ -155,8 +154,11 @@ Future<void> showAddEditRoleDialog({
           onPressed: isSaving
               ? null
               : () async {
+                  final scaffoldMessenger = ScaffoldMessenger.of(context);
+                  final navigator = Navigator.of(context);
+
                   if (nameController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    scaffoldMessenger.showSnackBar(
                       const SnackBar(
                         content: Text('Por favor escribe un nombre para el rol'),
                         backgroundColor: Colors.orangeAccent,
@@ -187,9 +189,9 @@ Future<void> showAddEditRoleDialog({
                         );
                   }
 
-                  if (success && context.mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
+                  if (success) {
+                    navigator.pop();
+                    scaffoldMessenger.showSnackBar(
                       SnackBar(
                         content: Text(isEdit
                             ? 'Rol actualizado correctamente'
@@ -201,7 +203,7 @@ Future<void> showAddEditRoleDialog({
                     setModalState(() {
                       isSaving = false;
                     });
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    scaffoldMessenger.showSnackBar(
                       const SnackBar(
                         content: Text('Error al guardar el rol personalizado'),
                         backgroundColor: Colors.redAccent,

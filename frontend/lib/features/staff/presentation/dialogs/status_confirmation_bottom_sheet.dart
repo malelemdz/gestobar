@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../auth/models/user_model.dart';
+import '../../../../core/widgets/responsive_modal.dart';
 
 Future<bool?> showStatusConfirmationBottomSheet({
   required BuildContext context,
@@ -15,31 +16,42 @@ Future<bool?> showStatusConfirmationBottomSheet({
   final confirmText = targetState ? 'Habilitar' : 'Deshabilitar';
   final icon = targetState ? Icons.check_circle_outline : Icons.block_outlined;
 
-  return showModalBottomSheet<bool>(
+  final bool isTablet = MediaQuery.of(context).size.width >= 720;
+
+  return showResponsiveDialog<bool>(
     context: context,
-    backgroundColor: const Color(0xFF1E2024),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
-    builder: (context) {
-      return SafeArea(
+    maxWidth: 450,
+    child: Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024),
+        borderRadius: isTablet
+            ? BorderRadius.circular(24.0)
+            : const BorderRadius.vertical(top: Radius.circular(24.0)),
+        border: isTablet
+            ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+            : Border(top: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0)),
+      ),
+      child: SafeArea(
+        top: false,
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: Container(
-                  width: 48,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(2),
+              if (!isTablet) ...[
+                Center(
+                  child: Container(
+                    width: 48,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
+                const SizedBox(height: 24),
+              ],
               Row(
                 children: [
                   Container(
@@ -79,11 +91,15 @@ Future<bool?> showStatusConfirmationBottomSheet({
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, false),
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    ),
                     child: Text(
                       'Cancelar',
                       style: GoogleFonts.inter(
                         color: Colors.white60,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -94,7 +110,7 @@ Future<bool?> showStatusConfirmationBottomSheet({
                       backgroundColor: confirmColor,
                       foregroundColor: targetState ? const Color(0xFF0C0E12) : Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(24),
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       elevation: 0,
@@ -111,7 +127,7 @@ Future<bool?> showStatusConfirmationBottomSheet({
             ],
           ),
         ),
-      );
-    },
+      ),
+    ),
   );
 }

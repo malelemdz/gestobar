@@ -41,9 +41,18 @@ final rolesListProvider = StateNotifierProvider<RolesNotifier, AsyncValue<List<R
   );
 });
 
-final permissionsListProvider = FutureProvider<List<PermissionModel>>((ref) async {
+final permissionsListProvider = FutureProvider.autoDispose<List<PermissionModel>>((ref) async {
   final repo = ref.watch(staffRepositoryProvider);
-  return repo.getPermissions();
+  try {
+    print('[DEBUG] permissionsListProvider: Fetching permissions from repository...');
+    final result = await repo.getPermissions();
+    print('[DEBUG] permissionsListProvider: Fetch successfully returned ${result.length} permissions.');
+    return result;
+  } catch (e, st) {
+    print('[DEBUG] permissionsListProvider error: $e');
+    print('[DEBUG] permissionsListProvider stacktrace: $st');
+    rethrow;
+  }
 });
 
 class StaffNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
