@@ -147,154 +147,122 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final isWide = constraints.maxWidth > 550;
-
-                final basicInputsWidget = Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'NOMBRE DEL PRODUCTO',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: AppTheme.liquidOnSurfaceVariant,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.1,
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'FOTO EN PORTADA',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: AppTheme.liquidOnSurfaceVariant,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.1,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: _isUploadingImage ? null : _pickImage,
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF22252A),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.08),
+                          width: 1,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    StyledTextField(
-                      controller: _nameController,
-                      hintText: 'Ej. Mojito Cubano Classic',
-                      validator: (val) =>
-                          val == null || val.trim().isEmpty ? 'El nombre es obligatorio' : null,
-                    ),
-                  ],
-                );
-
-                final coverImageWidget = Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'FOTO EN PORTADA',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: AppTheme.liquidOnSurfaceVariant,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.1,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    GestureDetector(
-                      onTap: _isUploadingImage ? null : _pickImage,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF22252A),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.08),
-                              width: 1,
-                            ),
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              if (_localImagePath != null)
-                                Image.file(
-                                  File(_localImagePath!),
-                                  fit: BoxFit.cover,
-                                )
-                              else if (_fotoUrl != null && _fotoUrl!.isNotEmpty)
-                                Image.network(
-                                  ApiConstants.resolveImageUrl(_fotoUrl)!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.broken_image_outlined,
-                                          color: Colors.redAccent.withOpacity(0.4),
-                                          size: 32,
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Text(
-                                          'Foto no disponible (Toca para cambiar)',
-                                          style: GoogleFonts.inter(
-                                            color: Colors.white30,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  },
-                                )
-                              else
-                                Column(
+                      clipBehavior: Clip.antiAlias,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          if (_localImagePath != null)
+                            Image.file(
+                              File(_localImagePath!),
+                              fit: BoxFit.cover,
+                            )
+                          else if (_fotoUrl != null && _fotoUrl!.isNotEmpty)
+                            Image.network(
+                              ApiConstants.resolveImageUrl(_fotoUrl)!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
-                                      Icons.add_photo_alternate_outlined,
-                                      color: Colors.white.withOpacity(0.3),
+                                      Icons.broken_image_outlined,
+                                      color: Colors.redAccent.withOpacity(0.4),
                                       size: 32,
                                     ),
                                     const SizedBox(height: 6),
                                     Text(
-                                      'Elegir Imagen (WebP)',
+                                      'Foto no disponible (Toca para cambiar)',
                                       style: GoogleFonts.inter(
                                         color: Colors.white30,
-                                        fontSize: 11,
+                                        fontSize: 10,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     )
                                   ],
+                                );
+                              },
+                            )
+                          else
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_photo_alternate_outlined,
+                                  color: Colors.white.withOpacity(0.3),
+                                  size: 32,
                                 ),
-                              if (_isUploadingImage)
-                                Positioned.fill(
-                                  child: Container(
-                                    color: Colors.black54,
-                                    child: const Center(
-                                      child: CircularProgressIndicator(
-                                        color: Color(0xFF00F0FF),
-                                      ),
-                                    ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Elegir Imagen (WebP)',
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white30,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
+                            ),
+                          if (_isUploadingImage)
+                            Positioned.fill(
+                              child: Container(
+                                color: Colors.black54,
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Color(0xFF00F0FF),
                                   ),
                                 ),
-                            ],
-                          ),
-                        ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                  ],
-                );
-
-                if (isWide) {
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(flex: 3, child: basicInputsWidget),
-                      const SizedBox(width: 20),
-                      Expanded(flex: 2, child: coverImageWidget),
-                    ],
-                  );
-                } else {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      coverImageWidget,
-                      const SizedBox(height: 16),
-                      basicInputsWidget,
-                    ],
-                  );
-                }
-              },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'NOMBRE DEL PRODUCTO',
+              style: GoogleFonts.plusJakartaSans(
+                color: AppTheme.liquidOnSurfaceVariant,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.1,
+              ),
+            ),
+            const SizedBox(height: 6),
+            StyledTextField(
+              controller: _nameController,
+              hintText: 'Ej. Mojito Cubano Classic',
+              validator: (val) =>
+                  val == null || val.trim().isEmpty ? 'El nombre es obligatorio' : null,
             ),
             const SizedBox(height: 16),
 
@@ -433,28 +401,34 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF22252A),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.white.withOpacity(0.06)),
-                                    ),
-                                    child: TextFormField(
-                                      initialValue: variant['nombre'],
-                                      style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
-                                      decoration: const InputDecoration(
-                                        hintText: 'Ej. Vaso, Botella, Único...',
-                                        hintStyle: TextStyle(color: Colors.white24, fontSize: 12),
-                                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                        border: InputBorder.none,
+                                  TextFormField(
+                                    initialValue: variant['nombre'],
+                                    style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: const Color(0xFF22252A),
+                                      hintText: 'Ej. Vaso, Botella, Único...',
+                                      hintStyle: TextStyle(color: Colors.white.withOpacity(0.2), fontSize: 12),
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
                                       ),
-                                      onChanged: (val) {
-                                        variant['nombre'] = val.trim();
-                                      },
-                                      validator: (val) => val == null || val.trim().isEmpty
-                                          ? 'El nombre de variante es obligatorio'
-                                          : null,
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
+                                      ),
                                     ),
+                                    onChanged: (val) {
+                                      variant['nombre'] = val.trim();
+                                    },
+                                    validator: (val) => val == null || val.trim().isEmpty
+                                        ? 'El nombre de variante es obligatorio'
+                                        : null,
                                   ),
                                 ],
                               ),
@@ -518,69 +492,73 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                   maxCrossAxisExtent: 220,
                                   mainAxisSpacing: 8,
                                   crossAxisSpacing: 8,
-                                  childAspectRatio: 2.2,
+                                  childAspectRatio: 1.8,
                                 ),
                                 itemCount: tariffs.length,
                                 itemBuilder: (context, tIndex) {
                                   final tariff = tariffs[tIndex];
                                   final double price = pricesMap[tariff.id] ?? 0.0;
 
-                                  return Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF22252A),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.white.withOpacity(0.06)),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          tariff.nombre.toUpperCase(),
-                                          style: GoogleFonts.plusJakartaSans(
-                                            color: tariff.esDefault
-                                                ? const Color(0xFF00F0FF)
-                                                : Colors.white60,
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        tariff.nombre.toUpperCase(),
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: tariff.esDefault
+                                              ? const Color(0xFF00F0FF)
+                                              : Colors.white60,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 9,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Expanded(
+                                        child: TextFormField(
+                                          initialValue: price > 0 ? CurrencyHelper.formatAmount(price, currencyIso) : '',
+                                          style: GoogleFonts.jetBrainsMono(
+                                            color: Colors.white,
+                                            fontSize: 13,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 9,
                                           ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Expanded(
-                                          child: TextFormField(
-                                            initialValue: price > 0 ? CurrencyHelper.formatAmount(price, currencyIso) : '',
-                                            style: GoogleFonts.jetBrainsMono(
-                                              color: Colors.white,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
+                                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                          inputFormatters: [
+                                            CurrencyInputFormatter(iso: currencyIso),
+                                          ],
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: const Color(0xFF22252A),
+                                            hintText: CurrencyHelper.getDecimalDigits(currencyIso) == 0 ? '0' : '0.00',
+                                            hintStyle: TextStyle(color: Colors.white.withOpacity(0.2), fontSize: 13),
+                                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                              borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
                                             ),
-                                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                            inputFormatters: [
-                                              CurrencyInputFormatter(iso: currencyIso),
-                                            ],
-                                            decoration: InputDecoration(
-                                              hintText: CurrencyHelper.getDecimalDigits(currencyIso) == 0 ? '0' : '0.00',
-                                              hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
-                                              isDense: true,
-                                              contentPadding: EdgeInsets.zero,
-                                              border: InputBorder.none,
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                              borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
                                             ),
-                                            onChanged: (val) {
-                                              final double pNum = CurrencyHelper.parseAmount(val, currencyIso);
-                                              pricesMap[tariff.id] = pNum;
-                                            },
-                                            validator: (val) {
-                                              if (val == null || val.trim().isEmpty) return 'Requerido';
-                                              final double pNum = CurrencyHelper.parseAmount(val, currencyIso);
-                                              if (pNum <= 0) return 'Inválido';
-                                              return null;
-                                            },
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                              borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
+                                            ),
                                           ),
+                                          onChanged: (val) {
+                                            final double pNum = CurrencyHelper.parseAmount(val, currencyIso);
+                                            pricesMap[tariff.id] = pNum;
+                                          },
+                                          validator: (val) {
+                                            if (val == null || val.trim().isEmpty) return 'Requerido';
+                                            final double pNum = CurrencyHelper.parseAmount(val, currencyIso);
+                                            if (pNum <= 0) return 'Inválido';
+                                            return null;
+                                          },
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   );
                                 },
                               ),
