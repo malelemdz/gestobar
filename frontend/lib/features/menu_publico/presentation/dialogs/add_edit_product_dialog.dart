@@ -210,24 +210,38 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                               },
                             )
                           else
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.add_photo_alternate_outlined,
-                                  color: Colors.white.withOpacity(0.3),
-                                  size: 32,
+                            Center(
+                              child: SizedBox(
+                                width: 52,
+                                height: 52,
+                                child: Stack(
+                                  children: [
+                                    Positioned.fill(
+                                      child: Icon(
+                                        Icons.image_outlined,
+                                        color: Colors.white.withOpacity(0.3),
+                                        size: 44,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(2),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFF00F0FF),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.add,
+                                          size: 12,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  'Elegir Imagen (WebP)',
-                                  style: GoogleFonts.inter(
-                                    color: Colors.white30,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              ],
+                              ),
                             ),
                           if (_isUploadingImage)
                             Positioned.fill(
@@ -376,10 +390,10 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                     margin: const EdgeInsets.only(bottom: 16),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF16181C),
+                      color: const Color(0xFF1E2024),
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.04),
+                        color: Colors.white.withOpacity(0.06),
                         width: 1,
                       ),
                     ),
