@@ -254,6 +254,16 @@ class _LocalTimeClockState extends State<LocalTimeClock> {
   }
 
   @override
+  void didUpdateWidget(LocalTimeClock oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.timezone != widget.timezone) {
+      setState(() {
+        _currentTime = TimezoneHelper.convertToBarTime(DateTime.now(), widget.timezone);
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _timer.cancel();
     super.dispose();
@@ -261,10 +271,7 @@ class _LocalTimeClockState extends State<LocalTimeClock> {
 
   @override
   Widget build(BuildContext context) {
-    final hh = _currentTime.hour.toString().padLeft(2, '0');
-    final mm = _currentTime.minute.toString().padLeft(2, '0');
-    final ss = _currentTime.second.toString().padLeft(2, '0');
-    final timeStr = '$hh:$mm:$ss';
+    final timeStr = DateFormat('HH:mm:ss').format(_currentTime);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
