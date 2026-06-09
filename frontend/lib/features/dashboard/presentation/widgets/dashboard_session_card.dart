@@ -241,18 +241,16 @@ class _LocalTimeClockState extends State<LocalTimeClock> {
   }
 
   String _getFormattedDate(DateTime date) {
-    try {
-      final dayName = DateFormat('EEEE', 'es').format(date);
-      final monthName = DateFormat('MMMM', 'es').format(date);
-      final dayNum = date.day;
-
-      final capDay = dayName.isEmpty ? '' : dayName[0].toUpperCase() + dayName.substring(1);
-      final capMonth = monthName.isEmpty ? '' : monthName[0].toUpperCase() + monthName.substring(1);
-
-      return '$capDay, $dayNum de $capMonth';
-    } catch (_) {
-      return DateFormat('dd/MM/yyyy').format(date);
-    }
+    final months = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    final days = [
+      'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'
+    ];
+    final dayStr = days[date.weekday - 1];
+    final monthStr = months[date.month - 1];
+    return '$dayStr, ${date.day} de $monthStr';
   }
 
   @override
@@ -263,7 +261,11 @@ class _LocalTimeClockState extends State<LocalTimeClock> {
 
   @override
   Widget build(BuildContext context) {
-    final timeStr = DateFormat('HH:mm:ss').format(_currentTime);
+    final hh = _currentTime.hour.toString().padLeft(2, '0');
+    final mm = _currentTime.minute.toString().padLeft(2, '0');
+    final ss = _currentTime.second.toString().padLeft(2, '0');
+    final timeStr = '$hh:$mm:$ss';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
