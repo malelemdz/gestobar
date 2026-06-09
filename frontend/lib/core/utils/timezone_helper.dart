@@ -3,6 +3,18 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:intl/intl.dart';
 
 class TimezoneHelper {
+  static Duration _serverOffset = Duration.zero;
+
+  /// Sets the global offset between device time and server time.
+  static void setServerOffset(Duration offset) {
+    _serverOffset = offset;
+  }
+
+  /// Gets the current synchronized server time.
+  static DateTime get now {
+    return DateTime.now().add(_serverOffset);
+  }
+
   /// Converts a [DateTime] (usually UTC) to a [DateTime] representing the same moment in
   /// the target [timezoneName] (e.g. 'America/La_Paz', 'Europe/Madrid').
   static DateTime convertToBarTime(DateTime utcDateTime, String timezoneName) {

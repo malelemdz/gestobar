@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../data/models/analytics_resumen_model.dart';
+import '../../../core/utils/timezone_helper.dart';
 import '../data/models/product_ranking_model.dart';
 import '../data/models/dama_ranking_model.dart';
 import '../data/repositories/analytics_repository.dart';
@@ -17,7 +18,7 @@ final analyticsFilterProvider = StateProvider<AnalyticsDateFilter>((ref) => Anal
 
 final analyticsDateRangeProvider = StateProvider<DateTimeRange>((ref) {
   final filter = ref.watch(analyticsFilterProvider);
-  final now = DateTime.now();
+  final now = TimezoneHelper.now;
 
   switch (filter) {
     case AnalyticsDateFilter.last7Days:

@@ -257,34 +257,86 @@ class _LocalTimeClockState extends ConsumerState<LocalTimeClock> {
 
   @override
   Widget build(BuildContext context) {
-    final offset = ref.watch(serverTimeOffsetProvider).value ?? Duration.zero;
-    final syncedTime = DateTime.now().add(offset);
-    final barTime = TimezoneHelper.convertToBarTime(syncedTime, widget.timezone);
-    final timeStr = DateFormat('HH:mm:ss').format(barTime);
+    final offsetState = ref.watch(serverTimeOffsetProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          _getFormattedDate(barTime).toUpperCase(),
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 9.5,
-            fontWeight: FontWeight.bold,
-            color: Colors.white38,
-            letterSpacing: 0.5,
+    return offsetState.when(
+      data: (offset) {
+        final syncedTime = DateTime.now().add(offset);
+        final barTime = TimezoneHelper.convertToBarTime(syncedTime, widget.timezone);
+        final timeStr = DateFormat('HH:mm:ss').format(barTime);
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              _getFormattedDate(barTime).toUpperCase(),
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 9.5,
+                fontWeight: FontWeight.bold,
+                color: Colors.white38,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 4.0),
+            Text(
+              timeStr,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF00F0FF),
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () {
+        return const SizedBox(
+          height: 32,
+          width: 80,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(
+                strokeWidth: 1.5,
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
+              ),
+            ),
           ),
-        ),
-        const SizedBox(height: 4.0),
-        Text(
-          timeStr,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 16.0,
-            fontWeight: FontWeight.w800,
-            color: const Color(0xFF00F0FF),
-            letterSpacing: 0.5,
-          ),
-        ),
-      ],
+        );
+      },
+      error: (_, __) {
+        final syncedTime = DateTime.now();
+        final barTime = TimezoneHelper.convertToBarTime(syncedTime, widget.timezone);
+        final timeStr = DateFormat('HH:mm:ss').format(barTime);
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              _getFormattedDate(barTime).toUpperCase(),
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 9.5,
+                fontWeight: FontWeight.bold,
+                color: Colors.white38,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 4.0),
+            Text(
+              timeStr,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF00F0FF),
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

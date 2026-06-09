@@ -1,5 +1,6 @@
 import '../../../features/auth/models/user_model.dart';
 import '../../../features/pos/models/variant_model.dart';
+import '../../../core/utils/timezone_helper.dart';
 
 class VentaModel {
   final String id;
@@ -51,7 +52,7 @@ class VentaModel {
           : double.tryParse(json['monto_tr_qr']?.toString() ?? '') ?? 0.0,
       fecha: json['fecha'] != null
           ? DateTime.parse(json['fecha'] as String)
-          : DateTime.now(),
+          : TimezoneHelper.now,
       usuario: json['usuario'] != null
           ? UserModel.fromJson(json['usuario'] as Map<String, dynamic>)
           : null,

@@ -12,6 +12,7 @@ import 'features/splash/presentation/splash_screen.dart';
 import 'features/auth/presentation/login_view.dart';
 import 'features/dashboard/presentation/main_dashboard_view.dart';
 import 'features/admin/presentation/bar_selector_view.dart';
+import 'features/admin/providers/bar_provider.dart';
 
 void main() async {
   // Asegura que las llamadas a canales nativos de Flutter (como Secure Storage)
@@ -49,6 +50,9 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Iniciar la sincronización del tiempo con el servidor lo antes posible
+    ref.watch(serverTimeOffsetProvider);
+
     // Escuchar reactivamente el estado de autenticación
     final authState = ref.watch(authProvider);
 

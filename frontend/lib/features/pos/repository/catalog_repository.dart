@@ -8,6 +8,7 @@ import '../../../core/local_db/hive_entities/category_hive.dart';
 import '../../../core/local_db/hive_entities/product_hive.dart';
 import '../../../core/local_db/hive_entities/sync_queue_hive.dart';
 import '../../../core/local_db/mappers/catalog_mapper.dart';
+import '../../../core/utils/timezone_helper.dart';
 
 import '../models/category_model.dart';
 import '../models/product_model.dart';
@@ -166,7 +167,7 @@ class CatalogRepository {
           ..method = 'POST'
           ..endpoint = '/ventas'
           ..payload = jsonEncode(payload)
-          ..createdAt = DateTime.now()
+          ..createdAt = TimezoneHelper.now
           ..retries = 0;
         await box.add(task);
         return; // Termina exitosamente para la UI
@@ -185,7 +186,7 @@ class CatalogRepository {
         ..method = 'POST'
         ..endpoint = '/ventas'
         ..payload = jsonEncode(payload)
-        ..createdAt = DateTime.now()
+        ..createdAt = TimezoneHelper.now
         ..retries = 0;
       await box.add(task);
     }

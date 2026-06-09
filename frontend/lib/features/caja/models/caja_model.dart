@@ -1,4 +1,5 @@
 import '../../../features/auth/models/user_model.dart';
+import '../../../core/utils/timezone_helper.dart';
 
 class CajaMovimientoModel {
   final String id;
@@ -39,7 +40,7 @@ class CajaMovimientoModel {
           : null,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
-          : DateTime.now(),
+          : TimezoneHelper.now,
     );
   }
 }
@@ -108,7 +109,7 @@ class CajaModel {
       estado: json['estado'] as String? ?? 'CERRADA',
       fechaApertura: json['fecha_apertura'] != null
           ? DateTime.parse(json['fecha_apertura'] as String)
-          : DateTime.now(),
+          : TimezoneHelper.now,
       fechaCierre: json['fecha_cierre'] != null
           ? DateTime.parse(json['fecha_cierre'] as String)
           : null,
