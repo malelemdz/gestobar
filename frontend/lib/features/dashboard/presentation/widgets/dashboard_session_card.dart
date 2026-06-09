@@ -240,6 +240,21 @@ class _LocalTimeClockState extends State<LocalTimeClock> {
     });
   }
 
+  String _getFormattedDate(DateTime date) {
+    try {
+      final dayName = DateFormat('EEEE', 'es').format(date);
+      final monthName = DateFormat('MMMM', 'es').format(date);
+      final dayNum = date.day;
+
+      final capDay = dayName.isEmpty ? '' : dayName[0].toUpperCase() + dayName.substring(1);
+      final capMonth = monthName.isEmpty ? '' : monthName[0].toUpperCase() + monthName.substring(1);
+
+      return '$capDay, $dayNum de $capMonth';
+    } catch (_) {
+      return DateFormat('dd/MM/yyyy').format(date);
+    }
+  }
+
   @override
   void dispose() {
     _timer.cancel();
@@ -253,7 +268,7 @@ class _LocalTimeClockState extends State<LocalTimeClock> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          'HORA LOCAL',
+          _getFormattedDate(_currentTime).toUpperCase(),
           style: GoogleFonts.plusJakartaSans(
             fontSize: 9.5,
             fontWeight: FontWeight.bold,
