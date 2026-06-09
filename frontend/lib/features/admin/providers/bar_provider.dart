@@ -49,6 +49,20 @@ final barTimezoneProvider = Provider<String>((ref) {
   );
 });
 
+// Proveedor de offset de tiempo con el servidor
+final serverTimeOffsetProvider = FutureProvider<Duration>((ref) async {
+  try {
+    final dio = ref.watch(dioProvider);
+    final response = await dio.get('/time');
+    final serverTimeStr = response.data['serverTime'] as String;
+    final serverTime = DateTime.parse(serverTimeStr).toUtc();
+    final deviceTime = DateTime.now().toUtc();
+    return serverTime.difference(deviceTime);
+  } catch (e) {
+    return Duration.zero;
+  }
+});
+
 
 class CurrentBarNotifier extends StateNotifier<AsyncValue<BarModel>> {
   final BarsRepository repository;

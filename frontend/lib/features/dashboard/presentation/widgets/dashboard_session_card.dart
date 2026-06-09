@@ -215,27 +215,23 @@ class DashboardSessionCard extends ConsumerWidget {
   }
 }
 
-class LocalTimeClock extends StatefulWidget {
+class LocalTimeClock extends ConsumerStatefulWidget {
   final String timezone;
   const LocalTimeClock({super.key, required this.timezone});
 
   @override
-  State<LocalTimeClock> createState() => _LocalTimeClockState();
+  ConsumerState<LocalTimeClock> createState() => _LocalTimeClockState();
 }
 
-class _LocalTimeClockState extends State<LocalTimeClock> {
+class _LocalTimeClockState extends ConsumerState<LocalTimeClock> {
   late Timer _timer;
-  late DateTime _currentTime;
 
   @override
   void initState() {
     super.initState();
-    _currentTime = TimezoneHelper.convertToBarTime(DateTime.now(), widget.timezone);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
-        setState(() {
-          _currentTime = TimezoneHelper.convertToBarTime(DateTime.now(), widget.timezone);
-        });
+        setState(() {});
       }
     });
   }
@@ -254,16 +250,6 @@ class _LocalTimeClockState extends State<LocalTimeClock> {
   }
 
   @override
-  void didUpdateWidget(LocalTimeClock oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.timezone != widget.timezone) {
-      setState(() {
-        _currentTime = TimezoneHelper.convertToBarTime(DateTime.now(), widget.timezone);
-      });
-    }
-  }
-
-  @override
   void dispose() {
     _timer.cancel();
     super.dispose();
@@ -271,13 +257,16 @@ class _LocalTimeClockState extends State<LocalTimeClock> {
 
   @override
   Widget build(BuildContext context) {
-    final timeStr = DateFormat('HH:mm:ss').format(_currentTime);
+    final offset = ref.watch(serverTimeOffsetProvider).value ?? Duration.zero;
+    final syncedTime = DateTime.now().add(offset);
+    final barTime = TimezoneHelper.convertToBarTime(syncedTime, widget.timezone);
+    final timeStr = DateFormat('HH:mm:ss').format(barTime);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          _getFormattedDate(_currentTime).toUpperCase(),
+          _getFormattedDate(barTime).toUpperCase(),
           style: GoogleFonts.plusJakartaSans(
             fontSize: 9.5,
             fontWeight: FontWeight.bold,
