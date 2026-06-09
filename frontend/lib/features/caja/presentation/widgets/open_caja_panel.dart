@@ -157,7 +157,7 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
                   const Icon(Icons.add_circle, size: 16, color: Color(0xFF121214)),
                   const SizedBox(width: 8),
                   Text(
-                    'INGRESO CHICA',
+                    'REG. INGRESO',
                     style: GoogleFonts.plusJakartaSans(
                       color: const Color(0xFF121214),
                       fontWeight: FontWeight.w900,
@@ -194,7 +194,7 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
                   const Icon(Icons.remove_circle, size: 16, color: Color(0xFF121214)),
                   const SizedBox(width: 8),
                   Text(
-                    'EGRESO CHICA',
+                    'REG. EGRESO',
                     style: GoogleFonts.plusJakartaSans(
                       color: const Color(0xFF121214),
                       fontWeight: FontWeight.w900,

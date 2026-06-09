@@ -76,6 +76,55 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
     return 0.0;
   }
 
+  Widget _buildBalanceItem(String metodo, double balance) {
+    final bool isSelected = _selectedMetodoPago == metodo;
+    final formatted = CurrencyHelper.formatAmount(balance, widget.currencyIso);
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        decoration: BoxDecoration(
+          color: isSelected 
+              ? const Color(0xFF00F0FF).withOpacity(0.06) 
+              : const Color(0xFF282A30),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected 
+                ? const Color(0xFF00F0FF).withOpacity(0.4) 
+                : Colors.white.withOpacity(0.03),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              metodo,
+              style: GoogleFonts.plusJakartaSans(
+                color: isSelected ? const Color(0xFF00F0FF) : Colors.white30,
+                fontSize: 8,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 2),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                '${widget.currencySymbol} $formatted',
+                style: GoogleFonts.plusJakartaSans(
+                  color: balance > 0 
+                      ? (isSelected ? const Color(0xFF00F0FF) : Colors.white70)
+                      : Colors.redAccent.withOpacity(0.8),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -212,33 +261,22 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
             }).toList(),
           ),
           const SizedBox(height: 8.0),
-          if (widget.tipo == 'EGRESO' && widget.caja != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Disponible en $_selectedMetodoPago:',
-                    style: GoogleFonts.plusJakartaSans(
-                      color: Colors.white38,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    '${widget.currencySymbol} ${CurrencyHelper.formatAmount(_getAvailableBalance(_selectedMetodoPago), widget.currencyIso)}',
-                    style: GoogleFonts.plusJakartaSans(
-                      color: _getAvailableBalance(_selectedMetodoPago) > 0
-                          ? const Color(0xFF00F0FF)
-                          : Colors.redAccent,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+          if (widget.tipo == 'EGRESO' && widget.caja != null) ...[
+            Text(
+              'Saldos Disponibles en Caja:',
+              style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                _buildBalanceItem('EFECTIVO', _getAvailableBalance('EFECTIVO')),
+                const SizedBox(width: 8),
+                _buildBalanceItem('TARJETA', _getAvailableBalance('TARJETA')),
+                const SizedBox(width: 8),
+                _buildBalanceItem('TR/QR', _getAvailableBalance('TR/QR')),
+              ],
+            ),
+          ],
           const SizedBox(height: 12.0),
 
           // Input de Concepto / Motivo
