@@ -7,6 +7,7 @@ import '../../admin/providers/menu_admin_provider.dart';
 import 'widgets/categories_panel.dart';
 import 'widgets/products_panel.dart';
 import 'dialogs/add_edit_product_dialog.dart';
+import '../../../core/widgets/custom_toast.dart';
 
 class MenuPage extends ConsumerStatefulWidget {
   const MenuPage({super.key});
@@ -33,19 +34,17 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     // Listen to success/error messages from Menu Admin Provider
     ref.listen<MenuAdminState>(menuAdminProvider, (previous, next) {
       if (next.successMessage != null && next.successMessage != previous?.successMessage) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next.successMessage!),
-            backgroundColor: AppTheme.colorSuccess,
-          ),
+        CustomToast.show(
+          context,
+          message: next.successMessage!,
+          type: ToastType.success,
         );
       }
       if (next.errorMessage != null && next.errorMessage != previous?.errorMessage) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next.errorMessage!),
-            backgroundColor: AppTheme.colorDanger,
-          ),
+        CustomToast.show(
+          context,
+          message: next.errorMessage!,
+          type: ToastType.error,
         );
       }
     });

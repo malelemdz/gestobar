@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/widgets/custom_toast.dart';
 import '../../admin/providers/menu_admin_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/auth_state.dart';
@@ -63,11 +64,10 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
       if (fotoUrl != null) {
         await ref.read(authProvider.notifier).updateProfile(fotoUrl: fotoUrl);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Foto de perfil actualizada correctamente'),
-              backgroundColor: Colors.green,
-            ),
+          CustomToast.show(
+            context,
+            message: 'Foto de perfil actualizada correctamente',
+            type: ToastType.success,
           );
         }
       } else {
@@ -75,11 +75,10 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
           _localImagePath = null; // Revertir vista previa
         });
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Error al subir la foto de perfil'),
-              backgroundColor: Colors.redAccent,
-            ),
+          CustomToast.show(
+            context,
+            message: 'Error al subir la foto de perfil',
+            type: ToastType.error,
           );
         }
       }
@@ -88,11 +87,10 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
         _localImagePath = null;
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.redAccent,
-          ),
+        CustomToast.show(
+          context,
+          message: 'Error: ${e.toString()}',
+          type: ToastType.error,
         );
       }
     } finally {
@@ -239,19 +237,17 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                           );
                       if (mounted) {
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Contraseña actualizada con éxito'),
-                            backgroundColor: Colors.green,
-                          ),
+                        CustomToast.show(
+                          context,
+                          message: 'Contraseña actualizada con éxito',
+                          type: ToastType.success,
                         );
                       }
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Error: ${e.toString()}'),
-                          backgroundColor: Colors.redAccent,
-                        ),
+                      CustomToast.show(
+                        context,
+                        message: 'Error: ${e.toString()}',
+                        type: ToastType.error,
                       );
                     } finally {
                       setModalState(() {

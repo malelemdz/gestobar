@@ -8,6 +8,7 @@ import '../../../../core/constants/api_constants.dart';
 import '../../../../core/utils/currency_helper.dart';
 import '../../../../core/widgets/drink_placeholder.dart';
 import '../../../caja/providers/caja_provider.dart';
+import '../../../../core/widgets/custom_toast.dart';
 
 class ProductCard extends ConsumerWidget {
   final ProductModel product;
@@ -45,15 +46,11 @@ class ProductCard extends ConsumerWidget {
         precioUnitario: precioFinal,
         splitSameVariants: splitSameVariants,
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '✓ ${product.nombre} añadido al ticket.',
-            style: GoogleFonts.plusJakartaSans(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 1),
-          backgroundColor: const Color(0xFF7000FF),
-        ),
+      CustomToast.show(
+        context,
+        message: '✓ ${product.nombre} añadido al ticket.',
+        type: ToastType.success,
+        duration: const Duration(seconds: 1),
       );
     } else {
       final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
@@ -115,15 +112,11 @@ class ProductCard extends ConsumerWidget {
                         splitSameVariants: splitSameVariants,
                       );
                       Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            '✓ ${product.nombre} (${variant.nombre}) añadido.',
-                            style: GoogleFonts.plusJakartaSans(color: Colors.white),
-                          ),
-                          duration: const Duration(seconds: 1),
-                          backgroundColor: const Color(0xFF7000FF),
-                        ),
+                      CustomToast.show(
+                        context,
+                        message: '✓ ${product.nombre} (${variant.nombre}) añadido.',
+                        type: ToastType.success,
+                        duration: const Duration(seconds: 1),
                       );
                     },
                     borderRadius: BorderRadius.circular(12),

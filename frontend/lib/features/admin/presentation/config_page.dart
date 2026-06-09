@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/widgets/custom_toast.dart';
 
 import 'package:gestobar/core/theme/app_theme.dart';
 import 'package:gestobar/core/utils/currency_helper.dart';
@@ -173,8 +174,10 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
         }
       });
       if (url == null && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al subir la imagen')),
+        CustomToast.show(
+          context,
+          message: 'Error al subir la imagen',
+          type: ToastType.error,
         );
       }
     }
@@ -330,15 +333,10 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
         ref.invalidate(ventasActivasProvider);
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Configuración guardada y precios migrados. La interfaz se actualizará automáticamente.',
-                style: GoogleFonts.inter(color: Colors.white),
-              ),
-              backgroundColor: const Color(0xFF7000FF),
-              duration: const Duration(seconds: 3),
-            ),
+          CustomToast.show(
+            context,
+            message: 'Configuración guardada y precios migrados. La interfaz se actualizará automáticamente.',
+            type: ToastType.success,
           );
         }
       }

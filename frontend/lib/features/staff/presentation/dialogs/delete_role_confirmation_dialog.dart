@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../admin/data/models/role_model.dart';
 import '../../../admin/providers/staff_provider.dart';
+import '../../../../core/widgets/custom_toast.dart';
 
 Future<void> showDeleteRoleConfirmationDialog({
   required BuildContext context,
@@ -28,14 +29,21 @@ Future<void> showDeleteRoleConfirmationDialog({
             style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white),
             onPressed: () async {
               final success = await ref.read(rolesListProvider.notifier).deleteRole(role.id);
-              if (success && context.mounted) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Rol eliminado correctamente'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+              if (context.mounted) {
+                if (success) {
+                  CustomToast.show(
+                    context,
+                    message: 'Rol eliminado correctamente',
+                    type: ToastType.success,
+                  );
+                  Navigator.pop(context);
+                } else {
+                  CustomToast.show(
+                    context,
+                    message: 'Error al eliminar el rol',
+                    type: ToastType.error,
+                  );
+                }
               }
             },
             child: const Text('ELIMINAR ROL'),

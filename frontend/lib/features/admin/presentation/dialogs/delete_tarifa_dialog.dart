@@ -6,6 +6,8 @@ import 'package:gestobar/core/theme/app_theme.dart';
 import 'package:gestobar/features/admin/data/models/tarifa_model.dart';
 import 'package:gestobar/features/admin/providers/tarifas_provider.dart';
 
+import 'package:gestobar/core/widgets/custom_toast.dart';
+
 class DeleteTarifaDialog extends ConsumerWidget {
   final TarifaModel tarifa;
 
@@ -46,14 +48,20 @@ class DeleteTarifaDialog extends ConsumerWidget {
               try {
                 await repo.deleteTarifa(tarifa.id);
                 ref.invalidate(barTarifasProvider);
-                if (context.mounted) Navigator.pop(context);
+                if (context.mounted) {
+                  CustomToast.show(
+                    context,
+                    message: 'Tarifa eliminada con éxito',
+                    type: ToastType.success,
+                  );
+                  Navigator.pop(context);
+                }
               } catch (e) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Error al eliminar tarifa: $e'),
-                      backgroundColor: AppTheme.colorDanger,
-                    ),
+                  CustomToast.show(
+                    context,
+                    message: 'Error al eliminar tarifa: $e',
+                    type: ToastType.error,
                   );
                 }
               }

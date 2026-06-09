@@ -4,6 +4,7 @@ import '../../../auth/models/user_model.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../auth/providers/auth_state.dart';
 import '../../../admin/providers/staff_provider.dart';
+import '../../../../core/widgets/custom_toast.dart';
 import '../../../../core/constants/api_constants.dart';
 
 class StaffBentoCard extends ConsumerWidget {
@@ -187,17 +188,35 @@ class StaffBentoCard extends ConsumerWidget {
                         inactiveTrackColor: Colors.white10,
                         onChanged: (val) async {
                           if (isMe && !val) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('No puedes deshabilitar tu propio usuario.'),
-                                backgroundColor: Colors.orange,
-                              ),
+                            CustomToast.show(
+                              context,
+                              message: 'No puedes deshabilitar tu propio usuario.',
+                              type: ToastType.warning,
                             );
                             return;
                           }
                           final confirm = await onShowStatusConfirmation(context, user, val);
                           if (confirm == true) {
-                            ref.read(staffListProvider.notifier).toggleStaffStatus(user.id, val);
+                            final success = await ref
+                                .read(staffListProvider.notifier)
+                                .toggleStaffStatus(user.id, val);
+                            if (context.mounted) {
+                              if (success) {
+                                CustomToast.show(
+                                  context,
+                                  message: val
+                                      ? 'Usuario habilitado con éxito'
+                                      : 'Usuario deshabilitado con éxito',
+                                  type: ToastType.success,
+                                );
+                              } else {
+                                CustomToast.show(
+                                  context,
+                                  message: 'Error al cambiar estado del usuario',
+                                  type: ToastType.error,
+                                );
+                              }
+                            }
                           }
                         },
                       ),

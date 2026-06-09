@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/utils/currency_helper.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/custom_toast.dart';
 
 class AddMovementBottomSheet extends StatefulWidget {
   final String tipo; // 'INGRESO' o 'EGRESO'
@@ -213,11 +214,10 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
                         final textMonto = _movMontoCtrl.text.trim();
                         final textConcepto = _movConceptoCtrl.text.trim();
                         if (textMonto.isEmpty || textConcepto.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('⚠️ Por favor completa el monto y el concepto.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                              backgroundColor: AppTheme.colorDanger,
-                            ),
+                          CustomToast.show(
+                            context,
+                            message: 'Por favor completa el monto y el concepto.',
+                            type: ToastType.warning,
                           );
                           return;
                         }
@@ -235,11 +235,10 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
                           if (mounted) Navigator.pop(context); // Close bottom sheet on success
                         } catch (e) {
                           if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('⚠️ Error: ${e.toString().replaceAll('Exception: ', '')}', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                                backgroundColor: AppTheme.colorDanger,
-                              ),
+                            CustomToast.show(
+                              context,
+                              message: 'Error: ${e.toString().replaceAll('Exception: ', '')}',
+                              type: ToastType.error,
                             );
                           }
                         } finally {

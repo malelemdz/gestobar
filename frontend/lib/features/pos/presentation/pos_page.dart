@@ -10,6 +10,7 @@ import '../../../core/utils/currency_helper.dart';
 import 'widgets/catalog_section.dart';
 import 'widgets/cart_section.dart';
 import 'dialogs/success_dialog.dart';
+import '../../../core/widgets/custom_toast.dart';
 
 class PosPage extends ConsumerStatefulWidget {
   const PosPage({super.key});
@@ -645,15 +646,10 @@ class _PosPageState extends ConsumerState<PosPage> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '⚠️ Error en la venta: ${e.toString().replaceAll('Exception: ', '')}',
-              style: GoogleFonts.plusJakartaSans(color: Colors.white),
-            ),
-            backgroundColor: AppTheme.colorDanger,
-            duration: const Duration(seconds: 4),
-          ),
+        CustomToast.show(
+          context,
+          message: 'Error en la venta: ${e.toString().replaceAll('Exception: ', '')}',
+          type: ToastType.error,
         );
       }
     } finally {

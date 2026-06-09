@@ -6,6 +6,8 @@ import 'package:gestobar/core/theme/app_theme.dart';
 import 'package:gestobar/features/admin/data/models/tarifa_model.dart';
 import 'package:gestobar/features/admin/providers/tarifas_provider.dart';
 
+import 'package:gestobar/core/widgets/custom_toast.dart';
+
 class TarifaDialog extends ConsumerStatefulWidget {
   final String barId;
   final TarifaModel? tarifa;
@@ -172,14 +174,22 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
                   );
                 }
                 ref.invalidate(barTarifasProvider);
-                if (context.mounted) Navigator.pop(context);
+                if (context.mounted) {
+                  CustomToast.show(
+                    context,
+                    message: widget.tarifa == null
+                        ? 'Tarifa creada con éxito'
+                        : 'Tarifa actualizada con éxito',
+                    type: ToastType.success,
+                  );
+                  Navigator.pop(context);
+                }
               } catch (e) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Error al guardar tarifa: $e'),
-                      backgroundColor: AppTheme.colorDanger,
-                    ),
+                  CustomToast.show(
+                    context,
+                    message: 'Error al guardar tarifa: $e',
+                    type: ToastType.error,
                   );
                 }
               }

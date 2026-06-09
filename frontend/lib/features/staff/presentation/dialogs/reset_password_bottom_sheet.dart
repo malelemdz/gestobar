@@ -5,6 +5,7 @@ import '../../../auth/models/user_model.dart';
 import '../../../admin/providers/staff_provider.dart';
 import '../../../../core/widgets/styled_text_field.dart';
 import '../../../../core/widgets/responsive_modal.dart';
+import '../../../../core/widgets/custom_toast.dart';
 
 Future<void> showResetPasswordBottomSheet({
   required BuildContext context,
@@ -132,22 +133,20 @@ Future<void> showResetPasswordBottomSheet({
                   });
 
                   if (success && context.mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Contraseña restablecida con éxito'),
-                        backgroundColor: Colors.green,
-                      ),
+                    CustomToast.show(
+                      context,
+                      message: 'Contraseña restablecida con éxito',
+                      type: ToastType.success,
                     );
+                    Navigator.pop(context);
                   } else {
                     setModalState(() {
                       isSaving = false;
                     });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Error al restablecer la contraseña'),
-                        backgroundColor: Colors.redAccent,
-                      ),
+                    CustomToast.show(
+                      context,
+                      message: 'Error al restablecer la contraseña',
+                      type: ToastType.error,
                     );
                   }
                 },

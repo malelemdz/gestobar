@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/widgets/custom_toast.dart';
 import '../../../core/utils/currency_helper.dart';
 import '../../admin/providers/bar_provider.dart';
 import '../models/caja_model.dart';
@@ -237,11 +238,10 @@ class _CajaPageState extends ConsumerState<CajaPage> {
   Future<void> _handleApertura() async {
     final String text = _montoController.text.trim();
     if (text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('⚠️ Por favor ingresa el monto inicial de gaveta (digita 0 si está vacía).', style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold)),
-          backgroundColor: AppTheme.colorDanger,
-        ),
+      CustomToast.show(
+        context,
+        message: 'Por favor ingresa el monto inicial de gaveta (digita 0 si está vacía).',
+        type: ToastType.warning,
       );
       return;
     }
@@ -249,11 +249,10 @@ class _CajaPageState extends ConsumerState<CajaPage> {
     final String iso = ref.read(currencyIsoProvider);
     final double monto = CurrencyHelper.parseAmount(text, iso);
     if (monto < 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Monto inicial inválido.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-          backgroundColor: AppTheme.colorDanger,
-        ),
+      CustomToast.show(
+        context,
+        message: 'Monto inicial inválido.',
+        type: ToastType.error,
       );
       return;
     }
@@ -264,22 +263,19 @@ class _CajaPageState extends ConsumerState<CajaPage> {
       await ref.read(cajaStateProvider.notifier).abrirCaja(monto);
       _montoController.clear();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('✓ Caja abierta con éxito.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-            backgroundColor: const Color(0xFF7000FF),
-          ),
+        CustomToast.show(
+          context,
+          message: 'Caja abierta con éxito.',
+          type: ToastType.success,
         );
       }
       ref.invalidate(cajaHistoryProvider); // Refrescar historial
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('⚠️ Error: ${e.toString().replaceAll('Exception: ', '')}',
-                style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-            backgroundColor: AppTheme.colorDanger,
-          ),
+        CustomToast.show(
+          context,
+          message: 'Error: ${e.toString().replaceAll('Exception: ', '')}',
+          type: ToastType.error,
         );
       }
     } finally {
@@ -300,12 +296,10 @@ class _CajaPageState extends ConsumerState<CajaPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('⚠️ Error al cerrar caja: ${e.toString().replaceAll('Exception: ', '')}',
-                style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-            backgroundColor: AppTheme.colorDanger,
-          ),
+        CustomToast.show(
+          context,
+          message: 'Error al cerrar caja: ${e.toString().replaceAll('Exception: ', '')}',
+          type: ToastType.error,
         );
       }
     } finally {
@@ -399,11 +393,10 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                         concepto: concepto,
                       );
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('✓ Movimiento registrado correctamente.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                        backgroundColor: const Color(0xFF7000FF),
-                      ),
+                    CustomToast.show(
+                      context,
+                      message: 'Movimiento registrado correctamente.',
+                      type: ToastType.success,
                     );
                   }
                 },
@@ -431,11 +424,10 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                     concepto: concepto,
                   );
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('✓ Movimiento registrado correctamente.', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
-                    backgroundColor: const Color(0xFF7000FF),
-                  ),
+                CustomToast.show(
+                  context,
+                  message: 'Movimiento registrado correctamente.',
+                  type: ToastType.success,
                 );
               }
             },
