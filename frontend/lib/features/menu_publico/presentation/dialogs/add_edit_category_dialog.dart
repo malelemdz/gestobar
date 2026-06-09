@@ -7,6 +7,8 @@ import '../../../admin/providers/menu_admin_provider.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/responsive_modal.dart';
 
+import '../../../../core/widgets/styled_text_field.dart';
+
 class AddEditCategoryDialog extends ConsumerStatefulWidget {
   final CategoryModel? category;
 
@@ -53,22 +55,9 @@ class _AddEditCategoryDialogState extends ConsumerState<AddEditCategoryDialog> {
             ),
           ),
           const SizedBox(height: 6),
-          Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF0C0E12),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white.withOpacity(0.1)),
-            ),
-            child: TextField(
-              controller: _nameController,
-              style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
-              decoration: InputDecoration(
-                hintText: 'Ej. Cócteles, Botellas...',
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                border: InputBorder.none,
-              ),
-            ),
+          StyledTextField(
+            controller: _nameController,
+            hintText: 'Ej. Cócteles, Botellas...',
           ),
         ],
       ),

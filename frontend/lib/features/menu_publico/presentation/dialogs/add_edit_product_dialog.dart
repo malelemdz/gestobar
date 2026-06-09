@@ -188,83 +188,87 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                     const SizedBox(height: 6),
                     GestureDetector(
                       onTap: _isUploadingImage ? null : _pickImage,
-                      child: Container(
-                        height: 125,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF0C0E12),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.08),
-                            width: 1,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF22252A),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.08),
+                              width: 1,
+                            ),
                           ),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            if (_localImagePath != null)
-                              Image.file(
-                                File(_localImagePath!),
-                                fit: BoxFit.cover,
-                              )
-                            else if (_fotoUrl != null && _fotoUrl!.isNotEmpty)
-                              Image.network(
-                                ApiConstants.resolveImageUrl(_fotoUrl)!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.broken_image_outlined,
-                                        color: Colors.redAccent.withOpacity(0.4),
-                                        size: 32,
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        'Foto no disponible (Toca para cambiar)',
-                                        style: GoogleFonts.inter(
-                                          color: Colors.white30,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
+                          clipBehavior: Clip.antiAlias,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              if (_localImagePath != null)
+                                Image.file(
+                                  File(_localImagePath!),
+                                  fit: BoxFit.cover,
+                                )
+                              else if (_fotoUrl != null && _fotoUrl!.isNotEmpty)
+                                Image.network(
+                                  ApiConstants.resolveImageUrl(_fotoUrl)!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.broken_image_outlined,
+                                          color: Colors.redAccent.withOpacity(0.4),
+                                          size: 32,
                                         ),
-                                      )
-                                    ],
-                                  );
-                                },
-                              )
-                            else
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.add_photo_alternate_outlined,
-                                    color: Colors.white.withOpacity(0.3),
-                                    size: 32,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    'Elegir Imagen (WebP)',
-                                    style: GoogleFonts.inter(
-                                      color: Colors.white30,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          'Foto no disponible (Toca para cambiar)',
+                                          style: GoogleFonts.inter(
+                                            color: Colors.white30,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  },
+                                )
+                              else
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add_photo_alternate_outlined,
+                                      color: Colors.white.withOpacity(0.3),
+                                      size: 32,
                                     ),
-                                  )
-                                ],
-                              ),
-                            if (_isUploadingImage)
-                              Positioned.fill(
-                                child: Container(
-                                  color: Colors.black54,
-                                  child: const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Color(0xFF00F0FF),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      'Elegir Imagen (WebP)',
+                                      style: GoogleFonts.inter(
+                                        color: Colors.white30,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              if (_isUploadingImage)
+                                Positioned.fill(
+                                  child: Container(
+                                    color: Colors.black54,
+                                    child: const Center(
+                                      child: CircularProgressIndicator(
+                                        color: Color(0xFF00F0FF),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -323,9 +327,9 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
             const SizedBox(height: 6),
             Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF0C0E12),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white.withOpacity(0.08)),
+                color: const Color(0xFF22252A),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withOpacity(0.06)),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: DropdownButtonFormField<String>(
@@ -431,7 +435,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                   const SizedBox(height: 4),
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFF0C0E12),
+                                      color: const Color(0xFF22252A),
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(color: Colors.white.withOpacity(0.06)),
                                     ),
@@ -524,9 +528,9 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                   return Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFF0C0E12),
+                                      color: const Color(0xFF22252A),
                                       borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.white.withOpacity(0.04)),
+                                      border: Border.all(color: Colors.white.withOpacity(0.06)),
                                     ),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
