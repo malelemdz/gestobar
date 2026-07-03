@@ -60,36 +60,37 @@ class AuditoriaLogCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(actionIcon, color: actionColor, size: 20),
               const SizedBox(width: 8),
-              Text(
-                AuditoriaFormatters.formatAction(log.accion),
-                style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12,
-                  color: actionColor,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AuditoriaFormatters.formatAction(log.accion),
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                        color: actionColor,
+                      ),
+                    ),
+                    if (sucursalNombre != null && sucursalNombre!.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        sucursalNombre!.toUpperCase(),
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white30,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
-              if (sucursalNombre != null && sucursalNombre!.isNotEmpty) ...[
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.white10,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    sucursalNombre!.toUpperCase(),
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white60,
-                    ),
-                  ),
-                ),
-              ],
-              const Spacer(),
+              const SizedBox(width: 8),
               Text(
                 dateStr,
                 style: GoogleFonts.plusJakartaSans(

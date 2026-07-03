@@ -109,7 +109,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                       right: BorderSide(color: Colors.white.withOpacity(0.03)),
                     ),
                   ),
-                  child: _buildVerticalFiltersPanel(context, filters, staffAsync),
+                  child: _buildVerticalFiltersPanel(context, filters, staffAsync, barMap),
                 ),
                 // Columna derecha (Expanded): listado de logs
                 Expanded(
@@ -154,13 +154,20 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
     BuildContext context,
     Map<String, String?> filters,
     AsyncValue<List<UserModel>> staffAsync,
+    Map<String, String> barMap,
   ) {
+    final selectedBarId = filters['barId'];
     final selectedUsuarioId = filters['usuarioId'];
     final selectedAction = filters['accion'];
     final selectedModule = filters['modulo'];
     final start = filters['fechaInicio'];
     final end = filters['fechaFin'];
     final isDateSelected = start != null && end != null;
+
+    String barLabel = 'Todas';
+    if (selectedBarId != null) {
+      barLabel = barMap[selectedBarId] ?? 'Sucursal Sel.';
+    }
 
     String userLabel = 'Todos';
     if (selectedUsuarioId != null) {
@@ -189,6 +196,28 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Text(
+            'FILTRAR POR SUCURSAL',
+            style: GoogleFonts.plusJakartaSans(
+              color: Colors.white30,
+              fontSize: 9,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _buildVerticalFilterItem(
+            label: barLabel,
+            isActive: selectedBarId != null,
+            onTap: () => _showBarSelector(context, ref),
+            onClear: () {
+              ref.read(superAuditoriaFiltersProvider.notifier).update((state) => {
+                ...state,
+                'barId': null,
+              });
+            },
+          ),
+          const SizedBox(height: 16),
           Text(
             'FILTRAR POR USUARIO',
             style: GoogleFonts.plusJakartaSans(
@@ -278,10 +307,11 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
             },
           ),
           const SizedBox(height: 24),
-          if (selectedUsuarioId != null || selectedAction != null || selectedModule != null || isDateSelected)
+          if (selectedBarId != null || selectedUsuarioId != null || selectedAction != null || selectedModule != null || isDateSelected)
             InkWell(
               onTap: () {
                 ref.read(superAuditoriaFiltersProvider.notifier).state = {
+                  'barId': null,
                   'usuarioId': null,
                   'accion': null,
                   'modulo': null,
@@ -331,13 +361,13 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 42,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
+        height: 34,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: isActive ? AppTheme.liquidPrimary.withOpacity(0.08) : const Color(0xFF1E2024),
-          borderRadius: BorderRadius.circular(12),
+          color: isActive ? AppTheme.liquidPrimary.withOpacity(0.06) : const Color(0xFF1E2024),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isActive ? AppTheme.liquidPrimary.withOpacity(0.3) : Colors.white.withOpacity(0.04),
+            color: isActive ? AppTheme.liquidPrimary.withOpacity(0.25) : Colors.white.withOpacity(0.04),
           ),
         ),
         child: Row(
@@ -350,7 +380,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.plusJakartaSans(
                   color: isActive ? Colors.white : Colors.white70,
-                  fontSize: 12,
+                  fontSize: 11.5,
                   fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
                 ),
               ),
@@ -487,6 +517,140 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
         constraints: const BoxConstraints(maxWidth: 900),
         child: listWidget,
       ),
+    );
+  }
+}
+
+// Bar filter selector helper
+void _showBarSelector(BuildContext context, WidgetRef ref) {
+  final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
+
+  Widget buildContent(BuildContext context, ScrollController? scrollController, bool isDialog) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final barsAsync = ref.watch(barsFutureProvider);
+        final selectedId = ref.watch(superAuditoriaFiltersProvider)['barId'];
+        return Container(
+          decoration: BoxDecoration(
+            color: AppTheme.liquidSurfaceContainerLow,
+            borderRadius: isDialog
+                ? BorderRadius.circular(24.0)
+                : const BorderRadius.vertical(top: Radius.circular(28.0)),
+            border: isDialog
+                ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
+                : null,
+          ),
+          padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!isDialog)
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              if (!isDialog) const SizedBox(height: 20),
+              Text(
+                'Filtrar por Sucursal',
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Flexible(
+                child: barsAsync.when(
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(color: Color(0xFF00F0FF)),
+                  ),
+                  error: (err, st) => Center(
+                    child: Text('Error al cargar sucursales: $err', style: TextStyle(color: AppTheme.colorDanger)),
+                  ),
+                  data: (bars) {
+                    return ListView(
+                      shrinkWrap: isDialog,
+                      controller: scrollController,
+                      children: [
+                        _buildSelectorItem(
+                          title: 'Todas las sucursales',
+                          isSelected: selectedId == null,
+                          onTap: () {
+                            ref.read(superAuditoriaFiltersProvider.notifier).update((state) => {
+                              ...state,
+                              'barId': null,
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ...bars.map((bar) {
+                          final id = bar['id']?.toString() ?? '';
+                          final nombre = bar['nombre']?.toString() ?? '';
+                          final zona = bar['zona']?.toString() ?? '';
+                          final subtitle = zona.isNotEmpty ? 'Zona: $zona' : null;
+                          return _buildSelectorItem(
+                            title: nombre,
+                            subtitle: subtitle,
+                            isSelected: selectedId == id,
+                            onTap: () {
+                              ref.read(superAuditoriaFiltersProvider.notifier).update((state) => {
+                                ...state,
+                                'barId': id,
+                              });
+                              Navigator.pop(context);
+                            },
+                          );
+                        }),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  if (isTabletLandscape) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.85),
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 450, maxHeight: 500),
+            child: buildContent(context, null, true),
+          ),
+        );
+      },
+    );
+  } else {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.55,
+          maxChildSize: 0.85,
+          minChildSize: 0.3,
+          expand: false,
+          builder: (context, scrollController) {
+            return buildContent(context, scrollController, false);
+          },
+        );
+      },
     );
   }
 }
@@ -925,13 +1089,34 @@ class SuperAuditoriaFilterCapsules extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final filters = ref.watch(superAuditoriaFiltersProvider);
     final staffAsync = ref.watch(superStaffListProvider);
+    final barsAsync = ref.watch(barsFutureProvider);
 
+    final Map<String, String> barMap = {};
+    barsAsync.maybeWhen(
+      data: (list) {
+        for (final item in list) {
+          if (item is Map) {
+            final id = item['id']?.toString() ?? '';
+            final nombre = item['nombre']?.toString() ?? '';
+            if (id.isNotEmpty) barMap[id] = nombre;
+          }
+        }
+      },
+      orElse: () {},
+    );
+
+    final selectedBarId = filters['barId'];
     final selectedUsuarioId = filters['usuarioId'];
     final selectedAction = filters['accion'];
     final selectedModule = filters['modulo'];
     final start = filters['fechaInicio'];
     final end = filters['fechaFin'];
     final isDateSelected = start != null && end != null;
+
+    String barLabel = 'Sucursal';
+    if (selectedBarId != null) {
+      barLabel = barMap[selectedBarId] ?? 'Sucursal Sel.';
+    }
 
     String userLabel = 'Usuario';
     if (selectedUsuarioId != null) {
@@ -955,15 +1140,28 @@ class SuperAuditoriaFilterCapsules extends ConsumerWidget {
       } catch (_) {}
     }
 
-    final hasFilters = selectedUsuarioId != null || selectedAction != null || selectedModule != null || isDateSelected;
+    final hasFilters = selectedBarId != null || selectedUsuarioId != null || selectedAction != null || selectedModule != null || isDateSelected;
 
     return Container(
-      height: 48,
+      height: 36,
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ListView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         children: [
+          _buildCapsuleItem(
+            context,
+            label: selectedBarId != null ? barLabel : 'Filtrar Sucursal',
+            isActive: selectedBarId != null,
+            onTap: () => _showBarSelector(context, ref),
+            onClear: () {
+              ref.read(superAuditoriaFiltersProvider.notifier).update((state) => {
+                ...state,
+                'barId': null,
+              });
+            },
+          ),
+          const SizedBox(width: 8),
           _buildCapsuleItem(
             context,
             label: selectedUsuarioId != null ? userLabel : 'Filtrar Usuario',
@@ -1026,6 +1224,7 @@ class SuperAuditoriaFilterCapsules extends ConsumerWidget {
             GestureDetector(
               onTap: () {
                 ref.read(superAuditoriaFiltersProvider.notifier).state = {
+                  'barId': null,
                   'usuarioId': null,
                   'accion': null,
                   'modulo': null,
@@ -1094,13 +1293,14 @@ class SuperAuditoriaFilterCapsules extends ConsumerWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        height: 28,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isActive ? AppTheme.liquidPrimary.withOpacity(0.1) : const Color(0xFF1E2024),
-          borderRadius: BorderRadius.circular(20),
+          color: isActive ? AppTheme.liquidPrimary.withOpacity(0.08) : const Color(0xFF1E2024),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isActive ? AppTheme.liquidPrimary.withOpacity(0.3) : Colors.white.withOpacity(0.04),
+            color: isActive ? AppTheme.liquidPrimary.withOpacity(0.25) : Colors.white.withOpacity(0.03),
           ),
         ),
         child: Row(
@@ -1110,7 +1310,7 @@ class SuperAuditoriaFilterCapsules extends ConsumerWidget {
               label,
               style: GoogleFonts.plusJakartaSans(
                 color: isActive ? Colors.white : Colors.white70,
-                fontSize: 11,
+                fontSize: 10.5,
                 fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
               ),
             ),
