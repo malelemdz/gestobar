@@ -11,6 +11,7 @@ import '../../auth/providers/auth_state.dart';
 import '../data/models/bar_model.dart';
 import 'dialogs/bar_form_dialog.dart';
 import 'dialogs/bar_status_confirmation_bottom_sheet.dart';
+import '../../../core/widgets/responsive_modal.dart';
 
 // Provider global para consultar las sucursales del sistema
 final barsFutureProvider = FutureProvider<List<dynamic>>((ref) async {
@@ -68,9 +69,10 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
         label: 'Registrar Sucursal',
         icon: Icons.add,
         onPressed: () {
-          showDialog(
+          showResponsiveDialog(
             context: context,
-            builder: (context) => BarFormDialog(
+            maxWidth: 550,
+            child: BarFormDialog(
               onSaved: () {
                 ref.refresh(barsFutureProvider);
               },
@@ -304,9 +306,10 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                                           message: 'Editar Configuración',
                                           child: InkWell(
                                             onTap: () {
-                                              showDialog(
+                                              showResponsiveDialog(
                                                 context: context,
-                                                builder: (context) => BarFormDialog(
+                                                maxWidth: 550,
+                                                child: BarFormDialog(
                                                   bar: bar,
                                                   onSaved: () {
                                                     ref.refresh(barsFutureProvider);
