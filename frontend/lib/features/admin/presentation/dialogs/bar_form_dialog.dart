@@ -62,18 +62,8 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
 
   // Listas cargadas dinámicamente
   List<dynamic> _adminsList = [];
-  String? _adminRoleId;
   bool _isLoadingAdmins = true;
   bool _isSaving = false;
-
-  // Variables para sub-formulario de creación rápida de Administrador
-  bool _showCreateAdminForm = false;
-  final _adminFormKey = GlobalKey<FormState>();
-  final _adminNameCtrl = TextEditingController();
-  final _adminLastNameCtrl = TextEditingController();
-  final _adminUsernameCtrl = TextEditingController();
-  final _adminPasswordCtrl = TextEditingController();
-  final _adminCelularCtrl = TextEditingController();
 
   @override
   void initState() {
@@ -97,11 +87,6 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   void dispose() {
     _nombreCtrl.dispose();
     _ciudadCtrl.dispose();
-    _adminNameCtrl.dispose();
-    _adminLastNameCtrl.dispose();
-    _adminUsernameCtrl.dispose();
-    _adminPasswordCtrl.dispose();
-    _adminCelularCtrl.dispose();
     super.dispose();
   }
 
@@ -127,18 +112,8 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   Future<void> _loadAdmins() async {
     try {
       final dio = ref.read(dioProvider);
-      
-      // 1. Cargar roles para buscar el ID de 'ADMIN'
-      final rolesRes = await dio.get('/roles');
-      final List<dynamic> roles = rolesRes.data ?? [];
-      for (var r in roles) {
-        if (r['nombre'].toString().toUpperCase() == 'ADMIN') {
-          _adminRoleId = r['id'];
-          break;
-        }
-      }
 
-      // 2. Cargar todos los usuarios del sistema
+      // Cargar todos los usuarios del sistema
       final usersRes = await dio.get('/users');
       final List<dynamic> users = usersRes.data ?? [];
 
@@ -175,14 +150,9 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() != true) return;
     
-    // Si se activa creación de admin rápido, validar sub-formulario primero
-    if (_showCreateAdminForm) {
-      if (_adminFormKey.currentState?.validate() != true) return;
-    } else {
-      if (_selectedOwnerId == null && widget.bar == null) {
-        CustomToast.show(context, message: 'Debes seleccionar un Administrador dueño del bar', type: ToastType.error);
-        return;
-      }
+    if (_selectedOwnerId == null && widget.bar == null) {
+      CustomToast.show(context, message: 'Debes seleccionar un Administrador dueño del bar', type: ToastType.error);
+      return;
     }
 
     setState(() => _isSaving = true);
@@ -191,27 +161,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
       final dio = ref.read(dioProvider);
       String? ownerId = _selectedOwnerId;
 
-      // 1. Si se requiere crear un administrador rápido
-      if (_showCreateAdminForm) {
-        if (_adminRoleId == null) {
-          throw Exception('No se pudo encontrar el ID del rol de Administrador. Contacte a soporte.');
-        }
-
-        final newUserPayload = {
-          'username': _adminUsernameCtrl.text.trim(),
-          'password': _adminPasswordCtrl.text.trim(),
-          'nombre': _adminNameCtrl.text.trim(),
-          'apellido': _adminLastNameCtrl.text.trim(),
-          'celular': _adminCelularCtrl.text.trim(),
-          'rol_id': _adminRoleId,
-          'estado': true,
-        };
-
-        final newUserRes = await dio.post('/users', data: newUserPayload);
-        ownerId = newUserRes.data['id'];
-      }
-
-      // 2. Armar payload simplificado del Bar
+      // Armar payload simplificado del Bar
       final String barName = _nombreCtrl.text.trim();
       final String generatedSlug = _slugify(barName);
 
@@ -437,125 +387,37 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   }
 
   Widget _buildOwnerDropdown() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: const Color(0xFF22252A),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white.withOpacity(0.06)),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButtonFormField<String>(
-                value: _selectedOwnerId,
-                isExpanded: true,
-                dropdownColor: const Color(0xFF1E2024),
-                style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.person, color: Colors.white30, size: 16),
-                  border: InputBorder.none,
-                ),
-                items: _adminsList.map((admin) {
-                  return DropdownMenuItem<String>(
-                    value: admin['id'],
-                    child: Text(
-                      '${admin['nombre']} ${admin['apellido']} (@${admin['username']})',
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  if (val != null) setState(() => _selectedOwnerId = val);
-                },
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF22252A),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButtonFormField<String>(
+          value: _selectedOwnerId,
+          isExpanded: true,
+          dropdownColor: const Color(0xFF1E2024),
+          style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+          decoration: const InputDecoration(
+            icon: Icon(Icons.person, color: Colors.white30, size: 16),
+            border: InputBorder.none,
+          ),
+          items: _adminsList.map((admin) {
+            return DropdownMenuItem<String>(
+              value: admin['id'],
+              child: Text(
+                '${admin['nombre']} ${admin['apellido']} (@${admin['username']})',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
-            ),
-          ),
+            );
+          }).toList(),
+          onChanged: (val) {
+            if (val != null) setState(() => _selectedOwnerId = val);
+          },
         ),
-        const SizedBox(width: 12),
-        IconButton(
-          icon: const Icon(Icons.person_add, color: Color(0xFF00F0FF)),
-          tooltip: 'Nuevo Admin',
-          onPressed: () => setState(() => _showCreateAdminForm = true),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNewAdminForm(bool isTablet) {
-    return Form(
-      key: _adminFormKey,
-      child: Column(
-        children: [
-          if (isTablet)
-            Row(
-              children: [
-                Expanded(
-                  child: StyledTextField(
-                    controller: _adminNameCtrl,
-                    hintText: 'Nombre',
-                    icon: Icons.person,
-                    validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: StyledTextField(
-                    controller: _adminLastNameCtrl,
-                    hintText: 'Apellido',
-                    icon: Icons.person_outline,
-                    validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-                  ),
-                ),
-              ],
-            )
-          else ...[
-            StyledTextField(
-              controller: _adminNameCtrl,
-              hintText: 'Nombre',
-              icon: Icons.person,
-              validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-            ),
-            const SizedBox(height: 8),
-            StyledTextField(
-              controller: _adminLastNameCtrl,
-              hintText: 'Apellido',
-              icon: Icons.person_outline,
-              validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-            ),
-          ],
-          const SizedBox(height: 8),
-          StyledTextField(
-            controller: _adminUsernameCtrl,
-            hintText: 'Nombre de usuario (ej: admin_la_paz)',
-            icon: Icons.alternate_email,
-            validator: (val) {
-              if (val == null || val.isEmpty) return 'Requerido';
-              if (val.length < 4) return 'Mínimo 4 caracteres';
-              return null;
-            },
-          ),
-          const SizedBox(height: 8),
-          StyledTextField(
-            controller: _adminPasswordCtrl,
-            hintText: 'Contraseña para el administrador',
-            isPassword: true,
-            icon: Icons.lock,
-            validator: (val) {
-              if (val == null || val.isEmpty) return 'Requerido';
-              if (val.length < 6) return 'Mínimo 6 caracteres';
-              return null;
-            },
-          ),
-          const SizedBox(height: 8),
-          StyledTextField(
-            controller: _adminCelularCtrl,
-            hintText: 'Número de celular (opcional)',
-            icon: Icons.phone,
-          ),
-        ],
       ),
     );
   }
@@ -669,25 +531,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                     if (widget.bar == null) ...[
                       Text('ADMINISTRADOR / DUEÑO DEL BAR', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
                       const SizedBox(height: 12),
-                      
-                      if (!_showCreateAdminForm) ...[
-                        _buildOwnerDropdown(),
-                      ] else ...[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Registrando Nuevo Admin...', style: TextStyle(color: Colors.white70, fontSize: 12, fontStyle: FontStyle.italic)),
-                            TextButton.icon(
-                              icon: const Icon(Icons.list, size: 14, color: Color(0xFF00F0FF)),
-                              label: const Text('Elegir de la lista', style: TextStyle(color: Color(0xFF00F0FF), fontSize: 12)),
-                              onPressed: () => setState(() => _showCreateAdminForm = false),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-
-                        _buildNewAdminForm(isTablet),
-                      ],
+                      _buildOwnerDropdown(),
                     ],
                   ],
                 ),

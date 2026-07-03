@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class NavigationHelper {
   static List<String> getAllowedViewsForRole(String role, {bool isGlobalMode = false}) {
     if (role.toUpperCase() == 'SUPERADMIN' && isGlobalMode) {
-      return ['super_bars', 'perfil'];
+      return ['super_bars', 'super_admins', 'perfil'];
     }
     switch (role.toUpperCase()) {
       case 'SUPERADMIN':
@@ -43,6 +43,12 @@ class NavigationHelper {
           'label': 'Sucursales',
           'icon': Icons.storefront_outlined,
           'icon_active': Icons.storefront,
+        },
+        {
+          'view': 'super_admins',
+          'label': 'Administradores',
+          'icon': Icons.admin_panel_settings_outlined,
+          'icon_active': Icons.admin_panel_settings,
         },
       ];
     }
@@ -133,6 +139,8 @@ class NavigationHelper {
     switch (activeView) {
       case 'super_bars':
         return 'Consola Global';
+      case 'super_admins':
+        return 'Administradores';
       case 'dash':
         return 'Dash';
       case 'analytics':

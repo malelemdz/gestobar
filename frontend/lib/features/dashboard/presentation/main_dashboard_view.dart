@@ -10,6 +10,7 @@ import 'package:gestobar/features/admin/presentation/auditoria_page.dart';
 import 'package:gestobar/features/admin/presentation/config_page.dart';
 import 'package:gestobar/features/admin/presentation/bar_selector_view.dart';
 import 'package:gestobar/features/admin/presentation/super_admin_dashboard_page.dart';
+import 'package:gestobar/features/admin/presentation/super_admins_page.dart';
 import 'package:gestobar/features/pos/presentation/pos_page.dart';
 import 'package:gestobar/features/caja/presentation/caja_page.dart';
 import 'package:gestobar/features/menu_publico/presentation/menu_page.dart';
@@ -244,6 +245,8 @@ class MainDashboardView extends ConsumerWidget {
         return const DamaPage();
       case 'super_bars':
         return BarSelectorView();
+      case 'super_admins':
+        return const SuperAdminsPage();
       default:
         return const DashboardPage();
     }
