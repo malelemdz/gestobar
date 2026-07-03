@@ -119,22 +119,30 @@ class DashboardSessionCard extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Hola, ${user.nombre}',
-                        style: GoogleFonts.plusJakartaSans(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.5,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Hola, ${user.nombre.split(' ').first}',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.5,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 4.0),
-                      Text(
-                        '${user.rolNombre.toUpperCase()} • @${user.username}',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.bold,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '${user.rolNombre.toUpperCase()} • @${user.username}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
