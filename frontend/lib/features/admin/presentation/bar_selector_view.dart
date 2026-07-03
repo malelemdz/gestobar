@@ -224,14 +224,7 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                                       backgroundColor: Colors.black26,
                                       backgroundImage: (bar.logoUrl != null && bar.logoUrl!.isNotEmpty)
                                           ? NetworkImage(bar.logoUrl!)
-                                          : null,
-                                      child: (bar.logoUrl == null || bar.logoUrl!.isEmpty)
-                                          ? Icon(
-                                              Icons.local_bar,
-                                              color: accentColor,
-                                              size: 14,
-                                            )
-                                          : null,
+                                          : const AssetImage('assets/icon/isotipo.png') as ImageProvider,
                                     ),
                                     const SizedBox(width: 12),
 
