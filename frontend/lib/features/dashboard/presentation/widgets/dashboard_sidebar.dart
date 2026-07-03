@@ -60,17 +60,15 @@ class DashboardSidebar extends StatelessWidget {
                       width: 44.0,
                       height: 44.0,
                       decoration: BoxDecoration(
-                        color: const Color(0x2600F0FF),
+                        color: Colors.transparent,
                         borderRadius: BorderRadius.circular(12.0),
-                        border: Border.all(
-                          color: const Color(0x3300F0FF),
-                          width: 1.0,
-                        ),
                       ),
-                      child: const Icon(
-                        Icons.restaurant,
-                        color: Color(0xFF00F0FF),
-                        size: 22.0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Image.asset(
+                          'assets/icon/app_icon.png',
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16.0),
@@ -150,7 +148,7 @@ class DashboardSidebar extends StatelessWidget {
                 ),
                 const SizedBox(height: 4.0),
 
-                if (role == 'SUPERADMIN' || role == 'ADMIN') ...[
+                if (role == 'ADMIN' || (role == 'SUPERADMIN' && activeBarId != null)) ...[
                   _buildSidebarBottomItem(
                     context: context,
                     icon: Icons.settings_outlined,
@@ -219,9 +217,19 @@ class DashboardSidebar extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.logout, size: 16.0, color: AppTheme.colorDanger),
+                        icon: Icon(
+                          (role == 'SUPERADMIN' && activeBarId != null)
+                              ? Icons.exit_to_app
+                              : Icons.logout,
+                          size: 16.0,
+                          color: (role == 'SUPERADMIN' && activeBarId != null)
+                              ? const Color(0xFF00F0FF)
+                              : AppTheme.colorDanger,
+                        ),
                         onPressed: onLogout,
-                        tooltip: 'Cerrar Sesión',
+                        tooltip: (role == 'SUPERADMIN' && activeBarId != null)
+                            ? 'Salir del Bar'
+                            : 'Cerrar Sesión',
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                       ),

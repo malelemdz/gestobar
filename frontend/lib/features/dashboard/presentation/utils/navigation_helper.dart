@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class NavigationHelper {
-  static List<String> getAllowedViewsForRole(String role) {
+  static List<String> getAllowedViewsForRole(String role, {bool isGlobalMode = false}) {
+    if (role.toUpperCase() == 'SUPERADMIN' && isGlobalMode) {
+      return ['super_bars', 'perfil'];
+    }
     switch (role.toUpperCase()) {
       case 'SUPERADMIN':
       case 'ADMIN':
@@ -15,7 +18,10 @@ class NavigationHelper {
     }
   }
 
-  static String getDefaultViewForRole(String role) {
+  static String getDefaultViewForRole(String role, {bool isGlobalMode = false}) {
+    if (role.toUpperCase() == 'SUPERADMIN' && isGlobalMode) {
+      return 'super_bars';
+    }
     switch (role.toUpperCase()) {
       case 'SUPERADMIN':
       case 'ADMIN':
@@ -29,7 +35,17 @@ class NavigationHelper {
     }
   }
 
-  static List<Map<String, dynamic>> getNavItemsForRole(String role) {
+  static List<Map<String, dynamic>> getNavItemsForRole(String role, {bool isGlobalMode = false}) {
+    if (role.toUpperCase() == 'SUPERADMIN' && isGlobalMode) {
+      return [
+        {
+          'view': 'super_bars',
+          'label': 'Sucursales',
+          'icon': Icons.storefront_outlined,
+          'icon_active': Icons.storefront,
+        },
+      ];
+    }
     switch (role.toUpperCase()) {
       case 'SUPERADMIN':
       case 'ADMIN':
@@ -115,6 +131,8 @@ class NavigationHelper {
 
   static String getTitleForView(String activeView) {
     switch (activeView) {
+      case 'super_bars':
+        return 'Consola Global';
       case 'dash':
         return 'Dash';
       case 'analytics':

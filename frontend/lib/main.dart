@@ -11,7 +11,6 @@ import 'core/theme/app_theme.dart';
 import 'features/splash/presentation/splash_screen.dart';
 import 'features/auth/presentation/login_view.dart';
 import 'features/dashboard/presentation/main_dashboard_view.dart';
-import 'features/admin/presentation/bar_selector_view.dart';
 import 'features/admin/providers/bar_provider.dart';
 
 void main() async {
@@ -81,9 +80,6 @@ class MyApp extends ConsumerWidget {
     if (state is AuthInitial || state is AuthLoading) {
       return const PremiumSplashScreen();
     } else if (state is AuthAuthenticated) {
-      if (state.activeBarId == null) {
-        return const BarSelectorView();
-      }
       return const MainDashboardView();
     } else {
       return const LoginView();

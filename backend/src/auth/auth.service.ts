@@ -4,6 +4,7 @@ import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { AuditoriaService } from '../auditoria/auditoria.service';
+import { BarsService } from '../bars/bars.service';
 
 @Injectable()
 export class AuthService {
@@ -11,6 +12,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly auditoriaService: AuditoriaService,
+    private readonly barsService: BarsService,
   ) {}
 
   async login(loginDto: LoginDto, ip?: string, userAgent?: string) {
@@ -27,6 +29,25 @@ export class AuthService {
         userAgent: userAgent,
       }).catch(() => {});
       throw new UnauthorizedException('Credenciales inválidas');
+    }
+
+    if (user.bar_id) {
+      const bar = await this.barsService.findOne(user.bar_id);
+      if (bar && !bar.estado) {
+        if (user.rol?.nombre !== 'ADMIN' && user.rol?.nombre !== 'SUPERADMIN') {
+          await this.auditoriaService.registrar({
+            barId: user.bar_id,
+            usuarioId: user.id,
+            rolNombre: user.rol?.nombre || 'STAFF',
+            modulo: 'Sesión',
+            accion: 'Inicio de Sesión Fallido',
+            detalles: { mensaje: `Intento de inicio de sesión fallido en Bar inactivo: ${bar.nombre}` },
+            ipAddress: ip,
+            userAgent: userAgent,
+          }).catch(() => {});
+          throw new UnauthorizedException('Este local está inactivo por falta de pago. Contacte a soporte.');
+        }
+      }
     }
 
     if (!user.estado) {
@@ -97,6 +118,15 @@ export class AuthService {
     const user = await this.usersService.findOne(userPayload.userId);
     if (!user || !user.estado) {
       throw new UnauthorizedException('Usuario no válido o inactivo');
+    }
+
+    if (user.bar_id) {
+      const bar = await this.barsService.findOne(user.bar_id);
+      if (bar && !bar.estado) {
+        if (user.rol?.nombre !== 'ADMIN' && user.rol?.nombre !== 'SUPERADMIN') {
+          throw new UnauthorizedException('Este local está inactivo por falta de pago. Contacte a soporte.');
+        }
+      }
     }
 
     const payload = {

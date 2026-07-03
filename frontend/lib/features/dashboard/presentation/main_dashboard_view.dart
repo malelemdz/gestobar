@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gestobar/features/auth/providers/auth_provider.dart';
 import 'package:gestobar/features/auth/providers/auth_state.dart';
@@ -7,6 +8,8 @@ import 'package:gestobar/features/auth/presentation/perfil_page.dart';
 import 'package:gestobar/features/admin/providers/bar_provider.dart';
 import 'package:gestobar/features/admin/presentation/auditoria_page.dart';
 import 'package:gestobar/features/admin/presentation/config_page.dart';
+import 'package:gestobar/features/admin/presentation/bar_selector_view.dart';
+import 'package:gestobar/features/admin/presentation/super_admin_dashboard_page.dart';
 import 'package:gestobar/features/pos/presentation/pos_page.dart';
 import 'package:gestobar/features/caja/presentation/caja_page.dart';
 import 'package:gestobar/features/menu_publico/presentation/menu_page.dart';
@@ -23,6 +26,7 @@ import 'widgets/dashboard_app_bar.dart';
 import 'widgets/dashboard_bottom_bar.dart';
 import 'dialogs/about_dialog.dart';
 import 'dialogs/logout_confirmation_dialog.dart';
+import 'dialogs/exit_bar_confirmation_dialog.dart';
 
 /// Provider global para controlar la vista activa del sistema (Soporta navegación ilimitada y profunda)
 final activeViewProvider = StateProvider<String>((ref) => 'dash');
@@ -37,24 +41,30 @@ class MainDashboardView extends ConsumerWidget {
     final activeView = ref.watch(activeViewProvider);
     final activeBarId = authState.activeBarId;
 
-    final barState = ref.watch(currentBarProvider);
-    final String barName = barState.when(
-      data: (bar) => bar.nombre,
-      loading: () => 'Cargando...',
-      error: (_, __) => 'Gestobar',
-    );
+    final String barName;
+    if (activeBarId == null) {
+      barName = 'Consola Global';
+    } else {
+      final barState = ref.watch(currentBarProvider);
+      barName = barState.when(
+        data: (bar) => bar.nombre,
+        loading: () => 'Cargando...',
+        error: (_, __) => 'Gestobar',
+      );
+    }
 
     final String role = user.rolNombre.toUpperCase();
+    final bool isGlobalMode = role == 'SUPERADMIN' && activeBarId == null;
 
     // auto-corrección: asegurar que la vista seleccionada sea permitida para el rol
-    final List<String> allowedViews = NavigationHelper.getAllowedViewsForRole(role);
+    final List<String> allowedViews = NavigationHelper.getAllowedViewsForRole(role, isGlobalMode: isGlobalMode);
     if (!allowedViews.contains(activeView)) {
-      final String defaultView = NavigationHelper.getDefaultViewForRole(role);
+      final String defaultView = NavigationHelper.getDefaultViewForRole(role, isGlobalMode: isGlobalMode);
       Future.microtask(() => ref.read(activeViewProvider.notifier).state = defaultView);
       return const PremiumSplashScreen();
     }
 
-    final List<Map<String, dynamic>> navItems = NavigationHelper.getNavItemsForRole(role);
+    final List<Map<String, dynamic>> navItems = NavigationHelper.getNavItemsForRole(role, isGlobalMode: isGlobalMode);
 
     return Scaffold(
       body: LayoutBuilder(
@@ -77,7 +87,13 @@ class MainDashboardView extends ConsumerWidget {
                   onViewChanged: (view) {
                     ref.read(activeViewProvider.notifier).state = view;
                   },
-                  onLogout: () => _showLogoutDialog(context, ref),
+                  onLogout: () {
+                    if (role == 'SUPERADMIN' && activeBarId != null) {
+                      _showExitBarDialog(context, ref);
+                    } else {
+                      _showLogoutDialog(context, ref);
+                    }
+                  },
                   onAboutTap: () => _showAboutDialog(context),
                 ),
                 Expanded(
@@ -99,7 +115,7 @@ class MainDashboardView extends ConsumerWidget {
                         ref.read(authProvider.notifier).selectBar(null);
                       },
                     ),
-                    body: _buildBodyForView(activeView),
+                     body: _buildBodyForView(activeView, isGlobalMode),
                   ),
                 ),
               ],
@@ -121,7 +137,13 @@ class MainDashboardView extends ConsumerWidget {
                 onViewChanged: (view) {
                   ref.read(activeViewProvider.notifier).state = view;
                 },
-                onLogout: () => _showLogoutDialog(context, ref),
+                onLogout: () {
+                  if (role == 'SUPERADMIN' && activeBarId != null) {
+                    _showExitBarDialog(context, ref);
+                  } else {
+                    _showLogoutDialog(context, ref);
+                  }
+                },
                 onAboutTap: () => _showAboutDialog(context),
               ),
               appBar: DashboardAppBar(
@@ -141,7 +163,7 @@ class MainDashboardView extends ConsumerWidget {
                   ref.read(authProvider.notifier).selectBar(null);
                 },
               ),
-              body: _buildBodyForView(activeView),
+              body: _buildBodyForView(activeView, isGlobalMode),
               bottomNavigationBar: showBottomBar && navItems.length > 1
                   ? DashboardBottomBar(
                       navItems: navItems,
@@ -172,6 +194,20 @@ class MainDashboardView extends ConsumerWidget {
     });
   }
 
+  void _showExitBarDialog(BuildContext context, WidgetRef ref) {
+    showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return const ExitBarConfirmationDialog();
+      },
+    ).then((confirmed) {
+      if (confirmed == true) {
+        ref.read(authProvider.notifier).selectBar(null);
+      }
+    });
+  }
+
   void _showAboutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -181,9 +217,12 @@ class MainDashboardView extends ConsumerWidget {
     );
   }
 
-  Widget _buildBodyForView(String activeView) {
+  Widget _buildBodyForView(String activeView, bool isGlobalMode) {
     switch (activeView) {
       case 'dash':
+        if (isGlobalMode) {
+          return const SuperAdminDashboardPage();
+        }
         return const DashboardPage();
       case 'pos':
         return const PosPage();
@@ -203,6 +242,8 @@ class MainDashboardView extends ConsumerWidget {
         return const PerfilPage();
       case 'comis':
         return const DamaPage();
+      case 'super_bars':
+        return BarSelectorView();
       default:
         return const DashboardPage();
     }

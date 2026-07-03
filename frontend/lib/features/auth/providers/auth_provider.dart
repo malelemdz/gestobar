@@ -34,7 +34,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         state = AuthAuthenticated(
           token: token,
           user: user,
-          activeBarId: activeBarId ?? user.barId,
+          activeBarId: user.rolNombre.toUpperCase() == 'SUPERADMIN'
+              ? null
+              : (activeBarId ?? user.barId),
         );
 
         // Intentar renovar el token silenciosamente con el servidor
@@ -47,7 +49,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
           state = AuthAuthenticated(
             token: newToken,
             user: freshUser,
-            activeBarId: activeBarId ?? freshUser.barId,
+            activeBarId: freshUser.rolNombre.toUpperCase() == 'SUPERADMIN'
+                ? null
+                : (activeBarId ?? freshUser.barId),
           );
         } catch (e) {
           // Si el servidor indica explícitamente no autorizado/vencido, desloguear
@@ -77,12 +81,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
       
       if (user.barId != null) {
         await _storage.write(ApiConstants.keyActiveBarId, user.barId!);
+      } else {
+        await _storage.delete(ApiConstants.keyActiveBarId);
       }
 
       state = AuthAuthenticated(
         token: token,
         user: user,
-        activeBarId: user.barId,
+        activeBarId: user.rolNombre.toUpperCase() == 'SUPERADMIN' ? null : user.barId,
       );
     } catch (e) {
       state = AuthError(e.toString().replaceAll('Exception: ', ''));
@@ -98,7 +104,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
       } else {
         await _storage.write(ApiConstants.keyActiveBarId, barId);
       }
-      state = currentState.copyWith(activeBarId: barId);
+      state = AuthAuthenticated(
+        token: currentState.token,
+        user: currentState.user,
+        activeBarId: barId,
+      );
     }
   }
 

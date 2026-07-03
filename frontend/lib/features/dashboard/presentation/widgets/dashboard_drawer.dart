@@ -49,17 +49,15 @@ class DashboardDrawer extends StatelessWidget {
                       width: 44.0,
                       height: 44.0,
                       decoration: BoxDecoration(
-                        color: const Color(0x2600F0FF),
+                        color: Colors.transparent,
                         borderRadius: BorderRadius.circular(12.0),
-                        border: Border.all(
-                          color: const Color(0x3300F0FF),
-                          width: 1.0,
-                        ),
                       ),
-                      child: const Icon(
-                        Icons.restaurant,
-                        color: Color(0xFF00F0FF),
-                        size: 22.0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Image.asset(
+                          'assets/icon/app_icon.png',
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16.0),
@@ -147,7 +145,7 @@ class DashboardDrawer extends StatelessWidget {
                 ),
 
                 // Config page link for admins
-                if (role == 'SUPERADMIN' || role == 'ADMIN')
+                if (role == 'ADMIN' || (role == 'SUPERADMIN' && activeBarId != null))
                   _buildSidebarBottomItem(
                     context: context,
                     icon: Icons.settings_outlined,
@@ -199,7 +197,9 @@ class DashboardDrawer extends StatelessWidget {
                         },
                         child: Center(
                           child: Text(
-                            'CERRAR SESIÓN',
+                            (role == 'SUPERADMIN' && activeBarId != null)
+                                ? 'SALIR DEL BAR'
+                                : 'CERRAR SESIÓN',
                             style: GoogleFonts.plusJakartaSans(
                               color: const Color(0xFF00363A),
                               fontWeight: FontWeight.w800,

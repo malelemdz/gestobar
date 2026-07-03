@@ -130,34 +130,7 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
       actionsList.add(const SizedBox(width: 12.0));
     }
 
-    // Acción 3: Botón de cambio rápido de sucursal para SuperAdmins
-    if (role == 'SUPERADMIN') {
-      actionsList.add(
-        Center(
-          child: OutlinedButton.icon(
-            icon: const Icon(Icons.swap_horiz, size: 14.0, color: Color(0xFF00F0FF)),
-            label: Text(
-              activeBarId != null ? 'CAMBIAR BAR' : 'BARES',
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 9.0,
-                color: const Color(0xFF00F0FF),
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-              ),
-            ),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-              side: const BorderSide(color: Color(0x4D00F0FF)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100.0),
-              ),
-            ),
-            onPressed: onSelectBarPressed,
-          ),
-        ),
-      );
-      actionsList.add(const SizedBox(width: 12.0));
-    }
+    // Acción 3: Botón de cambio rápido de sucursal removido (ahora integrado en menú lateral)
 
     // Acción 4: Foto de perfil premium en la esquina superior derecha (Móvil y Tablet)
     actionsList.add(

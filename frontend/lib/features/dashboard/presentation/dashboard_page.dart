@@ -105,6 +105,7 @@ class DashboardPage extends ConsumerWidget {
 
     // 3. Filtrar los Bento Items de accesos rápidos permitidos para el rol
     final List<Widget> allowedBentoItems = [];
+    final bool isBarDisabled = barState.value != null && barState.value!.estado == false && user.rolNombre.toUpperCase() == 'ADMIN';
 
     if (allowedViews.contains('pos')) {
       allowedBentoItems.add(
@@ -113,9 +114,18 @@ class DashboardPage extends ConsumerWidget {
           title: 'POS Ventas',
           subtitle: 'Registrar ventas',
           color: const Color(0xFF00F0FF),
-          onTap: () {
-            ref.read(activeViewProvider.notifier).state = 'pos';
-          },
+          onTap: isBarDisabled
+              ? () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Operación bloqueada: Sucursal suspendida. Contacte a soporte.'),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                }
+              : () {
+                  ref.read(activeViewProvider.notifier).state = 'pos';
+                },
         ),
       );
     }
@@ -127,9 +137,18 @@ class DashboardPage extends ConsumerWidget {
           title: 'Caja',
           subtitle: 'Control de turnos',
           color: const Color(0xFFFFB1C3),
-          onTap: () {
-            ref.read(activeViewProvider.notifier).state = 'caja';
-          },
+          onTap: isBarDisabled
+              ? () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Operación bloqueada: Sucursal suspendida. Contacte a soporte.'),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                }
+              : () {
+                  ref.read(activeViewProvider.notifier).state = 'caja';
+                },
         ),
       );
     }
@@ -141,9 +160,18 @@ class DashboardPage extends ConsumerWidget {
           title: 'Menú',
           subtitle: 'Editar catálogo',
           color: const Color(0xFF7000FF),
-          onTap: () {
-            ref.read(activeViewProvider.notifier).state = 'menu';
-          },
+          onTap: isBarDisabled
+              ? () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Operación bloqueada: Sucursal suspendida. Contacte a soporte.'),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                }
+              : () {
+                  ref.read(activeViewProvider.notifier).state = 'menu';
+                },
         ),
       );
     }
@@ -155,9 +183,18 @@ class DashboardPage extends ConsumerWidget {
           title: 'Staff',
           subtitle: 'Personal y roles',
           color: const Color(0xFFDBFCFF),
-          onTap: () {
-            ref.read(activeViewProvider.notifier).state = 'staff';
-          },
+          onTap: isBarDisabled
+              ? () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Operación bloqueada: Sucursal suspendida. Contacte a soporte.'),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                }
+              : () {
+                  ref.read(activeViewProvider.notifier).state = 'staff';
+                },
         ),
       );
     }
@@ -175,6 +212,54 @@ class DashboardPage extends ConsumerWidget {
             barName: barName,
           ),
           const SizedBox(height: 16.0),
+
+          // Banner de Advertencia por Inactividad (SaaS)
+          if (isBarDisabled) ...[
+            Container(
+              margin: const EdgeInsets.only(bottom: 16.0),
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.redAccent.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16.0),
+                border: Border.all(color: Colors.redAccent.withOpacity(0.5), width: 1.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.redAccent.withOpacity(0.05),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 28),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Sucursal Deshabilitada',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Tu bar se encuentra suspendido. Comunícate con soporte para reactivar operaciones.',
+                          style: GoogleFonts.inter(
+                            color: Colors.white70,
+                            fontSize: 11.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
 
           // 2. Grilla Bento de Accesos Rápidos Autorizados
           if (allowedBentoItems.isNotEmpty) ...[
