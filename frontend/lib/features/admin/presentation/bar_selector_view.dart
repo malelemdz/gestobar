@@ -210,7 +210,8 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                                       )
                                     ]
                                   : null,
-                                                        child: ClipRRect(
+                            ),
+                            child: ClipRRect(
                               borderRadius: BorderRadius.circular(16),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
