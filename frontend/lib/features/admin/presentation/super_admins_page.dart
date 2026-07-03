@@ -129,15 +129,12 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
   }
 
   Widget _buildFilterChips(ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Row(
-        children: [
-          _buildFilterChip('TODOS', 'Todos', theme, isFirst: true),
-          _buildFilterChip('ACTIVOS', 'Activos', theme),
-          _buildFilterChip('INACTIVOS', 'Inactivos', theme, isLast: true),
-        ],
-      ),
+    return Row(
+      children: [
+        _buildFilterChip('TODOS', 'Todos', theme, isFirst: true),
+        _buildFilterChip('ACTIVOS', 'Activos', theme),
+        _buildFilterChip('INACTIVOS', 'Inactivos', theme, isLast: true),
+      ],
     );
   }
 
@@ -235,114 +232,111 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
             ],
           ),
         ),
-        child: Column(
-          children: [
-            // Top search bar block
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: TextField(
-                controller: _searchCtrl,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: 'Buscar administradores por nombre o usuario...',
-                  hintStyle: TextStyle(
-                    color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
-                  ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
-                    size: 20,
-                  ),
-                  suffixIcon: _searchQuery.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, size: 18, color: Colors.white),
-                          onPressed: () {
-                            _searchCtrl.clear();
-                            setState(() => _searchQuery = '');
-                          },
-                        )
-                      : null,
-                  filled: true,
-                  fillColor: theme.colorScheme.onSurface.withOpacity(0.03),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: theme.colorScheme.onSurface.withOpacity(0.08),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Top search bar block (styled like sucursales screen)
+                Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E2024),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.05),
+                      width: 1,
                     ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
+                  child: TextField(
+                    controller: _searchCtrl,
+                    style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search, color: Color(0xFF00F0FF), size: 20),
+                      hintText: 'Buscar administradores por nombre o usuario...',
+                      hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 14),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear, size: 18, color: Colors.white),
+                              onPressed: () {
+                                _searchCtrl.clear();
+                                setState(() => _searchQuery = '');
+                              },
+                            )
+                          : null,
+                    ),
+                    onChanged: (val) {
+                      setState(() => _searchQuery = val.trim());
+                    },
                   ),
                 ),
-                onChanged: (val) {
-                  setState(() => _searchQuery = val.trim());
-                },
-              ),
-            ),
+                const SizedBox(height: 12.0),
 
-            // Filter Chips block
-            _buildFilterChips(theme),
+                // Filter Chips block (spans full width of screen)
+                _buildFilterChips(theme),
+                const SizedBox(height: 12.0),
 
-            // Content List block
-            Expanded(
-              child: RefreshIndicator(
-                color: const Color(0xFF00F0FF),
-                backgroundColor: const Color(0xFF1E2024),
-                onRefresh: () async {
-                  await ref.read(superAdminsProvider.notifier).loadData();
-                },
-                child: state.isLoading
-                    ? ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: 5,
-                        itemBuilder: (context, index) => const Padding(
-                          padding: EdgeInsets.only(bottom: 12.0),
-                          child: ShimmerPlaceholder(
-                            width: double.infinity,
-                            height: 70,
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                          ),
-                        ),
-                      )
-                    : filteredAdmins.isEmpty
-                        ? SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height - 250,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.admin_panel_settings_outlined,
-                                      size: 48,
-                                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      'No se encontraron administradores',
-                                      style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-                                    ),
-                                  ],
-                                ),
+                // Content List block
+                Expanded(
+                  child: RefreshIndicator(
+                    color: const Color(0xFF00F0FF),
+                    backgroundColor: const Color(0xFF1E2024),
+                    onRefresh: () async {
+                      await ref.read(superAdminsProvider.notifier).loadData();
+                    },
+                    child: state.isLoading
+                        ? ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemCount: 5,
+                            itemBuilder: (context, index) => const Padding(
+                              padding: EdgeInsets.only(bottom: 12.0),
+                              child: ShimmerPlaceholder(
+                                width: double.infinity,
+                                height: 70,
+                                borderRadius: BorderRadius.all(Radius.circular(16)),
                               ),
                             ),
                           )
-                        : GridView.builder(
-                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                            physics: const AlwaysScrollableScrollPhysics(
-                              parent: BouncingScrollPhysics(),
-                            ),
-                            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 420,
-                              mainAxisExtent: isTablet ? 78 : 84,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                            ),
-                            itemCount: filteredAdmins.length,
-                            itemBuilder: (context, index) {
+                        : filteredAdmins.isEmpty
+                            ? SingleChildScrollView(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                child: SizedBox(
+                                  height: MediaQuery.of(context).size.height - 250,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.admin_panel_settings_outlined,
+                                          size: 48,
+                                          color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        Text(
+                                          'No se encontraron administradores',
+                                          style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : GridView.builder(
+                                padding: EdgeInsets.zero,
+                                physics: const AlwaysScrollableScrollPhysics(
+                                  parent: BouncingScrollPhysics(),
+                                ),
+                                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 400,
+                                  mainAxisExtent: isTablet ? 78 : 84,
+                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16,
+                                ),
+                                itemCount: filteredAdmins.length,
+                                itemBuilder: (context, index) {
                               final admin = filteredAdmins[index];
                               final assignedBar = state.adminBarMap[admin.id] ?? 'Sin asignar';
                               final accentColor =

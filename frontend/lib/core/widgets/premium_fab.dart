@@ -20,6 +20,7 @@ class PremiumFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
+      heroTag: null,
       onPressed: isEnabled ? onPressed : () {}, // Pass a dummy callback when disabled
       backgroundColor: isEnabled ? const Color(0xFF00F0FF) : Colors.grey.shade800,
       elevation: isEnabled ? 4 : 0,
