@@ -205,3 +205,28 @@ final auditoriaListProvider = StateNotifierProvider<AuditoriaNotifier, Auditoria
 
   return AuditoriaNotifier(repo, filters, socketService, barId);
 });
+
+// Providers for global/superadmin audit view
+final superAuditoriaFiltersProvider = StateProvider<Map<String, String?>>((ref) => {
+  'usuarioId': null,
+  'modulo': null,
+  'accion': null,
+  'fechaInicio': null,
+  'fechaFin': null,
+});
+
+final superAuditoriaListProvider = StateNotifierProvider<AuditoriaNotifier, AuditoriaState>((ref) {
+  final repo = ref.watch(auditoriaRepositoryProvider);
+  final filters = ref.watch(superAuditoriaFiltersProvider);
+  final socketService = ref.watch(socketServiceProvider);
+
+  // For global/superadmin audit, we pass a null barId
+  return AuditoriaNotifier(repo, filters, socketService, null);
+});
+
+final superStaffListProvider = FutureProvider<List<UserModel>>((ref) async {
+  final dio = ref.watch(dioProvider);
+  final response = await dio.get('/users');
+  final List data = response.data ?? [];
+  return data.map((json) => UserModel.fromJson(json)).toList();
+});

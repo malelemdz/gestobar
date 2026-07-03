@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class NavigationHelper {
   static List<String> getAllowedViewsForRole(String role, {bool isGlobalMode = false}) {
     if (role.toUpperCase() == 'SUPERADMIN' && isGlobalMode) {
-      return ['super_bars', 'super_admins', 'perfil'];
+      return ['super_dash', 'super_bars', 'super_admins', 'super_audit', 'perfil'];
     }
     switch (role.toUpperCase()) {
       case 'SUPERADMIN':
@@ -20,7 +20,7 @@ class NavigationHelper {
 
   static String getDefaultViewForRole(String role, {bool isGlobalMode = false}) {
     if (role.toUpperCase() == 'SUPERADMIN' && isGlobalMode) {
-      return 'super_bars';
+      return 'super_dash';
     }
     switch (role.toUpperCase()) {
       case 'SUPERADMIN':
@@ -39,6 +39,12 @@ class NavigationHelper {
     if (role.toUpperCase() == 'SUPERADMIN' && isGlobalMode) {
       return [
         {
+          'view': 'super_dash',
+          'label': 'Dashboard',
+          'icon': Icons.dashboard_outlined,
+          'icon_active': Icons.dashboard,
+        },
+        {
           'view': 'super_bars',
           'label': 'Sucursales',
           'icon': Icons.storefront_outlined,
@@ -49,6 +55,12 @@ class NavigationHelper {
           'label': 'Administradores',
           'icon': Icons.admin_panel_settings_outlined,
           'icon_active': Icons.admin_panel_settings,
+        },
+        {
+          'view': 'super_audit',
+          'label': 'Auditoría',
+          'icon': Icons.security_outlined,
+          'icon_active': Icons.security,
         },
       ];
     }
@@ -137,6 +149,10 @@ class NavigationHelper {
 
   static String getTitleForView(String activeView) {
     switch (activeView) {
+      case 'super_dash':
+        return 'Dashboard';
+      case 'super_audit':
+        return 'Auditoría';
       case 'super_bars':
         return 'Sucursales';
       case 'super_admins':

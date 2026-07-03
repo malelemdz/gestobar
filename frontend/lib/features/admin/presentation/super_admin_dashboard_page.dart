@@ -7,6 +7,10 @@ import '../../auth/providers/auth_provider.dart';
 import '../../auth/providers/auth_state.dart';
 import '../presentation/bar_selector_view.dart';
 import '../../dashboard/presentation/main_dashboard_view.dart';
+import '../data/models/auditoria_model.dart';
+import 'widgets/auditoria_log_card.dart';
+import '../../caja/providers/caja_provider.dart';
+import '../providers/bar_provider.dart';
 
 class SuperAdminDashboardPage extends ConsumerStatefulWidget {
   const SuperAdminDashboardPage({super.key});
@@ -20,6 +24,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
   int _activeBars = 0;
   int _inactiveBars = 0;
   int _totalAdmins = 0;
+  List<AuditoriaModel> _latestLogs = [];
   bool _isLoading = true;
 
   @override
@@ -40,6 +45,11 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
       final usersRes = await dio.get('/users');
       final List<dynamic> users = usersRes.data ?? [];
 
+      // Cargar últimos logs de auditoría
+      final auditRes = await dio.get('/auditoria', queryParameters: {'limit': '5'});
+      final List<dynamic> auditData = auditRes.data ?? [];
+      final List<AuditoriaModel> auditLogs = auditData.map((json) => AuditoriaModel.fromJson(json)).toList();
+
       if (mounted) {
         setState(() {
           _totalBars = bars.length;
@@ -49,6 +59,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
             final rol = u['rol'];
             return rol != null && rol['nombre'].toString().toUpperCase() == 'ADMIN';
           }).length;
+          _latestLogs = auditLogs;
           _isLoading = false;
         });
       }
@@ -219,6 +230,52 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                 },
               ),
             ),
+            const SizedBox(height: 32.0),
+
+            // Título de Sección: Actividad Reciente
+            Text(
+              'Actividad Reciente',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+
+            _isLoading
+                ? const Center(child: CircularProgressIndicator(color: Color(0xFF00F0FF)))
+                : _latestLogs.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
+                          child: Text(
+                            'No hay registros de actividad recientes',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white54,
+                              fontSize: 14.0,
+                            ),
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _latestLogs.length,
+                        itemBuilder: (context, index) {
+                          final log = _latestLogs[index];
+                          final currencyIso = ref.watch(currencyIsoProvider);
+                          final currencySymbol = ref.watch(currencySymbolProvider);
+                          final barTimezone = ref.watch(barTimezoneProvider);
+                          return AuditoriaLogCard(
+                            log: log,
+                            currencyIso: currencyIso,
+                            currencySymbol: currencySymbol,
+                            barTimezone: barTimezone,
+                          );
+                        },
+                      ),
           ],
         ),
       ),
