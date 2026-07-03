@@ -531,9 +531,11 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
                               );
                             },
                           ),
-              ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
