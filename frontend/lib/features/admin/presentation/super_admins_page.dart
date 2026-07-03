@@ -120,11 +120,68 @@ class SuperAdminsPage extends ConsumerStatefulWidget {
 class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
   final TextEditingController _searchCtrl = TextEditingController();
   String _searchQuery = '';
+  String _statusFilter = 'TODOS'; // 'TODOS', 'ACTIVOS', 'INACTIVOS'
 
   @override
   void dispose() {
     _searchCtrl.dispose();
     super.dispose();
+  }
+
+  Widget _buildFilterChips(ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Row(
+        children: [
+          _buildFilterChip('TODOS', 'Todos', theme),
+          const SizedBox(width: 8),
+          _buildFilterChip('ACTIVOS', 'Activos', theme),
+          const SizedBox(width: 8),
+          _buildFilterChip('INACTIVOS', 'Inactivos', theme),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(String filterCode, String label, ThemeData theme) {
+    final bool isActive = _statusFilter == filterCode;
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _statusFilter = filterCode;
+        });
+      },
+      borderRadius: BorderRadius.circular(20),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          color: isActive ? const Color(0xFF00F0FF) : Colors.white.withOpacity(0.04),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isActive ? const Color(0xFF00F0FF) : Colors.white.withOpacity(0.08),
+            width: 1.0,
+          ),
+          boxShadow: isActive
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF00F0FF).withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.plusJakartaSans(
+            color: isActive ? Colors.black : Colors.white70,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -133,12 +190,21 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
     final isTablet = MediaQuery.of(context).size.width >= 720;
     final state = ref.watch(superAdminsProvider);
 
-    // Apply search filter locally
+    // Apply search and status filters locally
     final filteredAdmins = state.admins.where((admin) {
       final query = _searchQuery.toLowerCase();
       final fullName = '${admin.nombre} ${admin.apellido}'.toLowerCase();
       final username = admin.username.toLowerCase();
-      return fullName.contains(query) || username.contains(query);
+      
+      final matchesSearch = fullName.contains(query) || username.contains(query);
+      if (!matchesSearch) return false;
+
+      if (_statusFilter == 'ACTIVOS') {
+        return admin.estado == true;
+      } else if (_statusFilter == 'INACTIVOS') {
+        return admin.estado == false;
+      }
+      return true;
     }).toList();
 
     return Scaffold(
@@ -218,6 +284,9 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
               ),
             ),
 
+            // Filter Chips block
+            _buildFilterChips(theme),
+
             // Content List block
             Expanded(
               child: RefreshIndicator(
@@ -270,7 +339,7 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
                             ),
                             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: 420,
-                              mainAxisExtent: isTablet ? 76 : 82,
+                              mainAxisExtent: isTablet ? 78 : 84,
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 12,
                             ),
@@ -355,7 +424,7 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
                                           ],
                                         ),
                                       ),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: 4),
 
                                       // Col 3: Actions in single horizontal line
                                       Row(
@@ -417,52 +486,48 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
                                           ),
                                           const SizedBox(width: 4),
 
-                                          // 3. Status Toggle Button (check/block status style)
-                                          Tooltip(
-                                            message: admin.estado ? 'Deshabilitar' : 'Habilitar',
-                                            child: InkWell(
-                                              onTap: () async {
-                                                final confirm =
-                                                    await showStatusConfirmationBottomSheet(
-                                                  context: context,
-                                                  user: admin,
-                                                  targetState: !admin.estado,
-                                                );
-                                                if (confirm == true) {
-                                                  final success = await ref
-                                                      .read(superAdminsProvider.notifier)
-                                                      .toggleAdminStatus(admin.id, !admin.estado);
-                                                  if (context.mounted) {
-                                                    if (success) {
-                                                      CustomToast.show(
-                                                        context,
-                                                        message: !admin.estado
-                                                            ? 'Administrador habilitado'
-                                                            : 'Administrador deshabilitado',
-                                                        type: ToastType.success,
-                                                      );
-                                                    } else {
-                                                      CustomToast.show(
-                                                        context,
-                                                        message: 'Error al cambiar estado',
-                                                        type: ToastType.error,
-                                                      );
+                                          // 3. Status Toggle Switch
+                                          SizedBox(
+                                            height: 24,
+                                            width: 38,
+                                            child: Transform.scale(
+                                              scale: 0.65,
+                                              child: Switch(
+                                                value: admin.estado,
+                                                activeColor: const Color(0xFF00F0FF),
+                                                activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
+                                                inactiveThumbColor: Colors.grey,
+                                                inactiveTrackColor: Colors.white10,
+                                                onChanged: (val) async {
+                                                  final confirm =
+                                                      await showStatusConfirmationBottomSheet(
+                                                    context: context,
+                                                    user: admin,
+                                                    targetState: val,
+                                                  );
+                                                  if (confirm == true) {
+                                                    final success = await ref
+                                                        .read(superAdminsProvider.notifier)
+                                                        .toggleAdminStatus(admin.id, val);
+                                                    if (context.mounted) {
+                                                      if (success) {
+                                                        CustomToast.show(
+                                                          context,
+                                                          message: val
+                                                              ? 'Administrador habilitado'
+                                                              : 'Administrador deshabilitado',
+                                                          type: ToastType.success,
+                                                        );
+                                                      } else {
+                                                        CustomToast.show(
+                                                          context,
+                                                          message: 'Error al cambiar estado',
+                                                          type: ToastType.error,
+                                                        );
+                                                      }
                                                     }
                                                   }
-                                                }
-                                              },
-                                              borderRadius: BorderRadius.circular(6),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(6.0),
-                                                child: Icon(
-                                                  admin.estado
-                                                      ? Icons.block
-                                                      : Icons.check_circle_outline,
-                                                  size: 16,
-                                                  color: admin.estado
-                                                      ? Colors.redAccent
-                                                      : Colors.greenAccent,
-                                                ),
+                                                },
                                               ),
                                             ),
                                           ),

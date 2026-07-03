@@ -29,8 +29,12 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
   late final TextEditingController _apellidoCtrl;
   late final TextEditingController _usernameCtrl;
   late final TextEditingController _celularCtrl;
+  late final TextEditingController _dniCtrl;
+  late final TextEditingController _nacionalidadCtrl;
+  late final TextEditingController _direccionCtrl;
   late final TextEditingController _passwordCtrl;
 
+  String _selectedGender = 'PREFIERO_NO_DECIRLO';
   bool _isSaving = false;
   String? _adminRoleId;
   bool _isLoadingRole = true;
@@ -42,12 +46,16 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
     _apellidoCtrl = TextEditingController(text: widget.admin?.apellido ?? '');
     _usernameCtrl = TextEditingController(text: widget.admin?.username ?? '');
     _celularCtrl = TextEditingController(text: widget.admin?.celular ?? '');
+    _dniCtrl = TextEditingController(text: widget.admin?.identificacion ?? '');
+    _nacionalidadCtrl = TextEditingController(text: widget.admin?.nacionalidad ?? 'Bolivia');
+    _direccionCtrl = TextEditingController(text: widget.admin?.direccion ?? '');
     _passwordCtrl = TextEditingController();
 
-    if (widget.admin == null) {
-      _loadAdminRoleId();
-    } else {
+    if (widget.admin != null) {
+      _selectedGender = widget.admin!.genero ?? 'PREFIERO_NO_DECIRLO';
       _isLoadingRole = false;
+    } else {
+      _loadAdminRoleId();
     }
   }
 
@@ -57,6 +65,9 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
     _apellidoCtrl.dispose();
     _usernameCtrl.dispose();
     _celularCtrl.dispose();
+    _dniCtrl.dispose();
+    _nacionalidadCtrl.dispose();
+    _direccionCtrl.dispose();
     _passwordCtrl.dispose();
     super.dispose();
   }
@@ -94,17 +105,22 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
     try {
       final dio = ref.read(dioProvider);
 
+      final payload = {
+        'nombre': _nombreCtrl.text.trim(),
+        'apellido': _apellidoCtrl.text.trim(),
+        'username': _usernameCtrl.text.trim().toLowerCase(),
+        'genero': _selectedGender,
+        'celular': _celularCtrl.text.trim(),
+        'identificacion': _dniCtrl.text.trim(),
+        'nacionalidad': _nacionalidadCtrl.text.trim(),
+        'direccion': _direccionCtrl.text.trim(),
+      };
+
       if (widget.admin == null) {
         // Crear nuevo Administrador
-        final payload = {
-          'nombre': _nombreCtrl.text.trim(),
-          'apellido': _apellidoCtrl.text.trim(),
-          'username': _usernameCtrl.text.trim(),
-          'password': _passwordCtrl.text.trim(),
-          'celular': _celularCtrl.text.trim(),
-          'rol_id': _adminRoleId,
-          'estado': true,
-        };
+        payload['rol_id'] = _adminRoleId;
+        payload['estado'] = true;
+        payload['password'] = _passwordCtrl.text.trim();
 
         await dio.post('/users', data: payload);
         if (mounted) {
@@ -112,13 +128,6 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
         }
       } else {
         // Editar Administrador existente
-        final payload = {
-          'nombre': _nombreCtrl.text.trim(),
-          'apellido': _apellidoCtrl.text.trim(),
-          'username': _usernameCtrl.text.trim(),
-          'celular': _celularCtrl.text.trim(),
-        };
-
         await dio.patch('/users/${widget.admin!.id}', data: payload);
         if (mounted) {
           CustomToast.show(context, message: 'Perfil de administrador actualizado', type: ToastType.success);
@@ -138,6 +147,49 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
         CustomToast.show(context, message: 'Fallo al guardar administrador: $errorMsg', type: ToastType.error);
       }
     }
+  }
+
+  Widget _buildDropdownField<T>({
+    required T? value,
+    required Color dropdownColor,
+    required String hint,
+    required List<DropdownMenuItem<T>> items,
+    required void Function(T?) onChanged,
+    String? Function(T?)? validator,
+  }) {
+    return DropdownButtonFormField<T>(
+      value: value,
+      dropdownColor: dropdownColor,
+      style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: const Color(0xFF22252A),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+        ),
+      ),
+      items: items,
+      validator: validator,
+      onChanged: onChanged,
+    );
   }
 
   @override
@@ -174,7 +226,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
       child: _isLoadingRole
           ? const Center(child: Padding(padding: EdgeInsets.all(40.0), child: CircularProgressIndicator(color: Color(0xFF00F0FF))))
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -191,7 +243,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
                               controller: _nombreCtrl,
                               hintText: 'Nombre',
                               icon: Icons.person,
-                              validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+                              validator: (val) => val == null || val.isEmpty ? 'El nombre es obligatorio' : null,
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -200,7 +252,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
                               controller: _apellidoCtrl,
                               hintText: 'Apellido',
                               icon: Icons.person_outline,
-                              validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+                              validator: (val) => val == null || val.isEmpty ? 'El apellido es obligatorio' : null,
                             ),
                           ),
                         ],
@@ -210,22 +262,117 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
                         controller: _nombreCtrl,
                         hintText: 'Nombre',
                         icon: Icons.person,
-                        validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+                        validator: (val) => val == null || val.isEmpty ? 'El nombre es obligatorio' : null,
                       ),
                       const SizedBox(height: 12),
                       StyledTextField(
                         controller: _apellidoCtrl,
                         hintText: 'Apellido',
                         icon: Icons.person_outline,
-                        validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+                        validator: (val) => val == null || val.isEmpty ? 'El apellido es obligatorio' : null,
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+
+                    if (isTablet)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: StyledTextField(
+                              controller: _celularCtrl,
+                              hintText: 'Celular (ej. +591 70000000)',
+                              icon: Icons.phone_android_outlined,
+                              validator: (val) => val == null || val.isEmpty ? 'El celular es obligatorio' : null,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: StyledTextField(
+                              controller: _dniCtrl,
+                              hintText: 'Cédula / DNI',
+                              icon: Icons.badge_outlined,
+                              validator: (val) => val == null || val.isEmpty ? 'La cédula es obligatoria' : null,
+                            ),
+                          ),
+                        ],
+                      )
+                    else ...[
+                      StyledTextField(
+                        controller: _celularCtrl,
+                        hintText: 'Celular (ej. +591 70000000)',
+                        icon: Icons.phone_android_outlined,
+                        validator: (val) => val == null || val.isEmpty ? 'El celular es obligatorio' : null,
+                      ),
+                      const SizedBox(height: 12),
+                      StyledTextField(
+                        controller: _dniCtrl,
+                        hintText: 'Cédula / DNI',
+                        icon: Icons.badge_outlined,
+                        validator: (val) => val == null || val.isEmpty ? 'La cédula es obligatoria' : null,
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+
+                    if (isTablet)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: StyledTextField(
+                              controller: _nacionalidadCtrl,
+                              hintText: 'Nacionalidad',
+                              icon: Icons.flag_outlined,
+                              validator: (val) => val == null || val.isEmpty ? 'La nacionalidad es obligatoria' : null,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildDropdownField<String>(
+                              value: _selectedGender,
+                              dropdownColor: const Color(0xFF1E2024),
+                              hint: 'Género',
+                              items: const [
+                                DropdownMenuItem(value: 'MASCULINO', child: Text('Masculino')),
+                                DropdownMenuItem(value: 'FEMENINO', child: Text('Femenino')),
+                                DropdownMenuItem(value: 'PREFIERO_NO_DECIRLO', child: Text('Prefiero no decirlo')),
+                              ],
+                              validator: (val) => val == null || val.isEmpty ? 'El género es obligatorio' : null,
+                              onChanged: (val) {
+                                if (val != null) setState(() => _selectedGender = val);
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                    else ...[
+                      StyledTextField(
+                        controller: _nacionalidadCtrl,
+                        hintText: 'Nacionalidad',
+                        icon: Icons.flag_outlined,
+                        validator: (val) => val == null || val.isEmpty ? 'La nacionalidad es obligatoria' : null,
+                      ),
+                      const SizedBox(height: 12),
+                      _buildDropdownField<String>(
+                        value: _selectedGender,
+                        dropdownColor: const Color(0xFF1E2024),
+                        hint: 'Género',
+                        items: const [
+                          DropdownMenuItem(value: 'MASCULINO', child: Text('Masculino')),
+                          DropdownMenuItem(value: 'FEMENINO', child: Text('Femenino')),
+                          DropdownMenuItem(value: 'PREFIERO_NO_DECIRLO', child: Text('Prefiero no decirlo')),
+                        ],
+                        validator: (val) => val == null || val.isEmpty ? 'El género es obligatorio' : null,
+                        onChanged: (val) {
+                          if (val != null) setState(() => _selectedGender = val);
+                        },
                       ),
                     ],
                     const SizedBox(height: 12),
 
                     StyledTextField(
-                      controller: _celularCtrl,
-                      hintText: 'Número de Celular (Opcional)',
-                      icon: Icons.phone,
+                      controller: _direccionCtrl,
+                      hintText: 'Dirección física (ej. Av. Siempre Viva 123)',
+                      icon: Icons.home_outlined,
+                      validator: (val) => val == null || val.isEmpty ? 'La dirección es obligatoria' : null,
                     ),
                     const SizedBox(height: 24),
 
@@ -237,7 +384,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
                       hintText: 'Nombre de usuario (ej: admin_sucre)',
                       icon: Icons.alternate_email,
                       validator: (val) {
-                        if (val == null || val.isEmpty) return 'Requerido';
+                        if (val == null || val.isEmpty) return 'El usuario es obligatorio';
                         if (val.length < 4) return 'Mínimo 4 caracteres';
                         return null;
                       },
@@ -251,7 +398,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
                         isPassword: true,
                         icon: Icons.lock,
                         validator: (val) {
-                          if (val == null || val.isEmpty) return 'Requerido';
+                          if (val == null || val.isEmpty) return 'La contraseña es obligatoria';
                           if (val.length < 6) return 'Mínimo 6 caracteres';
                           return null;
                         },
