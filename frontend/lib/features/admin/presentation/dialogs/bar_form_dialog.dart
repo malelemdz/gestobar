@@ -25,16 +25,10 @@ class BarFormDialog extends ConsumerStatefulWidget {
 class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controladores de los campos del Bar
+  // Controladores de los campos simplificados del Bar
   late final TextEditingController _nombreCtrl;
-  late final TextEditingController _slugCtrl;
   late final TextEditingController _ciudadCtrl;
-  late final TextEditingController _direccionCtrl;
-  late final TextEditingController _simboloCtrl;
-  late final TextEditingController _isoCtrl;
-  late final TextEditingController _comisionCtrl;
 
-  String _selectedTimezone = 'America/La_Paz';
   bool _moduloDamasActivo = true;
   bool _estado = true;
   String? _selectedOwnerId;
@@ -54,31 +48,13 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   final _adminPasswordCtrl = TextEditingController();
   final _adminCelularCtrl = TextEditingController();
 
-  final List<String> _timezones = [
-    'America/La_Paz',
-    'America/Bogota',
-    'America/Lima',
-    'America/Santiago',
-    'America/Caracas',
-    'America/Mexico_City',
-    'America/Argentina/Buenos_Aires',
-    'America/Sao_Paulo',
-    'Europe/Madrid',
-  ];
-
   @override
   void initState() {
     super.initState();
     _nombreCtrl = TextEditingController(text: widget.bar?.nombre ?? '');
-    _slugCtrl = TextEditingController(text: widget.bar?.slug ?? '');
     _ciudadCtrl = TextEditingController(text: widget.bar?.ciudad ?? '');
-    _direccionCtrl = TextEditingController(text: widget.bar?.direccion ?? '');
-    _simboloCtrl = TextEditingController(text: widget.bar?.monedaSimbolo ?? 'Bs');
-    _isoCtrl = TextEditingController(text: widget.bar?.monedaIso ?? 'BOB');
-    _comisionCtrl = TextEditingController(text: widget.bar != null ? widget.bar!.comisionPorcentaje.toStringAsFixed(0) : '50');
 
     if (widget.bar != null) {
-      _selectedTimezone = widget.bar!.timezone;
       _moduloDamasActivo = widget.bar!.moduloDamasActivo;
       _estado = widget.bar!.estado;
     }
@@ -89,12 +65,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   @override
   void dispose() {
     _nombreCtrl.dispose();
-    _slugCtrl.dispose();
     _ciudadCtrl.dispose();
-    _direccionCtrl.dispose();
-    _simboloCtrl.dispose();
-    _isoCtrl.dispose();
-    _comisionCtrl.dispose();
     _adminNameCtrl.dispose();
     _adminLastNameCtrl.dispose();
     _adminUsernameCtrl.dispose();
@@ -141,6 +112,16 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
     }
   }
 
+  // Generador automático de slug a partir del nombre del bar
+  String _slugify(String text) {
+    return text
+        .toLowerCase()
+        .trim()
+        .replaceAll(RegExp(r'[^a-z0-9\s-]'), '') // Quitar caracteres especiales
+        .replaceAll(RegExp(r'\s+'), '-')         // Reemplazar espacios por guiones
+        .replaceAll(RegExp(r'-+'), '-');         // Reducir guiones repetidos
+  }
+
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() != true) return;
     
@@ -180,20 +161,25 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
         ownerId = newUserRes.data['id'];
       }
 
-      // 2. Armar payload del Bar
-      final double comisionVal = double.tryParse(_comisionCtrl.text) ?? 50.0;
+      // 2. Armar payload simplificado del Bar
+      final String barName = _nombreCtrl.text.trim();
+      final String generatedSlug = _slugify(barName);
+
       final barPayload = {
-        'nombre': _nombreCtrl.text.trim(),
-        'slug': _slugCtrl.text.trim().toLowerCase(),
+        'nombre': barName,
+        'slug': generatedSlug,
         'ciudad': _ciudadCtrl.text.trim(),
-        'direccion': _direccionCtrl.text.trim(),
-        'moneda_simbolo': _simboloCtrl.text.trim(),
-        'moneda_iso': _isoCtrl.text.trim().toUpperCase(),
-        'timezone': _selectedTimezone,
-        'comision_porcentaje': comisionVal,
         'modulo_damas_activo': _moduloDamasActivo,
         'estado': _estado,
-        if (ownerId != null) 'owner_id': ownerId,
+        if (widget.bar == null) ...{
+          // Valores por defecto obligatorios en base de datos únicamente al crear
+          'direccion': '',
+          'moneda_simbolo': 'Bs',
+          'moneda_iso': 'BOB',
+          'timezone': 'America/La_Paz',
+          'comision_porcentaje': 50.0,
+          if (ownerId != null) 'owner_id': ownerId,
+        }
       };
 
       if (widget.bar == null) {
@@ -203,7 +189,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
           CustomToast.show(context, message: 'Sucursal registrada con éxito', type: ToastType.success);
         }
       } else {
-        // Actualizar Bar existente (excluyendo owner_id si no se desea cambiar)
+        // Actualizar Bar existente (excluyendo campos de creación y owner_id)
         await dio.patch('/bars/${widget.bar!.id}', data: barPayload);
         if (mounted) {
           CustomToast.show(context, message: 'Sucursal actualizada con éxito', type: ToastType.success);
@@ -234,106 +220,12 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
     );
   }
 
-  Widget _buildSlugField() {
-    return StyledTextField(
-      controller: _slugCtrl,
-      hintText: 'Slug único (ej: bar-centro)',
-      icon: Icons.link,
-      enabled: widget.bar == null,
-      validator: (val) {
-        if (val == null || val.isEmpty) return 'Requerido';
-        if (!RegExp(r'^[a-z0-9\-]+$').hasMatch(val)) return 'Solo letras minúsculas, números y guiones';
-        return null;
-      },
-    );
-  }
-
   Widget _buildCiudadField() {
     return StyledTextField(
       controller: _ciudadCtrl,
       hintText: 'Ciudad',
       icon: Icons.location_city,
       validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-    );
-  }
-
-  Widget _buildDireccionField() {
-    return StyledTextField(
-      controller: _direccionCtrl,
-      hintText: 'Dirección física',
-      icon: Icons.map,
-    );
-  }
-
-  Widget _buildSimboloField() {
-    return StyledTextField(
-      controller: _simboloCtrl,
-      hintText: 'Símbolo Moneda (ej: Bs.)',
-      icon: Icons.attach_money,
-      validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-    );
-  }
-
-  Widget _buildIsoField() {
-    return StyledTextField(
-      controller: _isoCtrl,
-      hintText: 'ISO Moneda (ej: BOB)',
-      icon: Icons.payments,
-      validator: (val) {
-        if (val == null || val.isEmpty) return 'Requerido';
-        if (val.length != 3) return 'Debe tener exactamente 3 caracteres';
-        return null;
-      },
-    );
-  }
-
-  Widget _buildComisionField() {
-    return StyledTextField(
-      controller: _comisionCtrl,
-      hintText: '% Comisión por defecto',
-      icon: Icons.percent,
-      validator: (val) {
-        if (val == null || val.isEmpty) return 'Requerido';
-        final num = int.tryParse(val);
-        if (num == null || num < 0 || num > 100) return 'Entre 0 y 100';
-        return null;
-      },
-    );
-  }
-
-  Widget _buildTimezoneField() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF22252A),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.06)),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButtonFormField<String>(
-          value: _selectedTimezone,
-          isExpanded: true,
-          dropdownColor: const Color(0xFF1E2024),
-          style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
-          decoration: const InputDecoration(
-            icon: Icon(Icons.access_time, color: Colors.white30, size: 16),
-            border: InputBorder.none,
-          ),
-          items: _timezones.map((tz) {
-            return DropdownMenuItem<String>(
-              value: tz,
-              child: Text(
-                tz,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            );
-          }).toList(),
-          onChanged: (val) {
-            if (val != null) setState(() => _selectedTimezone = val);
-          },
-        ),
-      ),
     );
   }
 
@@ -574,70 +466,19 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                     _buildNombreField(),
                     const SizedBox(height: 12),
                     
-                    _buildSlugField(),
-                    const SizedBox(height: 12),
-
-                    // Ciudad y Dirección (Responsivo)
-                    if (isTablet)
-                      Row(
-                        children: [
-                          Expanded(child: _buildCiudadField()),
-                          const SizedBox(width: 12),
-                          Expanded(child: _buildDireccionField()),
-                        ],
-                      )
-                    else ...[
-                      _buildCiudadField(),
-                      const SizedBox(height: 12),
-                      _buildDireccionField(),
-                    ],
+                    _buildCiudadField(),
                     const SizedBox(height: 20),
 
-                    Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
+                    Text('CONFIGURACIÓN OPERATIVA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
                     const SizedBox(height: 12),
 
-                    // Símbolo Moneda e ISO (Responsivo)
-                    if (isTablet)
-                      Row(
-                        children: [
-                          Expanded(child: _buildSimboloField()),
-                          const SizedBox(width: 12),
-                          Expanded(child: _buildIsoField()),
-                        ],
-                      )
-                    else ...[
-                      _buildSimboloField(),
-                      const SizedBox(height: 12),
-                      _buildIsoField(),
-                    ],
-                    const SizedBox(height: 12),
-
-                    _buildTimezoneField(),
-                    const SizedBox(height: 20),
-
-                    Text('REGLAS OPERATIVAS Y CONFIGURACIÓN', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
-                    const SizedBox(height: 12),
-
-                    // Comisión y Módulo Damas (Responsivo)
-                    if (isTablet)
-                      Row(
-                        children: [
-                          Expanded(child: _buildComisionField()),
-                          const SizedBox(width: 12),
-                          Expanded(child: _buildModuloDamasToggle()),
-                        ],
-                      )
-                    else ...[
-                      _buildComisionField(),
-                      const SizedBox(height: 12),
-                      _buildModuloDamasToggle(),
-                    ],
+                    _buildModuloDamasToggle(),
                     const SizedBox(height: 12),
 
                     _buildEstadoToggle(),
                     const SizedBox(height: 20),
 
-                    // Dropdown de Dueño / Admin del Bar
+                    // Dropdown de Dueño / Admin del Bar (Únicamente en creación)
                     if (widget.bar == null) ...[
                       Text('ADMINISTRADOR / DUEÑO DEL BAR', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
                       const SizedBox(height: 12),
