@@ -345,7 +345,6 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                                   ],
                                 ),
                               ),
-                              ),
                             ),
                           );
                         },
