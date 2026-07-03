@@ -5,6 +5,7 @@ import 'package:gestobar/core/network/dio_client.dart';
 import 'package:gestobar/core/widgets/custom_toast.dart';
 import 'package:gestobar/core/widgets/responsive_modal.dart';
 import 'package:gestobar/core/widgets/styled_text_field.dart';
+import 'package:gestobar/core/utils/currency_helper.dart';
 import 'package:gestobar/features/admin/data/models/bar_model.dart';
 import 'package:dio/dio.dart';
 
@@ -33,33 +34,31 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   bool _estado = true;
   String? _selectedOwnerId;
 
-  // Divisas soportadas mapeadas
-  final List<Map<String, String>> _currencies = [
-    {'iso': 'BOB', 'symbol': 'Bs', 'label': 'Boliviano (BOB - Bs)'},
-    {'iso': 'USD', 'symbol': '\$', 'label': 'Dólar (USD - \$)'},
-    {'iso': 'EUR', 'symbol': '€', 'label': 'Euro (EUR - €)'},
-    {'iso': 'PEN', 'symbol': 'S/.', 'label': 'Sol (PEN - S/.)'},
-    {'iso': 'COP', 'symbol': '\$', 'label': 'Peso Colombiano (COP - \$)'},
-    {'iso': 'CLP', 'symbol': '\$', 'label': 'Peso Chileno (CLP - \$)'},
-    {'iso': 'ARS', 'symbol': '\$', 'label': 'Peso Argentino (ARS - \$)'},
+  // Divisas soportadas oficiales (Sincronizadas con OperacionesTab)
+  final List<String> _currenciesIso = [
+    'USD', 'BOB', 'BRL', 'CLP', 'COP', 'CRC', 'CUP', 'DOP', 'EUR', 'GTQ',
+    'HNL', 'MXN', 'NIO', 'PAB', 'PEN', 'PYG', 'SVC', 'UYU', 'VES'
   ];
 
   String _selectedCurrencyIso = 'BOB';
   String _selectedCurrencySymbol = 'Bs';
 
-  // Zonas horarias
+  // Zonas horarias oficiales (Sincronizadas con OperacionesTab)
   final List<String> _timezones = [
-    'America/La_Paz',
-    'America/Bogota',
-    'America/Lima',
-    'America/Santiago',
-    'America/Caracas',
-    'America/Mexico_City',
-    'America/Argentina/Buenos_Aires',
-    'America/Sao_Paulo',
-    'Europe/Madrid',
+    'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles',
+    'Europe/Madrid', 'Atlantic/Canary', 'America/La_Paz', 'America/Lima',
+    'America/Santiago', 'America/Bogota', 'America/Mexico_City', 'America/Monterrey',
+    'America/Tijuana', 'America/Argentina/Buenos_Aires', 'America/Sao_Paulo',
+    'America/Manaus', 'America/Costa_Rica', 'America/El_Salvador', 'America/Guatemala',
+    'America/Tegucigalpa', 'America/Managua', 'America/Panama', 'America/Asuncion',
+    'America/Caracas', 'America/Montevideo', 'America/Guayaquil', 'America/Santo_Domingo',
+    'America/Puerto_Rico', 'America/Havana'
   ];
   String _selectedTimezone = 'America/La_Paz';
+
+  // Estado de caja abierta
+  bool _isCajaAbierta = false;
+  bool _isLoadingCajaState = false;
 
   // Listas cargadas dinámicamente
   List<dynamic> _adminsList = [];
@@ -88,6 +87,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
       _selectedCurrencyIso = widget.bar!.monedaIso;
       _selectedCurrencySymbol = widget.bar!.monedaSimbolo;
       _selectedTimezone = widget.bar!.timezone;
+      _checkCajaStatus();
     }
 
     _loadAdmins();
@@ -103,6 +103,25 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
     _adminPasswordCtrl.dispose();
     _adminCelularCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _checkCajaStatus() async {
+    setState(() => _isLoadingCajaState = true);
+    try {
+      final dio = ref.read(dioProvider);
+      final res = await dio.get('/cajas/estado', options: Options(
+        headers: {
+          'x-bar-id': widget.bar!.id,
+        },
+      ));
+      setState(() {
+        _isCajaAbierta = res.data['abierta'] == true;
+        _isLoadingCajaState = false;
+      });
+    } catch (e) {
+      setState(() => _isLoadingCajaState = false);
+      debugPrint('Error al verificar estado de caja en BarFormDialog: $e');
+    }
   }
 
   Future<void> _loadAdmins() async {
@@ -202,12 +221,12 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
         'ciudad': _ciudadCtrl.text.trim(),
         'modulo_damas_activo': _moduloDamasActivo,
         'estado': _estado,
+        'moneda_simbolo': _selectedCurrencySymbol,
+        'moneda_iso': _selectedCurrencyIso,
+        'timezone': _selectedTimezone,
         if (widget.bar == null) ...{
-          // Valores seleccionados y por defecto obligatorios al crear
+          // Valores por defecto únicamente en creación
           'direccion': '',
-          'moneda_simbolo': _selectedCurrencySymbol,
-          'moneda_iso': _selectedCurrencyIso,
-          'timezone': _selectedTimezone,
           'comision_porcentaje': _moduloDamasActivo ? 50.0 : null,
           if (ownerId != null) 'owner_id': ownerId,
         }
@@ -261,10 +280,11 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   }
 
   Widget _buildCurrencyDropdown() {
+    final bool blockDropdown = widget.bar != null && _isCajaAbierta;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF22252A),
+        color: blockDropdown ? const Color(0xFF1E2024) : const Color(0xFF22252A),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.white.withOpacity(0.06)),
       ),
@@ -273,40 +293,45 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
           value: _selectedCurrencyIso,
           isExpanded: true,
           dropdownColor: const Color(0xFF1E2024),
-          style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+          style: GoogleFonts.inter(
+            color: blockDropdown ? Colors.white30 : Colors.white,
+            fontSize: 13,
+          ),
           decoration: const InputDecoration(
             icon: Icon(Icons.payments, color: Colors.white30, size: 16),
             border: InputBorder.none,
           ),
-          items: _currencies.map((c) {
+          items: _currenciesIso.map((iso) {
             return DropdownMenuItem<String>(
-              value: c['iso'],
+              value: iso,
               child: Text(
-                c['label']!,
+                CurrencyHelper.getCurrencyLabel(iso),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
             );
           }).toList(),
-          onChanged: (val) {
-            if (val != null) {
-              setState(() {
-                _selectedCurrencyIso = val;
-                final selectedMap = _currencies.firstWhere((c) => c['iso'] == val);
-                _selectedCurrencySymbol = selectedMap['symbol']!;
-              });
-            }
-          },
+          onChanged: blockDropdown
+              ? null
+              : (val) {
+                  if (val != null) {
+                    setState(() {
+                      _selectedCurrencyIso = val;
+                      _selectedCurrencySymbol = CurrencyHelper.getSymbolFromIso(val);
+                    });
+                  }
+                },
         ),
       ),
     );
   }
 
   Widget _buildTimezoneField() {
+    final bool blockDropdown = widget.bar != null && _isCajaAbierta;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF22252A),
+        color: blockDropdown ? const Color(0xFF1E2024) : const Color(0xFF22252A),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.white.withOpacity(0.06)),
       ),
@@ -315,7 +340,10 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
           value: _selectedTimezone,
           isExpanded: true,
           dropdownColor: const Color(0xFF1E2024),
-          style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+          style: GoogleFonts.inter(
+            color: blockDropdown ? Colors.white30 : Colors.white,
+            fontSize: 13,
+          ),
           decoration: const InputDecoration(
             icon: Icon(Icons.access_time, color: Colors.white30, size: 16),
             border: InputBorder.none,
@@ -330,9 +358,11 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
               ),
             );
           }).toList(),
-          onChanged: (val) {
-            if (val != null) setState(() => _selectedTimezone = val);
-          },
+          onChanged: blockDropdown
+              ? null
+              : (val) {
+                  if (val != null) setState(() => _selectedTimezone = val);
+                },
         ),
       ),
     );
@@ -548,7 +578,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
           ),
           const SizedBox(width: 12),
           ElevatedButton(
-            onPressed: _isSaving || _isLoadingAdmins ? null : _submitForm,
+            onPressed: _isSaving || _isLoadingAdmins || _isLoadingCajaState ? null : _submitForm,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF7000FF),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -560,7 +590,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
           ),
         ],
       ),
-      child: _isLoadingAdmins
+      child: (_isLoadingAdmins || _isLoadingCajaState)
           ? const Center(child: Padding(padding: EdgeInsets.all(40.0), child: CircularProgressIndicator(color: Color(0xFF00F0FF))))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
@@ -569,6 +599,35 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Banner de Advertencia si la caja está abierta (Edición)
+                    if (widget.bar != null && _isCajaAbierta) ...[
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.redAccent.withOpacity(0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.lock_clock, color: Colors.redAccent, size: 20),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Existe una caja abierta actualmente en esta sucursal. Para evitar descuadres en el arqueo, debes cerrarla antes de modificar la Moneda o Zona Horaria.',
+                                style: GoogleFonts.inter(
+                                  color: Colors.redAccent,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
                     Text('DATOS GENERALES DE LA SUCURSAL', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
                     const SizedBox(height: 12),
                     
@@ -578,26 +637,24 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                     _buildCiudadField(),
                     const SizedBox(height: 20),
 
-                    // Divisa y Zona Horaria (Únicamente visibles al crear la sucursal)
-                    if (widget.bar == null) ...[
-                      Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
-                      const SizedBox(height: 12),
+                    // Divisa y Zona Horaria (Visibles en creación y edición)
+                    Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
+                    const SizedBox(height: 12),
 
-                      if (isTablet)
-                        Row(
-                          children: [
-                            Expanded(child: _buildCurrencyDropdown()),
-                            const SizedBox(width: 12),
-                            Expanded(child: _buildTimezoneField()),
-                          ],
-                        )
-                      else ...[
-                        _buildCurrencyDropdown(),
-                        const SizedBox(height: 12),
-                        _buildTimezoneField(),
-                      ],
-                      const SizedBox(height: 20),
+                    if (isTablet)
+                      Row(
+                        children: [
+                          Expanded(child: _buildCurrencyDropdown()),
+                          const SizedBox(width: 12),
+                          Expanded(child: _buildTimezoneField()),
+                        ],
+                      )
+                    else ...[
+                      _buildCurrencyDropdown(),
+                      const SizedBox(height: 12),
+                      _buildTimezoneField(),
                     ],
+                    const SizedBox(height: 20),
 
                     Text('CONFIGURACIÓN OPERATIVA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
                     const SizedBox(height: 12),
