@@ -105,7 +105,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
     try {
       final dio = ref.read(dioProvider);
 
-      final payload = {
+      final Map<String, dynamic> payload = {
         'nombre': _nombreCtrl.text.trim(),
         'apellido': _apellidoCtrl.text.trim(),
         'username': _usernameCtrl.text.trim().toLowerCase(),
