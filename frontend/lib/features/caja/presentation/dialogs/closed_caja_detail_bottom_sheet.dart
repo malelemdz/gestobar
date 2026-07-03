@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/utils/currency_helper.dart';
+import '../../../../core/utils/timezone_helper.dart';
 import '../../../../core/widgets/shimmer_placeholder.dart';
+import '../../../admin/providers/bar_provider.dart';
 import '../../providers/caja_provider.dart';
 import '../../repository/caja_repository.dart';
 import '../widgets/movimientos_list_widgets.dart';
@@ -34,6 +36,7 @@ class _ClosedCajaDetailBottomSheetState extends ConsumerState<ClosedCajaDetailBo
   Widget build(BuildContext context) {
     final cajaDetailState = ref.watch(cajaDetailsProvider(widget.cajaId));
     final cajaSalesState = ref.watch(cajaSalesProvider(widget.cajaId));
+    final barTimezone = ref.watch(barTimezoneProvider);
 
     return Container(
       decoration: BoxDecoration(
@@ -58,9 +61,13 @@ class _ClosedCajaDetailBottomSheetState extends ConsumerState<ClosedCajaDetailBo
         data: (caja) {
           final String barmanApertura = caja.aperturaUsuario?.nombre ?? 'Cajero';
           final String barmanCierre = caja.cierreUsuario?.nombre ?? 'Cajero';
-          final String fApertura = DateFormat('dd/MM/yyyy • HH:mm').format(caja.fechaApertura.toLocal());
+          final String fApertura = DateFormat('dd/MM/yyyy • HH:mm').format(
+            TimezoneHelper.convertToBarTime(caja.fechaApertura, barTimezone),
+          );
           final String fCierre = caja.fechaCierre != null
-              ? DateFormat('dd/MM/yyyy • HH:mm').format(caja.fechaCierre!.toLocal())
+              ? DateFormat('dd/MM/yyyy • HH:mm').format(
+                  TimezoneHelper.convertToBarTime(caja.fechaCierre!, barTimezone),
+                )
               : 'En curso';
 
           final double totalVentasPos = caja.totalVentasEfectivo + caja.totalVentasTarjeta + caja.totalVentasTrQr;

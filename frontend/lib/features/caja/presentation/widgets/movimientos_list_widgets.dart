@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/utils/currency_helper.dart';
+import '../../../../core/utils/timezone_helper.dart';
+import '../../../admin/providers/bar_provider.dart';
 import '../../models/caja_model.dart';
 import '../../models/evento_movimiento.dart';
 import '../../models/venta_model.dart';
 
-class MovimientosList extends StatelessWidget {
+class MovimientosList extends ConsumerWidget {
   final List<CajaMovimientoModel> movimientos;
   final List<VentaModel> ventas;
   final String currencySymbol;
@@ -23,7 +26,8 @@ class MovimientosList extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final barTimezone = ref.watch(barTimezoneProvider);
     // 1. Unificar y ordenar cronológicamente DESC
     final List<EventoMovimiento> eventos = [];
 
@@ -109,7 +113,8 @@ class MovimientosList extends StatelessWidget {
               final bool isEgreso = tipo == 'EGRESO';
               final bool isVenta = tipo == 'VENTA';
 
-              final time = DateFormat('HH:mm').format(ev.fecha.toLocal());
+              final barTime = TimezoneHelper.convertToBarTime(ev.fecha, barTimezone);
+              final time = DateFormat('HH:mm').format(barTime);
               final formattedMonto = CurrencyHelper.formatAmount(ev.monto, currencyIso);
 
               Color iconBgColor = Colors.white.withOpacity(0.05);

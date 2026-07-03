@@ -131,7 +131,7 @@ class CatalogRepository {
   }) async {
     final payload = {
       'metodo_pago': metodoPago,
-      'fecha': TimezoneHelper.now.toIso8601String(),
+      'fecha': TimezoneHelper.now.toUtc().toIso8601String(),
       if (montoEfectivo != null) 'monto_efectivo': montoEfectivo,
       if (montoTarjeta != null) 'monto_tarjeta': montoTarjeta,
       if (montoTrQr != null) 'monto_tr_qr': montoTrQr,

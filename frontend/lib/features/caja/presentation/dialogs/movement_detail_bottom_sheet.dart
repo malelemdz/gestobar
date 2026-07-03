@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/utils/currency_helper.dart';
+import '../../../../core/utils/timezone_helper.dart';
+import '../../../admin/providers/bar_provider.dart';
 import '../../models/caja_model.dart';
 import '../../models/evento_movimiento.dart';
 import '../../models/venta_model.dart';
 
-class MovementDetailBottomSheet extends StatelessWidget {
+class MovementDetailBottomSheet extends ConsumerWidget {
   final EventoMovimiento ev;
   final String currencySymbol;
   final String currencyIso;
@@ -21,8 +24,9 @@ class MovementDetailBottomSheet extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isVenta = ev.tipo == 'VENTA';
+    final barTimezone = ref.watch(barTimezoneProvider);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
@@ -68,8 +72,8 @@ class MovementDetailBottomSheet extends StatelessWidget {
 
           // Contenido Dinámico
           isVenta
-              ? _buildTicketDetails(ev.original as VentaModel, currencySymbol, currencyIso)
-              : _buildManualMovementDetails(ev.original as CajaMovimientoModel, currencySymbol, currencyIso),
+              ? _buildTicketDetails(ev.original as VentaModel, currencySymbol, currencyIso, barTimezone)
+              : _buildManualMovementDetails(ev.original as CajaMovimientoModel, currencySymbol, currencyIso, barTimezone),
 
           const SizedBox(height: 12.0),
 
@@ -102,9 +106,11 @@ class MovementDetailBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildTicketDetails(VentaModel venta, String symbol, String iso) {
+  Widget _buildTicketDetails(VentaModel venta, String symbol, String iso, String barTimezone) {
     final String barmanNombre = venta.usuario != null ? venta.usuario!.nombre : 'Cajero';
-    final String fecha = DateFormat('dd/MM/yyyy • HH:mm').format(venta.fecha.toLocal());
+    final String fecha = DateFormat('dd/MM/yyyy • HH:mm').format(
+      TimezoneHelper.convertToBarTime(venta.fecha, barTimezone),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -265,9 +271,11 @@ class MovementDetailBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildManualMovementDetails(CajaMovimientoModel m, String symbol, String iso) {
+  Widget _buildManualMovementDetails(CajaMovimientoModel m, String symbol, String iso, String barTimezone) {
     final String barmanNombre = m.usuario != null ? m.usuario!.nombre : 'Cajero';
-    final String fecha = DateFormat('dd/MM/yyyy • HH:mm').format(m.createdAt.toLocal());
+    final String fecha = DateFormat('dd/MM/yyyy • HH:mm').format(
+      TimezoneHelper.convertToBarTime(m.createdAt, barTimezone),
+    );
     final bool isIngreso = m.tipo == 'INGRESO';
 
     return Column(

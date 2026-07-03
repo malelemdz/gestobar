@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 import '../../../../core/network/dio_client.dart';
+import '../../../../core/utils/timezone_helper.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/providers/auth_state.dart';
 import '../data/models/bar_model.dart';
@@ -57,7 +58,9 @@ final serverTimeOffsetProvider = FutureProvider<Duration>((ref) async {
     final serverTimeStr = response.data['serverTime'] as String;
     final serverTime = DateTime.parse(serverTimeStr).toUtc();
     final deviceTime = DateTime.now().toUtc();
-    return serverTime.difference(deviceTime);
+    final offset = serverTime.difference(deviceTime);
+    TimezoneHelper.setServerOffset(offset);
+    return offset;
   } catch (e) {
     return Duration.zero;
   }

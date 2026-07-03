@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gestobar/core/theme/app_theme.dart';
 import 'package:gestobar/features/auth/models/user_model.dart';
+import 'package:gestobar/core/constants/api_constants.dart';
 
 class DashboardSidebar extends StatelessWidget {
   final String barName;
@@ -177,14 +178,19 @@ class DashboardSidebar extends StatelessWidget {
                       CircleAvatar(
                         radius: 18.0,
                         backgroundColor: theme.colorScheme.secondary.withOpacity(0.15),
-                        child: Text(
-                          user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
-                          style: TextStyle(
-                            color: theme.colorScheme.secondary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13.0,
-                          ),
-                        ),
+                        backgroundImage: (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
+                            ? NetworkImage(ApiConstants.resolveImageUrl(user.fotoUrl)!)
+                            : null,
+                        child: (user.fotoUrl == null || user.fotoUrl!.isEmpty)
+                            ? Text(
+                                user.nombre.isNotEmpty ? user.nombre[0].toUpperCase() : 'U',
+                                style: TextStyle(
+                                  color: theme.colorScheme.secondary,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13.0,
+                                ),
+                              )
+                            : null,
                       ),
                       const SizedBox(width: 10.0),
                       Expanded(

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:gestobar/core/utils/timezone_helper.dart';
 import 'package:gestobar/features/auth/models/user_model.dart';
 import 'package:gestobar/features/admin/providers/bar_provider.dart';
+import 'package:gestobar/core/constants/api_constants.dart';
 
 class DashboardSessionCard extends ConsumerWidget {
   final UserModel user;
@@ -62,36 +63,56 @@ class DashboardSessionCard extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Avatar circular con iniciales
-                Container(
-                  width: 56.0,
-                  height: 56.0,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(100.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF7000FF).withOpacity(0.3),
-                        blurRadius: 12.0,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
-                      style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ),
+                 // Avatar circular con foto o iniciales
+                 Container(
+                   width: 56.0,
+                   height: 56.0,
+                   decoration: BoxDecoration(
+                     gradient: const LinearGradient(
+                       colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
+                       begin: Alignment.topLeft,
+                       end: Alignment.bottomRight,
+                     ),
+                     borderRadius: BorderRadius.circular(100.0),
+                     boxShadow: [
+                       BoxShadow(
+                         color: const Color(0xFF7000FF).withOpacity(0.3),
+                         blurRadius: 12.0,
+                         offset: const Offset(0, 4),
+                       ),
+                     ],
+                   ),
+                   child: ClipRRect(
+                     borderRadius: BorderRadius.circular(100.0),
+                     child: (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
+                         ? Image.network(
+                             ApiConstants.resolveImageUrl(user.fotoUrl)!,
+                             fit: BoxFit.cover,
+                             errorBuilder: (context, error, stackTrace) {
+                               return Center(
+                                 child: Text(
+                                   (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
+                                   style: GoogleFonts.plusJakartaSans(
+                                     color: Colors.white,
+                                     fontSize: 20.0,
+                                     fontWeight: FontWeight.w900,
+                                   ),
+                                 ),
+                               );
+                             },
+                           )
+                         : Center(
+                             child: Text(
+                               (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
+                               style: GoogleFonts.plusJakartaSans(
+                                 color: Colors.white,
+                                 fontSize: 20.0,
+                                 fontWeight: FontWeight.w900,
+                               ),
+                             ),
+                           ),
+                   ),
+                 ),
                 const SizedBox(width: 16.0),
                 // Datos de sesión (Nombre, Rol • @username)
                 Expanded(

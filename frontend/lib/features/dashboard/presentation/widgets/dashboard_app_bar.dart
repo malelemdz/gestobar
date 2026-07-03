@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gestobar/features/auth/models/user_model.dart';
+import 'package:gestobar/core/constants/api_constants.dart';
 
 class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String pageLabel;
@@ -178,13 +179,15 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(100.0),
-                child: Image.network(
-                  'https://lh3.googleusercontent.com/aida-public/AB6AXuBZZ4F3uxeKXlMSjT5dTb1O4_BTJuDlobMGJCsqzM_uclGpddIG1PoFe-ii5WY95o6-UbkutIhovD6rNMn-Yeq0BH9OJUet_BXiwV0AICeKlwpujiO_XFxYnVuCfNdrk1lasqCUyWhonZnODKafZDkpzxmUNyGoKPyZo7zMxLqhcaNnRIgINDnP5WjuhxdbwpvaiPVSK842ts9aS8GphuRhQB4reNSPcZLIz4YV4c_HPg-0Cj5n50esRHFSYrRtQQucvQXq2pCKA1c',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.person, color: Color(0xFF00F0FF), size: 16.0);
-                  },
-                ),
+                child: (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
+                    ? Image.network(
+                        ApiConstants.resolveImageUrl(user.fotoUrl)!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return _buildInitialsPlaceholder(user);
+                        },
+                      )
+                    : _buildInitialsPlaceholder(user),
               ),
             ),
           ),
@@ -215,6 +218,21 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
         bottom: BorderSide(
           color: Colors.white.withOpacity(0.06),
           width: 1.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInitialsPlaceholder(UserModel user) {
+    return Container(
+      color: const Color(0xFF1E2024),
+      alignment: Alignment.center,
+      child: Text(
+        (user.nombre.isNotEmpty ? user.nombre[0] : 'U').toUpperCase(),
+        style: GoogleFonts.plusJakartaSans(
+          color: const Color(0xFF00F0FF),
+          fontWeight: FontWeight.bold,
+          fontSize: 12.0,
         ),
       ),
     );

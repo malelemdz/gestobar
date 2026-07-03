@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/utils/currency_helper.dart';
+import '../../../../core/utils/timezone_helper.dart';
+import '../../../admin/providers/bar_provider.dart';
 import '../../models/caja_model.dart';
 import '../../models/evento_movimiento.dart';
 import '../../models/venta_model.dart';
 import 'movimientos_list_widgets.dart';
 import 'closed_cajas_history_list.dart';
 
-class OpenCajaPanel extends StatefulWidget {
+class OpenCajaPanel extends ConsumerStatefulWidget {
   final CajaModel caja;
   final List<VentaModel> activeVentas;
   final String currencySymbol;
@@ -37,10 +40,10 @@ class OpenCajaPanel extends StatefulWidget {
   });
 
   @override
-  State<OpenCajaPanel> createState() => _OpenCajaPanelState();
+  ConsumerState<OpenCajaPanel> createState() => _OpenCajaPanelState();
 }
 
-class _OpenCajaPanelState extends State<OpenCajaPanel> {
+class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
   int _activeTab = 0;
 
   Widget _buildFichaTurno(String barmanNombre, String fecha) {
@@ -306,11 +309,14 @@ class _OpenCajaPanelState extends State<OpenCajaPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final barTimezone = ref.watch(barTimezoneProvider);
     final String barmanNombre = widget.caja.aperturaUsuario != null
         ? widget.caja.aperturaUsuario!.nombre
         : 'Barman Encargado';
 
-    final String fecha = DateFormat('dd/MM/yyyy • HH:mm').format(widget.caja.fechaApertura.toLocal());
+    final String fecha = DateFormat('dd/MM/yyyy • HH:mm').format(
+      TimezoneHelper.convertToBarTime(widget.caja.fechaApertura, barTimezone),
+    );
 
     final double totalVentasPos = widget.caja.totalVentasEfectivo + widget.caja.totalVentasTarjeta + widget.caja.totalVentasTrQr;
 
