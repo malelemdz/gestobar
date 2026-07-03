@@ -25,6 +25,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
   int _inactiveBars = 0;
   int _totalAdmins = 0;
   List<AuditoriaModel> _latestLogs = [];
+  Map<String, String> _barMap = {};
   bool _isLoading = true;
 
   @override
@@ -40,6 +41,14 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
       // Cargar bars
       final barsRes = await dio.get(ApiConstants.bars);
       final List<dynamic> bars = barsRes.data ?? [];
+      final Map<String, String> tempBarMap = {};
+      for (final item in bars) {
+        if (item is Map) {
+          final id = item['id']?.toString() ?? '';
+          final nombre = item['nombre']?.toString() ?? '';
+          if (id.isNotEmpty) tempBarMap[id] = nombre;
+        }
+      }
       
       // Cargar users
       final usersRes = await dio.get('/users');
@@ -60,6 +69,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
             return rol != null && rol['nombre'].toString().toUpperCase() == 'ADMIN';
           }).length;
           _latestLogs = auditLogs;
+          _barMap = tempBarMap;
           _isLoading = false;
         });
       }
@@ -213,7 +223,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                   child: const Icon(Icons.storefront, color: Color(0xFF00F0FF)),
                 ),
                 title: const Text('Administrar sucursales', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                subtitle: const Text('Crear, habilitar, deshabilitar y configurar tarifas.', style: TextStyle(color: Colors.white54, fontSize: 12.0)),
+                subtitle: const Text('Gestión global, tarifas y estado de sucursales.', style: TextStyle(color: Colors.white54, fontSize: 12.0)),
                 trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white54, size: 16),
                 onTap: () {
                   ref.read(activeViewProvider.notifier).state = 'super_bars';
@@ -258,11 +268,13 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                           final currencyIso = ref.watch(currencyIsoProvider);
                           final currencySymbol = ref.watch(currencySymbolProvider);
                           final barTimezone = ref.watch(barTimezoneProvider);
+                          final sucursalNombre = _barMap[log.barId];
                           return AuditoriaLogCard(
                             log: log,
                             currencyIso: currencyIso,
                             currencySymbol: currencySymbol,
                             barTimezone: barTimezone,
+                            sucursalNombre: sucursalNombre,
                           );
                         },
                       ),

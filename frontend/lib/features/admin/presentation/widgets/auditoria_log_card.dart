@@ -11,6 +11,7 @@ class AuditoriaLogCard extends StatelessWidget {
   final String currencyIso;
   final String currencySymbol;
   final String barTimezone;
+  final String? sucursalNombre;
 
   const AuditoriaLogCard({
     super.key,
@@ -18,6 +19,7 @@ class AuditoriaLogCard extends StatelessWidget {
     required this.currencyIso,
     required this.currencySymbol,
     required this.barTimezone,
+    this.sucursalNombre,
   });
 
   @override
@@ -69,6 +71,24 @@ class AuditoriaLogCard extends StatelessWidget {
                   color: actionColor,
                 ),
               ),
+              if (sucursalNombre != null && sucursalNombre!.isNotEmpty) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.white10,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    sucursalNombre!.toUpperCase(),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white60,
+                    ),
+                  ),
+                ),
+              ],
               const Spacer(),
               Text(
                 dateStr,

@@ -12,6 +12,7 @@ import 'dialogs/log_detail_bottom_sheet.dart';
 import 'utils/auditoria_formatters.dart';
 import 'widgets/auditoria_log_card.dart';
 import 'widgets/custom_date_range_picker.dart';
+import 'bar_selector_view.dart';
 
 class SuperAuditoriaPage extends ConsumerStatefulWidget {
   const SuperAuditoriaPage({super.key});
@@ -73,6 +74,21 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
     final barTimezone = ref.watch(barTimezoneProvider);
     final filters = ref.watch(superAuditoriaFiltersProvider);
     final staffAsync = ref.watch(superStaffListProvider);
+    final barsAsync = ref.watch(barsFutureProvider);
+
+    final Map<String, String> barMap = {};
+    barsAsync.maybeWhen(
+      data: (list) {
+        for (final item in list) {
+          if (item is Map) {
+            final id = item['id']?.toString() ?? '';
+            final nombre = item['nombre']?.toString() ?? '';
+            if (id.isNotEmpty) barMap[id] = nombre;
+          }
+        }
+      },
+      orElse: () {},
+    );
 
     return Scaffold(
       backgroundColor: AppTheme.liquidBg,
@@ -103,7 +119,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                     onRefresh: () async {
                       await ref.read(superAuditoriaListProvider.notifier).loadInitial(silent: true);
                     },
-                    child: _buildMainContent(auditoriaState, theme, currencyIso, currencySymbol, barTimezone, isTabletLandscape),
+                    child: _buildMainContent(auditoriaState, theme, currencyIso, currencySymbol, barTimezone, isTabletLandscape, barMap),
                   ),
                 ),
               ],
@@ -124,7 +140,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                   onRefresh: () async {
                     await ref.read(superAuditoriaListProvider.notifier).loadInitial(silent: true);
                   },
-                  child: _buildMainContent(auditoriaState, theme, currencyIso, currencySymbol, barTimezone, isTabletLandscape),
+                  child: _buildMainContent(auditoriaState, theme, currencyIso, currencySymbol, barTimezone, isTabletLandscape, barMap),
                 ),
               ),
             ],
@@ -359,6 +375,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
     String currencySymbol,
     String barTimezone,
     bool isTabletLandscape,
+    Map<String, String> barMap,
   ) {
     Widget listWidget;
 
@@ -434,6 +451,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
         itemBuilder: (context, index) {
           if (index < state.logs.length) {
             final log = state.logs[index];
+            final sucursalNombre = barMap[log.barId];
             return InkWell(
               onTap: () => showLogDetail(context, log, currencyIso, currencySymbol, barTimezone),
               borderRadius: BorderRadius.circular(16.0),
@@ -442,6 +460,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                 currencyIso: currencyIso,
                 currencySymbol: currencySymbol,
                 barTimezone: barTimezone,
+                sucursalNombre: sucursalNombre,
               ),
             );
           } else {
