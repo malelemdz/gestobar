@@ -225,14 +225,319 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
     }
   }
 
+  Widget _buildNombreField() {
+    return StyledTextField(
+      controller: _nombreCtrl,
+      hintText: 'Nombre del Bar',
+      icon: Icons.storefront,
+      validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+    );
+  }
+
+  Widget _buildSlugField() {
+    return StyledTextField(
+      controller: _slugCtrl,
+      hintText: 'Slug único (ej: bar-centro)',
+      icon: Icons.link,
+      enabled: widget.bar == null,
+      validator: (val) {
+        if (val == null || val.isEmpty) return 'Requerido';
+        if (!RegExp(r'^[a-z0-9\-]+$').hasMatch(val)) return 'Solo letras minúsculas, números y guiones';
+        return null;
+      },
+    );
+  }
+
+  Widget _buildCiudadField() {
+    return StyledTextField(
+      controller: _ciudadCtrl,
+      hintText: 'Ciudad',
+      icon: Icons.location_city,
+      validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+    );
+  }
+
+  Widget _buildDireccionField() {
+    return StyledTextField(
+      controller: _direccionCtrl,
+      hintText: 'Dirección física',
+      icon: Icons.map,
+    );
+  }
+
+  Widget _buildSimboloField() {
+    return StyledTextField(
+      controller: _simboloCtrl,
+      hintText: 'Símbolo Moneda (ej: Bs.)',
+      icon: Icons.attach_money,
+      validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+    );
+  }
+
+  Widget _buildIsoField() {
+    return StyledTextField(
+      controller: _isoCtrl,
+      hintText: 'ISO Moneda (ej: BOB)',
+      icon: Icons.payments,
+      validator: (val) {
+        if (val == null || val.isEmpty) return 'Requerido';
+        if (val.length != 3) return 'Debe tener exactamente 3 caracteres';
+        return null;
+      },
+    );
+  }
+
+  Widget _buildComisionField() {
+    return StyledTextField(
+      controller: _comisionCtrl,
+      hintText: '% Comisión por defecto',
+      icon: Icons.percent,
+      validator: (val) {
+        if (val == null || val.isEmpty) return 'Requerido';
+        final num = int.tryParse(val);
+        if (num == null || num < 0 || num > 100) return 'Entre 0 y 100';
+        return null;
+      },
+    );
+  }
+
+  Widget _buildTimezoneField() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF22252A),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButtonFormField<String>(
+          value: _selectedTimezone,
+          isExpanded: true,
+          dropdownColor: const Color(0xFF1E2024),
+          style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+          decoration: const InputDecoration(
+            icon: Icon(Icons.access_time, color: Colors.white30, size: 16),
+            border: InputBorder.none,
+          ),
+          items: _timezones.map((tz) {
+            return DropdownMenuItem<String>(
+              value: tz,
+              child: Text(
+                tz,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            );
+          }).toList(),
+          onChanged: (val) {
+            if (val != null) setState(() => _selectedTimezone = val);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModuloDamasToggle() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFF22252A),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Módulo de Damas',
+            style: TextStyle(color: Colors.white, fontSize: 13),
+          ),
+          Switch(
+            value: _moduloDamasActivo,
+            activeColor: const Color(0xFF00F0FF),
+            activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
+            inactiveThumbColor: Colors.grey,
+            inactiveTrackColor: Colors.white10,
+            onChanged: (val) => setState(() => _moduloDamasActivo = val),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEstadoToggle() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF22252A),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Estado Sucursal Activa',
+                  style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Si se desactiva, se bloqueará el acceso al POS y turnos.',
+                  style: TextStyle(color: Colors.white54, fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Switch(
+            value: _estado,
+            activeColor: const Color(0xFF00F0FF),
+            activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
+            inactiveThumbColor: Colors.grey,
+            inactiveTrackColor: Colors.white10,
+            onChanged: (val) => setState(() => _estado = val),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOwnerDropdown() {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: const Color(0xFF22252A),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.white.withOpacity(0.06)),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButtonFormField<String>(
+                value: _selectedOwnerId,
+                isExpanded: true,
+                dropdownColor: const Color(0xFF1E2024),
+                style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.person, color: Colors.white30, size: 16),
+                  border: InputBorder.none,
+                ),
+                items: _adminsList.map((admin) {
+                  return DropdownMenuItem<String>(
+                    value: admin['id'],
+                    child: Text(
+                      '${admin['nombre']} ${admin['apellido']} (@${admin['username']})',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  if (val != null) setState(() => _selectedOwnerId = val);
+                },
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        IconButton(
+          icon: const Icon(Icons.person_add, color: Color(0xFF00F0FF)),
+          tooltip: 'Nuevo Admin',
+          onPressed: () => setState(() => _showCreateAdminForm = true),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNewAdminForm(bool isTablet) {
+    return Form(
+      key: _adminFormKey,
+      child: Column(
+        children: [
+          if (isTablet)
+            Row(
+              children: [
+                Expanded(
+                  child: StyledTextField(
+                    controller: _adminNameCtrl,
+                    hintText: 'Nombre',
+                    icon: Icons.person,
+                    validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: StyledTextField(
+                    controller: _adminLastNameCtrl,
+                    hintText: 'Apellido',
+                    icon: Icons.person_outline,
+                    validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+                  ),
+                ),
+              ],
+            )
+          else ...[
+            StyledTextField(
+              controller: _adminNameCtrl,
+              hintText: 'Nombre',
+              icon: Icons.person,
+              validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+            ),
+            const SizedBox(height: 8),
+            StyledTextField(
+              controller: _adminLastNameCtrl,
+              hintText: 'Apellido',
+              icon: Icons.person_outline,
+              validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+            ),
+          ],
+          const SizedBox(height: 8),
+          StyledTextField(
+            controller: _adminUsernameCtrl,
+            hintText: 'Nombre de usuario (ej: admin_la_paz)',
+            icon: Icons.alternate_email,
+            validator: (val) {
+              if (val == null || val.isEmpty) return 'Requerido';
+              if (val.length < 4) return 'Mínimo 4 caracteres';
+              return null;
+            },
+          ),
+          const SizedBox(height: 8),
+          StyledTextField(
+            controller: _adminPasswordCtrl,
+            hintText: 'Contraseña para el administrador',
+            isPassword: true,
+            icon: Icons.lock,
+            validator: (val) {
+              if (val == null || val.isEmpty) return 'Requerido';
+              if (val.length < 6) return 'Mínimo 6 caracteres';
+              return null;
+            },
+          ),
+          const SizedBox(height: 8),
+          StyledTextField(
+            controller: _adminCelularCtrl,
+            hintText: 'Número de celular (opcional)',
+            icon: Icons.phone,
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool isTablet = MediaQuery.of(context).size.width >= 720;
 
     return ResponsiveModalContainer(
       title: widget.bar == null ? 'Registrar Sucursal' : 'Editar Sucursal',
       subtitle: widget.bar == null ? 'Agrega una nueva sucursal SaaS al sistema' : 'Modifica los parámetros de configuración',
-      isDialog: MediaQuery.of(context).size.width >= 720,
+      isDialog: isTablet,
       footer: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -266,156 +571,70 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                     Text('DATOS GENERALES DE LA SUCURSAL', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
                     const SizedBox(height: 12),
                     
-                    // Nombre del Bar
-                    StyledTextField(
-                      controller: _nombreCtrl,
-                      hintText: 'Nombre del Bar',
-                      icon: Icons.storefront,
-                      validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-                    ),
+                    _buildNombreField(),
                     const SizedBox(height: 12),
                     
-                    // Tenant Slug
-                    StyledTextField(
-                      controller: _slugCtrl,
-                      hintText: 'Slug único (ej: bar-centro)',
-                      icon: Icons.link,
-                      enabled: widget.bar == null, // No editar slug de bars creados
-                      validator: (val) {
-                        if (val == null || val.isEmpty) return 'Requerido';
-                        if (!RegExp(r'^[a-z0-9\-]+$').hasMatch(val)) return 'Solo letras minúsculas, números y guiones';
-                        return null;
-                      },
-                    ),
+                    _buildSlugField(),
                     const SizedBox(height: 12),
 
-                    // Ciudad y Dirección
-                    Row(
-                      children: [
-                        Expanded(
-                          child: StyledTextField(
-                            controller: _ciudadCtrl,
-                            hintText: 'Ciudad',
-                            icon: Icons.location_city,
-                            validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: StyledTextField(
-                            controller: _direccionCtrl,
-                            hintText: 'Dirección física',
-                            icon: Icons.map,
-                          ),
-                        ),
-                      ],
-                    ),
+                    // Ciudad y Dirección (Responsivo)
+                    if (isTablet)
+                      Row(
+                        children: [
+                          Expanded(child: _buildCiudadField()),
+                          const SizedBox(width: 12),
+                          Expanded(child: _buildDireccionField()),
+                        ],
+                      )
+                    else ...[
+                      _buildCiudadField(),
+                      const SizedBox(height: 12),
+                      _buildDireccionField(),
+                    ],
                     const SizedBox(height: 20),
 
                     Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
                     const SizedBox(height: 12),
 
-                    // Símbolo Moneda e ISO
-                    Row(
-                      children: [
-                        Expanded(
-                          child: StyledTextField(
-                            controller: _simboloCtrl,
-                            hintText: 'Símbolo Moneda (ej: Bs.)',
-                            icon: Icons.attach_money,
-                            validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: StyledTextField(
-                            controller: _isoCtrl,
-                            hintText: 'ISO Moneda (ej: BOB)',
-                            icon: Icons.payments,
-                            validator: (val) {
-                              if (val == null || val.isEmpty) return 'Requerido';
-                              if (val.length != 3) return 'Debe tener exactamente 3 caracteres';
-                              return null;
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+                    // Símbolo Moneda e ISO (Responsivo)
+                    if (isTablet)
+                      Row(
+                        children: [
+                          Expanded(child: _buildSimboloField()),
+                          const SizedBox(width: 12),
+                          Expanded(child: _buildIsoField()),
+                        ],
+                      )
+                    else ...[
+                      _buildSimboloField(),
+                      const SizedBox(height: 12),
+                      _buildIsoField(),
+                    ],
                     const SizedBox(height: 12),
 
-                    // Selector de Zona Horaria
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF22252A),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withOpacity(0.06)),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField<String>(
-                          value: _selectedTimezone,
-                          dropdownColor: const Color(0xFF1E2024),
-                          style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.access_time, color: Colors.white30, size: 16),
-                            border: InputBorder.none,
-                          ),
-                          items: _timezones.map((tz) {
-                            return DropdownMenuItem<String>(
-                              value: tz,
-                              child: Text(tz),
-                            );
-                          }).toList(),
-                          onChanged: (val) {
-                            if (val != null) setState(() => _selectedTimezone = val);
-                          },
-                        ),
-                      ),
-                    ),
+                    _buildTimezoneField(),
                     const SizedBox(height: 20),
 
                     Text('REGLAS OPERATIVAS Y CONFIGURACIÓN', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
                     const SizedBox(height: 12),
 
-                    // Comisión y Modulo Damas
-                    Row(
-                      children: [
-                        Expanded(
-                          child: StyledTextField(
-                            controller: _comisionCtrl,
-                            hintText: '% Comisión por defecto',
-                            icon: Icons.percent,
-                            validator: (val) {
-                              if (val == null || val.isEmpty) return 'Requerido';
-                              final num = int.tryParse(val);
-                              if (num == null || num < 0 || num > 100) return 'Entre 0 y 100';
-                              return null;
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: SwitchListTile(
-                            title: const Text('Módulo de Damas', style: TextStyle(color: Colors.white, fontSize: 12)),
-                            value: _moduloDamasActivo,
-                            activeColor: const Color(0xFF00F0FF),
-                            contentPadding: EdgeInsets.zero,
-                            onChanged: (val) => setState(() => _moduloDamasActivo = val),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
+                    // Comisión y Módulo Damas (Responsivo)
+                    if (isTablet)
+                      Row(
+                        children: [
+                          Expanded(child: _buildComisionField()),
+                          const SizedBox(width: 12),
+                          Expanded(child: _buildModuloDamasToggle()),
+                        ],
+                      )
+                    else ...[
+                      _buildComisionField(),
+                      const SizedBox(height: 12),
+                      _buildModuloDamasToggle(),
+                    ],
+                    const SizedBox(height: 12),
 
-                    // Switch Habilitar/Deshabilitar Bar (SaaS Access)
-                    SwitchListTile(
-                      title: const Text('Estado Sucursal Activa (Acceso SaaS)', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
-                      subtitle: const Text('Si se desactiva, los empleados no podrán ingresar al POS ni turnos.', style: TextStyle(color: Colors.white54, fontSize: 11)),
-                      value: _estado,
-                      activeColor: const Color(0xFF00F0FF),
-                      contentPadding: EdgeInsets.zero,
-                      onChanged: (val) => setState(() => _estado = val),
-                    ),
+                    _buildEstadoToggle(),
                     const SizedBox(height: 20),
 
                     // Dropdown de Dueño / Admin del Bar
@@ -424,46 +643,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                       const SizedBox(height: 12),
                       
                       if (!_showCreateAdminForm) ...[
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF22252A),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.white.withOpacity(0.06)),
-                                ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButtonFormField<String>(
-                                    value: _selectedOwnerId,
-                                    dropdownColor: const Color(0xFF1E2024),
-                                    style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
-                                    decoration: const InputDecoration(
-                                      icon: Icon(Icons.person, color: Colors.white30, size: 16),
-                                      border: InputBorder.none,
-                                    ),
-                                    items: _adminsList.map((admin) {
-                                      return DropdownMenuItem<String>(
-                                        value: admin['id'],
-                                        child: Text('${admin['nombre']} ${admin['apellido']} (@${admin['username']})'),
-                                      );
-                                    }).toList(),
-                                    onChanged: (val) {
-                                      if (val != null) setState(() => _selectedOwnerId = val);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            IconButton(
-                              icon: const Icon(Icons.person_add, color: Color(0xFF00F0FF)),
-                              tooltip: 'Nuevo Admin',
-                              onPressed: () => setState(() => _showCreateAdminForm = true),
-                            ),
-                          ],
-                        ),
+                        _buildOwnerDropdown(),
                       ] else ...[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -478,63 +658,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                         ),
                         const SizedBox(height: 8),
 
-                        Form(
-                          key: _adminFormKey,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: StyledTextField(
-                                      controller: _adminNameCtrl,
-                                      hintText: 'Nombre',
-                                      icon: Icons.person,
-                                      validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: StyledTextField(
-                                      controller: _adminLastNameCtrl,
-                                      hintText: 'Apellido',
-                                      icon: Icons.person_outline,
-                                      validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              StyledTextField(
-                                controller: _adminUsernameCtrl,
-                                hintText: 'Nombre de usuario (ej: admin_la_paz)',
-                                icon: Icons.alternate_email,
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) return 'Requerido';
-                                  if (val.length < 4) return 'Mínimo 4 caracteres';
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 8),
-                              StyledTextField(
-                                controller: _adminPasswordCtrl,
-                                hintText: 'Contraseña para el administrador',
-                                isPassword: true,
-                                icon: Icons.lock,
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) return 'Requerido';
-                                  if (val.length < 6) return 'Mínimo 6 caracteres';
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 8),
-                              StyledTextField(
-                                controller: _adminCelularCtrl,
-                                hintText: 'Número de celular (opcional)',
-                                icon: Icons.phone,
-                              ),
-                            ],
-                          ),
-                        ),
+                        _buildNewAdminForm(isTablet),
                       ],
                     ],
                   ],
