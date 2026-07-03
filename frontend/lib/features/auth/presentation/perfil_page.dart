@@ -291,6 +291,434 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
     );
   }
 
+  Future<void> _showEditProfileBottomSheet(BuildContext context) async {
+    final authState = ref.read(authProvider) as AuthAuthenticated;
+    final user = authState.user;
+    final roleColor = _getRoleColor(user.rolNombre);
+
+    final editFormKey = GlobalKey<FormState>();
+    final nombreCtrl = TextEditingController(text: user.nombre);
+    final apellidoCtrl = TextEditingController(text: user.apellido);
+    final usernameCtrl = TextEditingController(text: user.username);
+    final identificacionCtrl = TextEditingController(text: user.identificacion);
+    final celularCtrl = TextEditingController(text: user.celular);
+    final nacionalidadCtrl = TextEditingController(text: user.nacionalidad);
+    final direccionCtrl = TextEditingController(text: user.direccion);
+
+    String selectedGenero = user.genero ?? 'PREFIERO_NO_DECIRLO';
+    String? tempFotoUrl = user.fotoUrl;
+    bool modalUploading = false;
+    String? modalLocalPath;
+    bool isSaving = false;
+
+    final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
+
+    Widget buildModalContent(BuildContext context, StateSetter setModalState, bool isDialog) {
+      Future<void> modalPickImage() async {
+        try {
+          final picker = ImagePicker();
+          final XFile? image = await picker.pickImage(
+            source: ImageSource.gallery,
+            imageQuality: 85,
+          );
+
+          if (image == null) return;
+
+          setModalState(() {
+            modalLocalPath = image.path;
+            modalUploading = true;
+          });
+
+          final uploadNotifier = ref.read(menuAdminProvider.notifier);
+          final String? uploadedUrl = await uploadNotifier.uploadImage(image.path, 'usuarios');
+
+          if (uploadedUrl != null) {
+            setModalState(() {
+              tempFotoUrl = uploadedUrl;
+            });
+          } else {
+            setModalState(() {
+              modalLocalPath = null;
+            });
+            if (mounted) {
+              CustomToast.show(context, message: 'Error al subir la foto', type: ToastType.error);
+            }
+          }
+        } catch (e) {
+          setModalState(() {
+            modalLocalPath = null;
+          });
+          if (mounted) {
+            CustomToast.show(context, message: 'Error: $e', type: ToastType.error);
+          }
+        } finally {
+          setModalState(() {
+            modalUploading = false;
+          });
+        }
+      }
+
+      final Widget formBody = SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+        child: Form(
+          key: editFormKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: roleColor.withOpacity(0.4),
+                          width: 2.5,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 46.0,
+                        backgroundColor: Colors.white10,
+                        backgroundImage: modalLocalPath != null
+                            ? FileImage(File(modalLocalPath!)) as ImageProvider
+                            : (tempFotoUrl != null && tempFotoUrl!.isNotEmpty)
+                                ? NetworkImage(ApiConstants.resolveImageUrl(tempFotoUrl)!)
+                                : null,
+                        child: modalLocalPath == null && (tempFotoUrl == null || tempFotoUrl!.isEmpty)
+                            ? Text(
+                                nombreCtrl.text.isNotEmpty ? nombreCtrl.text[0].toUpperCase() : 'U',
+                                style: TextStyle(
+                                  color: roleColor,
+                                  fontSize: 32.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            : null,
+                      ),
+                    ),
+                    if (modalUploading)
+                      Positioned.fill(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.black54,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Material(
+                        color: roleColor,
+                        shape: const CircleBorder(),
+                        elevation: 4,
+                        child: InkWell(
+                          onTap: modalUploading ? null : modalPickImage,
+                          customBorder: const CircleBorder(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Icon(
+                              Icons.camera_alt_outlined,
+                              color: roleColor == const Color(0xFF00F0FF) ? Colors.black : Colors.white,
+                              size: 16.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              Text(
+                'NOMBRE',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFB9CACB),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.1,
+                ),
+              ),
+              const SizedBox(height: 6),
+              StyledTextField(
+                controller: nombreCtrl,
+                hintText: 'Tu nombre',
+                icon: Icons.person_outline,
+                validator: (val) {
+                  if (val == null || val.isEmpty) return 'El nombre es obligatorio';
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              Text(
+                'APELLIDO',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFB9CACB),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.1,
+                ),
+              ),
+              const SizedBox(height: 6),
+              StyledTextField(
+                controller: apellidoCtrl,
+                hintText: 'Tu apellido',
+                icon: Icons.person_outline,
+                validator: (val) {
+                  if (val == null || val.isEmpty) return 'El apellido es obligatorio';
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              Text(
+                'NOMBRE DE USUARIO',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFB9CACB),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.1,
+                ),
+              ),
+              const SizedBox(height: 6),
+              StyledTextField(
+                controller: usernameCtrl,
+                hintText: 'Tu nombre de usuario',
+                icon: Icons.alternate_email,
+                validator: (val) {
+                  if (val == null || val.isEmpty) return 'El nombre de usuario es obligatorio';
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              Text(
+                'IDENTIFICACIÓN / CÉDULA',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFB9CACB),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.1,
+                ),
+              ),
+              const SizedBox(height: 6),
+              StyledTextField(
+                controller: identificacionCtrl,
+                hintText: 'Identificación',
+                icon: Icons.badge_outlined,
+              ),
+              const SizedBox(height: 16),
+
+              Text(
+                'CELULAR / TELÉFONO',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFB9CACB),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.1,
+                ),
+              ),
+              const SizedBox(height: 6),
+              StyledTextField(
+                controller: celularCtrl,
+                hintText: 'Número de celular',
+                icon: Icons.phone_android,
+              ),
+              const SizedBox(height: 16),
+
+              Text(
+                'NACIONALIDAD',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFB9CACB),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.1,
+                ),
+              ),
+              const SizedBox(height: 6),
+              StyledTextField(
+                controller: nacionalidadCtrl,
+                hintText: 'Nacionalidad',
+                icon: Icons.flag_outlined,
+              ),
+              const SizedBox(height: 16),
+
+              Text(
+                'GÉNERO',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFB9CACB),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.1,
+                ),
+              ),
+              const SizedBox(height: 6),
+              DropdownButtonFormField<String>(
+                value: selectedGenero,
+                dropdownColor: const Color(0xFF1E2024),
+                style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.wc_outlined, color: Colors.white54, size: 20),
+                  filled: true,
+                  fillColor: const Color(0xFF16181C),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFF00F0FF)),
+                  ),
+                ),
+                items: const [
+                  DropdownMenuItem(value: 'MASCULINO', child: Text('Masculino')),
+                  DropdownMenuItem(value: 'FEMENINO', child: Text('Femenino')),
+                  DropdownMenuItem(value: 'PREFIERO_NO_DECIRLO', child: Text('Prefiero no decirlo')),
+                ],
+                onChanged: (val) {
+                  if (val != null) {
+                    setModalState(() {
+                      selectedGenero = val;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+
+              Text(
+                'DIRECCIÓN DOMICILIARIA',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFB9CACB),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.1,
+                ),
+              ),
+              const SizedBox(height: 6),
+              StyledTextField(
+                controller: direccionCtrl,
+                hintText: 'Dirección',
+                icon: Icons.location_on_outlined,
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final Widget footer = Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          OutlinedButton(
+            onPressed: () => Navigator.pop(context),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: Colors.white10),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+            child: Text(
+              'Cancelar',
+              style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 12),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF00F0FF),
+              foregroundColor: const Color(0xFF0C0E12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              elevation: 0,
+            ),
+            onPressed: isSaving || modalUploading
+                ? null
+                : () async {
+                    if (!editFormKey.currentState!.validate()) return;
+
+                    setModalState(() {
+                      isSaving = true;
+                    });
+
+                    try {
+                      await ref.read(authProvider.notifier).updateProfile(
+                            nombre: nombreCtrl.text,
+                            apellido: apellidoCtrl.text,
+                            username: usernameCtrl.text,
+                            identificacion: identificacionCtrl.text,
+                            celular: celularCtrl.text,
+                            nacionalidad: nacionalidadCtrl.text,
+                            direccion: direccionCtrl.text,
+                            genero: selectedGenero,
+                            fotoUrl: tempFotoUrl,
+                          );
+                      if (mounted) {
+                        Navigator.pop(context);
+                        CustomToast.show(
+                          context,
+                          message: 'Perfil actualizado correctamente',
+                          type: ToastType.success,
+                        );
+                      }
+                    } catch (e) {
+                      CustomToast.show(
+                        context,
+                        message: 'Error: ${e.toString()}',
+                        type: ToastType.error,
+                      );
+                    } finally {
+                      setModalState(() {
+                        isSaving = false;
+                      });
+                    }
+                  },
+            child: isSaving
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                  )
+                : Text(
+                    'GUARDAR',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF0c0e12),
+                    ),
+                  ),
+          ),
+        ],
+      );
+
+      return ResponsiveModalContainer(
+        title: 'Editar Perfil',
+        isDialog: isDialog,
+        footer: footer,
+        child: formBody,
+      );
+    }
+
+    await showResponsiveDialog(
+      context: context,
+      maxWidth: 550,
+      child: StatefulBuilder(
+        builder: (context, setModalState) {
+          return buildModalContent(context, setModalState, isTabletLandscape);
+        },
+      ),
+    );
+  }
+
   Color _getRoleColor(String roleName) {
     switch (roleName.toUpperCase()) {
       case 'ADMIN':
@@ -371,27 +799,28 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                       ),
                     ),
                   ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Material(
-                    color: roleColor,
-                    shape: const CircleBorder(),
-                    elevation: 4,
-                    child: InkWell(
-                      onTap: _isUploading ? null : _pickAndUploadImage,
-                      customBorder: const CircleBorder(),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(
-                          Icons.camera_alt_outlined,
-                          color: roleColor == const Color(0xFF00F0FF) ? Colors.black : Colors.white,
-                          size: 20.0,
+                if (user.rolNombre.toUpperCase() != 'SUPERADMIN')
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Material(
+                      color: roleColor,
+                      shape: const CircleBorder(),
+                      elevation: 4,
+                      child: InkWell(
+                        onTap: _isUploading ? null : _pickAndUploadImage,
+                        customBorder: const CircleBorder(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.camera_alt_outlined,
+                            color: roleColor == const Color(0xFF00F0FF) ? Colors.black : Colors.white,
+                            size: 20.0,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -424,6 +853,32 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
           ),
           if (showChangePassword) ...[
             const SizedBox(height: 32.0),
+            if (user.rolNombre.toUpperCase() == 'SUPERADMIN') ...[
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.edit, color: Colors.black),
+                  label: const Text(
+                    'EDITAR CUENTA',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.0,
+                      fontSize: 12,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF00F0FF),
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () => _showEditProfileBottomSheet(context),
+                ),
+              ),
+              const SizedBox(height: 12.0),
+            ],
             SizedBox(
               width: double.infinity,
               height: 48,
@@ -577,6 +1032,31 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
           const SizedBox(height: 24.0),
           ...rightColumnChildren,
           const SizedBox(height: 12.0),
+          if (user.rolNombre.toUpperCase() == 'SUPERADMIN') ...[
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.edit, color: Colors.black),
+                label: const Text(
+                  'EDITAR CUENTA',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF00F0FF),
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () => _showEditProfileBottomSheet(context),
+              ),
+            ),
+            const SizedBox(height: 12.0),
+          ],
           SizedBox(
             width: double.infinity,
             height: 48,

@@ -113,7 +113,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   /// Actualiza el perfil del usuario autenticado en caliente en el estado y almacenamiento (foto y opcionalmente password)
-  Future<void> updateProfile({String? password, String? fotoUrl}) async {
+  Future<void> updateProfile({
+    String? password,
+    String? fotoUrl,
+    String? nombre,
+    String? apellido,
+    String? username,
+    String? identificacion,
+    String? celular,
+    String? nacionalidad,
+    String? direccion,
+    String? genero,
+  }) async {
     final currentState = state;
     if (currentState is AuthAuthenticated) {
       final Map<String, dynamic> updates = {};
@@ -122,6 +133,30 @@ class AuthNotifier extends StateNotifier<AuthState> {
       }
       if (fotoUrl != null) {
         updates['foto_url'] = fotoUrl;
+      }
+      if (nombre != null) {
+        updates['nombre'] = nombre;
+      }
+      if (apellido != null) {
+        updates['apellido'] = apellido;
+      }
+      if (username != null) {
+        updates['username'] = username;
+      }
+      if (identificacion != null) {
+        updates['identificacion'] = identificacion;
+      }
+      if (celular != null) {
+        updates['celular'] = celular;
+      }
+      if (nacionalidad != null) {
+        updates['nacionalidad'] = nacionalidad;
+      }
+      if (direccion != null) {
+        updates['direccion'] = direccion;
+      }
+      if (genero != null) {
+        updates['genero'] = genero;
       }
 
       // Guardar en base de datos llamando al endpoint de autogestión
