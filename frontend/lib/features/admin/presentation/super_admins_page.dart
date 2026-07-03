@@ -10,6 +10,7 @@ import 'package:gestobar/features/auth/models/user_model.dart';
 import 'package:gestobar/features/admin/presentation/dialogs/add_edit_admin_dialog.dart';
 import 'package:gestobar/features/admin/presentation/dialogs/reset_admin_password_dialog.dart';
 import 'package:gestobar/features/staff/presentation/dialogs/status_confirmation_bottom_sheet.dart';
+import 'package:gestobar/core/constants/api_constants.dart';
 import 'package:dio/dio.dart';
 
 // State container for Administrators view
@@ -369,20 +370,25 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      // Col 1: Initials avatar
+                                      // Col 1: Avatar / Logo (Mapeado dinámicamente)
                                       CircleAvatar(
                                         radius: 20,
                                         backgroundColor: Colors.black26,
-                                        child: Text(
-                                          admin.nombre.isNotEmpty
-                                              ? admin.nombre[0].toUpperCase()
-                                              : 'A',
-                                          style: TextStyle(
-                                            color: accentColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                          ),
-                                        ),
+                                        backgroundImage: (admin.fotoUrl != null && admin.fotoUrl!.isNotEmpty)
+                                            ? NetworkImage(ApiConstants.resolveImageUrl(admin.fotoUrl)!)
+                                            : null,
+                                        child: (admin.fotoUrl == null || admin.fotoUrl!.isEmpty)
+                                            ? Text(
+                                                admin.nombre.isNotEmpty
+                                                    ? admin.nombre[0].toUpperCase()
+                                                    : 'A',
+                                                style: TextStyle(
+                                                  color: accentColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                ),
+                                              )
+                                            : null,
                                       ),
                                       const SizedBox(width: 12),
                                       
