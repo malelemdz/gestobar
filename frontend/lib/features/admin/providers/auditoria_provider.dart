@@ -3,6 +3,7 @@ import '../../../../core/network/dio_client.dart';
 import '../../../../core/network/socket_service.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/providers/auth_state.dart';
+import '../../auth/models/user_model.dart';
 import '../data/models/auditoria_model.dart';
 import '../data/repositories/auditoria_repository.dart';
 
