@@ -65,6 +65,7 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      floatingActionButtonAnimator: const NoScalingAnimation(),
       floatingActionButton: PremiumFAB(
         label: 'Nuevo bar',
         icon: Icons.add,
@@ -180,11 +181,11 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                       }
 
                       return GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 400.0,
+                          mainAxisExtent: MediaQuery.of(context).size.width >= 720 ? 78 : 84,
                           crossAxisSpacing: 16.0,
                           mainAxisSpacing: 16.0,
-                          childAspectRatio: 4.0,
                         ),
                         itemCount: bars.length,
                         itemBuilder: (context, index) {
@@ -209,41 +210,31 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                                       )
                                     ]
                                   : null,
-                            ),
-                            child: ClipRRect(
+                                                        child: ClipRRect(
                               borderRadius: BorderRadius.circular(16),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    // Columna 1: Avatar/Logo (Círculo simétrico con aro de estado de 1.0 de grosor)
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: accentColor.withOpacity(0.3),
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      child: CircleAvatar(
-                                        radius: 22,
-                                        backgroundColor: Colors.black26,
-                                        backgroundImage: (bar.logoUrl != null && bar.logoUrl!.isNotEmpty)
-                                            ? NetworkImage(bar.logoUrl!)
-                                            : null,
-                                        child: (bar.logoUrl == null || bar.logoUrl!.isEmpty)
-                                            ? Icon(
-                                                Icons.local_bar,
-                                                color: accentColor,
-                                                size: 20,
-                                              )
-                                            : null,
-                                      ),
+                                    // Columna 1: Avatar/Logo (Tamaño y estilo idéntico al admin)
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.black26,
+                                      backgroundImage: (bar.logoUrl != null && bar.logoUrl!.isNotEmpty)
+                                          ? NetworkImage(bar.logoUrl!)
+                                          : null,
+                                      child: (bar.logoUrl == null || bar.logoUrl!.isEmpty)
+                                          ? Icon(
+                                              Icons.local_bar,
+                                              color: accentColor,
+                                              size: 14,
+                                            )
+                                          : null,
                                     ),
                                     const SizedBox(width: 12),
 
-                                    // Columna 2: Detalles en texto (Nombre y Ciudad • Moneda únicamente)
+                                    // Columna 2: Detalles en texto (Nombre y Ciudad • Moneda únicamente, tamaño y pesos idénticos al admin)
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,20 +247,20 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 14,
+                                              fontSize: 13,
                                             ),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
-                                          const SizedBox(height: 3),
+                                          const SizedBox(height: 2),
 
                                           // Línea 2: Ciudad • Moneda
                                           Text(
-                                            '${bar.ciudad ?? "Sin Ciudad"}  •  ${bar.monedaIso}',
+                                            '${bar.ciudad ?? "Sin Ciudad"} • ${bar.monedaIso}',
                                             style: TextStyle(
-                                              fontSize: 11,
-                                              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
-                                              height: 1.0,
+                                              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.7),
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
@@ -277,15 +268,14 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: 4),
 
                                     // Columna 3: Iconos y Switch en una sola Fila Horizontal
-                                    // Orden: Ingresar (Entrar) -> Editar -> Switch (Activar y desactivar)
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        // 1. Botón Ingresar (Tap Target amplio de 8.0)
+                                        // 1. Botón Ingresar
                                         Tooltip(
                                           message: 'Ingresar a Terminal',
                                           child: InkWell(
@@ -294,14 +284,14 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                                             },
                                             borderRadius: BorderRadius.circular(6),
                                             child: const Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Icon(Icons.login, size: 18, color: Color(0xFF00F0FF)),
+                                              padding: EdgeInsets.all(6.0),
+                                              child: Icon(Icons.login, size: 16, color: Color(0xFF00F0FF)),
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 6),
+                                        const SizedBox(width: 4),
 
-                                        // 2. Botón Editar (Tap Target amplio de 8.0)
+                                        // 2. Botón Editar
                                         Tooltip(
                                           message: 'Editar Configuración',
                                           child: InkWell(
@@ -319,45 +309,41 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                                             },
                                             borderRadius: BorderRadius.circular(6),
                                             child: const Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Icon(Icons.edit_outlined, size: 18, color: Colors.blueAccent),
+                                              padding: EdgeInsets.all(6.0),
+                                              child: Icon(Icons.edit_outlined, size: 16, color: Colors.blueAccent),
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 8),
+                                        const SizedBox(width: 4),
 
-                                        // 3. Switch de Habilitar/Deshabilitar rápido (con confirmación de bottom sheet)
-                                        Tooltip(
-                                          message: isActive ? 'Deshabilitar' : 'Habilitar',
-                                          child: SizedBox(
-                                            height: 24,
-                                            width: 38,
-                                            child: Transform.scale(
-                                              scale: 0.75,
-                                              child: Switch(
-                                                value: isActive,
-                                                activeColor: const Color(0xFF00F0FF),
-                                                activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
-                                                inactiveThumbColor: Colors.grey,
-                                                inactiveTrackColor: Colors.white10,
-                                                onChanged: (val) async {
-                                                  final confirm = await showBarStatusConfirmationBottomSheet(
-                                                    context: context,
-                                                    bar: bar,
-                                                    targetState: val,
-                                                  );
-                                                  if (confirm == true) {
-                                                    _toggleBarEstado(bar, val);
-                                                  }
-                                                },
-                                              ),
+                                        // 3. Switch de Habilitar/Deshabilitar rápido (Escala 0.65)
+                                        SizedBox(
+                                          height: 24,
+                                          width: 38,
+                                          child: Transform.scale(
+                                            scale: 0.65,
+                                            child: Switch(
+                                              value: isActive,
+                                              activeColor: const Color(0xFF00F0FF),
+                                              activeTrackColor: const Color(0xFF00F0FF).withOpacity(0.3),
+                                              inactiveThumbColor: Colors.grey,
+                                              inactiveTrackColor: Colors.white10,
+                                              onChanged: (val) async {
+                                                final confirm = await showBarStatusConfirmationBottomSheet(
+                                                  context: context,
+                                                  bar: bar,
+                                                  targetState: val,
+                                                );
+                                                if (confirm == true) {
+                                                  _toggleBarEstado(bar, val);
+                                                }
+                                              },
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    ),
                                   ],
                                 ),
+                              ),
                               ),
                             ),
                           );

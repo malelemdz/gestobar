@@ -204,6 +204,7 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      floatingActionButtonAnimator: const NoScalingAnimation(),
       floatingActionButton: state.isLoading
           ? null
           : PremiumFAB(
