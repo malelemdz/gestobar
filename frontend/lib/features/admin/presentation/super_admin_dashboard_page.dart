@@ -82,13 +82,13 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
       backgroundColor: const Color(0xFF1E2024),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Saludo de Bienvenida Premium
             Container(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
@@ -110,16 +110,6 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Consola Global SaaS',
-                          style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12.0,
-                            letterSpacing: 1.0,
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
@@ -133,7 +123,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                         ),
                         const SizedBox(height: 6.0),
                         const Text(
-                          'Monitorea el estado de suscripción, comisiones y configuración global del negocio.',
+                          'Monitorea el estado global de la plataforma Gestobar.',
                           style: TextStyle(color: Colors.white70, fontSize: 13.0),
                         ),
                       ],
@@ -142,7 +132,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                 ],
               ),
             ),
-            const SizedBox(height: 32.0),
+            const SizedBox(height: 16.0),
 
             // Título de Sección
             Text(
@@ -193,7 +183,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                       ),
                     ],
                   ),
-            const SizedBox(height: 32.0),
+            const SizedBox(height: 16.0),
 
             // Panel de Acciones Rápidas
             Text(
@@ -222,7 +212,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                   ),
                   child: const Icon(Icons.storefront, color: Color(0xFF00F0FF)),
                 ),
-                title: const Text('Administrar Sucursales', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                title: const Text('Administrar sucursales', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 subtitle: const Text('Crear, habilitar, deshabilitar y configurar tarifas.', style: TextStyle(color: Colors.white54, fontSize: 12.0)),
                 trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white54, size: 16),
                 onTap: () {
@@ -230,7 +220,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                 },
               ),
             ),
-            const SizedBox(height: 32.0),
+            const SizedBox(height: 16.0),
 
             // Título de Sección: Actividad Reciente
             Text(

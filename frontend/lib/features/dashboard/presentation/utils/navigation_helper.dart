@@ -40,7 +40,7 @@ class NavigationHelper {
       return [
         {
           'view': 'super_dash',
-          'label': 'Dashboard',
+          'label': 'Dash',
           'icon': Icons.dashboard_outlined,
           'icon_active': Icons.dashboard,
         },
@@ -52,7 +52,7 @@ class NavigationHelper {
         },
         {
           'view': 'super_admins',
-          'label': 'Administradores',
+          'label': 'Admin',
           'icon': Icons.admin_panel_settings_outlined,
           'icon_active': Icons.admin_panel_settings,
         },
@@ -150,13 +150,13 @@ class NavigationHelper {
   static String getTitleForView(String activeView) {
     switch (activeView) {
       case 'super_dash':
-        return 'Dashboard';
+        return 'Dash';
       case 'super_audit':
         return 'Auditoría';
       case 'super_bars':
         return 'Sucursales';
       case 'super_admins':
-        return 'Administradores';
+        return 'Admin';
       case 'dash':
         return 'Dash';
       case 'analytics':
