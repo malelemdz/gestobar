@@ -33,6 +33,34 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   bool _estado = true;
   String? _selectedOwnerId;
 
+  // Divisas soportadas mapeadas
+  final List<Map<String, String>> _currencies = [
+    {'iso': 'BOB', 'symbol': 'Bs', 'label': 'Boliviano (BOB - Bs)'},
+    {'iso': 'USD', 'symbol': '\$', 'label': 'Dólar (USD - \$)'},
+    {'iso': 'EUR', 'symbol': '€', 'label': 'Euro (EUR - €)'},
+    {'iso': 'PEN', 'symbol': 'S/.', 'label': 'Sol (PEN - S/.)'},
+    {'iso': 'COP', 'symbol': '\$', 'label': 'Peso Colombiano (COP - \$)'},
+    {'iso': 'CLP', 'symbol': '\$', 'label': 'Peso Chileno (CLP - \$)'},
+    {'iso': 'ARS', 'symbol': '\$', 'label': 'Peso Argentino (ARS - \$)'},
+  ];
+
+  String _selectedCurrencyIso = 'BOB';
+  String _selectedCurrencySymbol = 'Bs';
+
+  // Zonas horarias
+  final List<String> _timezones = [
+    'America/La_Paz',
+    'America/Bogota',
+    'America/Lima',
+    'America/Santiago',
+    'America/Caracas',
+    'America/Mexico_City',
+    'America/Argentina/Buenos_Aires',
+    'America/Sao_Paulo',
+    'Europe/Madrid',
+  ];
+  String _selectedTimezone = 'America/La_Paz';
+
   // Listas cargadas dinámicamente
   List<dynamic> _adminsList = [];
   String? _adminRoleId;
@@ -57,6 +85,9 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
     if (widget.bar != null) {
       _moduloDamasActivo = widget.bar!.moduloDamasActivo;
       _estado = widget.bar!.estado;
+      _selectedCurrencyIso = widget.bar!.monedaIso;
+      _selectedCurrencySymbol = widget.bar!.monedaSimbolo;
+      _selectedTimezone = widget.bar!.timezone;
     }
 
     _loadAdmins();
@@ -172,12 +203,12 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
         'modulo_damas_activo': _moduloDamasActivo,
         'estado': _estado,
         if (widget.bar == null) ...{
-          // Valores por defecto obligatorios en base de datos únicamente al crear
+          // Valores seleccionados y por defecto obligatorios al crear
           'direccion': '',
-          'moneda_simbolo': 'Bs',
-          'moneda_iso': 'BOB',
-          'timezone': 'America/La_Paz',
-          'comision_porcentaje': 50.0,
+          'moneda_simbolo': _selectedCurrencySymbol,
+          'moneda_iso': _selectedCurrencyIso,
+          'timezone': _selectedTimezone,
+          'comision_porcentaje': _moduloDamasActivo ? 50.0 : null,
           if (ownerId != null) 'owner_id': ownerId,
         }
       };
@@ -226,6 +257,84 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
       hintText: 'Ciudad',
       icon: Icons.location_city,
       validator: (val) => val == null || val.isEmpty ? 'Requerido' : null,
+    );
+  }
+
+  Widget _buildCurrencyDropdown() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF22252A),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButtonFormField<String>(
+          value: _selectedCurrencyIso,
+          isExpanded: true,
+          dropdownColor: const Color(0xFF1E2024),
+          style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+          decoration: const InputDecoration(
+            icon: Icon(Icons.payments, color: Colors.white30, size: 16),
+            border: InputBorder.none,
+          ),
+          items: _currencies.map((c) {
+            return DropdownMenuItem<String>(
+              value: c['iso'],
+              child: Text(
+                c['label']!,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            );
+          }).toList(),
+          onChanged: (val) {
+            if (val != null) {
+              setState(() {
+                _selectedCurrencyIso = val;
+                final selectedMap = _currencies.firstWhere((c) => c['iso'] == val);
+                _selectedCurrencySymbol = selectedMap['symbol']!;
+              });
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimezoneField() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF22252A),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButtonFormField<String>(
+          value: _selectedTimezone,
+          isExpanded: true,
+          dropdownColor: const Color(0xFF1E2024),
+          style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+          decoration: const InputDecoration(
+            icon: Icon(Icons.access_time, color: Colors.white30, size: 16),
+            border: InputBorder.none,
+          ),
+          items: _timezones.map((tz) {
+            return DropdownMenuItem<String>(
+              value: tz,
+              child: Text(
+                tz,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            );
+          }).toList(),
+          onChanged: (val) {
+            if (val != null) setState(() => _selectedTimezone = val);
+          },
+        ),
+      ),
     );
   }
 
@@ -468,6 +577,27 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                     
                     _buildCiudadField(),
                     const SizedBox(height: 20),
+
+                    // Divisa y Zona Horaria (Únicamente visibles al crear la sucursal)
+                    if (widget.bar == null) ...[
+                      Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
+                      const SizedBox(height: 12),
+
+                      if (isTablet)
+                        Row(
+                          children: [
+                            Expanded(child: _buildCurrencyDropdown()),
+                            const SizedBox(width: 12),
+                            Expanded(child: _buildTimezoneField()),
+                          ],
+                        )
+                      else ...[
+                        _buildCurrencyDropdown(),
+                        const SizedBox(height: 12),
+                        _buildTimezoneField(),
+                      ],
+                      const SizedBox(height: 20),
+                    ],
 
                     Text('CONFIGURACIÓN OPERATIVA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
                     const SizedBox(height: 12),
