@@ -197,9 +197,9 @@ class _PosPageState extends ConsumerState<PosPage> {
     double valEfectivo = isMixto ? 0.0 : cart.total;
     double valTarjeta = 0.0;
     double valTrQr = 0.0;
-    
-    final bool hasDecimals = CurrencyHelper.getDecimalDigits(currencyIso) > 0;
-    final txtRecibidoEfectivo = TextEditingController(text: isMixto ? '' : (hasDecimals ? cart.total.toStringAsFixed(2) : cart.total.toInt().toString()));
+    final txtRecibidoEfectivo = TextEditingController(
+      text: isMixto ? '' : CurrencyHelper.formatAmount(cart.total, currencyIso),
+    );
 
     if (isTabletLandscape) {
       showDialog(
@@ -240,13 +240,13 @@ class _PosPageState extends ConsumerState<PosPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          isMixto ? 'DISTRIBUCIÓN DE PAGO MIXTO' : 'COBRO EN EFECTIVO',
+                          isMixto ? 'Distribución de pago mixto' : 'Cobro en efectivo',
                           style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'TOTAL A COBRAR: $currencySymbol ${CurrencyHelper.formatAmount(cart.total, currencyIso)}',
+                          'Total a cobrar: $currencySymbol ${CurrencyHelper.formatAmount(cart.total, currencyIso)}',
                           style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 20),
                           textAlign: TextAlign.center,
                         ),
@@ -330,7 +330,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),
                               child: Text(
-                                'CONFIRMAR',
+                                'Confirmar',
                                 style: GoogleFonts.plusJakartaSans(color: canSubmit ? Colors.white : Colors.white30, fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -384,13 +384,13 @@ class _PosPageState extends ConsumerState<PosPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      isMixto ? 'DISTRIBUCIÓN DE PAGO MIXTO' : 'COBRO EN EFECTIVO',
+                      isMixto ? 'Distribución de pago mixto' : 'Cobro en efectivo',
                       style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'TOTAL A COBRAR: $currencySymbol ${CurrencyHelper.formatAmount(cart.total, currencyIso)}',
+                      'Total a cobrar: $currencySymbol ${CurrencyHelper.formatAmount(cart.total, currencyIso)}',
                       style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 20),
                       textAlign: TextAlign.center,
                     ),
@@ -471,7 +471,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       child: Text(
-                        'CONFIRMAR',
+                        'Confirmar',
                         style: GoogleFonts.plusJakartaSans(color: canSubmit ? Colors.white : Colors.white30, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -572,11 +572,11 @@ class _PosPageState extends ConsumerState<PosPage> {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          'PROCESANDO PAGO...',
+                          'Procesando pago...',
                           style: GoogleFonts.plusJakartaSans(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
-                            letterSpacing: 2.0,
+                            letterSpacing: 1.0,
                             fontSize: 13,
                           ),
                         ),

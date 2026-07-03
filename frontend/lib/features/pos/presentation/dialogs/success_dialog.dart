@@ -34,7 +34,7 @@ Future<void> showSuccessDialog(BuildContext context) async {
           ),
           const SizedBox(height: 20),
           Text(
-            '¡VENTA REGISTRADA!',
+            '¡Venta registrada!',
             style: GoogleFonts.plusJakartaSans(
               color: Colors.white,
               fontWeight: FontWeight.w900,
