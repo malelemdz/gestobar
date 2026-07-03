@@ -133,51 +133,49 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Row(
         children: [
-          _buildFilterChip('TODOS', 'Todos', theme),
-          const SizedBox(width: 8),
+          _buildFilterChip('TODOS', 'Todos', theme, isFirst: true),
           _buildFilterChip('ACTIVOS', 'Activos', theme),
-          const SizedBox(width: 8),
-          _buildFilterChip('INACTIVOS', 'Inactivos', theme),
+          _buildFilterChip('INACTIVOS', 'Inactivos', theme, isLast: true),
         ],
       ),
     );
   }
 
-  Widget _buildFilterChip(String filterCode, String label, ThemeData theme) {
+  Widget _buildFilterChip(String filterCode, String label, ThemeData theme, {bool isFirst = false, bool isLast = false}) {
     final bool isActive = _statusFilter == filterCode;
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _statusFilter = filterCode;
-        });
-      },
-      borderRadius: BorderRadius.circular(20),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF00F0FF) : Colors.white.withOpacity(0.04),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isActive ? const Color(0xFF00F0FF) : Colors.white.withOpacity(0.08),
-            width: 1.0,
-          ),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: const Color(0xFF00F0FF).withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: isFirst ? 0.0 : 4.0,
+          right: isLast ? 0.0 : 4.0,
         ),
-        child: Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            color: isActive ? Colors.black : Colors.white70,
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              _statusFilter = filterCode;
+            });
+          },
+          borderRadius: BorderRadius.circular(100),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: 38,
+            decoration: BoxDecoration(
+              color: isActive ? const Color(0xFF00F0FF).withOpacity(0.15) : const Color(0xFF22252A),
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(
+                color: isActive ? const Color(0xFF00F0FF).withOpacity(0.3) : Colors.transparent,
+              ),
+            ),
+            child: Center(
+              child: Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  color: isActive ? const Color(0xFF00F0FF) : Colors.white54,
+                  fontSize: 12,
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -212,7 +210,7 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
       floatingActionButton: state.isLoading
           ? null
           : PremiumFAB(
-              label: 'Registrar Admin',
+              label: 'Nuevo admin',
               icon: Icons.add,
               onPressed: () {
                 showResponsiveDialog(

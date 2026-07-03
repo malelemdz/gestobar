@@ -66,7 +66,7 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: PremiumFAB(
-        label: 'Registrar Sucursal',
+        label: 'Nuevo bar',
         icon: Icons.add,
         onPressed: () {
           showResponsiveDialog(

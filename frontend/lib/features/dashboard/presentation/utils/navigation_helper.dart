@@ -138,7 +138,7 @@ class NavigationHelper {
   static String getTitleForView(String activeView) {
     switch (activeView) {
       case 'super_bars':
-        return 'Consola Global';
+        return 'Sucursales';
       case 'super_admins':
         return 'Administradores';
       case 'dash':
