@@ -164,16 +164,16 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
       child: staffState.when(
         loading: () => GridView.builder(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 420,
-            mainAxisExtent: 100,
+            mainAxisExtent: MediaQuery.of(context).size.width >= 720 ? 78 : 84,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
           ),
           itemCount: 6,
-          itemBuilder: (context, index) => const ShimmerPlaceholder(
+          itemBuilder: (context, index) => ShimmerPlaceholder(
             width: double.infinity,
-            height: 100,
+            height: MediaQuery.of(context).size.width >= 720 ? 78 : 84,
           ),
         ),
         error: (err, _) => SingleChildScrollView(
@@ -222,9 +222,9 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
           return GridView.builder(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 420,
-              mainAxisExtent: 100,
+              mainAxisExtent: MediaQuery.of(context).size.width >= 720 ? 78 : 84,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),

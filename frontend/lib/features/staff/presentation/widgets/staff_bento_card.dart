@@ -154,27 +154,51 @@ class StaffBentoCard extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 5),
-                    // Line 3: DNI
-                    Text(
-                      user.identificacion?.isNotEmpty == true ? 'DNI: ${user.identificacion!}' : 'DNI No reg.',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
-                        height: 1.0,
-                        leadingDistribution: TextLeadingDistribution.even,
-                      ),
-                    ),
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              // Column 3: Switch and Action buttons stacked on the right!
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
+              // Column 3: Actions in single horizontal line
+              Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // 1. Botón Restablecer Contraseña
+                  Tooltip(
+                    message: 'Cambiar Contraseña',
+                    child: InkWell(
+                      onTap: () => onShowResetPassword(context, user),
+                      borderRadius: BorderRadius.circular(6),
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Icon(
+                          Icons.vpn_key_outlined,
+                          size: 16,
+                          color: Colors.amber,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+
+                  // 2. Botón Editar
+                  Tooltip(
+                    message: 'Editar',
+                    child: InkWell(
+                      onTap: () => onShowAddEditStaff(context, user),
+                      borderRadius: BorderRadius.circular(6),
+                      child: const Padding(
+                        padding: EdgeInsets.all(6.0),
+                        child: Icon(
+                          Icons.edit_outlined,
+                          size: 16,
+                          color: Colors.blueAccent,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+
+                  // 3. Switch de Habilitar/Deshabilitar
                   SizedBox(
                     height: 24,
                     width: 38,
@@ -221,36 +245,6 @@ class StaffBentoCard extends ConsumerWidget {
                         },
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  // Action Buttons under Switch
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Tooltip(
-                        message: 'Cambiar Contraseña',
-                        child: InkWell(
-                          onTap: () => onShowResetPassword(context, user),
-                          borderRadius: BorderRadius.circular(4),
-                          child: const Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: Icon(Icons.vpn_key_outlined, size: 16, color: Colors.amber),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Tooltip(
-                        message: 'Editar',
-                        child: InkWell(
-                          onTap: () => onShowAddEditStaff(context, user),
-                          borderRadius: BorderRadius.circular(4),
-                          child: const Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: Icon(Icons.edit_outlined, size: 16, color: Colors.blueAccent),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
