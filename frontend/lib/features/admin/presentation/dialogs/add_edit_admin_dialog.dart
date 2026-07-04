@@ -205,21 +205,40 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
       footer: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          TextButton(
+          OutlinedButton(
             onPressed: _isSaving ? null : () => Navigator.pop(context),
-            child: const Text('Cancelar', style: TextStyle(color: Colors.white54)),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: Colors.white10),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+            child: Text(
+              'Cancelar',
+              style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
           ),
           const SizedBox(width: 12),
           ElevatedButton(
             onPressed: _isSaving || _isLoadingRole ? null : _submitForm,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF7000FF),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              backgroundColor: const Color(0xFF00F0FF),
+              foregroundColor: const Color(0xFF0C0E12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              elevation: 0,
             ),
             child: _isSaving
-                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : Text(widget.admin == null ? 'Guardar' : 'Actualizar', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF0C0E12)),
+                  )
+                : Text(
+                    widget.admin == null ? 'REGISTRAR' : 'GUARDAR CAMBIOS',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
           ),
         ],
       ),

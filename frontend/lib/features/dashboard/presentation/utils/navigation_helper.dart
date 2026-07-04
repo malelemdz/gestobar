@@ -130,9 +130,15 @@ class NavigationHelper {
         return [
           {
             'view': 'comis',
-            'label': 'Comis',
+            'label': 'Comisiones',
             'icon': Icons.star_outline,
             'icon_active': Icons.star,
+          },
+          {
+            'view': 'perfil',
+            'label': 'Mi Perfil',
+            'icon': Icons.person_outline,
+            'icon_active': Icons.person,
           },
         ];
       default:

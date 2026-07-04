@@ -563,24 +563,31 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
               const SizedBox(height: 6),
               DropdownButtonFormField<String>(
                 value: selectedGenero,
-                dropdownColor: const Color(0xFF1E2024),
-                style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+                dropdownColor: const Color(0xFF22252A),
+                style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.wc_outlined, color: Colors.white54, size: 20),
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.only(left: 12.0, right: 8.0),
+                    child: Icon(Icons.wc_outlined, color: Colors.white30, size: 16),
+                  ),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 36,
+                    minHeight: 16,
+                  ),
                   filled: true,
-                  fillColor: const Color(0xFF16181C),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  fillColor: const Color(0xFF22252A),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+                    borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+                    borderSide: BorderSide(color: Colors.white.withOpacity(0.06), width: 1.0),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFF00F0FF)),
+                    borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
                   ),
                 ),
                 items: const [

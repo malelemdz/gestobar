@@ -206,23 +206,22 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButtonAnimator: const NoScalingAnimation(),
-      floatingActionButton: state.isLoading
-          ? null
-          : PremiumFAB(
-              label: 'Nuevo admin',
-              icon: Icons.add,
-              onPressed: () {
-                showResponsiveDialog(
-                  context: context,
-                  maxWidth: 550,
-                  child: AddEditAdminDialog(
-                    onSaved: () {
-                      ref.read(superAdminsProvider.notifier).loadData();
-                    },
-                  ),
-                );
+      floatingActionButton: PremiumFAB(
+        label: 'Nuevo admin',
+        icon: Icons.add,
+        isEnabled: !state.isLoading,
+        onPressed: () {
+          showResponsiveDialog(
+            context: context,
+            maxWidth: 550,
+            child: AddEditAdminDialog(
+              onSaved: () {
+                ref.read(superAdminsProvider.notifier).loadData();
               },
             ),
+          );
+        },
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

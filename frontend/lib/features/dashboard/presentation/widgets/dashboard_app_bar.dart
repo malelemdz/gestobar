@@ -59,76 +59,7 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     List<Widget> actionsList = [];
 
-    // Acción 2: Monitoreo en vivo de comisiones acumuladas y WebSocket para Damas
-    if (role == 'DAMA' && activeView == 'comis') {
-      // Indicador WebSocket
-      actionsList.add(
-        Center(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-            decoration: BoxDecoration(
-              color: const Color(0x1A00F0FF),
-              borderRadius: BorderRadius.circular(100.0),
-              border: Border.all(color: const Color(0x3300F0FF)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 6.0,
-                  height: 6.0,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFF00F0FF),
-                  ),
-                ),
-                const SizedBox(width: 6.0),
-                Text(
-                  'REALTIME',
-                  style: GoogleFonts.plusJakartaSans(
-                    color: const Color(0xFF00F0FF),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 8.5,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-      actionsList.add(const SizedBox(width: 8.0));
 
-      // Indicador de Ganancias Acumuladas
-      actionsList.add(
-        Center(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-            decoration: BoxDecoration(
-              color: const Color(0x1AFFB1C3),
-              borderRadius: BorderRadius.circular(100.0),
-              border: Border.all(color: const Color(0x33FFB1C3)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.payments_outlined, color: Color(0xFFFFB1C3), size: 13.0),
-                const SizedBox(width: 6.0),
-                Text(
-                  '150.00 Bs',
-                  style: GoogleFonts.plusJakartaSans(
-                    color: const Color(0xFFFFB1C3),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 9.0,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-      actionsList.add(const SizedBox(width: 12.0));
-    }
 
     // Acción 3: Botón de cambio rápido de sucursal removido (ahora integrado en menú lateral)
 
