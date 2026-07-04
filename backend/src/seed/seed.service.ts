@@ -85,14 +85,27 @@ export class SeedService {
     const barmanRole = await this.roleRepository.findOne({ where: { nombre: 'BARMAN' } });
     const damaRole = await this.roleRepository.findOne({ where: { nombre: 'DAMA' } });
 
-    // 3. Crear SuperAdmin de Desarrollo (Acceso Global - bar_id null)
-    let superAdmin = await this.userRepository.findOne({ where: { username: 'superadmin' } });
-    if (!superAdmin) {
+    // 3. Crear SuperAdmin (Acceso Global - bar_id null)
+    // IMPORTANTE: Primero verifica si YA EXISTE cualquier usuario con rol SUPERADMIN,
+    // sin importar su username. Así evitamos crear duplicados en re-deploys.
+    const existingSuperAdmin = await this.userRepository.findOne({
+      where: { rol_id: superAdminRole!.id },
+    });
+
+    let superAdmin: User;
+    if (existingSuperAdmin) {
+      // Ya existe un superadmin (puede tener cualquier username), lo reutilizamos
+      superAdmin = existingSuperAdmin;
+    } else {
+      // No existe ningún superadmin — creamos uno con las credenciales de las variables de entorno
+      const superAdminUsername = process.env.SUPERADMIN_USERNAME || 'superadmin';
+      const superAdminPassword = process.env.SUPERADMIN_PASSWORD || 'superpassword';
+
       superAdmin = this.userRepository.create({
-        username: 'superadmin',
-        password: await bcrypt.hash('superpassword', 10),
-        nombre: 'Super',
-        apellido: 'Admin',
+        username: superAdminUsername,
+        password: await bcrypt.hash(superAdminPassword, 10),
+        nombre: process.env.SUPERADMIN_NOMBRE || 'Super',
+        apellido: process.env.SUPERADMIN_APELLIDO || 'Admin',
         rol_id: superAdminRole!.id,
         bar_id: null,
         genero: 'PREFIERO_NO_DECIRLO',
