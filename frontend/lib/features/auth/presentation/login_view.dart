@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/auth_provider.dart';
 import '../providers/auth_state.dart';
+import '../../../core/widgets/custom_toast.dart';
 
 /// 🎨 Login View - Estética Premium Ultra-refinada
 class LoginView extends ConsumerStatefulWidget {
@@ -38,6 +39,16 @@ class _LoginViewState extends ConsumerState<LoginView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final authState = ref.watch(authProvider);
+
+    ref.listen<AuthState>(authProvider, (previous, next) {
+      if (next is AuthError) {
+        CustomToast.show(
+          context,
+          message: next.message,
+          type: ToastType.error,
+        );
+      }
+    });
 
     return Scaffold(
       body: SafeArea(
@@ -124,7 +135,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       keyboardType: TextInputType.text,
                       style: theme.textTheme.bodyMedium,
                       decoration: InputDecoration(
-                        hintText: 'ej. admin, juan123',
+                        hintText: 'ej. juanperez, 985623147',
                         hintStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
                         prefixIcon: const Icon(Icons.person_outline),
                         filled: true,
