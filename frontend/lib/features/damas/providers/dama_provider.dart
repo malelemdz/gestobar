@@ -73,3 +73,61 @@ class DamaComisionesNotifier extends StateNotifier<DamaComisionesState> {
 final damaComisionesProvider = StateNotifierProvider<DamaComisionesNotifier, DamaComisionesState>((ref) {
   return DamaComisionesNotifier(ref);
 });
+
+class DamaHistorialDiarioState {
+  final bool isLoading;
+  final String? error;
+  final List<dynamic> historialDiario;
+
+  DamaHistorialDiarioState({
+    this.isLoading = false,
+    this.error,
+    this.historialDiario = const [],
+  });
+
+  DamaHistorialDiarioState copyWith({
+    bool? isLoading,
+    String? error,
+    List<dynamic>? historialDiario,
+  }) {
+    return DamaHistorialDiarioState(
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
+      historialDiario: historialDiario ?? this.historialDiario,
+    );
+  }
+}
+
+class DamaHistorialDiarioNotifier extends StateNotifier<DamaHistorialDiarioState> {
+  final Ref ref;
+
+  DamaHistorialDiarioNotifier(this.ref) : super(DamaHistorialDiarioState()) {
+    loadHistorialDiario();
+  }
+
+  Future<void> loadHistorialDiario({bool silent = false}) async {
+    if (!silent) {
+      state = state.copyWith(isLoading: true, error: null);
+    }
+    try {
+      final dio = ref.read(dioProvider);
+      final response = await dio.get('/ventas/comisiones/historial-diario');
+      final data = response.data as List<dynamic>;
+
+      state = DamaHistorialDiarioState(
+        isLoading: false,
+        historialDiario: data,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
+    }
+  }
+}
+
+final damaHistorialDiarioProvider =
+    StateNotifierProvider<DamaHistorialDiarioNotifier, DamaHistorialDiarioState>((ref) {
+  return DamaHistorialDiarioNotifier(ref);
+});

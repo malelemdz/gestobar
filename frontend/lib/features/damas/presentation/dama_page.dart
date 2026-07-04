@@ -26,7 +26,6 @@ class DamaPage extends ConsumerStatefulWidget {
 }
 
 class _DamaPageState extends ConsumerState<DamaPage> {
-  String _activeFilter = 'TODO'; // TODO, COMISION, INVITACION
   bool _isSocketConnected = false;
 
   @override
@@ -201,14 +200,8 @@ class _DamaPageState extends ConsumerState<DamaPage> {
 
     final cajaState = ref.watch(cajaStateProvider);
     final bool isCajaAbierta = cajaState.value?.abierta ?? false;
-
-    // Filtrar historial
-    final filteredHistory = state.historial.where((item) {
-      final bool esInvitacion = item['es_invitacion'] == true;
-      if (_activeFilter == 'COMISION') return !esInvitacion;
-      if (_activeFilter == 'INVITACION') return esInvitacion;
-      return true;
-    }).toList();
+    // Tomar solo los últimos 10 registros del historial para el dash
+    final limitedHistory = state.historial.take(10).toList();
 
     return RefreshIndicator(
       color: accentColor,
@@ -301,7 +294,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'HISTORIAL DEL TURNO',
+                  'ÚLTIMOS 10 REGISTROS',
                   style: GoogleFonts.plusJakartaSans(
                     color: Colors.white30,
                     fontSize: 9.5,
@@ -309,18 +302,6 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                     letterSpacing: 0.8,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 6),
-
-            // Filtros rápidos estilo Cápsulas Slim
-            Row(
-              children: [
-                _buildFilterButton('Todos', 'TODO'),
-                const SizedBox(width: 8),
-                _buildFilterButton('Comisiones', 'COMISION'),
-                const SizedBox(width: 8),
-                _buildFilterButton('Invitaciones', 'INVITACION'),
               ],
             ),
             const SizedBox(height: 12),
@@ -343,7 +324,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                   ),
                 ),
               )
-            else if (filteredHistory.isEmpty)
+            else if (limitedHistory.isEmpty)
               Container(
                 padding: const EdgeInsets.all(32.0),
                 decoration: BoxDecoration(
@@ -367,9 +348,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      _activeFilter == 'TODO'
-                          ? 'Las bebidas e invitaciones que te registren en caja aparecerán aquí en tiempo real.'
-                          : 'No se encontraron registros en esta categoría.',
+                      'Las bebidas e invitaciones que te registren en caja aparecerán aquí en tiempo real.',
                       style: GoogleFonts.plusJakartaSans(
                         color: Colors.white24,
                         fontSize: 11,
@@ -383,10 +362,10 @@ class _DamaPageState extends ConsumerState<DamaPage> {
               ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: filteredHistory.length,
+                itemCount: limitedHistory.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
-                  final item = filteredHistory[index];
+                  final item = limitedHistory[index];
                   return _buildCommissionItemCard(item, state.moneda);
                 },
               ),
@@ -460,35 +439,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
     );
   }
 
-  Widget _buildFilterButton(String label, String filter) {
-    final bool isActive = _activeFilter == filter;
-    final Color activeBg = isActive ? const Color(0xFFFF4081).withOpacity(0.12) : const Color(0xFF1E2024);
-    final Color activeBorder = isActive ? const Color(0xFFFF4081).withOpacity(0.35) : Colors.white.withOpacity(0.04);
-    final Color textColor = isActive ? const Color(0xFFFF4081) : Colors.white60;
 
-    return InkWell(
-      onTap: () => setState(() => _activeFilter = filter),
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        height: 28,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: activeBg,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: activeBorder, width: 0.8),
-        ),
-        child: Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            color: textColor,
-            fontSize: 10.5,
-            fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildCommissionItemCard(dynamic item, String monedaSymbol) {
     final bool esInvitacion = item['es_invitacion'] == true;

@@ -33,6 +33,12 @@ export class VentasController {
     return this.ventasService.getDamaComisiones(damaId, barId);
   }
 
+  @Get('comisiones/historial-diario')
+  @Permissions('comisiones.ver_propias')
+  getDamaHistorialDiario(@ActiveUserId() damaId: string, @ActiveBarId() barId: string) {
+    return this.ventasService.getDamaHistorialDiario(damaId, barId);
+  }
+
   @Get('caja/activa')
   @Permissions('reportes.ver')
   getActiveVentas(@ActiveBarId() barId: string) {

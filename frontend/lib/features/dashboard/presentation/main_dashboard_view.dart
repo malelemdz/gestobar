@@ -17,6 +17,7 @@ import 'package:gestobar/features/caja/presentation/caja_page.dart';
 import 'package:gestobar/features/menu_publico/presentation/menu_page.dart';
 import 'package:gestobar/features/staff/presentation/staff_page.dart';
 import 'package:gestobar/features/damas/presentation/dama_page.dart';
+import 'package:gestobar/features/damas/presentation/dama_historial_page.dart';
 import 'package:gestobar/features/splash/presentation/splash_screen.dart';
 import 'package:gestobar/features/analytics/presentation/analytics_page.dart';
 
@@ -244,6 +245,8 @@ class MainDashboardView extends ConsumerWidget {
         return const PerfilPage();
       case 'comis':
         return const DamaPage();
+      case 'dama_historial':
+        return const DamaHistorialPage();
       case 'super_dash':
         return const SuperAdminDashboardPage();
       case 'super_audit':

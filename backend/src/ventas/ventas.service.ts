@@ -273,6 +273,35 @@ export class VentasService {
     };
   }
 
+  async getDamaHistorialDiario(damaId: string, barId: string): Promise<any> {
+    const detalles = await this.detalleRepository.find({
+      where: { dama_id: damaId, venta: { bar_id: barId } },
+      relations: ['venta'],
+      order: { venta: { fecha: 'DESC' } },
+    });
+
+    const grouped = new Map<string, { total_comisiones: number; total_invitaciones: number }>();
+    for (const d of detalles) {
+      if (!d.venta || !d.venta.fecha) continue;
+      const dateKey = new Date(d.venta.fecha).toISOString().split('T')[0];
+      
+      const current = grouped.get(dateKey) || { total_comisiones: 0, total_invitaciones: 0 };
+      const comisionGenerada = Number(d.comision_dama || 0) * Number(d.cantidad || 0);
+      
+      current.total_comisiones += comisionGenerada;
+      if (d.es_invitacion) {
+        current.total_invitaciones += Number(d.cantidad || 0);
+      }
+      grouped.set(dateKey, current);
+    }
+
+    return Array.from(grouped.entries()).map(([fecha, data]) => ({
+      fecha,
+      total_comisiones: data.total_comisiones,
+      total_invitaciones: data.total_invitaciones,
+    }));
+  }
+
   async getVentasByCaja(cajaId: string, barId: string): Promise<any> {
     const ventas = await this.ventaRepository.find({
       where: { caja_id: cajaId, bar_id: barId },
