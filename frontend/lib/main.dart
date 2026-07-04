@@ -77,7 +77,7 @@ class MyApp extends ConsumerWidget {
   }
 
   Widget _resolveHomeScreen(AuthState state) {
-    if (state is AuthInitial || state is AuthLoading) {
+    if (state is AuthInitial) {
       return const PremiumSplashScreen();
     } else if (state is AuthAuthenticated) {
       return const MainDashboardView();
