@@ -189,6 +189,8 @@ class _DamaPageState extends ConsumerState<DamaPage> {
     final authState = ref.watch(authProvider) as AuthAuthenticated;
     final user = authState.user;
     final barState = ref.watch(currentBarProvider);
+    final currencySymbol = ref.watch(currencySymbolProvider);
+    final currencyIso = ref.watch(currencyIsoProvider);
     const accentColor = Color(0xFFFF4081); // Color oficial Rose / Pink de Dama
 
     final String barName = barState.when(
@@ -229,7 +231,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                 Expanded(
                   child: _buildKpiCard(
                     title: 'Comisiones Totales',
-                    value: '${state.comisionesTotales.toStringAsFixed(2)} ${state.moneda}',
+                    value: '$currencySymbol ${CurrencyHelper.formatAmount(state.comisionesTotales, currencyIso)}',
                     icon: Icons.payments_outlined,
                     color: accentColor,
                     subtitle: 'Turno activo',
@@ -247,7 +249,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
 
             // Historial Cabecera y Estado de Socket
             Row(
@@ -285,7 +287,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                       ),
                       const SizedBox(width: 6.0),
                       Text(
-                        _isSocketConnected ? 'EN VIVO' : 'CONECTANDO',
+                        _isSocketConnected ? 'REAL TIME' : 'CONECTANDO',
                         style: GoogleFonts.plusJakartaSans(
                           color: _isSocketConnected ? const Color(0xFF00F0FF) : const Color(0xFFFFC107),
                           fontWeight: FontWeight.bold,
@@ -532,7 +534,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                     Row(
                       children: [
                         Text(
-                          esInvitacion ? 'Invitación direct.' : 'Comisión de venta',
+                          esInvitacion ? 'Invitación' : 'Comisión',
                           style: GoogleFonts.plusJakartaSans(
                             color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
                             fontSize: 10,

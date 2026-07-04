@@ -52,7 +52,6 @@ export class VentasController {
   }
 
   @Get(':id')
-  @Permissions('reportes.ver')
   findOne(@Param('id', ParseUUIDPipe) id: string, @ActiveBarId() barId: string) {
     return this.ventasService.findOne(id, barId);
   }
