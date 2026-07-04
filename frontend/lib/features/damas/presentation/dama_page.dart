@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import '../../../core/network/socket_service.dart';
 import '../../../core/widgets/custom_toast.dart';
 import '../../auth/providers/auth_provider.dart';
