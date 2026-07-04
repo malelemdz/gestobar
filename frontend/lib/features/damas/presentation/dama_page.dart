@@ -199,6 +199,9 @@ class _DamaPageState extends ConsumerState<DamaPage> {
       error: (_, __) => 'Error',
     );
 
+    final cajaState = ref.watch(cajaStateProvider);
+    final bool isCajaAbierta = cajaState.value?.abierta ?? false;
+
     // Filtrar historial
     final filteredHistory = state.historial.where((item) {
       final bool esInvitacion = item['es_invitacion'] == true;
@@ -224,6 +227,48 @@ class _DamaPageState extends ConsumerState<DamaPage> {
               barName: barName,
             ),
             const SizedBox(height: 16),
+
+            if (!isCajaAbierta) ...[
+              Container(
+                margin: const EdgeInsets.only(bottom: 16.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(16.0),
+                  border: Border.all(color: Colors.amber.withOpacity(0.35), width: 0.8),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.lock_outline_rounded, color: Colors.amber, size: 24),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Turno Cerrado',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white,
+                              fontSize: 13.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'La caja operativa está cerrada. Solicita al cajero iniciar el turno para poder registrar bebidas y comisiones.',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white70,
+                              fontSize: 11.0,
+                              height: 1.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
 
             // Bento Grid KPIs (2 Cards)
             Row(
@@ -251,7 +296,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
             ),
             const SizedBox(height: 12),
 
-            // Historial Cabecera y Estado de Socket
+            // Historial Cabecera
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -262,40 +307,6 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                     fontSize: 9.5,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.8,
-                  ),
-                ),
-                // Indicador WebSocket
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                  decoration: BoxDecoration(
-                    color: _isSocketConnected ? const Color(0x1A00F0FF) : const Color(0x1AFFF3C4),
-                    borderRadius: BorderRadius.circular(100.0),
-                    border: Border.all(
-                      color: _isSocketConnected ? const Color(0x3300F0FF) : const Color(0x33FFF3C4),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 5.0,
-                        height: 5.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _isSocketConnected ? const Color(0xFF00F0FF) : const Color(0xFFFFC107),
-                        ),
-                      ),
-                      const SizedBox(width: 6.0),
-                      Text(
-                        _isSocketConnected ? 'REAL TIME' : 'CONECTANDO',
-                        style: GoogleFonts.plusJakartaSans(
-                          color: _isSocketConnected ? const Color(0xFF00F0FF) : const Color(0xFFFFC107),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 8.0,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ],

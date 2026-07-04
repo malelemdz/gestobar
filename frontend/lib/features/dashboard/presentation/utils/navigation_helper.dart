@@ -182,7 +182,7 @@ class NavigationHelper {
       case 'perfil':
         return 'Mi Perfil';
       case 'comis':
-        return 'Comis';
+        return 'Comisiones';
       default:
         return 'Gestobar';
     }
