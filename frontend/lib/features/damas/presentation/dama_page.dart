@@ -300,7 +300,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
 
             // Filtros rápidos estilo Cápsulas Slim
             Row(
@@ -312,7 +312,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                 _buildFilterButton('Invitaciones', 'INVITACION'),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Contenido / Listado
             if (state.isLoading)
@@ -485,6 +485,8 @@ class _DamaPageState extends ConsumerState<DamaPage> {
     final double comision = (item['comision_generada'] as num?)?.toDouble() ?? 0.0;
     final int cantidad = (item['cantidad'] as num?)?.toInt() ?? 1;
     final String? ventaId = item['venta_id']?.toString();
+    final currencySymbol = ref.read(currencySymbolProvider);
+    final currencyIso = ref.read(currencyIsoProvider);
 
     return Material(
       color: Colors.transparent,
@@ -567,7 +569,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                   Text(
                     esInvitacion
                         ? '+$cantidad ${cantidad == 1 ? "bebida" : "bebidas"}'
-                        : '+${comision.toStringAsFixed(2)} $monedaSymbol',
+                        : '+$currencySymbol ${CurrencyHelper.formatAmount(comision, currencyIso)}',
                     style: GoogleFonts.plusJakartaSans(
                       color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
                       fontSize: 13,
@@ -578,7 +580,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                   Text(
                     esInvitacion
                         ? 'Invitación'
-                        : '$cantidad x ${(comision / cantidad).toStringAsFixed(2)}',
+                        : '$cantidad x $currencySymbol ${CurrencyHelper.formatAmount(comision / cantidad, currencyIso)}',
                     style: GoogleFonts.plusJakartaSans(
                       color: Colors.white24,
                       fontSize: 9.5,
