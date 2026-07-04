@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import '../../../core/network/socket_service.dart';
+import '../../../core/network/dio_client.dart';
 import '../../../core/widgets/custom_toast.dart';
 import '../../../core/utils/currency_helper.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -14,6 +15,7 @@ import '../../dashboard/presentation/widgets/dashboard_session_card.dart';
 import '../../admin/providers/bar_provider.dart';
 import '../../caja/models/evento_movimiento.dart';
 import '../../caja/models/venta_model.dart';
+import '../../caja/providers/caja_provider.dart';
 import '../../caja/presentation/dialogs/movement_detail_bottom_sheet.dart';
 
 class DamaPage extends ConsumerStatefulWidget {
@@ -122,7 +124,8 @@ class _DamaPageState extends ConsumerState<DamaPage> {
         tipo: 'VENTA',
         monto: venta.total,
         fecha: venta.fecha,
-        descripcion: 'Ticket de Venta #${venta.id.substring(0, 8).toUpperCase()}',
+        concepto: 'Ticket de Venta #${venta.id.substring(0, 8).toUpperCase()}',
+        cajero: venta.usuario?.nombre ?? 'Desconocido',
         metodoPago: venta.metodoPago,
         original: venta,
       );
