@@ -199,7 +199,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
     );
 
     final cajaState = ref.watch(cajaStateProvider);
-    final bool isCajaAbierta = cajaState.value?.abierta ?? false;
+    final bool isCajaCerrada = cajaState.hasValue && cajaState.value?.abierta == false;
     // Tomar solo los últimos 10 registros del historial para el dash
     final limitedHistory = state.historial.take(10).toList();
 
@@ -221,7 +221,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
             ),
             const SizedBox(height: 16),
 
-            if (!isCajaAbierta) ...[
+            if (isCajaCerrada) ...[
               Container(
                 margin: const EdgeInsets.only(bottom: 16.0),
                 padding: const EdgeInsets.all(16.0),
