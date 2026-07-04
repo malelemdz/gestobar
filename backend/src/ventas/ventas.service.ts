@@ -260,6 +260,7 @@ export class VentasService {
       total_invitaciones: totalInvitaciones,
       historial: detalles.map((d) => ({
         detalle_id: d.id,
+        venta_id: d.venta.id,
         fecha: d.venta.fecha,
         producto: d.variante.producto.nombre,
         variante: d.variante.nombre,

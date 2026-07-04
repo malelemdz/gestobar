@@ -112,9 +112,10 @@ class DashboardSidebar extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              itemCount: navItems.length,
+              itemCount: navItems.where((i) => i['view'] != 'perfil').length,
               itemBuilder: (context, index) {
-                final item = navItems[index];
+                final filtered = navItems.where((i) => i['view'] != 'perfil').toList();
+                final item = filtered[index];
                 final String viewId = item['view'] as String;
                 final bool isSelected = activeView == viewId;
 

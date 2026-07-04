@@ -6,9 +6,15 @@ import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import '../../../core/network/socket_service.dart';
 import '../../../core/widgets/custom_toast.dart';
+import '../../../core/utils/currency_helper.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/providers/auth_state.dart';
 import '../providers/dama_provider.dart';
+import '../../dashboard/presentation/widgets/dashboard_session_card.dart';
+import '../../admin/providers/bar_provider.dart';
+import '../../caja/models/evento_movimiento.dart';
+import '../../caja/models/venta_model.dart';
+import '../../caja/presentation/dialogs/movement_detail_bottom_sheet.dart';
 
 class DamaPage extends ConsumerStatefulWidget {
   const DamaPage({super.key});
@@ -92,12 +98,101 @@ class _DamaPageState extends ConsumerState<DamaPage> {
     super.dispose();
   }
 
+  Future<void> _openVentaDetail(String ventaId) async {
+    // Mostrar cargando
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: Color(0xFFFF4081)),
+      ),
+    );
+
+    try {
+      final dio = ref.read(dioProvider);
+      final response = await dio.get('/ventas/$ventaId');
+      final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+      
+      if (mounted) Navigator.pop(context); // Cerrar cargando
+
+      final VentaModel venta = VentaModel.fromJson(data);
+      
+      final ev = EventoMovimiento(
+        id: venta.id,
+        tipo: 'VENTA',
+        monto: venta.total,
+        fecha: venta.fecha,
+        descripcion: 'Ticket de Venta #${venta.id.substring(0, 8).toUpperCase()}',
+        metodoPago: venta.metodoPago,
+        original: venta,
+      );
+
+      final currencySymbol = ref.read(currencySymbolProvider);
+      final currencyIso = ref.read(currencyIsoProvider);
+      final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
+
+      if (mounted) {
+        if (isTabletLandscape) {
+          showDialog(
+            context: context,
+            barrierColor: Colors.black.withOpacity(0.85),
+            builder: (context) {
+              return Dialog(
+                backgroundColor: Colors.transparent,
+                insetPadding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: MovementDetailBottomSheet(
+                    ev: ev,
+                    currencySymbol: currencySymbol,
+                    currencyIso: currencyIso,
+                    isDialog: true,
+                  ),
+                ),
+              );
+            },
+          );
+        } else {
+          showModalBottomSheet(
+            context: context,
+            backgroundColor: Colors.transparent,
+            isScrollControlled: true,
+            builder: (context) {
+              return MovementDetailBottomSheet(
+                ev: ev,
+                currencySymbol: currencySymbol,
+                currencyIso: currencyIso,
+                isDialog: false,
+              );
+            },
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); // Cerrar cargando
+        CustomToast.show(
+          context,
+          message: 'No se pudo abrir el detalle del ticket: ${e.toString().replaceAll('Exception: ', '')}',
+          type: ToastType.error,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(damaComisionesProvider);
     final authState = ref.watch(authProvider) as AuthAuthenticated;
     final user = authState.user;
+    final barState = ref.watch(currentBarProvider);
     const accentColor = Color(0xFFFF4081); // Color oficial Rose / Pink de Dama
+
+    final String barName = barState.when(
+      data: (bar) => bar.nombre,
+      loading: () => 'Cargando...',
+      error: (_, __) => 'Error',
+    );
 
     // Filtrar historial
     final filteredHistory = state.historial.where((item) {
@@ -117,68 +212,13 @@ class _DamaPageState extends ConsumerState<DamaPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Header saludo
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '¡Hola, ${user.nombre}!',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Monitorea tus comisiones en tiempo real.',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white54,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-                // Estado del WebSocket
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                  decoration: BoxDecoration(
-                    color: _isSocketConnected ? const Color(0x1A00F0FF) : const Color(0x1AFFF3C4),
-                    borderRadius: BorderRadius.circular(100.0),
-                    border: Border.all(
-                      color: _isSocketConnected ? const Color(0x3300F0FF) : const Color(0x33FFF3C4),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 6.0,
-                        height: 6.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _isSocketConnected ? const Color(0xFF00F0FF) : const Color(0xFFFFC107),
-                        ),
-                      ),
-                      const SizedBox(width: 6.0),
-                      Text(
-                        _isSocketConnected ? 'EN VIVO' : 'CONECTANDO',
-                        style: GoogleFonts.plusJakartaSans(
-                          color: _isSocketConnected ? const Color(0xFF00F0FF) : const Color(0xFFFFC107),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 8.5,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            // Banner de Sesión Activa (Unificado con el resto de roles)
+            DashboardSessionCard(
+              user: user,
+              activeBarId: authState.activeBarId,
+              barName: barName,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
             // Bento Grid KPIs (2 Cards)
             Row(
@@ -206,8 +246,9 @@ class _DamaPageState extends ConsumerState<DamaPage> {
             ),
             const SizedBox(height: 24),
 
-            // Filtros rápidos
+            // Historial Cabecera y Estado de Socket
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'HISTORIAL DEL TURNO',
@@ -218,15 +259,55 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                     letterSpacing: 0.8,
                   ),
                 ),
-                const Spacer(),
-                _buildFilterButton('Todos', 'TODO'),
-                const SizedBox(width: 6),
-                _buildFilterButton('Comisiones', 'COMISION'),
-                const SizedBox(width: 6),
-                _buildFilterButton('Invitaciones', 'INVITACION'),
+                // Indicador WebSocket
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  decoration: BoxDecoration(
+                    color: _isSocketConnected ? const Color(0x1A00F0FF) : const Color(0x1AFFF3C4),
+                    borderRadius: BorderRadius.circular(100.0),
+                    border: Border.all(
+                      color: _isSocketConnected ? const Color(0x3300F0FF) : const Color(0x33FFF3C4),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 5.0,
+                        height: 5.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _isSocketConnected ? const Color(0xFF00F0FF) : const Color(0xFFFFC107),
+                        ),
+                      ),
+                      const SizedBox(width: 6.0),
+                      Text(
+                        _isSocketConnected ? 'EN VIVO' : 'CONECTANDO',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: _isSocketConnected ? const Color(0xFF00F0FF) : const Color(0xFFFFC107),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 8.0,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
+
+            // Filtros rápidos estilo Cápsulas Slim
+            Row(
+              children: [
+                _buildFilterButton('Todos', 'TODO'),
+                const SizedBox(width: 8),
+                _buildFilterButton('Comisiones', 'COMISION'),
+                const SizedBox(width: 8),
+                _buildFilterButton('Invitaciones', 'INVITACION'),
+              ],
+            ),
+            const SizedBox(height: 16),
 
             // Contenido / Listado
             if (state.isLoading)
@@ -365,26 +446,28 @@ class _DamaPageState extends ConsumerState<DamaPage> {
 
   Widget _buildFilterButton(String label, String filter) {
     final bool isActive = _activeFilter == filter;
-    final color = const Color(0xFFFF4081);
+    final Color activeBg = isActive ? const Color(0xFFFF4081).withOpacity(0.12) : const Color(0xFF1E2024);
+    final Color activeBorder = isActive ? const Color(0xFFFF4081).withOpacity(0.35) : Colors.white.withOpacity(0.04);
+    final Color textColor = isActive ? const Color(0xFFFF4081) : Colors.white60;
 
     return InkWell(
       onTap: () => setState(() => _activeFilter = filter),
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(20),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        height: 28,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isActive ? color.withOpacity(0.1) : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isActive ? color.withOpacity(0.3) : Colors.transparent,
-          ),
+          color: activeBg,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: activeBorder, width: 0.8),
         ),
         child: Text(
           label,
           style: GoogleFonts.plusJakartaSans(
-            color: isActive ? color : Colors.white30,
-            fontSize: 10,
-            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+            color: textColor,
+            fontSize: 10.5,
+            fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
           ),
         ),
       ),
@@ -396,103 +479,111 @@ class _DamaPageState extends ConsumerState<DamaPage> {
     final String timeStr = _formatItemTime(item['fecha']?.toString());
     final double comision = (item['comision_generada'] as num?)?.toDouble() ?? 0.0;
     final int cantidad = (item['cantidad'] as num?)?.toInt() ?? 1;
+    final String? ventaId = item['venta_id']?.toString();
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF16181C),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: ventaId != null && ventaId.isNotEmpty ? () => _openVentaDetail(ventaId) : null,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.03)),
-      ),
-      child: Row(
-        children: [
-          // Icon indicator
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: esInvitacion ? const Color(0x1A00F0FF) : const Color(0x1AFF4081),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              esInvitacion ? Icons.wine_bar_outlined : Icons.monetization_on_outlined,
-              color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
-              size: 18,
-            ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
+          decoration: BoxDecoration(
+            color: const Color(0xFF16181C),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.white.withOpacity(0.03)),
           ),
-          const SizedBox(width: 12),
-          // Description
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item['producto']?.toString() ?? 'Bebida',
-                  style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white,
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          child: Row(
+            children: [
+              // Icon indicator
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: esInvitacion ? const Color(0x1A00F0FF) : const Color(0x1AFF4081),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                const SizedBox(height: 2),
-                Row(
+                child: Icon(
+                  esInvitacion ? Icons.wine_bar_outlined : Icons.monetization_on_outlined,
+                  color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Description
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      esInvitacion ? 'Invitación direct.' : 'Comisión de venta',
+                      item['producto']?.toString() ?? 'Bebida',
                       style: GoogleFonts.plusJakartaSans(
-                        color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.bold,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(width: 6),
-                    const Text(
-                      '•',
-                      style: TextStyle(color: Colors.white10, fontSize: 10),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      timeStr,
-                      style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white24,
-                        fontSize: 10,
-                      ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Text(
+                          esInvitacion ? 'Invitación direct.' : 'Comisión de venta',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Text(
+                          '•',
+                          style: TextStyle(color: Colors.white10, fontSize: 10),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          timeStr,
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white24,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Price and Commission Values
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                esInvitacion
-                    ? '+$cantidad cop.'
-                    : '+${comision.toStringAsFixed(2)} $monedaSymbol',
-                style: GoogleFonts.plusJakartaSans(
-                  color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                ),
               ),
-              const SizedBox(height: 2),
-              Text(
-                esInvitacion
-                    ? 'Invitada'
-                    : '$cantidad x ${(comision / cantidad).toStringAsFixed(2)}',
-                style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white24,
-                  fontSize: 9.5,
-                ),
+              const SizedBox(width: 12),
+              // Price and Commission Values
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    esInvitacion
+                        ? '+$cantidad ${cantidad == 1 ? "bebida" : "bebidas"}'
+                        : '+${comision.toStringAsFixed(2)} $monedaSymbol',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    esInvitacion
+                        ? 'Invitación'
+                        : '$cantidad x ${(comision / cantidad).toStringAsFixed(2)}',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Colors.white24,
+                      fontSize: 9.5,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
