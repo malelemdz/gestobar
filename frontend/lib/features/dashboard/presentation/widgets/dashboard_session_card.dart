@@ -39,204 +39,109 @@ class DashboardSessionCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final barTimezone = ref.watch(barTimezoneProvider);
-    final barState = ref.watch(currentBarProvider);
-
-    final String? logoUrl = barState.maybeWhen(
-      data: (bar) => bar.logoUrl,
-      orElse: () => null,
-    );
 
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF1E2024),
-        borderRadius: BorderRadius.circular(24.0),
+        borderRadius: BorderRadius.circular(16.0),
         border: Border.all(
           color: Colors.white.withOpacity(0.05),
-          width: 1.0,
+          width: 0.8,
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(28.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
+        child: Row(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                 // Avatar circular con foto o iniciales
-                 Container(
-                   width: 56.0,
-                   height: 56.0,
-                   decoration: BoxDecoration(
-                     gradient: const LinearGradient(
-                       colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
-                       begin: Alignment.topLeft,
-                       end: Alignment.bottomRight,
-                     ),
-                     borderRadius: BorderRadius.circular(100.0),
-                     boxShadow: [
-                       BoxShadow(
-                         color: const Color(0xFF7000FF).withOpacity(0.3),
-                         blurRadius: 12.0,
-                         offset: const Offset(0, 4),
-                       ),
-                     ],
-                   ),
-                   child: ClipRRect(
-                     borderRadius: BorderRadius.circular(100.0),
-                     child: (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
-                         ? Image.network(
-                             ApiConstants.resolveImageUrl(user.fotoUrl)!,
-                             fit: BoxFit.cover,
-                             errorBuilder: (context, error, stackTrace) {
-                               return Center(
-                                 child: Text(
-                                   (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
-                                   style: GoogleFonts.plusJakartaSans(
-                                     color: Colors.white,
-                                     fontSize: 20.0,
-                                     fontWeight: FontWeight.w900,
-                                   ),
-                                 ),
-                               );
-                             },
-                           )
-                         : Center(
-                             child: Text(
-                               (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
-                               style: GoogleFonts.plusJakartaSans(
-                                 color: Colors.white,
-                                 fontSize: 20.0,
-                                 fontWeight: FontWeight.w900,
-                               ),
-                             ),
-                           ),
-                   ),
-                 ),
-                const SizedBox(width: 16.0),
-                // Datos de sesión (Nombre, Rol • @username)
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
+            // Avatar circular con foto o iniciales
+            Container(
+              width: 44.0,
+              height: 44.0,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(100.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF7000FF).withOpacity(0.2),
+                    blurRadius: 8.0,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100.0),
+                child: (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
+                    ? Image.network(
+                        ApiConstants.resolveImageUrl(user.fotoUrl)!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(
+                            child: Text(
+                              (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.white,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : Center(
                         child: Text(
-                          'Hola, ${user.nombre.split(' ').first}',
+                          (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
                           style: GoogleFonts.plusJakartaSans(
                             color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.5,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w900,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 4.0),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          '${user.rolNombre.toUpperCase()} • @${user.username}',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Reloj en tiempo real
-                LocalTimeClock(timezone: barTimezone),
-              ],
+              ),
             ),
-            const SizedBox(height: 24.0),
-            // Línea divisoria minimalista
-            Divider(color: Colors.white.withOpacity(0.06), height: 1.0),
-            const SizedBox(height: 20.0),
-            // Fila de Metadatos (Nombre del Bar)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'NOMBRE DEL BAR',
+            const SizedBox(width: 12.0),
+            // Datos de sesión (Nombre, Rol • @username)
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Hola, ${user.nombre.split(' ').first}',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
-                        letterSpacing: 0.5,
+                        color: Colors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.4,
                       ),
                     ),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        if (logoUrl != null && logoUrl.isNotEmpty)
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.network(
-                              logoUrl,
-                              width: 42.0,
-                              height: 42.0,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  _buildFallbackBarLogo(theme, size: 42.0),
-                            ),
-                          )
-                        else
-                          _buildFallbackBarLogo(theme, size: 42.0),
-                        const SizedBox(width: 10.0),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              activeBarId != null ? barName : 'CONSOLA GLOBAL',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 18.0,
-                                color: const Color(0xFF00F0FF),
-                              ),
-                            ),
-                            if (activeBarId != null)
-                              barState.maybeWhen(
-                                data: (bar) {
-                                  final list = <String>[];
-                                  if (bar.direccion != null && bar.direccion!.trim().isNotEmpty) {
-                                    list.add(bar.direccion!.trim());
-                                  }
-                                  if (bar.ciudad != null && bar.ciudad!.trim().isNotEmpty) {
-                                    list.add(bar.ciudad!.trim());
-                                  }
-                                  if (list.isEmpty) return const SizedBox.shrink();
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 2.0),
-                                    child: Text(
-                                      list.join(', '),
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 11.0,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white.withOpacity(0.5),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                orElse: () => const SizedBox.shrink(),
-                              ),
-                          ],
-                        ),
-                      ],
+                  ),
+                  const SizedBox(height: 2.0),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '${user.rolNombre.toUpperCase()} • @${user.username}',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(width: 8.0),
+            // Reloj en tiempo real
+            LocalTimeClock(timezone: barTimezone),
           ],
         ),
       ),

@@ -104,25 +104,15 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
       leadingWidth: isTablet ? 64.0 : 56.0,
       automaticallyImplyLeading: false,
       titleSpacing: isTablet ? 16.0 : 0.0,
-      title: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            pageLabel,
-            style: GoogleFonts.plusJakartaSans(
-              fontWeight: FontWeight.w800,
-              fontSize: 20.0,
-              color: const Color(0xFF00F0FF),
-              letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
-              height: 1.0,
-            ),
-          ),
-          if (role == 'DAMA' && activeView == 'comis') ...[
-            const SizedBox(width: 8.0),
-            const _PulsingDotIndicator(),
-          ],
-        ],
+      title: Text(
+        pageLabel,
+        style: GoogleFonts.plusJakartaSans(
+          fontWeight: FontWeight.w800,
+          fontSize: 20.0,
+          color: const Color(0xFF00F0FF),
+          letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
+          height: 1.0,
+        ),
       ),
       actions: actionsList,
       elevation: 0,
@@ -147,73 +137,6 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: const Color(0xFF00F0FF),
           fontWeight: FontWeight.bold,
           fontSize: 12.0,
-        ),
-      ),
-    );
-  }
-}
-
-class _PulsingDotIndicator extends StatefulWidget {
-  const _PulsingDotIndicator();
-
-  @override
-  State<_PulsingDotIndicator> createState() => _PulsingDotIndicatorState();
-}
-
-class _PulsingDotIndicatorState extends State<_PulsingDotIndicator>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..repeat(reverse: true);
-    _animation = Tween<double>(begin: 0.3, end: 1.0).animate(_controller);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _animation,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-        decoration: BoxDecoration(
-          color: const Color(0x1A00F0FF),
-          borderRadius: BorderRadius.circular(100.0),
-          border: Border.all(color: const Color(0x3300F0FF)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 5.0,
-              height: 5.0,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color(0xFF00F0FF),
-              ),
-            ),
-            const SizedBox(width: 5.0),
-            Text(
-              'REAL TIME',
-              style: GoogleFonts.plusJakartaSans(
-                color: const Color(0xFF00F0FF),
-                fontWeight: FontWeight.bold,
-                fontSize: 8.0,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ],
         ),
       ),
     );
