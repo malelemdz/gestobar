@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Permite tráfico HTTP (sin cifrar) solo hacia IPs de red local (192.168.x.x, 10.x.x.x).
+  Producción (api.gestobar.app) SIEMPRE usa HTTPS — no aparece aquí a propósito.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Red local: Coolify stage en LAN -->
+        <domain includeSubdomains="false">192.168.100.213</domain>
+        <!-- Emulador Android → host de la Mac -->
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <!-- Localhost Web -->
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+    <base-config cleartextTrafficPermitted="false">
+        <!-- Todo lo demás (producción) requiere HTTPS -->
+    </base-config>
+</network-security-config>
