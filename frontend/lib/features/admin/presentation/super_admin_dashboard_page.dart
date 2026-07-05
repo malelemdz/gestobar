@@ -100,16 +100,12 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(20.0),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF7000FF).withOpacity(0.15),
-                    blurRadius: 16.0,
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10.0,
                     offset: const Offset(0, 4),
                   ),
                 ],
