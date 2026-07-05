@@ -7,6 +7,7 @@ class AuditoriaRepository {
   AuditoriaRepository(this._dio);
 
   Future<List<AuditoriaModel>> getAuditoria({
+    String? barId,
     String? usuarioId,
     String? modulo,
     String? accion,
@@ -19,6 +20,7 @@ class AuditoriaRepository {
       'page': page.toString(),
       'limit': limit.toString(),
     };
+    if (barId != null && barId.isNotEmpty) queryParams['bar_id'] = barId;
     if (usuarioId != null && usuarioId.isNotEmpty) queryParams['usuario_id'] = usuarioId;
     if (modulo != null && modulo.isNotEmpty) queryParams['modulo'] = modulo;
     if (accion != null && accion.isNotEmpty) queryParams['accion'] = accion;

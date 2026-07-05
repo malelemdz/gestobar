@@ -141,6 +141,7 @@ class AuditoriaNotifier extends StateNotifier<AuditoriaState> {
     }
     try {
       final list = await _repository.getAuditoria(
+        barId: _barId,
         usuarioId: _filters['usuarioId'],
         modulo: _filters['modulo'],
         accion: _filters['accion'],
@@ -170,6 +171,7 @@ class AuditoriaNotifier extends StateNotifier<AuditoriaState> {
     try {
       final nextPage = state.page + 1;
       final list = await _repository.getAuditoria(
+        barId: _barId,
         usuarioId: _filters['usuarioId'],
         modulo: _filters['modulo'],
         accion: _filters['accion'],
