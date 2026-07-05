@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 const String _kEnvironment = String.fromEnvironment('ENVIRONMENT', defaultValue: 'debug');
 
 // URLs de la API por entorno — reemplaza con tus dominios reales cuando los tengas
-const String _kStageUrl = String.fromEnvironment('API_URL', defaultValue: 'http://localhost:3000');
+const String _kStageUrl = String.fromEnvironment('API_URL', defaultValue: 'https://api-stg.gestobar.app');
 const String _kProductionUrl = String.fromEnvironment('API_URL', defaultValue: 'https://api.gestobar.app');
 
 class ApiConstants {

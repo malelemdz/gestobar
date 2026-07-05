@@ -39,11 +39,9 @@ class AuthRepository {
         final message = errorResponse['message'];
         errorMessage = message is List ? message.join(', ') : message.toString();
       }
-      
-      final details = '[DioError: ${e.type}, status: ${e.response?.statusCode}, path: ${e.requestOptions.path}, err: ${e.error}]';
-      throw Exception('$errorMessage\n$details');
+      throw Exception(errorMessage);
     } catch (e) {
-      throw Exception('No se pudo conectar con el servidor de Gestobar\n[Details: $e]');
+      throw Exception('No se pudo conectar con el servidor de Gestobar');
     }
   }
 
