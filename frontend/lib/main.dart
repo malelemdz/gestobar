@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'features/auth/providers/auth_provider.dart';
 import 'features/auth/providers/auth_state.dart';
@@ -17,6 +18,10 @@ void main() async {
   // Asegura que las llamadas a canales nativos de Flutter (como Secure Storage)
   // estén inicializadas antes de que se dibuje el árbol de widgets.
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Deshabilita descarga de fuentes en runtime — las fuentes deben estar
+  // en assets o usar el fallback del sistema. Evita crash sin internet.
+  GoogleFonts.config.allowRuntimeFetching = false;
   
   // Inicialización de la base de datos de zonas horarias
   tz.initializeTimeZones();
