@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
@@ -11,7 +11,7 @@ import { CategoriesService } from '../categories/categories.service';
 import { VariantePrecio } from './entities/variante-precio.entity';
 
 @Injectable()
-export class ProductsService {
+export class ProductsService implements OnModuleInit {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
@@ -19,6 +19,28 @@ export class ProductsService {
     private readonly variantRepository: Repository<Variant>,
     private readonly categoriesService: CategoriesService,
   ) {}
+
+  async onModuleInit() {
+    try {
+      console.log('--- COMIENZO DE LIMPIEZA DE PRECIOS DUPLICADOS EN VARIANTES_PRECIOS ---');
+      await this.productRepository.manager.query(`
+        DELETE FROM variantes_precios
+        WHERE id NOT IN (
+          SELECT id FROM (
+            SELECT id, ROW_NUMBER() OVER (
+              PARTITION BY variante_id, tarifa_id 
+              ORDER BY updated_at DESC, id DESC
+            ) as rn
+            FROM variantes_precios
+          ) t
+          WHERE t.rn = 1
+        )
+      `);
+      console.log('--- LIMPIEZA DE PRECIOS DUPLICADOS COMPLETADA ---');
+    } catch (e) {
+      console.error('Error al limpiar precios duplicados:', e);
+    }
+  }
 
   async create(createProductDto: CreateProductDto, barId: string): Promise<Product> {
     let categoryId = createProductDto.categoria_id;
