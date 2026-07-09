@@ -15,7 +15,7 @@ export class AuditoriaController {
   @Get()
   @Permissions('reportes.ver')
   findAll(
-    @ActiveBarId() barId: string,
+    @ActiveBarId({ optional: true }) barId: string | null,
     @Query() query: QueryAuditoriaDto,
   ) {
     return this.auditoriaService.findAll(barId, query);

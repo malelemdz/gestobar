@@ -1,6 +1,10 @@
 import { IsUUID, IsString, IsOptional, IsDateString } from 'class-validator';
 
 export class QueryAuditoriaDto {
+  @IsUUID('4', { message: 'El ID de bar debe ser un UUID válido' })
+  @IsOptional()
+  bar_id?: string;
+
   @IsUUID('4', { message: 'El ID de usuario debe ser un UUID válido' })
   @IsOptional()
   usuario_id?: string;

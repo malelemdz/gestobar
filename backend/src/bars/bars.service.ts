@@ -34,7 +34,7 @@ export class BarsService {
   }
 
   async update(id: string, updateBarDto: UpdateBarDto): Promise<Bar> {
-    const { tasa_conversion, ...rest } = updateBarDto;
+    const { tasa_conversion, configuracion_tabs_permitidas, ...rest } = updateBarDto;
     
     console.log('--- INTENTO DE ACTUALIZAR BAR ---');
     console.log('ID:', id);

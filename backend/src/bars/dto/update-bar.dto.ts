@@ -7,4 +7,7 @@ export class UpdateBarDto extends PartialType(CreateBarDto) {
   @IsNumber()
   @IsOptional()
   tasa_conversion?: number;
+
+  @IsOptional()
+  configuracion_tabs_permitidas?: any;
 }

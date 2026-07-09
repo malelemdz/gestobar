@@ -98,8 +98,12 @@ export class AuditoriaService {
     return `${device} (${os}) - ${browser}`;
   }
 
-  async findAll(barId: string, query: QueryAuditoriaDto): Promise<Auditoria[]> {
-    const where: any = { bar_id: barId };
+  async findAll(barId: string | null, query: QueryAuditoriaDto): Promise<Auditoria[]> {
+    const resolvedBarId = query.bar_id || barId;
+    const where: any = {};
+    if (resolvedBarId) {
+      where.bar_id = resolvedBarId;
+    }
 
     if (query.usuario_id) {
       where.usuario_id = query.usuario_id;

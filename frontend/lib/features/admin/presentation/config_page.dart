@@ -339,6 +339,14 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
             type: ToastType.success,
           );
         }
+      } else {
+        if (mounted) {
+          CustomToast.show(
+            context,
+            message: 'Error al guardar la configuración del bar.',
+            type: ToastType.error,
+          );
+        }
       }
     }
   }
