@@ -180,7 +180,7 @@ void showLogDetail(BuildContext context, AuditoriaModel log, String currencyIso,
         final screenHeight = MediaQuery.of(context).size.height;
         final bottomInset = MediaQuery.of(context).viewInsets.bottom;
         final bottomPadding = MediaQuery.of(context).padding.bottom;
-        final maxHeight = screenHeight * 0.75; 
+        final maxHeight = screenHeight * 0.85; 
 
         return ConstrainedBox(
           constraints: BoxConstraints(maxHeight: maxHeight),

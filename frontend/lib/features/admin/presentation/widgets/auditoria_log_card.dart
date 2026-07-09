@@ -81,42 +81,13 @@ class AuditoriaLogCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    dateStr,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11,
-                      color: Colors.white.withOpacity(0.5),
-                    ),
-                  ),
-                  if (showBarLabel) ...[
-                    const SizedBox(height: 4),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF00F0FF).withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.3), width: 0.8),
-                      ),
-                      child: Text(
-                        (sucursalNombre != null && sucursalNombre!.isNotEmpty)
-                            ? sucursalNombre!.toUpperCase()
-                            : (log.barId.isNotEmpty
-                                ? 'BAR: ${log.barId.length > 8 ? log.barId.substring(0, 8) : log.barId}'
-                                : 'GLOBAL'),
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 8,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF00F0FF),
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
+              const SizedBox(width: 8),
+              Text(
+                dateStr,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  color: Colors.white.withOpacity(0.5),
+                ),
               ),
             ],
           ),
@@ -155,6 +126,30 @@ class AuditoriaLogCard extends StatelessWidget {
               ),
             ],
           ),
+          if (showBarLabel) ...[
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                const Icon(Icons.storefront_outlined, size: 14, color: Color(0xFF00F0FF)),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    (sucursalNombre != null && sucursalNombre!.isNotEmpty)
+                        ? sucursalNombre!.toUpperCase()
+                        : (log.barId.isNotEmpty
+                            ? 'BAR: ${log.barId.length > 8 ? log.barId.substring(0, 8) : log.barId}'
+                            : 'GLOBAL'),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF00F0FF),
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ],
           if (log.dispositivo != null || log.ipAddress != null) ...[
             const SizedBox(height: 6),
             Row(
