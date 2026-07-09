@@ -8,6 +8,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateVariantDto } from './dto/create-variant.dto';
 import { UpdateVariantDto } from './dto/update-variant.dto';
 import { CategoriesService } from '../categories/categories.service';
+import { VariantePrecio } from './entities/variante-precio.entity';
 
 @Injectable()
 export class ProductsService {
@@ -139,18 +140,57 @@ export class ProductsService {
   }
 
   async updateVariant(variantId: string, updateVariantDto: UpdateVariantDto, barId: string): Promise<Variant> {
-    // Validar propiedad de la variante buscando su producto asociado
+    // Validar propiedad de la variante buscando su producto asociado y cargando los precios existentes
     const variant = await this.variantRepository.findOne({
       where: { id: variantId },
-      relations: ['producto'],
+      relations: ['producto', 'precios'],
     });
 
     if (!variant || variant.producto.bar_id !== barId) {
       throw new NotFoundException(`Variante con ID ${variantId} no encontrada`);
     }
 
-    const updated = this.variantRepository.merge(variant, updateVariantDto);
-    return await this.variantRepository.save(updated);
+    // Actualizar campos básicos
+    if (updateVariantDto.nombre !== undefined) {
+      variant.nombre = updateVariantDto.nombre;
+    }
+    if (updateVariantDto.disponible !== undefined) {
+      variant.disponible = updateVariantDto.disponible;
+    }
+
+    // Actualizar matriz de precios por tarifa de forma limpia y controlada
+    if (updateVariantDto.precios) {
+      const incomingPrices = updateVariantDto.precios;
+      const existingPrices = variant.precios || [];
+      const updatedPrices: VariantePrecio[] = [];
+
+      // 1. Actualizar precios existentes o agregar nuevos
+      for (const incoming of incomingPrices) {
+        const existing = existingPrices.find(p => p.tarifa_id === incoming.tarifa_id);
+        if (existing) {
+          existing.precio_unitario = incoming.precio_unitario;
+          updatedPrices.push(existing);
+        } else {
+          const newPrice = this.productRepository.manager.getRepository(VariantePrecio).create({
+            tarifa_id: incoming.tarifa_id,
+            precio_unitario: incoming.precio_unitario,
+            variante_id: variantId,
+          });
+          updatedPrices.push(newPrice);
+        }
+      }
+
+      // 2. Eliminar de la base de datos aquellos precios que ya no vengan en el DTO
+      const incomingTariffIds = incomingPrices.map(p => p.tarifa_id);
+      const pricesToDelete = existingPrices.filter(p => !incomingTariffIds.includes(p.tarifa_id));
+      if (pricesToDelete.length > 0) {
+        await this.productRepository.manager.getRepository(VariantePrecio).remove(pricesToDelete);
+      }
+
+      variant.precios = updatedPrices;
+    }
+
+    return await this.variantRepository.save(variant);
   }
 
   async removeVariant(variantId: string, barId: string): Promise<void> {
