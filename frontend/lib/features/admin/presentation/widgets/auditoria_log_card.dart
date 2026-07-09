@@ -78,40 +78,45 @@ class AuditoriaLogCard extends StatelessWidget {
                         color: actionColor,
                       ),
                     ),
-                    if (showBarLabel) ...[
-                      const SizedBox(height: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF00F0FF).withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.3), width: 0.8),
-                        ),
-                        child: Text(
-                          (sucursalNombre != null && sucursalNombre!.isNotEmpty)
-                              ? sucursalNombre!.toUpperCase()
-                              : (log.barId.isNotEmpty
-                                  ? 'BAR: ${log.barId.length > 8 ? log.barId.substring(0, 8) : log.barId}'
-                                  : 'GLOBAL'),
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF00F0FF),
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
-                    ],
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
-              Text(
-                dateStr,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  color: Colors.white.withOpacity(0.5),
-                ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    dateStr,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11,
+                      color: Colors.white.withOpacity(0.5),
+                    ),
+                  ),
+                  if (showBarLabel) ...[
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF00F0FF).withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.3), width: 0.8),
+                      ),
+                      child: Text(
+                        (sucursalNombre != null && sucursalNombre!.isNotEmpty)
+                            ? sucursalNombre!.toUpperCase()
+                            : (log.barId.isNotEmpty
+                                ? 'BAR: ${log.barId.length > 8 ? log.barId.substring(0, 8) : log.barId}'
+                                : 'GLOBAL'),
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF00F0FF),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ],
           ),

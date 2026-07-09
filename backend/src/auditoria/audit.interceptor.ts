@@ -14,6 +14,7 @@ export class AuditInterceptor implements NestInterceptor {
       this.cls.set('user', req.user);
       this.cls.set('ip', req.ip || req.headers['x-forwarded-for']);
       this.cls.set('userAgent', req.headers['user-agent']);
+      this.cls.set('barId', req.headers['x-bar-id']);
     }
 
     return next.handle();

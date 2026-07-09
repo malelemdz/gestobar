@@ -76,7 +76,14 @@ export class AuditSubscriber implements EntitySubscriberInterface {
     const displayName = this.getEntityDisplayName(event.entity, event.metadata.tableName);
     const mensaje = `Creó ${singularInfo.article} ${singularInfo.name}: ${displayName}`;
 
-    const barId = user.barId || event.entity?.bar_id || event.entity?.barId || null;
+    const entityId = event.entity?.id;
+    const isBarEntity = event.metadata.tableName === 'bares';
+    const barId = this.cls.get('barId') || 
+                  (isBarEntity ? entityId : null) || 
+                  user.barId || 
+                  event.entity?.bar_id || 
+                  event.entity?.barId || 
+                  null;
 
     await this.auditoriaService.registrar({
       barId,
@@ -115,7 +122,16 @@ export class AuditSubscriber implements EntitySubscriberInterface {
 
     if (Object.keys(cambios).length === 0) return;
 
-    const barId = user.barId || event.entity?.bar_id || event.databaseEntity?.bar_id || event.entity?.barId || event.databaseEntity?.barId || null;
+    const entityId = event.entity?.id || event.databaseEntity?.id;
+    const isBarEntity = event.metadata.tableName === 'bares';
+    const barId = this.cls.get('barId') || 
+                  (isBarEntity ? entityId : null) || 
+                  user.barId || 
+                  event.entity?.bar_id || 
+                  event.databaseEntity?.bar_id || 
+                  event.entity?.barId || 
+                  event.databaseEntity?.barId || 
+                  null;
 
     await this.auditoriaService.registrar({
       barId,
@@ -141,7 +157,14 @@ export class AuditSubscriber implements EntitySubscriberInterface {
     const displayName = this.getEntityDisplayName(event.databaseEntity, event.metadata.tableName);
     const mensaje = `Eliminó ${singularInfo.article} ${singularInfo.name}: ${displayName}`;
 
-    const barId = user.barId || event.databaseEntity?.bar_id || event.databaseEntity?.barId || null;
+    const entityId = event.databaseEntity?.id;
+    const isBarEntity = event.metadata.tableName === 'bares';
+    const barId = this.cls.get('barId') || 
+                  (isBarEntity ? entityId : null) || 
+                  user.barId || 
+                  event.databaseEntity?.bar_id || 
+                  event.databaseEntity?.barId || 
+                  null;
 
     await this.auditoriaService.registrar({
       barId,
