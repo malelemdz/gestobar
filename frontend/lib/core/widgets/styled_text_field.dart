@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class StyledTextField extends StatelessWidget {
+class StyledTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final int maxLines;
@@ -30,34 +30,63 @@ class StyledTextField extends StatelessWidget {
   });
 
   @override
+  State<StyledTextField> createState() => _StyledTextFieldState();
+}
+
+class _StyledTextFieldState extends State<StyledTextField> {
+  bool _obscureText = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.isPassword;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Widget? activeSuffix = widget.suffixIcon;
+    if (widget.isPassword && widget.suffixIcon == null) {
+      activeSuffix = IconButton(
+        icon: Icon(
+          _obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+          color: Colors.white30,
+          size: 18,
+        ),
+        onPressed: () {
+          setState(() {
+            _obscureText = !_obscureText;
+          });
+        },
+      );
+    }
+
     return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      obscureText: isPassword,
-      enabled: enabled,
-      readOnly: readOnly,
-      onTap: onTap,
-      onChanged: onChanged,
+      controller: widget.controller,
+      maxLines: widget.isPassword ? 1 : widget.maxLines,
+      obscureText: widget.isPassword ? _obscureText : false,
+      enabled: widget.enabled,
+      readOnly: widget.readOnly,
+      onTap: widget.onTap,
+      onChanged: widget.onChanged,
       style: GoogleFonts.inter(
-        color: enabled ? Colors.white : Colors.white54,
+        color: widget.enabled ? Colors.white : Colors.white54,
         fontSize: 13,
       ),
       decoration: InputDecoration(
         filled: true,
         fillColor: const Color(0xFF22252A),
-        prefixIcon: icon != null
+        prefixIcon: widget.icon != null
             ? Padding(
                 padding: const EdgeInsets.only(left: 12.0, right: 8.0),
-                child: Icon(icon, color: Colors.white30, size: 16),
+                child: Icon(widget.icon, color: Colors.white30, size: 16),
               )
             : null,
         prefixIconConstraints: const BoxConstraints(
           minWidth: 36,
           minHeight: 16,
         ),
-        suffixIcon: suffixIcon,
-        hintText: hintText,
+        suffixIcon: activeSuffix,
+        hintText: widget.hintText,
         hintStyle: TextStyle(color: Colors.white.withOpacity(0.2), fontSize: 13),
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         border: OutlineInputBorder(
@@ -85,7 +114,7 @@ class StyledTextField extends StatelessWidget {
           borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
         ),
       ),
-      validator: validator,
+      validator: widget.validator,
     );
   }
 }

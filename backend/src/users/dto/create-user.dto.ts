@@ -49,4 +49,8 @@ export class CreateUserDto {
   @IsOptional()
   @IsIn(['MASCULINO', 'FEMENINO', 'PREFIERO_NO_DECIRLO'])
   genero?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  estado?: boolean;
 }

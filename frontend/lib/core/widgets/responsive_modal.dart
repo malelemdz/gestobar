@@ -23,14 +23,21 @@ class ResponsiveModalContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewInsets = MediaQuery.of(context).viewInsets;
     final size = MediaQuery.of(context).size;
-    // Limitamos la altura máxima al 85% en móvil y 90% en tablet para dar más espacio sin tapar la barra de estado/isla dinámica
-    final maxModalHeight = size.height * (isDialog ? 0.90 : 0.85);
+    final safeAreaTop = MediaQuery.of(context).padding.top;
+    
+    // Altura disponible real por encima del teclado y del área segura superior
+    final availableHeight = size.height - viewInsets.bottom - safeAreaTop - 12.0;
+
+    // Limitamos la altura máxima para dar espacio sin tapar la barra de estado/isla dinámica
+    final maxModalHeight = isDialog
+        ? size.height * 0.90
+        : (availableHeight < size.height * 0.85 ? availableHeight : size.height * 0.85);
 
     return Material(
       type: MaterialType.transparency,
       child: Container(
         constraints: BoxConstraints(
-          maxHeight: maxModalHeight,
+          maxHeight: maxModalHeight > 100.0 ? maxModalHeight : 100.0,
         ),
         margin: isDialog ? EdgeInsets.zero : EdgeInsets.only(bottom: viewInsets.bottom),
         decoration: BoxDecoration(
