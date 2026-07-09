@@ -65,7 +65,7 @@ class UnsavedChangesDialog extends StatelessWidget {
             ),
           ),
           child: Text(
-            'Permanecer',
+            'Volver',
             style: GoogleFonts.plusJakartaSans(
               fontWeight: FontWeight.w600,
               fontSize: 12.0,
@@ -85,7 +85,7 @@ class UnsavedChangesDialog extends StatelessWidget {
             ),
           ),
           child: Text(
-            'Descartar y Salir',
+            'Descartar',
             style: GoogleFonts.plusJakartaSans(
               fontWeight: FontWeight.bold,
               fontSize: 12.0,

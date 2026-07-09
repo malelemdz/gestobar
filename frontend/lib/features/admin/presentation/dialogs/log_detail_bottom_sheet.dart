@@ -45,7 +45,12 @@ void showLogDetail(BuildContext context, AuditoriaModel log, String currencyIso,
             ? Border.all(color: Colors.white.withOpacity(0.06), width: 1.0)
             : null,
       ),
-      padding: const EdgeInsets.fromLTRB(24.0, 12.0, 24.0, 24.0),
+      padding: EdgeInsets.fromLTRB(
+        24.0,
+        12.0,
+        24.0,
+        isDialog ? 24.0 : 12.0,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,10 +177,16 @@ void showLogDetail(BuildContext context, AuditoriaModel log, String currencyIso,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
       ),
       builder: (context) {
-        return SafeArea(
+        final screenHeight = MediaQuery.of(context).size.height;
+        final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+        final bottomPadding = MediaQuery.of(context).padding.bottom;
+        final maxHeight = screenHeight * 0.75; 
+
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
           child: Padding(
             padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
+              bottom: bottomInset > 0 ? bottomInset : bottomPadding,
             ),
             child: buildContent(context, false),
           ),

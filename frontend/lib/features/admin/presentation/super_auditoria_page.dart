@@ -491,6 +491,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                 currencySymbol: currencySymbol,
                 barTimezone: barTimezone,
                 sucursalNombre: sucursalNombre,
+                showBarLabel: true,
               ),
             );
           } else {

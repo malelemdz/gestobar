@@ -251,6 +251,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                             currencySymbol: currencySymbol,
                             barTimezone: barTimezone,
                             sucursalNombre: sucursalNombre,
+                            showBarLabel: true,
                           );
                         },
                       ),

@@ -12,6 +12,7 @@ class AuditoriaLogCard extends StatelessWidget {
   final String currencySymbol;
   final String barTimezone;
   final String? sucursalNombre;
+  final bool showBarLabel;
 
   const AuditoriaLogCard({
     super.key,
@@ -20,6 +21,7 @@ class AuditoriaLogCard extends StatelessWidget {
     required this.currencySymbol,
     required this.barTimezone,
     this.sucursalNombre,
+    this.showBarLabel = false,
   });
 
   @override
@@ -76,7 +78,7 @@ class AuditoriaLogCard extends StatelessWidget {
                         color: actionColor,
                       ),
                     ),
-                    if (sucursalNombre != null && sucursalNombre!.isNotEmpty) ...[
+                    if (showBarLabel) ...[
                       const SizedBox(height: 6),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -86,7 +88,11 @@ class AuditoriaLogCard extends StatelessWidget {
                           border: Border.all(color: const Color(0xFF00F0FF).withOpacity(0.3), width: 0.8),
                         ),
                         child: Text(
-                          sucursalNombre!.toUpperCase(),
+                          (sucursalNombre != null && sucursalNombre!.isNotEmpty)
+                              ? sucursalNombre!.toUpperCase()
+                              : (log.barId.isNotEmpty
+                                  ? 'BAR: ${log.barId.length > 8 ? log.barId.substring(0, 8) : log.barId}'
+                                  : 'GLOBAL'),
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 9,
                             fontWeight: FontWeight.bold,

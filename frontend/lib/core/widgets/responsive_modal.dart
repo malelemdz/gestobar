@@ -23,7 +23,8 @@ class ResponsiveModalContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewInsets = MediaQuery.of(context).viewInsets;
     final size = MediaQuery.of(context).size;
-    final maxModalHeight = size.height * (isDialog ? 0.85 : 0.9);
+    // Limitamos la altura máxima al 75% en móvil y 80% en tablet para no tapar la barra de estado ni la isla dinámica
+    final maxModalHeight = size.height * (isDialog ? 0.80 : 0.75);
 
     return Material(
       type: MaterialType.transparency,
@@ -116,7 +117,14 @@ class ResponsiveModalContainer extends StatelessWidget {
               const Divider(color: Colors.white10, height: 1),
               // Body
               Flexible(
-                child: child,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: (footer == null && !isDialog)
+                        ? MediaQuery.of(context).padding.bottom + 12.0
+                        : 0.0,
+                  ),
+                  child: child,
+                ),
               ),
               // Footer
               if (footer != null) ...[
