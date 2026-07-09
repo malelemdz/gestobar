@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
+import { Repository, Between, MoreThanOrEqual, LessThanOrEqual, EntityManager } from 'typeorm';
 import { Auditoria } from './entities/auditoria.entity';
 import { QueryAuditoriaDto } from './dto/query-auditoria.dto';
 import { SocketGateway } from '../socket/socket.gateway';
@@ -13,19 +13,24 @@ export class AuditoriaService {
     private readonly socketGateway: SocketGateway,
   ) {}
 
-  async registrar(logData: {
-    barId: string | null;
-    usuarioId: string | null;
-    rolNombre: string;
-    accion: string;
-    modulo: string;
-    detalles: any;
-    ipAddress?: string;
-    userAgent?: string;
-  }): Promise<Auditoria> {
+  async registrar(
+    logData: {
+      barId: string | null;
+      usuarioId: string | null;
+      rolNombre: string;
+      accion: string;
+      modulo: string;
+      detalles: any;
+      ipAddress?: string;
+      userAgent?: string;
+    },
+    manager?: EntityManager,
+  ): Promise<Auditoria> {
     const dispositivoParsed = this.parseUserAgent(logData.userAgent);
 
-    const log = this.auditoriaRepository.create({
+    const repo = manager ? manager.getRepository(Auditoria) : this.auditoriaRepository;
+
+    const log = repo.create({
       bar_id: logData.barId,
       usuario_id: logData.usuarioId,
       rol_nombre: logData.rolNombre,
@@ -36,10 +41,10 @@ export class AuditoriaService {
       dispositivo: dispositivoParsed,
     });
 
-    const savedLog = await this.auditoriaRepository.save(log);
+    const savedLog = await repo.save(log);
 
     if (savedLog.bar_id) {
-      const logConUsuario = await this.auditoriaRepository.findOne({
+      const logConUsuario = await repo.findOne({
         where: { id: savedLog.id },
         relations: ['usuario'],
       });

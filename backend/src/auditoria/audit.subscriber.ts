@@ -94,7 +94,7 @@ export class AuditSubscriber implements EntitySubscriberInterface {
       detalles: { mensaje, id: event.entity?.id },
       ipAddress: this.cls.get('ip'),
       userAgent: this.cls.get('userAgent'),
-    });
+    }, event.manager);
   }
 
   async afterUpdate(event: UpdateEvent<any>) {
@@ -142,7 +142,7 @@ export class AuditSubscriber implements EntitySubscriberInterface {
       detalles: { mensaje, cambios },
       ipAddress: this.cls.get('ip'),
       userAgent: this.cls.get('userAgent'),
-    });
+    }, event.manager);
   }
 
   async afterRemove(event: RemoveEvent<any>) {
@@ -175,6 +175,6 @@ export class AuditSubscriber implements EntitySubscriberInterface {
       detalles: { mensaje },
       ipAddress: this.cls.get('ip'),
       userAgent: this.cls.get('userAgent'),
-    });
+    }, event.manager);
   }
 }
