@@ -25,10 +25,14 @@ class ResponsiveModalContainer extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final safeAreaTop = MediaQuery.of(context).padding.top;
     
-    // Altura disponible real por encima del teclado y del área segura superior
-    final availableHeight = size.height - viewInsets.bottom - safeAreaTop - 12.0;
+    // Si safeAreaTop ya es 0 (porque useSafeArea consumió el espacio), dejamos 16.0 de espacio mínimo.
+    // De lo contrario, dejamos safeArea + 16.0 para crear un margen elegante debajo de la barra de estado/isla.
+    final topOffset = safeAreaTop > 0 ? safeAreaTop + 16.0 : 16.0;
+    
+    // Altura disponible real por encima del teclado y debajo de la barra de estado
+    final availableHeight = size.height - viewInsets.bottom - topOffset;
 
-    // Limitamos la altura máxima para dar espacio sin tapar la barra de estado/isla dinámica
+    // Limitamos la altura máxima en móviles para dar espacio sin tapar la parte superior de la pantalla
     final maxModalHeight = isDialog
         ? size.height * 0.90
         : (availableHeight < size.height * 0.85 ? availableHeight : size.height * 0.85);
@@ -214,6 +218,7 @@ Future<T?> showResponsiveDialog<T>({
     return showModalBottomSheet<T>(
       context: context,
       isScrollControlled: isScrollControlled,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       barrierColor: barrierColor ?? Colors.black.withOpacity(0.75),
       builder: (context) => child,

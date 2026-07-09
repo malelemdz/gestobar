@@ -172,6 +172,7 @@ void showLogDetail(BuildContext context, AuditoriaModel log, String currencyIso,
       context: context,
       backgroundColor: AppTheme.liquidSurfaceContainerLow,
       isScrollControlled: true,
+      useSafeArea: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28.0)),
       ),
