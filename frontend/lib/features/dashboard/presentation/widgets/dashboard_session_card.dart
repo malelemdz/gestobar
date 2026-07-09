@@ -134,11 +134,11 @@ class DashboardSessionCard extends ConsumerWidget {
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          '${user.rolNombre.toUpperCase()} • @${user.username}',
+                          '${user.rolNombre.isNotEmpty ? (user.rolNombre[0].toUpperCase() + user.rolNombre.substring(1).toLowerCase()) : ""} • @${user.username}',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
                             fontSize: 10.5,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -181,11 +181,11 @@ class DashboardSessionCard extends ConsumerWidget {
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          activeBarId != null ? barName : 'CONSOLA GLOBAL',
+                          activeBarId != null ? barName : 'Consola global',
                           style: GoogleFonts.plusJakartaSans(
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w600,
                             fontSize: 15.0,
-                            color: const Color(0xFF00F0FF),
+                            color: AppTheme.liquidPrimary,
                           ),
                         ),
                       ),

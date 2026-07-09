@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gestobar/features/auth/models/user_model.dart';
 import 'package:gestobar/core/constants/api_constants.dart';
+import 'package:gestobar/core/theme/app_theme.dart';
+import 'package:gestobar/features/admin/providers/bar_provider.dart';
 
-class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
+class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String pageLabel;
   final bool isTablet;
   final String? activeBarId;
@@ -31,25 +34,25 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(isTablet ? 72.0 : 56.0);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     Widget leadingWidget;
     if (isTablet) {
-      leadingWidget = const Padding(
-        padding: EdgeInsets.only(left: 24.0),
-        child: Icon(Icons.blur_on, color: Color(0xFF00F0FF), size: 28.0),
+      leadingWidget = Padding(
+        padding: const EdgeInsets.only(left: 24.0),
+        child: Icon(Icons.blur_on, color: AppTheme.liquidPrimary, size: 28.0),
       );
     } else {
       final bool isDeepView = activeView == 'perfil' || activeView == 'config';
       if (isDeepView) {
         leadingWidget = IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF00F0FF)),
+          icon: Icon(Icons.arrow_back, color: AppTheme.liquidPrimary),
           onPressed: onBackPressed,
         );
       } else {
         leadingWidget = IconButton(
-          icon: const Icon(Icons.menu, color: Color(0xFF00F0FF)),
+          icon: Icon(Icons.menu, color: AppTheme.liquidPrimary),
           onPressed: () {
             Scaffold.of(context).openDrawer();
           },
@@ -59,11 +62,17 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     List<Widget> actionsList = [];
 
+    // Obtener logo del bar si está en una sucursal
+    String? barLogoUrl;
+    if (activeBarId != null) {
+      final barState = ref.watch(currentBarProvider);
+      barLogoUrl = barState.maybeWhen(
+        data: (bar) => bar.logoUrl,
+        orElse: () => null,
+      );
+    }
 
-
-    // Acción 3: Botón de cambio rápido de sucursal removido (ahora integrado en menú lateral)
-
-    // Acción 4: Foto de perfil premium en la esquina superior derecha (Móvil y Tablet)
+    // Acción: Foto de perfil o Logo de sucursal en la esquina superior derecha
     actionsList.add(
       Padding(
         padding: const EdgeInsets.only(right: 16.0),
@@ -77,21 +86,34 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: const Color(0x3300F0FF),
+                  color: AppTheme.liquidPrimary.withOpacity(0.2),
                   width: 1.0,
                 ),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(100.0),
-                child: (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
+                child: (activeBarId != null && barLogoUrl != null && barLogoUrl.isNotEmpty)
                     ? Image.network(
-                        ApiConstants.resolveImageUrl(user.fotoUrl)!,
+                        ApiConstants.resolveImageUrl(barLogoUrl) ?? barLogoUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return _buildInitialsPlaceholder(user);
-                        },
+                        errorBuilder: (context, error, stackTrace) =>
+                            (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
+                                ? Image.network(
+                                    ApiConstants.resolveImageUrl(user.fotoUrl)!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        _buildInitialsPlaceholder(user),
+                                  )
+                                : _buildInitialsPlaceholder(user),
                       )
-                    : _buildInitialsPlaceholder(user),
+                    : (user.fotoUrl != null && user.fotoUrl!.isNotEmpty)
+                        ? Image.network(
+                            ApiConstants.resolveImageUrl(user.fotoUrl)!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                _buildInitialsPlaceholder(user),
+                          )
+                        : _buildInitialsPlaceholder(user),
               ),
             ),
           ),
@@ -109,14 +131,14 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
         style: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.w800,
           fontSize: 20.0,
-          color: const Color(0xFF00F0FF),
+          color: AppTheme.liquidPrimary,
           height: 1.0,
         ),
       ),
       actions: actionsList,
       elevation: 0,
       toolbarHeight: isTablet ? 72.0 : 56.0,
-      backgroundColor: const Color(0xFF111317),
+      backgroundColor: AppTheme.liquidBg,
       shape: Border(
         bottom: BorderSide(
           color: Colors.white.withOpacity(0.06),
@@ -128,12 +150,12 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _buildInitialsPlaceholder(UserModel user) {
     return Container(
-      color: const Color(0xFF1E2024),
+      color: AppTheme.liquidSurface,
       alignment: Alignment.center,
       child: Text(
         (user.nombre.isNotEmpty ? user.nombre[0] : 'U').toUpperCase(),
         style: GoogleFonts.plusJakartaSans(
-          color: const Color(0xFF00F0FF),
+          color: AppTheme.liquidPrimary,
           fontWeight: FontWeight.bold,
           fontSize: 12.0,
         ),
