@@ -387,6 +387,29 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   }
 
   Widget _buildOwnerDropdown() {
+    if (_adminsList.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF22252A),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withOpacity(0.06)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.info_outline, color: Colors.orangeAccent, size: 16),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'No hay administradores creados. Crea uno primero en la pestaña de Administradores.',
+                style: GoogleFonts.inter(color: Colors.white70, fontSize: 12),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(

@@ -18,16 +18,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    const user = await this.usersService.findOne(payload.sub);
-    if (!user || !user.estado) {
-      throw new UnauthorizedException('Usuario no válido o inactivo');
+    try {
+      const user = await this.usersService.findOne(payload.sub);
+      if (!user || !user.estado) {
+        throw new UnauthorizedException('Usuario no válido o inactivo');
+      }
+      return {
+        userId: payload.sub,
+        username: payload.username,
+        rolId: payload.rolId,
+        rolName: user.rol?.nombre,
+        barId: payload.barId,
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Sesión no válida o expirada');
     }
-    return {
-      userId: payload.sub,
-      username: payload.username,
-      rolId: payload.rolId,
-      rolName: user.rol?.nombre,
-      barId: payload.barId,
-    };
   }
 }
