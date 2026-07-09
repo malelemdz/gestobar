@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/utils/currency_helper.dart';
+import 'package:gestobar/core/theme/app_theme.dart';
 
 class ClosedCajaPanel extends StatelessWidget {
   final TextEditingController montoController;

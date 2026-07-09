@@ -9,6 +9,7 @@ import '../../../admin/data/models/tarifa_model.dart';
 import '../../../auth/models/user_model.dart';
 import '../../../caja/providers/caja_provider.dart';
 import '../../../../core/utils/currency_helper.dart';
+import 'package:gestobar/core/theme/app_theme.dart';
 
 class CartSection extends ConsumerWidget {
   final BuildContext? modalContext;

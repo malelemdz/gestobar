@@ -7,6 +7,7 @@ import 'package:gestobar/core/utils/timezone_helper.dart';
 import 'package:gestobar/features/auth/models/user_model.dart';
 import 'package:gestobar/features/admin/providers/bar_provider.dart';
 import 'package:gestobar/core/constants/api_constants.dart';
+import 'package:gestobar/core/theme/app_theme.dart';
 
 class DashboardSessionCard extends ConsumerWidget {
   final UserModel user;

@@ -10,6 +10,7 @@ import '../../models/evento_movimiento.dart';
 import '../../models/venta_model.dart';
 import 'movimientos_list_widgets.dart';
 import 'closed_cajas_history_list.dart';
+import 'package:gestobar/core/theme/app_theme.dart';
 
 class OpenCajaPanel extends ConsumerStatefulWidget {
   final CajaModel caja;

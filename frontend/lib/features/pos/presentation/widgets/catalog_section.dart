@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../providers/catalog_provider.dart';
 import 'product_card.dart';
 import 'package:gestobar/core/widgets/shimmer_placeholder.dart';
+import 'package:gestobar/core/theme/app_theme.dart';
 
 class CatalogSection extends ConsumerStatefulWidget {
   const CatalogSection({super.key});
