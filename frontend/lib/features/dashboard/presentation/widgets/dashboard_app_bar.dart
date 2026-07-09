@@ -110,7 +110,6 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
           fontWeight: FontWeight.w800,
           fontSize: 20.0,
           color: const Color(0xFF00F0FF),
-          letterSpacing: pageLabel == 'Gestobar' ? -0.8 : -0.3,
           height: 1.0,
         ),
       ),

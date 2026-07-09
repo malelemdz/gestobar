@@ -61,7 +61,6 @@ class CierreSummaryDialog extends StatelessWidget {
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
                             fontSize: 15,
-                            letterSpacing: 0.5,
                           ),
                         ),
                         Text(

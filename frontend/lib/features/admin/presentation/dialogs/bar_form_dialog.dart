@@ -509,7 +509,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                       ),
                     ],
 
-                    Text('DATOS GENERALES DE LA SUCURSAL', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
+                    Text('DATOS GENERALES DE LA SUCURSAL', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                     const SizedBox(height: 12),
                     
                     _buildNombreField(),
@@ -519,7 +519,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                     const SizedBox(height: 20),
 
                     // Divisa y Zona Horaria (Visibles en creación y edición)
-                    Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
+                    Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                     const SizedBox(height: 12),
 
                     if (isTablet)
@@ -537,7 +537,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                     ],
                     const SizedBox(height: 20),
 
-                    Text('CONFIGURACIÓN OPERATIVA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
+                    Text('CONFIGURACIÓN OPERATIVA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                     const SizedBox(height: 12),
 
                     _buildModuloDamasToggle(),
@@ -548,7 +548,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
 
                     // Dropdown de Dueño / Admin del Bar (Únicamente en creación)
                     if (widget.bar == null) ...[
-                      Text('ADMINISTRADOR / DUEÑO DEL BAR', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
+                      Text('ADMINISTRADOR / DUEÑO DEL BAR', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                       const SizedBox(height: 12),
                       _buildOwnerDropdown(),
                     ],

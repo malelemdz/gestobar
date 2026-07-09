@@ -697,7 +697,6 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                               color: const Color(0xFFB9CACB),
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1.0,
                             ),
                           ),
                           const SizedBox(height: 16.0),

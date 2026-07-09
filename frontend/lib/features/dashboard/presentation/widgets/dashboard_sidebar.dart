@@ -83,7 +83,6 @@ class DashboardSidebar extends StatelessWidget {
                               fontWeight: FontWeight.w800,
                               fontSize: 22.0,
                               color: const Color(0xFFDBFCFF),
-                              letterSpacing: -0.5,
                               height: 1.1,
                             ),
                           ),
@@ -211,7 +210,6 @@ class DashboardSidebar extends StatelessWidget {
                               style: theme.textTheme.labelSmall?.copyWith(
                                 fontSize: 8.0,
                                 color: theme.colorScheme.onSurfaceVariant,
-                                letterSpacing: 0.5,
                               ),
                             ),
                           ],

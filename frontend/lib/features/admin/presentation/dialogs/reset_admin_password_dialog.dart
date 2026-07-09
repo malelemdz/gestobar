@@ -119,7 +119,7 @@ class _ResetAdminPasswordDialogState extends ConsumerState<ResetAdminPasswordDia
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('CREAR NUEVAS CREDENCIALES', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
+              Text('CREAR NUEVAS CREDENCIALES', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
               const SizedBox(height: 12),
               
               StyledTextField(

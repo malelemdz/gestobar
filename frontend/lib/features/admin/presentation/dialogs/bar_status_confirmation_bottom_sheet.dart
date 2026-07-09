@@ -70,7 +70,6 @@ Future<bool?> showBarStatusConfirmationBottomSheet({
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         fontSize: 16,
-                        letterSpacing: 0.5,
                       ),
                     ),
                   ),

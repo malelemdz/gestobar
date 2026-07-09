@@ -72,7 +72,6 @@ class DashboardDrawer extends StatelessWidget {
                               fontWeight: FontWeight.w800,
                               fontSize: 22.0,
                               color: const Color(0xFFDBFCFF),
-                              letterSpacing: -0.5,
                               height: 1.1,
                             ),
                           ),
@@ -177,11 +176,11 @@ class DashboardDrawer extends StatelessWidget {
                     height: 48.0,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF00F0FF),
+                      color: AppTheme.liquidPrimary,
                       borderRadius: BorderRadius.circular(100.0),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF00F0FF).withOpacity(0.15),
+                          color: AppTheme.liquidPrimary.withOpacity(0.15),
                           blurRadius: 16.0,
                           offset: const Offset(0, 4),
                         ),
@@ -199,13 +198,12 @@ class DashboardDrawer extends StatelessWidget {
                         child: Center(
                           child: Text(
                             (role == 'SUPERADMIN' && activeBarId != null)
-                                ? 'SALIR DEL BAR'
-                                : 'CERRAR SESIÓN',
+                                ? 'Salir del bar'
+                                : 'Cerrar sesión',
                             style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFF00363A),
-                              fontWeight: FontWeight.w800,
-                              fontSize: 11.5,
-                              letterSpacing: 1.0,
+                              color: const Color(0xFF14161A),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13.0,
                             ),
                           ),
                         ),

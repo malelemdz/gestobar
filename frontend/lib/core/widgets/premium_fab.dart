@@ -38,7 +38,6 @@ class PremiumFAB extends StatelessWidget {
           color: isEnabled ? const Color(0xFF0C0E12) : Colors.white30,
           fontWeight: FontWeight.bold,
           fontSize: 14,
-          letterSpacing: 0.2,
           height: 1.0,
         ),
       ),

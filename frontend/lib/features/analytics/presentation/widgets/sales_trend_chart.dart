@@ -298,7 +298,6 @@ class SalesTrendChart extends ConsumerWidget {
                           color: Colors.white38,
                           fontSize: 11.0,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
                         ),
                       ),
                       const SizedBox(height: 2.0),

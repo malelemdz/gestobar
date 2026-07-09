@@ -103,7 +103,6 @@ class ClosedCajasHistoryList extends ConsumerWidget {
                                     color: Colors.white30,
                                     fontSize: 9,
                                     fontWeight: FontWeight.w900,
-                                    letterSpacing: 0.5,
                                   ),
                                 ),
                               ],

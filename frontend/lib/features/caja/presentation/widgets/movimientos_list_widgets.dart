@@ -97,7 +97,6 @@ class MovimientosList extends ConsumerWidget {
               color: Colors.white54,
               fontSize: 10,
               fontWeight: FontWeight.w900,
-              letterSpacing: 0.8,
             ),
           ),
           const SizedBox(height: 12.0),

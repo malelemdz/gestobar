@@ -71,7 +71,6 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
                   color: AppTheme.liquidOnSurfaceVariant,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 0.1,
                 ),
               ),
               const SizedBox(height: 6),
@@ -102,7 +101,6 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
                       color: AppTheme.liquidOnSurfaceVariant,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 0.1,
                     ),
                   ),
                   Switch(
@@ -128,7 +126,6 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
                       color: AppTheme.liquidOnSurfaceVariant,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 0.1,
                     ),
                   ),
                   Switch(

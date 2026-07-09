@@ -108,7 +108,6 @@ class _ClosedCajaDetailBottomSheetState extends ConsumerState<ClosedCajaDetailBo
                       color: Colors.white,
                       fontWeight: FontWeight.w900,
                       fontSize: 14,
-                      letterSpacing: 0.5,
                     ),
                   ),
                   IconButton(
@@ -272,7 +271,6 @@ class _ClosedCajaDetailBottomSheetState extends ConsumerState<ClosedCajaDetailBo
                   color: isActive ? Colors.white : Colors.white30,
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
                 ),
               ),
             ],
@@ -329,7 +327,6 @@ class _ClosedCajaDetailBottomSheetState extends ConsumerState<ClosedCajaDetailBo
                         color: Colors.white54,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
                       ),
                     ),
                   ),

@@ -27,7 +27,6 @@ class ConfigDropdownField<T> extends StatelessWidget {
           style: GoogleFonts.plusJakartaSans(
             fontSize: 10.0,
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.0,
             color: AppTheme.liquidOnSurfaceVariant,
           ),
         ),

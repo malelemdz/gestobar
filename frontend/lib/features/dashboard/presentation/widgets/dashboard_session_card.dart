@@ -68,15 +68,11 @@ class DashboardSessionCard extends ConsumerWidget {
                   width: 44.0,
                   height: 44.0,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    color: AppTheme.liquidPrimary,
                     borderRadius: BorderRadius.circular(100.0),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF7000FF).withOpacity(0.2),
+                        color: AppTheme.liquidPrimary.withOpacity(0.15),
                         blurRadius: 8.0,
                         offset: const Offset(0, 2),
                       ),
@@ -93,9 +89,9 @@ class DashboardSessionCard extends ConsumerWidget {
                                 child: Text(
                                   (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
                                   style: GoogleFonts.plusJakartaSans(
-                                    color: Colors.white,
+                                    color: const Color(0xFF14161A),
                                     fontSize: 16.0,
-                                    fontWeight: FontWeight.w900,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               );
@@ -105,9 +101,9 @@ class DashboardSessionCard extends ConsumerWidget {
                             child: Text(
                               (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
                               style: GoogleFonts.plusJakartaSans(
-                                color: Colors.white,
+                                color: const Color(0xFF14161A),
                                 fontSize: 16.0,
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -129,7 +125,6 @@ class DashboardSessionCard extends ConsumerWidget {
                             color: Colors.white,
                             fontSize: 16.0,
                             fontWeight: FontWeight.w800,
-                            letterSpacing: -0.4,
                           ),
                         ),
                       ),
@@ -293,7 +288,6 @@ class _LocalTimeClockState extends ConsumerState<LocalTimeClock> {
                 fontSize: 9.5,
                 fontWeight: FontWeight.bold,
                 color: Colors.white38,
-                letterSpacing: 0.5,
               ),
             ),
             const SizedBox(height: 4.0),
@@ -303,7 +297,6 @@ class _LocalTimeClockState extends ConsumerState<LocalTimeClock> {
                 fontSize: 16.0,
                 fontWeight: FontWeight.w800,
                 color: const Color(0xFF00F0FF),
-                letterSpacing: 0.5,
               ),
             ),
           ],
@@ -340,7 +333,6 @@ class _LocalTimeClockState extends ConsumerState<LocalTimeClock> {
                 fontSize: 9.5,
                 fontWeight: FontWeight.bold,
                 color: Colors.white38,
-                letterSpacing: 0.5,
               ),
             ),
             const SizedBox(height: 4.0),
@@ -350,7 +342,6 @@ class _LocalTimeClockState extends ConsumerState<LocalTimeClock> {
                 fontSize: 16.0,
                 fontWeight: FontWeight.w800,
                 color: const Color(0xFF00F0FF),
-                letterSpacing: 0.5,
               ),
             ),
           ],

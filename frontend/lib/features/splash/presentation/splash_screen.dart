@@ -47,7 +47,6 @@ class PremiumSplashScreen extends StatelessWidget {
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Colors.white.withOpacity(0.4),
                       fontSize: 11.0,
-                      letterSpacing: 1.0,
                     ),
                   ),
                 ),

@@ -313,7 +313,6 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
         fontSize: 15.0,
         fontWeight: FontWeight.w800,
         color: Colors.white,
-        letterSpacing: -0.4,
       ),
     );
   }

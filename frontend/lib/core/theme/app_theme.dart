@@ -3,18 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Colores de la paleta Liquid Modernist
-  static final Color liquidBg = const Color(0xFF111317);
-  static final Color liquidSurface = const Color(0xFF1E2024); // level 1 surface / cards
-  static final Color liquidSurfaceContainerLow = const Color(0xFF1A1C20);
-  static final Color liquidSurfaceContainerHigh = const Color(0xFF282A2E);
+  static final Color liquidBg = const Color(0xFF14161A);
+  static final Color liquidSurface = const Color(0xFF24262A); // level 1 surface / cards
+  static final Color liquidSurfaceContainerLow = const Color(0xFF1E2024);
+  static final Color liquidSurfaceContainerHigh = const Color(0xFF2E3035);
   
-  static final Color liquidPrimary = const Color(0xFF00F0FF); // electric cyan
-  static final Color liquidSecondary = const Color(0xFF7000FF); // deep violet
-  static final Color liquidTertiary = const Color(0xFFFF007A); // vibrant magenta
+  static final Color liquidPrimary = const Color(0xFF00BCCF); // softer premium cyan
+  static final Color liquidSecondary = const Color(0xFF6366F1); // softer premium indigo/violet
+  static final Color liquidTertiary = const Color(0xFFEC4899); // softer premium pink/magenta
   
-  static final Color liquidOnSurface = const Color(0xFFE2E2E8); // light grey-white
-  static final Color liquidOnSurfaceVariant = const Color(0xFFB9CACB);
-  static final Color liquidOutline = const Color(0xFF3B494B); // outline variant
+  static final Color liquidOnSurface = const Color(0xFFEBEBEF); // clearer grey-white
+  static final Color liquidOnSurfaceVariant = const Color(0xFFCBE2E3); // clearer teal-grey
+  static final Color liquidOutline = const Color(0xFF4A5657); // clearer outline variant
 
   // Colores de Estados Comunes
   static final Color colorSuccess = const Color(0xFF10B981);
@@ -45,21 +45,18 @@ class AppTheme {
         displayLarge: GoogleFonts.plusJakartaSans(
           fontSize: 48.0,
           fontWeight: FontWeight.w800,
-          letterSpacing: -0.04,
           color: liquidOnSurface,
         ),
         // headline-lg (Títulos primarios de páginas)
         headlineLarge: GoogleFonts.plusJakartaSans(
           fontSize: 32.0,
           fontWeight: FontWeight.w700,
-          letterSpacing: -0.02,
           color: liquidOnSurface,
         ),
         // headline-md (Títulos de componentes y Bento widgets)
         headlineMedium: GoogleFonts.plusJakartaSans(
           fontSize: 24.0,
           fontWeight: FontWeight.w700,
-          letterSpacing: -0.01,
           color: liquidOnSurface,
         ),
         // headline-sm (Nombres de productos / tragos en tarjetas)
@@ -84,13 +81,11 @@ class AppTheme {
         labelLarge: GoogleFonts.inter(
           fontSize: 12.0,
           fontWeight: FontWeight.w600,
-          letterSpacing: 0.1,
           color: liquidOnSurface,
         ),
         labelSmall: GoogleFonts.inter(
           fontSize: 10.0,
           fontWeight: FontWeight.w600,
-          letterSpacing: 0.1,
           color: liquidOnSurfaceVariant,
         ),
       ),
@@ -110,7 +105,6 @@ class AppTheme {
           color: liquidPrimary,
           fontSize: 22.0,
           fontWeight: FontWeight.w800,
-          letterSpacing: -0.02,
         ),
         iconTheme: IconThemeData(color: liquidPrimary),
       ),

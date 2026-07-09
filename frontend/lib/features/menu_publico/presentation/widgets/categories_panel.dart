@@ -43,7 +43,6 @@ class CategoriesPanel extends ConsumerWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontWeight: FontWeight.bold,
                   fontSize: 12.0,
-                  letterSpacing: 0.1,
                   color: AppTheme.liquidOnSurfaceVariant,
                 ),
               ),
@@ -323,18 +322,11 @@ class MobileCategoriesCarousel extends ConsumerWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           decoration: BoxDecoration(
-                            gradient: isSelected
-                                ? const LinearGradient(
-                                    colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  )
-                                : null,
-                            color: isSelected ? null : const Color(0xFF1E2024),
+                            color: isSelected ? AppTheme.liquidPrimary : const Color(0xFF1E2024),
                             borderRadius: BorderRadius.circular(100),
                             border: Border.all(
                               color: isSelected
-                                  ? const Color(0xFF00F0FF).withOpacity(0.3)
+                                  ? AppTheme.liquidPrimary
                                   : Colors.white.withOpacity(0.05),
                               width: 1,
                             ),
@@ -342,7 +334,7 @@ class MobileCategoriesCarousel extends ConsumerWidget {
                           child: Text(
                             nombre,
                             style: GoogleFonts.plusJakartaSans(
-                              color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
+                              color: isSelected ? const Color(0xFF14161A) : Colors.white.withOpacity(0.6),
                               fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                               fontSize: 13,
                             ),

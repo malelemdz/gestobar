@@ -134,13 +134,11 @@ class _PosPageState extends ConsumerState<PosPage> {
         height: 56,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
-          ),
+          color: AppTheme.liquidPrimary,
           borderRadius: BorderRadius.circular(100),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF00F0FF).withOpacity(0.2),
+              color: AppTheme.liquidPrimary.withOpacity(0.15),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -151,12 +149,12 @@ class _PosPageState extends ConsumerState<PosPage> {
           children: [
             Row(
               children: [
-                const Icon(Icons.shopping_basket, color: Colors.white, size: 20),
+                const Icon(Icons.shopping_basket, color: Color(0xFF14161A), size: 20),
                 const SizedBox(width: 10),
                 Text(
                   '${cart.items.fold(0, (sum, item) => sum + item.quantity)} items',
                   style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white,
+                    color: const Color(0xFF14161A),
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -168,13 +166,13 @@ class _PosPageState extends ConsumerState<PosPage> {
                 Text(
                   'Ver Ticket',
                   style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF14161A),
+                    fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 12),
+                const Icon(Icons.arrow_forward_ios, color: Color(0xFF14161A), size: 12),
               ],
             ),
           ],
@@ -576,7 +574,6 @@ class _PosPageState extends ConsumerState<PosPage> {
                           style: GoogleFonts.plusJakartaSans(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
-                            letterSpacing: 1.0,
                             fontSize: 13,
                           ),
                         ),

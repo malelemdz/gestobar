@@ -37,7 +37,6 @@ class RoleListTile extends StatelessWidget {
               style: TextStyle(
                 color: roleColor,
                 fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
               ),
             ),
             const SizedBox(width: 8),

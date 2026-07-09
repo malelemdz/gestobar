@@ -106,7 +106,6 @@ class HorarioTab extends StatelessWidget {
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: theme.colorScheme.onSurfaceVariant.withOpacity(0.4),
                                       fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5,
                                     ),
                                   ),
                                 ),
@@ -177,7 +176,6 @@ class HorarioTab extends StatelessWidget {
                                                   color: theme.colorScheme.onSurfaceVariant
                                                       .withOpacity(0.4),
                                                   fontWeight: FontWeight.w600,
-                                                  letterSpacing: 0.5,
                                                 ),
                                               ),
                                             ),

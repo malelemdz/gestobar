@@ -150,7 +150,6 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                   color: accentColor,
                   fontWeight: FontWeight.w900,
                   fontSize: 11,
-                  letterSpacing: 1.5,
                 ),
                 textAlign: TextAlign.center,
               ),

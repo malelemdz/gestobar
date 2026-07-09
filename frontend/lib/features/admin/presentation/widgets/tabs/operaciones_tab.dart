@@ -217,7 +217,6 @@ class OperacionesTab extends StatelessWidget {
                     color: Colors.white54,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
                   ),
                 ),
                 const SizedBox(height: 6),

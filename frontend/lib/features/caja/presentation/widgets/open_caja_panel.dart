@@ -78,7 +78,6 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
                         fontSize: 14,
-                        letterSpacing: 0.5,
                       ),
                     ),
                     Text(
@@ -102,15 +101,11 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
             child: Container(
               height: 46,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF7000FF), Color(0xFFFF00D6)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: AppTheme.colorDanger,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFFF00D6).withOpacity(0.12),
+                    color: AppTheme.colorDanger.withOpacity(0.15),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -118,12 +113,11 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
               ),
               child: Center(
                 child: Text(
-                  'CERRAR CAJA',
+                  'Cerrar caja',
                   style: GoogleFonts.plusJakartaSans(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.bold,
                     fontSize: 12,
-                    letterSpacing: 0.8,
                   ),
                 ),
               ),
@@ -165,7 +159,6 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                       color: const Color(0xFF121214),
                       fontWeight: FontWeight.w900,
                       fontSize: 11,
-                      letterSpacing: 0.5,
                     ),
                   ),
                 ],
@@ -202,7 +195,6 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                       color: const Color(0xFF121214),
                       fontWeight: FontWeight.w900,
                       fontSize: 11,
-                      letterSpacing: 0.5,
                     ),
                   ),
                 ],
@@ -255,7 +247,6 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                 color: isActive ? Colors.white : Colors.white30,
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
-                letterSpacing: 0.8,
               ),
             ),
           ],
@@ -366,7 +357,6 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                         color: Colors.white30,
                         fontSize: 9,
                         fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
                       ),
                     ),
                     const SizedBox(height: 8.0),
@@ -460,7 +450,6 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                   color: isActive ? Colors.white : Colors.white30,
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
                 ),
               ),
             ],
@@ -517,7 +506,6 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                         color: Colors.white54,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
                       ),
                     ),
                   ),

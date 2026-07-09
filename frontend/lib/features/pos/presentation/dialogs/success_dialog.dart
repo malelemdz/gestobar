@@ -39,7 +39,6 @@ Future<void> showSuccessDialog(BuildContext context) async {
               color: Colors.white,
               fontWeight: FontWeight.w900,
               fontSize: 16,
-              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 8),

@@ -426,15 +426,10 @@ class CartSection extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             decoration: BoxDecoration(
-                              gradient: isSel
-                                  ? const LinearGradient(
-                                      colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
-                                    )
-                                  : null,
-                              color: isSel ? null : Colors.white.withOpacity(0.04),
+                              color: isSel ? AppTheme.liquidPrimary : Colors.white.withOpacity(0.04),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: isSel ? const Color(0xFF00F0FF).withOpacity(0.3) : Colors.white10,
+                                color: isSel ? AppTheme.liquidPrimary : Colors.white10,
                                 width: 1,
                               ),
                             ),
@@ -442,7 +437,7 @@ class CartSection extends ConsumerWidget {
                               child: Text(
                                 metodo,
                                 style: GoogleFonts.plusJakartaSans(
-                                  color: isSel ? Colors.white : Colors.white54,
+                                  color: isSel ? const Color(0xFF14161A) : Colors.white54,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 10,
                                 ),
@@ -483,14 +478,7 @@ class CartSection extends ConsumerWidget {
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      gradient: isCajaAbierta
-                          ? const LinearGradient(
-                              colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            )
-                          : null,
-                      color: isCajaAbierta ? null : Colors.white.withOpacity(0.04),
+                      color: isCajaAbierta ? AppTheme.liquidPrimary : Colors.white.withOpacity(0.04),
                       borderRadius: BorderRadius.circular(12),
                       border: isCajaAbierta
                           ? null
@@ -498,7 +486,7 @@ class CartSection extends ConsumerWidget {
                       boxShadow: isCajaAbierta
                           ? [
                               BoxShadow(
-                                color: const Color(0xFF00F0FF).withOpacity(0.15),
+                                color: AppTheme.liquidPrimary.withOpacity(0.15),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -513,12 +501,11 @@ class CartSection extends ConsumerWidget {
                               child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                             )
                           : Text(
-                              isCajaAbierta ? 'CONFIRMAR PAGO' : 'CAJA CERRADA (ABRA TURNO)',
+                              isCajaAbierta ? 'Confirmar pago' : 'Caja cerrada (abra turno)',
                               style: GoogleFonts.plusJakartaSans(
-                                color: isCajaAbierta ? Colors.white : Colors.white24,
-                                fontWeight: FontWeight.w900,
+                                color: isCajaAbierta ? const Color(0xFF14161A) : Colors.white24,
+                                fontWeight: FontWeight.bold,
                                 fontSize: 13,
-                                letterSpacing: 0.5,
                               ),
                             ),
                     ),

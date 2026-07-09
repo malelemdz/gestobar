@@ -158,18 +158,11 @@ class AuditoriaFilterCapsules extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? LinearGradient(
-                  colors: [AppTheme.liquidSecondary, AppTheme.liquidPrimary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : null,
-          color: isSelected ? null : AppTheme.liquidSurface,
+          color: isSelected ? AppTheme.liquidPrimary : AppTheme.liquidSurface,
           borderRadius: BorderRadius.circular(100),
           border: Border.all(
             color: isSelected
-                ? AppTheme.liquidPrimary.withOpacity(0.3)
+                ? AppTheme.liquidPrimary
                 : Colors.white.withOpacity(0.05),
             width: 1,
           ),
@@ -180,7 +173,7 @@ class AuditoriaFilterCapsules extends ConsumerWidget {
             Text(
               label,
               style: GoogleFonts.plusJakartaSans(
-                color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
+                color: isSelected ? const Color(0xFF14161A) : Colors.white.withOpacity(0.6),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 fontSize: 12,
               ),
@@ -192,7 +185,7 @@ class AuditoriaFilterCapsules extends ConsumerWidget {
                 child: const Icon(
                   Icons.close,
                   size: 14,
-                  color: Colors.white,
+                  color: Color(0xFF14161A),
                 ),
               ),
             ] else ...[

@@ -93,7 +93,6 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
                             color: AppTheme.colorDanger,
                             fontWeight: FontWeight.w900,
                             fontSize: 11,
-                            letterSpacing: 0.5,
                           ),
                         ),
                       ),

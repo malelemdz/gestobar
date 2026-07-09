@@ -251,7 +251,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('DATOS PERSONALES', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
+                    Text('DATOS PERSONALES', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                     const SizedBox(height: 12),
                     
                     if (isTablet)
@@ -395,7 +395,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
                     ),
                     const SizedBox(height: 24),
 
-                    Text('DATOS DE ACCESO', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF), letterSpacing: 0.5)),
+                    Text('DATOS DE ACCESO', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                     const SizedBox(height: 12),
 
                     StyledTextField(

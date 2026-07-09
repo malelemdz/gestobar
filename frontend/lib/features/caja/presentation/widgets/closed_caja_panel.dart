@@ -61,7 +61,6 @@ class ClosedCajaPanel extends StatelessWidget {
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
                         fontSize: 16,
-                        letterSpacing: 0.5,
                       ),
                     ),
                     Text(
@@ -138,15 +137,11 @@ class ClosedCajaPanel extends StatelessWidget {
             child: Container(
               height: 50,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF7000FF), Color(0xFF00F0FF)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: AppTheme.liquidPrimary,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF00F0FF).withOpacity(0.15),
+                    color: AppTheme.liquidPrimary.withOpacity(0.15),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -160,12 +155,11 @@ class ClosedCajaPanel extends StatelessWidget {
                         child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                       )
                     : Text(
-                        'ABRIR CAJA',
+                        'Abrir caja',
                         style: GoogleFonts.plusJakartaSans(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
+                          color: const Color(0xFF14161A),
+                          fontWeight: FontWeight.bold,
                           fontSize: 13,
-                          letterSpacing: 0.5,
                         ),
                       ),
               ),
