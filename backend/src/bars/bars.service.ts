@@ -1,15 +1,17 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { Bar } from './entities/bar.entity';
 import { CreateBarDto } from './dto/create-bar.dto';
 import { UpdateBarDto } from './dto/update-bar.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class BarsService {
   constructor(
     @InjectRepository(Bar)
     private readonly barRepository: Repository<Bar>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createBarDto: CreateBarDto): Promise<Bar> {
@@ -18,7 +20,14 @@ export class BarsService {
       throw new ConflictException('Un bar con este slug ya existe');
     }
     const bar = this.barRepository.create(createBarDto);
-    return await this.barRepository.save(bar);
+    const savedBar = await this.barRepository.save(bar);
+
+    // Vincular al usuario propietario con el bar creado
+    await this.dataSource.manager.update(User, savedBar.owner_id, {
+      bar_id: savedBar.id,
+    });
+
+    return savedBar;
   }
 
   async findAll(): Promise<Bar[]> {
@@ -42,8 +51,16 @@ export class BarsService {
     console.log('Resto del DTO:', rest);
 
     const bar = await this.findOne(id);
+    const oldOwnerId = bar.owner_id;
+    
     const updatedBar = this.barRepository.merge(bar, rest);
-    await this.barRepository.save(updatedBar);
+    const savedBar = await this.barRepository.save(updatedBar);
+
+    // Si el propietario cambió, actualizamos los bar_id en los usuarios correspondientes
+    if (rest.owner_id && rest.owner_id !== oldOwnerId) {
+      await this.dataSource.manager.update(User, oldOwnerId, { bar_id: null });
+      await this.dataSource.manager.update(User, rest.owner_id, { bar_id: savedBar.id });
+    }
 
     if (tasa_conversion && tasa_conversion !== 1) {
       console.log('Disparando Query de Multiplicación por:', tasa_conversion);

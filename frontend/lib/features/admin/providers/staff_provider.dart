@@ -62,6 +62,8 @@ class StaffNotifier extends StateNotifier<AsyncValue<List<UserModel>>> {
   StaffNotifier({required this.repository, this.barId}) : super(const AsyncValue.loading()) {
     if (barId != null) {
       loadStaff();
+    } else {
+      state = const AsyncValue.data([]);
     }
   }
 
@@ -159,6 +161,8 @@ class RolesNotifier extends StateNotifier<AsyncValue<List<RoleModel>>> {
   RolesNotifier({required this.repository, this.barId}) : super(const AsyncValue.loading()) {
     if (barId != null) {
       loadRoles();
+    } else {
+      state = const AsyncValue.data([]);
     }
   }
 
