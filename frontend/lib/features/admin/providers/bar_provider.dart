@@ -111,3 +111,5 @@ class CurrentBarNotifier extends StateNotifier<AsyncValue<BarModel>> {
     }
   }
 }
+
+final configHasChangesProvider = StateProvider<bool>((ref) => false);

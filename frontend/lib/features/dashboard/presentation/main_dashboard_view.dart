@@ -30,6 +30,7 @@ import 'widgets/dashboard_bottom_bar.dart';
 import 'dialogs/about_dialog.dart';
 import 'dialogs/logout_confirmation_dialog.dart';
 import 'dialogs/exit_bar_confirmation_dialog.dart';
+import 'dialogs/unsaved_changes_dialog.dart';
 
 /// Provider global para controlar la vista activa del sistema (Soporta navegación ilimitada y profunda)
 final activeViewProvider = StateProvider<String>((ref) => 'dash');
@@ -88,14 +89,16 @@ class MainDashboardView extends ConsumerWidget {
                   navItems: navItems,
                   activeView: activeView,
                   onViewChanged: (view) {
-                    ref.read(activeViewProvider.notifier).state = view;
+                    _checkUnsavedChanges(context, ref, () => ref.read(activeViewProvider.notifier).state = view);
                   },
                   onLogout: () {
-                    if (role == 'SUPERADMIN' && activeBarId != null) {
-                      _showExitBarDialog(context, ref);
-                    } else {
-                      _showLogoutDialog(context, ref);
-                    }
+                    _checkUnsavedChanges(context, ref, () {
+                      if (role == 'SUPERADMIN' && activeBarId != null) {
+                        _showExitBarDialog(context, ref);
+                      } else {
+                        _showLogoutDialog(context, ref);
+                      }
+                    });
                   },
                   onAboutTap: () => _showAboutDialog(context),
                 ),
@@ -109,13 +112,19 @@ class MainDashboardView extends ConsumerWidget {
                       role: role,
                       user: user,
                       onBackPressed: () {
-                        ref.read(activeViewProvider.notifier).state = NavigationHelper.getDefaultViewForRole(role);
+                        _checkUnsavedChanges(context, ref, () {
+                          ref.read(activeViewProvider.notifier).state = NavigationHelper.getDefaultViewForRole(role);
+                        });
                       },
                       onProfilePressed: () {
-                        ref.read(activeViewProvider.notifier).state = 'perfil';
+                        _checkUnsavedChanges(context, ref, () {
+                          ref.read(activeViewProvider.notifier).state = 'perfil';
+                        });
                       },
                       onSelectBarPressed: () {
-                        ref.read(authProvider.notifier).selectBar(null);
+                        _checkUnsavedChanges(context, ref, () {
+                          ref.read(authProvider.notifier).selectBar(null);
+                        });
                       },
                     ),
                      body: _buildBodyForView(activeView, isGlobalMode),
@@ -138,14 +147,16 @@ class MainDashboardView extends ConsumerWidget {
                 navItems: navItems,
                 activeView: activeView,
                 onViewChanged: (view) {
-                  ref.read(activeViewProvider.notifier).state = view;
+                  _checkUnsavedChanges(context, ref, () => ref.read(activeViewProvider.notifier).state = view);
                 },
                 onLogout: () {
-                  if (role == 'SUPERADMIN' && activeBarId != null) {
-                    _showExitBarDialog(context, ref);
-                  } else {
-                    _showLogoutDialog(context, ref);
-                  }
+                  _checkUnsavedChanges(context, ref, () {
+                    if (role == 'SUPERADMIN' && activeBarId != null) {
+                      _showExitBarDialog(context, ref);
+                    } else {
+                      _showLogoutDialog(context, ref);
+                    }
+                  });
                 },
                 onAboutTap: () => _showAboutDialog(context),
               ),
@@ -157,13 +168,19 @@ class MainDashboardView extends ConsumerWidget {
                 role: role,
                 user: user,
                 onBackPressed: () {
-                  ref.read(activeViewProvider.notifier).state = NavigationHelper.getDefaultViewForRole(role);
+                  _checkUnsavedChanges(context, ref, () {
+                    ref.read(activeViewProvider.notifier).state = NavigationHelper.getDefaultViewForRole(role);
+                  });
                 },
                 onProfilePressed: () {
-                  ref.read(activeViewProvider.notifier).state = 'perfil';
+                  _checkUnsavedChanges(context, ref, () {
+                    ref.read(activeViewProvider.notifier).state = 'perfil';
+                  });
                 },
                 onSelectBarPressed: () {
-                  ref.read(authProvider.notifier).selectBar(null);
+                  _checkUnsavedChanges(context, ref, () {
+                    ref.read(authProvider.notifier).selectBar(null);
+                  });
                 },
               ),
               body: _buildBodyForView(activeView, isGlobalMode),
@@ -172,7 +189,7 @@ class MainDashboardView extends ConsumerWidget {
                       navItems: navItems,
                       activeView: activeView,
                       onViewChanged: (view) {
-                        ref.read(activeViewProvider.notifier).state = view;
+                        _checkUnsavedChanges(context, ref, () => ref.read(activeViewProvider.notifier).state = view);
                       },
                     )
                   : null,
@@ -181,6 +198,29 @@ class MainDashboardView extends ConsumerWidget {
         },
       ),
     );
+  }
+
+  bool _checkUnsavedChanges(BuildContext context, WidgetRef ref, VoidCallback onConfirm) {
+    final activeView = ref.read(activeViewProvider);
+    final hasChanges = ref.read(configHasChangesProvider);
+
+    if (activeView == 'config' && hasChanges) {
+      showDialog<bool>(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.7),
+        builder: (context) {
+          return const UnsavedChangesDialog();
+        },
+      ).then((confirmed) {
+        if (confirmed == true) {
+          ref.read(configHasChangesProvider.notifier).state = false;
+          onConfirm();
+        }
+      });
+      return true;
+    }
+    onConfirm();
+    return false;
   }
 
   void _showLogoutDialog(BuildContext context, WidgetRef ref) {

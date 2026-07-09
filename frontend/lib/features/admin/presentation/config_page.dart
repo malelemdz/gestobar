@@ -96,6 +96,9 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(configHasChangesProvider.notifier).state = false;
+    });
     _nombreCtrl.dispose();
     _whatsappCtrl.dispose();
     _facebookCtrl.dispose();
@@ -130,7 +133,15 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
       _originalTimezone = _currentTimezone;
       _selectedTarifaCompaniaId = bar.tarifaCompaniaId;
 
-      _horarios = Map<String, dynamic>.from(bar.horarios ?? _generateDefaultHorarios());
+      _horarios = {};
+      final rawHorarios = bar.horarios ?? _generateDefaultHorarios();
+      rawHorarios.forEach((key, val) {
+        if (val is Map) {
+          _horarios[key] = Map<String, dynamic>.from(val);
+        } else {
+          _horarios[key] = val;
+        }
+      });
 
       // Pre-diseño de carga de permisos de pestañas (asociados al bar)
       // En el futuro, esto se leerá desde un campo 'configuracion_tabs_permitidas' en el BarModel
@@ -417,6 +428,12 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
       data: (bar) {
         _populateControllers(bar);
         final hasChanges = _hasUnsavedChanges();
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            ref.read(configHasChangesProvider.notifier).state = hasChanges;
+          }
+        });
 
         // 1. Construir lista dinámica de pestañas según rol y permisos
         final List<Map<String, dynamic>> tabs = [];
