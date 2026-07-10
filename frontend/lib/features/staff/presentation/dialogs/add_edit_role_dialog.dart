@@ -73,25 +73,36 @@ Future<void> showAddEditRoleDialog({
                 builder: (context, ref, child) {
                   final permissionsAsyncVal = ref.watch(permissionsListProvider);
                   return permissionsAsyncVal.when(
-                    loading: () => const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
+                    loading: () => const SizedBox(
+                      height: 100,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
+                        ),
                       ),
                     ),
-                    error: (err, _) => Center(
-                      child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent)),
+                    error: (err, _) => SizedBox(
+                      height: 100,
+                      child: Center(
+                        child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent)),
+                      ),
                     ),
                     data: (permissions) {
                       if (permissions.isEmpty) {
-                        return Center(
-                          child: Text(
-                            'No hay permisos disponibles',
-                            style: GoogleFonts.inter(color: Colors.white30, fontSize: 13),
+                        return SizedBox(
+                          height: 100,
+                          child: Center(
+                            child: Text(
+                              'No hay permisos disponibles',
+                              style: GoogleFonts.inter(color: Colors.white30, fontSize: 13),
+                            ),
                           ),
                         );
                       }
                       return ListView.builder(
                         shrinkWrap: true,
+                        physics: const ClampingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         itemCount: permissions.length,
                         itemBuilder: (context, index) {
                           final perm = permissions[index];
