@@ -53,11 +53,11 @@ Future<void> showAddEditRoleDialog({
           ),
           const SizedBox(height: 12),
           Container(
-            constraints: const BoxConstraints(maxHeight: 250),
+            constraints: const BoxConstraints(maxHeight: 450),
             decoration: BoxDecoration(
-              color: const Color(0xFF0C0E12),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white.withOpacity(0.08)),
+              color: const Color(0xFF22252A),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.white.withOpacity(0.06), width: 1.0),
             ),
             child: Consumer(
               builder: (context, ref, child) {
