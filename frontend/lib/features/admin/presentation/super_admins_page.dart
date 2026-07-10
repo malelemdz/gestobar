@@ -327,7 +327,7 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
                               )
                             : GridView.builder(
                                 padding: EdgeInsets.only(
-                                  top: 8.0,
+                                  top: 0.0,
                                   bottom: isTablet ? 12.0 : 24.0,
                                 ),
                                 physics: const AlwaysScrollableScrollPhysics(

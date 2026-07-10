@@ -478,15 +478,6 @@ Future<void> showAddEditStaffDialog({
                     return;
                   }
 
-                  if (!isEdit && localImagePath == null) {
-                    CustomToast.show(
-                      context,
-                      message: 'Por favor selecciona una foto de perfil',
-                      type: ToastType.warning,
-                    );
-                    return;
-                  }
-
                   setModalState(() {
                     isSaving = true;
                   });

@@ -182,7 +182,7 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
 
                       return GridView.builder(
                         padding: EdgeInsets.only(
-                          top: 8.0,
+                          top: 0.0,
                           bottom: MediaQuery.of(context).size.width >= 720 ? 12.0 : 24.0,
                         ),
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
