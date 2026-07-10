@@ -23,107 +23,121 @@ Future<void> showAddEditRoleDialog({
   final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
 
   Widget buildModalContent(BuildContext context, StateSetter setModalState, bool isDialog) {
-    final Widget roleBody = SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'NOMBRE DEL ROL',
-            style: GoogleFonts.plusJakartaSans(
-              color: const Color(0xFFB9CACB),
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-            ),
+    final Widget roleBody = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'NOMBRE DEL ROL',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFB9CACB),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 6),
+              StyledTextField(
+                controller: nameController,
+                hintText: 'Ej. Ayudante de Barra',
+                icon: Icons.security,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'ASIGNAR PERMISOS DE ACCESO',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFB9CACB),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
           ),
-          const SizedBox(height: 6),
-          StyledTextField(
-            controller: nameController,
-            hintText: 'Ej. Ayudante de Barra',
-            icon: Icons.security,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'ASIGNAR PERMISOS DE ACCESO',
-            style: GoogleFonts.plusJakartaSans(
-              color: const Color(0xFFB9CACB),
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            constraints: const BoxConstraints(maxHeight: 450),
-            decoration: BoxDecoration(
-              color: const Color(0xFF22252A),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white.withOpacity(0.06), width: 1.0),
-            ),
-            child: Consumer(
-              builder: (context, ref, child) {
-                final permissionsAsyncVal = ref.watch(permissionsListProvider);
-                return permissionsAsyncVal.when(
-                  loading: () => const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
+        ),
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 380),
+              decoration: BoxDecoration(
+                color: const Color(0xFF22252A),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withOpacity(0.06), width: 1.0),
+              ),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final permissionsAsyncVal = ref.watch(permissionsListProvider);
+                  return permissionsAsyncVal.when(
+                    loading: () => const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00F0FF)),
+                      ),
                     ),
-                  ),
-                  error: (err, _) => Center(
-                    child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent)),
-                  ),
-                  data: (permissions) {
-                    if (permissions.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'No hay permisos disponibles',
-                          style: GoogleFonts.inter(color: Colors.white30, fontSize: 13),
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: permissions.length,
-                      itemBuilder: (context, index) {
-                        final perm = permissions[index];
-                        final isChecked = selectedPermissionIds.contains(perm.id);
-
-                        return Theme(
-                          data: Theme.of(context).copyWith(
-                            unselectedWidgetColor: Colors.white24,
-                          ),
-                          child: CheckboxListTile(
-                            title: Text(
-                              perm.nombre,
-                              style: GoogleFonts.inter(
-                                color: Colors.white,
-                                fontSize: 13,
-                                fontWeight: isChecked ? FontWeight.bold : FontWeight.normal,
-                              ),
-                            ),
-                            value: isChecked,
-                            activeColor: const Color(0xFF00F0FF),
-                            checkColor: Colors.black,
-                            onChanged: (val) {
-                              setModalState(() {
-                                if (val == true) {
-                                  selectedPermissionIds.add(perm.id);
-                                } else {
-                                  selectedPermissionIds.remove(perm.id);
-                                }
-                              });
-                            },
-                            controlAffinity: ListTileControlAffinity.leading,
+                    error: (err, _) => Center(
+                      child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent)),
+                    ),
+                    data: (permissions) {
+                      if (permissions.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'No hay permisos disponibles',
+                            style: GoogleFonts.inter(color: Colors.white30, fontSize: 13),
                           ),
                         );
-                      },
-                    );
-                  },
-                );
-              },
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: permissions.length,
+                        itemBuilder: (context, index) {
+                          final perm = permissions[index];
+                          final isChecked = selectedPermissionIds.contains(perm.id);
+
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                              unselectedWidgetColor: Colors.white24,
+                            ),
+                            child: CheckboxListTile(
+                              dense: true,
+                              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                              title: Text(
+                                perm.nombre,
+                                style: GoogleFonts.inter(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: isChecked ? FontWeight.bold : FontWeight.normal,
+                                ),
+                              ),
+                              value: isChecked,
+                              activeColor: const Color(0xFF00F0FF),
+                              checkColor: Colors.black,
+                              onChanged: (val) {
+                                setModalState(() {
+                                  if (val == true) {
+                                    selectedPermissionIds.add(perm.id);
+                                  } else {
+                                    selectedPermissionIds.remove(perm.id);
+                                  }
+                                });
+                              },
+                              controlAffinity: ListTileControlAffinity.leading,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
 
     final Widget footer = Row(
