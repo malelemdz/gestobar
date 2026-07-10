@@ -140,7 +140,7 @@ class StaffBentoCard extends ConsumerWidget {
                             border: Border.all(color: accentColor.withOpacity(0.3), width: 0.8),
                           ),
                           child: Text(
-                            user.rolNombre.toUpperCase(),
+                            user.rolNombre.toLowerCase(),
                             style: TextStyle(
                               color: accentColor,
                               fontSize: 8,

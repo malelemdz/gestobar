@@ -28,7 +28,8 @@ export class UsersService {
       password: hashedPassword,
     });
 
-    return await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
+    return await this.findOne(savedUser.id);
   }
 
   async findAll(): Promise<User[]> {
@@ -69,8 +70,9 @@ export class UsersService {
       updateData.password = await bcrypt.hash(updateData.password, 10);
     }
     
-    Object.assign(user, updateData);
-    return await this.userRepository.save(user);
+    const updated = this.userRepository.merge(user, updateData);
+    const savedUser = await this.userRepository.save(updated);
+    return await this.findOne(savedUser.id);
   }
 
   async remove(id: string): Promise<User> {
