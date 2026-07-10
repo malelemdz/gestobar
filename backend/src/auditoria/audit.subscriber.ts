@@ -15,7 +15,7 @@ export class AuditSubscriber implements EntitySubscriberInterface {
 
   private shouldAudit(tableName?: string): boolean {
     if (!tableName) return false;
-    const excluded = ['auditoria', 'ventas', 'detalle_ventas', 'cajas', 'caja_movimientos'];
+    const excluded = ['auditoria', 'ventas', 'detalle_ventas', 'cajas', 'caja_movimientos', 'rol_permisos'];
     return !excluded.includes(tableName);
   }
 
