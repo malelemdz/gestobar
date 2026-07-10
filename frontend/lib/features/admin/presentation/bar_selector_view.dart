@@ -94,7 +94,7 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0),
+            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -123,7 +123,7 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                     },
                   ),
                 ),
-                const SizedBox(height: 12.0),
+                const SizedBox(height: 8.0),
 
                 // Filtros de Estado distribuidos en todo el ancho abajo del buscador
                 Row(
@@ -133,7 +133,7 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                     _buildFilterChip('Inactivos', 'INACTIVE', isLast: true),
                   ],
                 ),
-                const SizedBox(height: 12.0),
+                const SizedBox(height: 8.0),
 
                 // Grilla de Bares
                 Expanded(
@@ -181,11 +181,15 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                       }
 
                       return GridView.builder(
+                        padding: EdgeInsets.only(
+                          top: 8.0,
+                          bottom: MediaQuery.of(context).size.width >= 720 ? 12.0 : 24.0,
+                        ),
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 400.0,
                           mainAxisExtent: MediaQuery.of(context).size.width >= 720 ? 78 : 84,
-                          crossAxisSpacing: 16.0,
-                          mainAxisSpacing: 16.0,
+                          crossAxisSpacing: 8.0,
+                          mainAxisSpacing: 8.0,
                         ),
                         itemCount: bars.length,
                         itemBuilder: (context, index) {

@@ -47,12 +47,6 @@ export class CategoriesService {
       order: { orden: 'ASC', nombre: 'ASC' },
     });
 
-    // Soporte para categoría por defecto si no se crean manualmente
-    if (categories.length === 0) {
-      const defaultCat = await this.getOrCreateDefaultCategory(barId);
-      categories = [defaultCat];
-    }
-
     return categories;
   }
 

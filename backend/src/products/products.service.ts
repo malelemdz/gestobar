@@ -43,15 +43,14 @@ export class ProductsService implements OnModuleInit {
   }
 
   async create(createProductDto: CreateProductDto, barId: string): Promise<Product> {
-    let categoryId = createProductDto.categoria_id;
+    const categoryId = createProductDto.categoria_id;
 
     if (!categoryId) {
-      const defaultCategory = await this.categoriesService.getOrCreateDefaultCategory(barId);
-      categoryId = defaultCategory.id;
-    } else {
-      // Validar que la categoría exista y pertenezca al bar
-      await this.categoriesService.findOne(categoryId, barId);
+      throw new BadRequestException('Debe especificar una categoría para el producto');
     }
+
+    // Validar que la categoría exista y pertenezca al bar
+    await this.categoriesService.findOne(categoryId, barId);
 
     const product = this.productRepository.create({
       nombre: createProductDto.nombre,

@@ -235,7 +235,7 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0),
+            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -274,11 +274,11 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
                     },
                   ),
                 ),
-                const SizedBox(height: 12.0),
+                const SizedBox(height: 8.0),
 
                 // Filter Chips block (spans full width of screen)
                 _buildFilterChips(theme),
-                const SizedBox(height: 12.0),
+                const SizedBox(height: 8.0),
 
                 // Content List block
                 Expanded(
@@ -326,15 +326,18 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
                                 ),
                               )
                             : GridView.builder(
-                                padding: EdgeInsets.zero,
+                                padding: EdgeInsets.only(
+                                  top: 8.0,
+                                  bottom: isTablet ? 12.0 : 24.0,
+                                ),
                                 physics: const AlwaysScrollableScrollPhysics(
                                   parent: BouncingScrollPhysics(),
                                 ),
                                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                                   maxCrossAxisExtent: 400,
                                   mainAxisExtent: isTablet ? 78 : 84,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
+                                  crossAxisSpacing: 8,
+                                  mainAxisSpacing: 8,
                                 ),
                                 itemCount: filteredAdmins.length,
                                 itemBuilder: (context, index) {

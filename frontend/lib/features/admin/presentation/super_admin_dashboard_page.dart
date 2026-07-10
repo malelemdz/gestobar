@@ -94,7 +94,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
       backgroundColor: const Color(0xFF1E2024),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -136,11 +136,11 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                       ],
                     ),
                   ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 12.0),
 
             // ── Título Métricas ────────────────────────────────────────────
             _buildSectionTitle('Métricas Generales'),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 8.0),
 
             // ── Grid métricas / shimmer ────────────────────────────────────
             _isLoading
@@ -179,11 +179,11 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                       ),
                     ],
                   ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 12.0),
 
             // ── Acciones Directas ──────────────────────────────────────────
             _buildSectionTitle('Acciones Directas'),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 8.0),
 
             _isLoading
                 ? ShimmerPlaceholder(
@@ -214,7 +214,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                       },
                     ),
                   ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 12.0),
 
             // ── Actividad Reciente ─────────────────────────────────────────
             _buildSectionTitle('Actividad Reciente'),
