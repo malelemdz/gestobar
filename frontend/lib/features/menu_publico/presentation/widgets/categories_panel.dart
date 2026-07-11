@@ -40,7 +40,7 @@ class CategoriesPanel extends ConsumerWidget {
             children: [
               Text(
                 'CATEGORÍAS',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 12.0,
                   color: AppTheme.liquidOnSurfaceVariant,
@@ -90,7 +90,7 @@ class CategoriesPanel extends ConsumerWidget {
                                 Expanded(
                                   child: Text(
                                     nombre,
-                                    style: GoogleFonts.inter(
+                                    style: GoogleFonts.poppins(
                                       color: isSelected ? Colors.white : Colors.white60,
                                       fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                                       fontSize: 13,
@@ -131,7 +131,7 @@ class CategoriesPanel extends ConsumerWidget {
                                 Expanded(
                                   child: Text(
                                     cat.nombre,
-                                    style: GoogleFonts.inter(
+                                    style: GoogleFonts.poppins(
                                       color: isSelected ? Colors.white : Colors.white60,
                                       fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                                       fontSize: 13,
@@ -178,7 +178,7 @@ class CategoriesPanel extends ConsumerWidget {
                                           const SizedBox(width: 8),
                                           Text(
                                             'Subir Posición',
-                                            style: GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.poppins(
                                               fontSize: 12,
                                               color: index > 1 ? Colors.white : Colors.white30,
                                             ),
@@ -195,7 +195,7 @@ class CategoriesPanel extends ConsumerWidget {
                                           const SizedBox(width: 8),
                                           Text(
                                             'Bajar Posición',
-                                            style: GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.poppins(
                                               fontSize: 12,
                                               color: index < sortedCategories.length ? Colors.white : Colors.white30,
                                             ),
@@ -215,7 +215,7 @@ class CategoriesPanel extends ConsumerWidget {
                                           const SizedBox(width: 8),
                                           Text(
                                             cat.disponible ? 'Desactivar' : 'Activar',
-                                            style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.white),
+                                            style: GoogleFonts.poppins(fontSize: 12, color: Colors.white),
                                           ),
                                         ],
                                       ),
@@ -226,7 +226,7 @@ class CategoriesPanel extends ConsumerWidget {
                                         children: [
                                           const Icon(Icons.edit, size: 16, color: Color(0xFF00F0FF)),
                                           const SizedBox(width: 8),
-                                          Text('Editar', style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.white)),
+                                          Text('Editar', style: GoogleFonts.poppins(fontSize: 12, color: Colors.white)),
                                         ],
                                       ),
                                     ),
@@ -239,7 +239,7 @@ class CategoriesPanel extends ConsumerWidget {
                                           const SizedBox(width: 8),
                                           Text(
                                             'Eliminar',
-                                            style: GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.poppins(
                                               fontSize: 12,
                                               color: Colors.redAccent,
                                               fontWeight: FontWeight.bold,
@@ -333,7 +333,7 @@ class MobileCategoriesCarousel extends ConsumerWidget {
                           ),
                           child: Text(
                             nombre,
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: isSelected ? const Color(0xFF14161A) : Colors.white.withOpacity(0.6),
                               fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                               fontSize: 13,
@@ -420,7 +420,7 @@ class _MobileCategoryManagerBottomSheetState extends ConsumerState<MobileCategor
             children: [
               Text(
                 'Administrar Categorías',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   fontSize: 16,
@@ -473,7 +473,7 @@ class _MobileCategoryManagerBottomSheetState extends ConsumerState<MobileCategor
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         title: Text(
                           cat.nombre,
-                          style: GoogleFonts.inter(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                          style: GoogleFonts.poppins(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                         ),
                         trailing: Row(

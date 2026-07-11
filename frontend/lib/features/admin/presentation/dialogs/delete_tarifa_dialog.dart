@@ -28,19 +28,19 @@ class DeleteTarifaDialog extends ConsumerWidget {
         ),
         title: Text(
           'Eliminar Tarifa',
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
         content: Text(
           '¿Estás seguro de que deseas eliminar la tarifa "${tarifa.nombre}"? Esto eliminará todos los precios asignados a esta tarifa de forma permanente.',
-          style: GoogleFonts.inter(color: Colors.white70, fontSize: 13),
+          style: GoogleFonts.poppins(color: Colors.white70, fontSize: 13),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar', style: GoogleFonts.inter(color: Colors.white60)),
+            child: Text('Cancelar', style: GoogleFonts.poppins(color: Colors.white60)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -74,7 +74,7 @@ class DeleteTarifaDialog extends ConsumerWidget {
             ),
             child: Text(
               'Eliminar',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),

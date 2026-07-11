@@ -50,7 +50,7 @@ class CartSection extends ConsumerWidget {
             children: [
               Text(
                 'Ticket de Venta',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,
                   fontSize: 15,
@@ -92,17 +92,17 @@ class CartSection extends ConsumerWidget {
                         return DropdownButton<String?>(
                           isExpanded: true,
                           value: safeSelectedDamaId,
-                          hint: Text('Sin Compañía (Cliente Normal)', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 13)),
+                          hint: Text('Sin Compañía (Cliente Normal)', style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13)),
                           dropdownColor: const Color(0xFF1E2024),
                           icon: const Icon(Icons.people_alt_outlined, color: Colors.blueAccent, size: 20),
                           items: [
                             DropdownMenuItem<String?>(
                               value: null,
-                              child: Text('Sin Compañía', style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 13)),
+                              child: Text('Sin Compañía', style: GoogleFonts.poppins(color: Colors.white, fontSize: 13)),
                             ),
                             ...damas.map((d) => DropdownMenuItem<String?>(
                               value: d.id,
-                              child: Text(d.nombre, style: GoogleFonts.plusJakartaSans(color: Colors.blueAccent, fontSize: 13, fontWeight: FontWeight.bold)),
+                              child: Text(d.nombre, style: GoogleFonts.poppins(color: Colors.blueAccent, fontSize: 13, fontWeight: FontWeight.bold)),
                             )),
                           ],
                           onChanged: (val) {
@@ -133,7 +133,7 @@ class CartSection extends ConsumerWidget {
                               child: CircularProgressIndicator(color: Colors.blueAccent, strokeWidth: 2),
                             ),
                             const SizedBox(width: 12),
-                            Text('Cargando personal...', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 13)),
+                            Text('Cargando personal...', style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13)),
                           ],
                         ),
                       ),
@@ -144,7 +144,7 @@ class CartSection extends ConsumerWidget {
                           children: [
                             const Icon(Icons.error_outline, color: Colors.redAccent, size: 20),
                             const SizedBox(width: 12),
-                            Text('No se pudo cargar el personal', style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontSize: 13)),
+                            Text('No se pudo cargar el personal', style: GoogleFonts.poppins(color: Colors.redAccent, fontSize: 13)),
                           ],
                         ),
                       ),
@@ -174,7 +174,7 @@ class CartSection extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       'Turno cerrado. Abra la caja operativa antes de registrar ventas.',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.redAccent,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -197,7 +197,7 @@ class CartSection extends ConsumerWidget {
                       const SizedBox(height: 12),
                       Text(
                         'Ticket vacío',
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: Colors.white.withOpacity(0.3),
                           fontSize: 13,
                         ),
@@ -243,7 +243,7 @@ class CartSection extends ConsumerWidget {
                                     children: [
                                       Text(
                                         item.product.nombre,
-                                        style: GoogleFonts.plusJakartaSans(
+                                        style: GoogleFonts.poppins(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12,
@@ -253,7 +253,7 @@ class CartSection extends ConsumerWidget {
                                         const SizedBox(height: 2),
                                         Text(
                                           'Formato: ${item.variant.nombre}',
-                                          style: GoogleFonts.plusJakartaSans(
+                                          style: GoogleFonts.poppins(
                                             color: Colors.white54,
                                             fontSize: 9,
                                           ),
@@ -262,7 +262,7 @@ class CartSection extends ConsumerWidget {
                                       const SizedBox(height: 4),
                                       Text(
                                         '$currencySymbol${CurrencyHelper.formatAmount(item.precioUnitario, currencyIso)} x ${item.quantity}',
-                                        style: GoogleFonts.plusJakartaSans(
+                                        style: GoogleFonts.poppins(
                                           color: (cart.selectedDamaId != null && cart.selectedDamaId!.isNotEmpty && !item.esInvitacion)
                                               ? const Color(0xFFFF00D6)
                                               : (item.esInvitacion ? Colors.amber : const Color(0xFF00F0FF)),
@@ -287,7 +287,7 @@ class CartSection extends ConsumerWidget {
                                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                       child: Text(
                                         '${item.quantity}',
-                                        style: GoogleFonts.plusJakartaSans(
+                                        style: GoogleFonts.poppins(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,
@@ -343,7 +343,7 @@ class CartSection extends ConsumerWidget {
                                           const SizedBox(width: 6),
                                           Text(
                                             'Invitación',
-                                            style: GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.poppins(
                                               color: item.esInvitacion ? Colors.amber : Colors.white38,
                                               fontSize: 10,
                                               fontWeight: FontWeight.bold,
@@ -369,7 +369,7 @@ class CartSection extends ConsumerWidget {
                                         icon: const Icon(Icons.arrow_drop_down, color: Colors.white54, size: 16),
                                         items: tarifasActivas.map<DropdownMenuItem<String>>((TarifaModel t) => DropdownMenuItem<String>(
                                           value: t.id,
-                                          child: Text(t.nombre, style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontSize: 10, fontWeight: FontWeight.bold)),
+                                          child: Text(t.nombre, style: GoogleFonts.poppins(color: const Color(0xFF00F0FF), fontSize: 10, fontWeight: FontWeight.bold)),
                                         )).toList(),
                                         onChanged: (val) {
                                           if (val != null) {
@@ -382,7 +382,7 @@ class CartSection extends ConsumerWidget {
                                 ],
                                 Text(
                                   '$currencySymbol${CurrencyHelper.formatAmount(item.subtotal, currencyIso)}',
-                                  style: GoogleFonts.plusJakartaSans(
+                                  style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
@@ -408,7 +408,7 @@ class CartSection extends ConsumerWidget {
               children: [
                 Text(
                   'Método de Pago',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white.withOpacity(0.5),
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -437,7 +437,7 @@ class CartSection extends ConsumerWidget {
                             child: Center(
                               child: Text(
                                 metodo,
-                                style: GoogleFonts.plusJakartaSans(
+                                style: GoogleFonts.poppins(
                                   color: isSel ? const Color(0xFF14161A) : Colors.white54,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 10,
@@ -456,7 +456,7 @@ class CartSection extends ConsumerWidget {
                   children: [
                     Text(
                       'TOTAL:',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white54,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
@@ -464,7 +464,7 @@ class CartSection extends ConsumerWidget {
                     ),
                     Text(
                       '$currencySymbol${CurrencyHelper.formatAmount(cart.total, currencyIso)}',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: const Color(0xFF00F0FF),
                         fontWeight: FontWeight.w900,
                         fontSize: 20,
@@ -503,7 +503,7 @@ class CartSection extends ConsumerWidget {
                             )
                           : Text(
                               isCajaAbierta ? 'Confirmar pago' : 'Caja cerrada (abra turno)',
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: isCajaAbierta ? const Color(0xFF14161A) : Colors.white24,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,

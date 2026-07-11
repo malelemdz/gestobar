@@ -66,7 +66,7 @@ Future<bool?> showStatusConfirmationBottomSheet({
                   Expanded(
                     child: Text(
                       title,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         fontSize: 16,
@@ -78,7 +78,7 @@ Future<bool?> showStatusConfirmationBottomSheet({
               const SizedBox(height: 16),
               Text(
                 description,
-                style: GoogleFonts.inter(
+                style: GoogleFonts.poppins(
                   color: Colors.white70,
                   fontSize: 14,
                   height: 1.4,
@@ -96,7 +96,7 @@ Future<bool?> showStatusConfirmationBottomSheet({
                     ),
                     child: Text(
                       'Cancelar',
-                      style: GoogleFonts.inter(
+                      style: GoogleFonts.poppins(
                         color: Colors.white60,
                         fontWeight: FontWeight.bold,
                       ),
@@ -116,7 +116,7 @@ Future<bool?> showStatusConfirmationBottomSheet({
                     ),
                     child: Text(
                       confirmText,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         fontWeight: FontWeight.bold,
                       ),
                     ),

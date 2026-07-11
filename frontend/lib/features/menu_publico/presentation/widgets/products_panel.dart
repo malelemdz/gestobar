@@ -43,7 +43,7 @@ class ProductsPanel extends ConsumerWidget {
                 child: Center(
                   child: Text(
                     'No se encontraron productos',
-                    style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 13),
+                    style: GoogleFonts.poppins(color: Colors.white30, fontSize: 13),
                   ),
                 ),
               ),

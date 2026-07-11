@@ -153,7 +153,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                 const SizedBox(width: 10),
                 Text(
                   '${cart.items.fold(0, (sum, item) => sum + item.quantity)} items',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF14161A),
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -165,7 +165,7 @@ class _PosPageState extends ConsumerState<PosPage> {
               children: [
                 Text(
                   'Ver Ticket',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF14161A),
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -239,29 +239,29 @@ class _PosPageState extends ConsumerState<PosPage> {
                       children: [
                         Text(
                           isMixto ? 'Distribución de pago mixto' : 'Cobro en efectivo',
-                          style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                          style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Total a cobrar: $currencySymbol ${CurrencyHelper.formatAmount(cart.total, currencyIso)}',
-                          style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 20),
+                          style: GoogleFonts.poppins(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 20),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 24),
 
                         if (!isMixto) ...[
-                          Text('Monto Recibido del Cliente:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 12)),
+                          Text('Monto Recibido del Cliente:', style: GoogleFonts.poppins(color: Colors.white54, fontSize: 12)),
                           const SizedBox(height: 8),
                           TextField(
                             controller: txtRecibidoEfectivo,
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
                             inputFormatters: [CurrencyInputFormatter(iso: currencyIso)],
-                            style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                            style: GoogleFonts.poppins(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
                             onChanged: (val) => setModalState(() {}),
                             decoration: InputDecoration(
                               prefixText: '$currencySymbol ',
-                              prefixStyle: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontSize: 24, fontWeight: FontWeight.bold),
+                              prefixStyle: GoogleFonts.poppins(color: const Color(0xFF00F0FF), fontSize: 24, fontWeight: FontWeight.bold),
                               filled: true,
                               fillColor: Colors.black26,
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
@@ -271,10 +271,10 @@ class _PosPageState extends ConsumerState<PosPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Vuelto a entregar:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 14)),
+                              Text('Vuelto a entregar:', style: GoogleFonts.poppins(color: Colors.white54, fontSize: 14)),
                               Text(
                                 '$currencySymbol ${CurrencyHelper.formatAmount(vuelto, currencyIso)}',
-                                style: GoogleFonts.plusJakartaSans(
+                                style: GoogleFonts.poppins(
                                   color: vuelto > 0 ? const Color(0xFFFF00D6) : Colors.white24,
                                   fontWeight: FontWeight.w900,
                                   fontSize: 24,
@@ -291,10 +291,10 @@ class _PosPageState extends ConsumerState<PosPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Resta por cubrir:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 14)),
+                              Text('Resta por cubrir:', style: GoogleFonts.poppins(color: Colors.white54, fontSize: 14)),
                               Text(
                                 '$currencySymbol ${CurrencyHelper.formatAmount((cart.total - totalIngresado).clamp(0.0, 99999.0), currencyIso)}',
-                                style: GoogleFonts.plusJakartaSans(
+                                style: GoogleFonts.poppins(
                                   color: (cart.total - totalIngresado) > 0.01 ? Colors.redAccent : const Color(0xFF00F0FF),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -329,7 +329,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                               ),
                               child: Text(
                                 'Confirmar',
-                                style: GoogleFonts.plusJakartaSans(color: canSubmit ? Colors.white : Colors.white30, fontWeight: FontWeight.bold),
+                                style: GoogleFonts.poppins(color: canSubmit ? Colors.white : Colors.white30, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
@@ -383,29 +383,29 @@ class _PosPageState extends ConsumerState<PosPage> {
                   children: [
                     Text(
                       isMixto ? 'Distribución de pago mixto' : 'Cobro en efectivo',
-                      style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                      style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Total a cobrar: $currencySymbol ${CurrencyHelper.formatAmount(cart.total, currencyIso)}',
-                      style: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 20),
+                      style: GoogleFonts.poppins(color: const Color(0xFF00F0FF), fontWeight: FontWeight.bold, fontSize: 20),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 24),
 
                     if (!isMixto) ...[
-                      Text('Monto Recibido del Cliente:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 12)),
+                      Text('Monto Recibido del Cliente:', style: GoogleFonts.poppins(color: Colors.white54, fontSize: 12)),
                       const SizedBox(height: 8),
                       TextField(
                         controller: txtRecibidoEfectivo,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         inputFormatters: [CurrencyInputFormatter(iso: currencyIso)],
-                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                        style: GoogleFonts.poppins(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
                         onChanged: (val) => setModalState(() {}),
                         decoration: InputDecoration(
                           prefixText: '$currencySymbol ',
-                          prefixStyle: GoogleFonts.plusJakartaSans(color: const Color(0xFF00F0FF), fontSize: 24, fontWeight: FontWeight.bold),
+                          prefixStyle: GoogleFonts.poppins(color: const Color(0xFF00F0FF), fontSize: 24, fontWeight: FontWeight.bold),
                           filled: true,
                           fillColor: Colors.black26,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
@@ -415,10 +415,10 @@ class _PosPageState extends ConsumerState<PosPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Vuelto a entregar:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 14)),
+                          Text('Vuelto a entregar:', style: GoogleFonts.poppins(color: Colors.white54, fontSize: 14)),
                           Text(
                             '$currencySymbol ${CurrencyHelper.formatAmount(vuelto, currencyIso)}',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: vuelto > 0 ? const Color(0xFFFF00D6) : Colors.white24,
                               fontWeight: FontWeight.w900,
                               fontSize: 24,
@@ -435,10 +435,10 @@ class _PosPageState extends ConsumerState<PosPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Resta por cubrir:', style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 14)),
+                          Text('Resta por cubrir:', style: GoogleFonts.poppins(color: Colors.white54, fontSize: 14)),
                           Text(
                             '$currencySymbol ${CurrencyHelper.formatAmount((cart.total - totalIngresado).clamp(0.0, 99999.0), currencyIso)}',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: (cart.total - totalIngresado) > 0.01 ? Colors.redAccent : const Color(0xFF00F0FF),
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -470,7 +470,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                       ),
                       child: Text(
                         'Confirmar',
-                        style: GoogleFonts.plusJakartaSans(color: canSubmit ? Colors.white : Colors.white30, fontWeight: FontWeight.bold),
+                        style: GoogleFonts.poppins(color: canSubmit ? Colors.white : Colors.white30, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -488,12 +488,12 @@ class _PosPageState extends ConsumerState<PosPage> {
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Row(
         children: [
-          SizedBox(width: 90, child: Text(label, style: GoogleFonts.plusJakartaSans(color: Colors.white70, fontWeight: FontWeight.bold))),
+          SizedBox(width: 90, child: Text(label, style: GoogleFonts.poppins(color: Colors.white70, fontWeight: FontWeight.bold))),
           Expanded(
             child: TextField(
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [CurrencyInputFormatter(iso: currencyIso)],
-              style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold),
+              style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
               onChanged: (text) => onChanged(CurrencyHelper.parseAmount(text, currencyIso)),
               decoration: InputDecoration(
                 prefixText: '$currency ',
@@ -571,7 +571,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                         const SizedBox(height: 20),
                         Text(
                           'Procesando pago...',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
                             fontSize: 13,
@@ -580,7 +580,7 @@ class _PosPageState extends ConsumerState<PosPage> {
                         const SizedBox(height: 6),
                         Text(
                           'Por favor espera un momento',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: Colors.white38,
                             fontWeight: FontWeight.normal,
                             fontSize: 11,

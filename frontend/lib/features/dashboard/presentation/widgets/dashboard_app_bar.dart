@@ -128,7 +128,7 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
       titleSpacing: isTablet ? 16.0 : 0.0,
       title: Text(
         pageLabel,
-        style: GoogleFonts.plusJakartaSans(
+        style: GoogleFonts.poppins(
           fontWeight: FontWeight.w800,
           fontSize: 20.0,
           color: AppTheme.liquidPrimary,
@@ -154,7 +154,7 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
       alignment: Alignment.center,
       child: Text(
         (user.nombre.isNotEmpty ? user.nombre[0] : 'U').toUpperCase(),
-        style: GoogleFonts.plusJakartaSans(
+        style: GoogleFonts.poppins(
           color: AppTheme.liquidPrimary,
           fontWeight: FontWeight.bold,
           fontSize: 12.0,

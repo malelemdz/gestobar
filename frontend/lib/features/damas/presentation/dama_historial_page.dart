@@ -146,7 +146,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
               const SizedBox(height: 16),
               Text(
                 'DESGLOSE DE CONSUMOS',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: accentColor,
                   fontWeight: FontWeight.w900,
                   fontSize: 11,
@@ -156,7 +156,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
               const SizedBox(height: 4),
               Text(
                 formattedDate,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: Colors.white54,
                   fontSize: 12,
                 ),
@@ -237,7 +237,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                   children: [
                     Text(
                       item['producto']?.toString() ?? 'Bebida',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 12.5,
                         fontWeight: FontWeight.bold,
@@ -250,7 +250,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                       children: [
                         Text(
                           esInvitacion ? 'Invitación' : 'Comisión',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
@@ -264,7 +264,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                         const SizedBox(width: 6),
                         Text(
                           timeStr,
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: Colors.white24,
                             fontSize: 10,
                           ),
@@ -282,7 +282,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                     esInvitacion
                         ? '+$cantidad ${cantidad == 1 ? "bebida" : "bebidas"}'
                         : '+$currencySymbol ${CurrencyHelper.formatAmount(comision, currencyIso)}',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -293,7 +293,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                     esInvitacion
                         ? 'Invitación'
                         : '$cantidad x $currencySymbol ${CurrencyHelper.formatAmount(comision / cantidad, currencyIso)}',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white24,
                       fontSize: 9.5,
                     ),
@@ -360,7 +360,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
         ),
         child: Text(
           label,
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             color: isActive ? accentColor : Colors.white60,
             fontSize: 11.5,
             fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
@@ -433,7 +433,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                   const SizedBox(height: 12),
                   Text(
                     'No se encontraron registros',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white54,
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -443,7 +443,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                   const SizedBox(height: 4),
                   Text(
                     'Las bebidas e invitaciones registradas aparecerán aquí.',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white24,
                       fontSize: 11,
                     ),
@@ -489,7 +489,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
         ),
         child: Text(
           label,
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             color: textColor,
             fontSize: 10.5,
             fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
@@ -543,7 +543,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                   children: [
                     Text(
                       item['producto']?.toString() ?? 'Bebida',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 12.5,
                         fontWeight: FontWeight.bold,
@@ -556,7 +556,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                       children: [
                         Text(
                           esInvitacion ? 'Invitación' : 'Comisión',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
@@ -570,7 +570,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                         const SizedBox(width: 6),
                         Text(
                           timeStr,
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: Colors.white24,
                             fontSize: 10,
                           ),
@@ -588,7 +588,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                     esInvitacion
                         ? '+$cantidad ${cantidad == 1 ? "bebida" : "bebidas"}'
                         : '+$currencySymbol ${CurrencyHelper.formatAmount(comision, currencyIso)}',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -599,7 +599,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                     esInvitacion
                         ? 'Invitación'
                         : '$cantidad x $currencySymbol ${CurrencyHelper.formatAmount(comision / cantidad, currencyIso)}',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white24,
                       fontSize: 9.5,
                     ),
@@ -655,7 +655,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                               const SizedBox(height: 12),
                               Text(
                                 'No hay historial diario cerrado',
-                                style: GoogleFonts.plusJakartaSans(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white54,
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
@@ -665,7 +665,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                               const SizedBox(height: 4),
                               Text(
                                 'Cuando se cierren turnos en el bar, los acumulados diarios de tus comisiones aparecerán aquí.',
-                                style: GoogleFonts.plusJakartaSans(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white24,
                                   fontSize: 11,
                                 ),
@@ -733,7 +733,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                   children: [
                     Text(
                       formattedDate,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 13.5,
                         fontWeight: FontWeight.bold,
@@ -742,7 +742,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                     const SizedBox(height: 4),
                     Text(
                       '$invitacionesDiarias ${invitacionesDiarias == 1 ? "bebida invitada" : "bebidas invitadas"}',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white30,
                         fontSize: 11,
                       ),
@@ -756,7 +756,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                 children: [
                   Text(
                     '$currencySymbol ${CurrencyHelper.formatAmount(comisionDiaria, currencyIso)}',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: accentColor,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -765,7 +765,7 @@ class _DamaHistorialPageState extends ConsumerState<DamaHistorialPage> {
                   const SizedBox(height: 2),
                   Text(
                     'Consolidado',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white12,
                       fontSize: 9.5,
                       fontWeight: FontWeight.bold,

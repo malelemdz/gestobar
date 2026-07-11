@@ -35,7 +35,7 @@ Future<void> showSuccessDialog(BuildContext context) async {
           const SizedBox(height: 20),
           Text(
             '¡Venta registrada!',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white,
               fontWeight: FontWeight.w900,
               fontSize: 16,
@@ -45,7 +45,7 @@ Future<void> showSuccessDialog(BuildContext context) async {
           Text(
             'La transacción se ha guardado con éxito en el sistema.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white.withOpacity(0.5),
               fontSize: 12,
             ),
@@ -61,7 +61,7 @@ Future<void> showSuccessDialog(BuildContext context) async {
               ),
               child: Text(
                 'Aceptar',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),

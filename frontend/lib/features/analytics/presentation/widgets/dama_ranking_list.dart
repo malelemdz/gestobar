@@ -66,7 +66,7 @@ class DamaRankingList extends ConsumerWidget {
                 const SizedBox(height: 16.0),
                 Text(
                   'No hay comisiones registradas',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white.withOpacity(0.5),
                     fontWeight: FontWeight.bold,
                   ),
@@ -116,7 +116,7 @@ class DamaRankingList extends ConsumerWidget {
                         child: Center(
                           child: Text(
                             '$rank',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: rankColor,
                               fontWeight: FontWeight.bold,
                               fontSize: 12.0,
@@ -132,7 +132,7 @@ class DamaRankingList extends ConsumerWidget {
                         backgroundColor: rankColor.withOpacity(0.15),
                         child: Text(
                           d.nombre.isNotEmpty ? d.nombre[0].toUpperCase() : 'D',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: rankColor,
                             fontWeight: FontWeight.bold,
                             fontSize: 14.0,
@@ -148,7 +148,7 @@ class DamaRankingList extends ConsumerWidget {
                           children: [
                             Text(
                               d.nombre,
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14.0,
@@ -175,7 +175,7 @@ class DamaRankingList extends ConsumerWidget {
                       // Comisiones Acumuladas
                       Text(
                         CurrencyHelper.formatWithSymbol(d.comisionesAcumuladas, currencySymbol, currencyIso),
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF00F0FF),
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,

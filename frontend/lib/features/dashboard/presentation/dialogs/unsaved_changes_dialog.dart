@@ -18,7 +18,7 @@ class UnsavedChangesDialog extends StatelessWidget {
       title: Text(
         'Cambios No Guardados',
         textAlign: TextAlign.center,
-        style: GoogleFonts.plusJakartaSans(
+        style: GoogleFonts.poppins(
           color: Colors.white,
           fontWeight: FontWeight.w900,
           fontSize: 16,
@@ -44,7 +44,7 @@ class UnsavedChangesDialog extends StatelessWidget {
           Text(
             'Tienes cambios sin guardar en la configuración del bar. ¿Deseas descartarlos y salir de todos modos?',
             textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white70,
               fontSize: 13.0,
               height: 1.4,
@@ -65,7 +65,7 @@ class UnsavedChangesDialog extends StatelessWidget {
           ),
           child: Text(
             'Volver',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 12.0,
             ),
@@ -85,7 +85,7 @@ class UnsavedChangesDialog extends StatelessWidget {
           ),
           child: Text(
             'Descartar',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
               fontSize: 12.0,
             ),

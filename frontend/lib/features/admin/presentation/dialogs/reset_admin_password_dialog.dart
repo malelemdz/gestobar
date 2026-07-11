@@ -84,7 +84,7 @@ class _ResetAdminPasswordDialogState extends ConsumerState<ResetAdminPasswordDia
             ),
             child: Text(
               'Cancelar',
-              style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+              style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 12),
@@ -105,7 +105,7 @@ class _ResetAdminPasswordDialogState extends ConsumerState<ResetAdminPasswordDia
                   )
                 : Text(
                     'RESTABLECER',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -119,7 +119,7 @@ class _ResetAdminPasswordDialogState extends ConsumerState<ResetAdminPasswordDia
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('CREAR NUEVAS CREDENCIALES', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+              Text('CREAR NUEVAS CREDENCIALES', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
               const SizedBox(height: 12),
               
               StyledTextField(

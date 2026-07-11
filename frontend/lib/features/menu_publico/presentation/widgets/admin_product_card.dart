@@ -126,7 +126,7 @@ class AdminProductCard extends ConsumerWidget {
                 children: [
                   Text(
                     product.nombre,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
@@ -137,7 +137,7 @@ class AdminProductCard extends ConsumerWidget {
                   const SizedBox(height: 2),
                   Text(
                     product.descripcion ?? 'Sin descripción',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white.withOpacity(0.4),
                       fontSize: 10,
                     ),
@@ -150,7 +150,7 @@ class AdminProductCard extends ConsumerWidget {
                     children: [
                       Text(
                         precioText,
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF00F0FF),
                           fontWeight: FontWeight.w800,
                           fontSize: 12.0,
@@ -164,7 +164,7 @@ class AdminProductCard extends ConsumerWidget {
                         ),
                         child: Text(
                           '${product.variantes.length} Var',
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFFD1BCFF),
                             fontWeight: FontWeight.bold,
                             fontSize: 9,

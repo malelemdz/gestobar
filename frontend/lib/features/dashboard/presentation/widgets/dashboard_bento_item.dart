@@ -65,7 +65,7 @@ class DashboardBentoItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         fontWeight: FontWeight.bold,
                         fontSize: 15.0,
                         color: Colors.white,

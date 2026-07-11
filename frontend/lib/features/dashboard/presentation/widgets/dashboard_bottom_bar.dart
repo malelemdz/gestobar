@@ -72,7 +72,7 @@ class DashboardBottomBar extends StatelessWidget {
                   const SizedBox(width: 8.0),
                   Text(
                     label,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF00F0FF),
                       fontWeight: FontWeight.bold,
                       fontSize: 12.0,
@@ -99,7 +99,7 @@ class DashboardBottomBar extends StatelessWidget {
                   const SizedBox(height: 4.0),
                   Text(
                     label,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white.withOpacity(0.4),
                       fontWeight: FontWeight.w500,
                       fontSize: 10.0,

@@ -73,7 +73,7 @@ class ProductCard extends ConsumerWidget {
             children: [
               Text(
                 'Seleccionar formato de bebida',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,
                   fontSize: 16,
@@ -82,7 +82,7 @@ class ProductCard extends ConsumerWidget {
               const SizedBox(height: 4),
               Text(
                 product.nombre,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFF00F0FF),
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
@@ -135,7 +135,7 @@ class ProductCard extends ConsumerWidget {
                         children: [
                           Text(
                             variant.nombre,
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
@@ -143,7 +143,7 @@ class ProductCard extends ConsumerWidget {
                           ),
                           Text(
                             '$currencySymbol${CurrencyHelper.formatAmount(precio, currencyIso)}',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: hasGlobalDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF),
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
@@ -298,7 +298,7 @@ class ProductCard extends ConsumerWidget {
                         ),
                         child: Text(
                           '$quantityInCart',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 11,
@@ -318,7 +318,7 @@ class ProductCard extends ConsumerWidget {
               children: [
                 Text(
                   product.nombre,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
@@ -331,7 +331,7 @@ class ProductCard extends ConsumerWidget {
                   product.descripcion != null && product.descripcion!.isNotEmpty 
                       ? product.descripcion! 
                       : 'Sin descripción',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white.withOpacity(0.4),
                     fontSize: 10,
                   ),
@@ -344,7 +344,7 @@ class ProductCard extends ConsumerWidget {
                   children: [
                     Text(
                       precioText,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: hasDama ? const Color(0xFFFF00D6) : const Color(0xFF00F0FF),
                         fontWeight: FontWeight.w800,
                         fontSize: 12.0,
@@ -358,7 +358,7 @@ class ProductCard extends ConsumerWidget {
                       ),
                       child: Text(
                         '${product.variantes.length} Var',
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFFD1BCFF),
                           fontWeight: FontWeight.bold,
                           fontSize: 9,

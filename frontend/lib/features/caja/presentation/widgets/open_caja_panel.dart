@@ -75,7 +75,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                   children: [
                     Text(
                       'CAJA ABIERTA',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
                         fontSize: 14,
@@ -83,7 +83,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                     ),
                     Text(
                       'Iniciado por $barmanNombre • $fecha',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white.withOpacity(0.4),
                         fontSize: 11,
                       ),
@@ -115,7 +115,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
               child: Center(
                 child: Text(
                   'Cerrar caja',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
@@ -156,7 +156,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                   const SizedBox(width: 8),
                   Text(
                     'REG. INGRESO',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF121214),
                       fontWeight: FontWeight.w900,
                       fontSize: 11,
@@ -192,7 +192,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                   const SizedBox(width: 8),
                   Text(
                     'REG. EGRESO',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF121214),
                       fontWeight: FontWeight.w900,
                       fontSize: 11,
@@ -244,7 +244,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
             const SizedBox(width: 12),
             Text(
               label,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: isActive ? Colors.white : Colors.white30,
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
@@ -354,7 +354,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                     const SizedBox(height: 16.0),
                     Text(
                       'SECCIONES',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white30,
                         fontSize: 9,
                         fontWeight: FontWeight.w900,
@@ -447,7 +447,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
               const SizedBox(width: 8),
               Text(
                 label,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: isActive ? Colors.white : Colors.white30,
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
@@ -503,7 +503,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                       title.toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white54,
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
@@ -520,7 +520,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   '$currency $formatted',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: accentColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w900,

@@ -141,7 +141,7 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
           ),
           child: Text(
             label,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white70,
               fontWeight: FontWeight.w600,
               fontSize: 11,
@@ -231,7 +231,7 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
         // Header
         Text(
           'Seleccionar Rango de Fechas',
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             fontSize: 18,
             color: Colors.white,
@@ -266,12 +266,12 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
                           children: [
                             Text(
                               'DESDE',
-                              style: GoogleFonts.plusJakartaSans(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.white38),
+                              style: GoogleFonts.poppins(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.white38),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               startText,
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 fontSize: 13, 
                                 fontWeight: FontWeight.bold, 
                                 color: _startDate != null ? Colors.white : Colors.white24,
@@ -300,12 +300,12 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
                           children: [
                             Text(
                               'HASTA',
-                              style: GoogleFonts.plusJakartaSans(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.white38),
+                              style: GoogleFonts.poppins(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.white38),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               endText,
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 fontSize: 13, 
                                 fontWeight: FontWeight.bold, 
                                 color: _endDate != null ? Colors.white : Colors.white24,
@@ -385,7 +385,7 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
                     ),
                     Text(
                       formattedMonth,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -411,7 +411,7 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
                       child: Center(
                         child: Text(
                           day,
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
                             color: Colors.white30,
@@ -481,7 +481,7 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
                             child: Center(
                               child: Text(
                                 '${normD.day}',
-                                style: GoogleFonts.plusJakartaSans(
+                                style: GoogleFonts.poppins(
                                   fontSize: 12,
                                   fontWeight: (isSelectedStart || isSelectedEnd) ? FontWeight.bold : FontWeight.w600,
                                   color: (isSelectedStart || isSelectedEnd)
@@ -517,7 +517,7 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
                 onPressed: () => Navigator.pop(context),
                 child: Text(
                   'Cancelar',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white70,
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
@@ -551,7 +551,7 @@ class _CustomDateRangePickerState extends State<CustomDateRangePicker> {
                     : null,
                 child: Text(
                   'Aceptar',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                     color: _startDate != null ? Colors.black : Colors.white24,

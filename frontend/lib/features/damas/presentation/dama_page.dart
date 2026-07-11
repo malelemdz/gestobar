@@ -240,7 +240,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                         children: [
                           Text(
                             'Turno Cerrado',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 13.0,
                               fontWeight: FontWeight.bold,
@@ -249,7 +249,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                           const SizedBox(height: 4),
                           Text(
                             'La caja operativa está cerrada. Solicita al cajero iniciar el turno para poder registrar bebidas y comisiones.',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: Colors.white70,
                               fontSize: 11.0,
                               height: 1.3,
@@ -295,7 +295,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
               children: [
                 Text(
                   'ÚLTIMOS 10 REGISTROS',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white30,
                     fontSize: 9.5,
                     fontWeight: FontWeight.bold,
@@ -338,7 +338,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                     const SizedBox(height: 12),
                     Text(
                       'No tienes registros de comisiones',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white54,
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
@@ -348,7 +348,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                     const SizedBox(height: 4),
                     Text(
                       'Las bebidas e invitaciones que te registren en caja aparecerán aquí en tiempo real.',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white24,
                         fontSize: 11,
                       ),
@@ -404,7 +404,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
             children: [
               Text(
                 title.toUpperCase(),
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: Colors.white30,
                   fontSize: 8.5,
                   fontWeight: FontWeight.w900,
@@ -416,7 +416,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
           const SizedBox(height: 14),
           Text(
             value,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -425,7 +425,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: color.withOpacity(0.5),
               fontSize: 10,
               fontWeight: FontWeight.w500,
@@ -483,7 +483,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                   children: [
                     Text(
                       item['producto']?.toString() ?? 'Bebida',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 12.5,
                         fontWeight: FontWeight.bold,
@@ -496,7 +496,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                       children: [
                         Text(
                           esInvitacion ? 'Invitación' : 'Comisión',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
@@ -510,7 +510,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                         const SizedBox(width: 6),
                         Text(
                           timeStr,
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: Colors.white24,
                             fontSize: 10,
                           ),
@@ -529,7 +529,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                     esInvitacion
                         ? '+$cantidad ${cantidad == 1 ? "bebida" : "bebidas"}'
                         : '+$currencySymbol ${CurrencyHelper.formatAmount(comision, currencyIso)}',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: esInvitacion ? const Color(0xFF00F0FF) : const Color(0xFFFF4081),
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -540,7 +540,7 @@ class _DamaPageState extends ConsumerState<DamaPage> {
                     esInvitacion
                         ? 'Invitación'
                         : '$cantidad x $currencySymbol ${CurrencyHelper.formatAmount(comision / cantidad, currencyIso)}',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white24,
                       fontSize: 9.5,
                     ),

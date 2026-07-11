@@ -72,7 +72,7 @@ class AuditoriaLogCard extends StatelessWidget {
                   children: [
                     Text(
                       AuditoriaFormatters.formatAction(log.accion),
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w700,
                         fontSize: 12,
                         color: actionColor,
@@ -84,7 +84,7 @@ class AuditoriaLogCard extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 dateStr,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontSize: 12,
                   color: Colors.white.withOpacity(0.5),
                 ),
@@ -98,7 +98,7 @@ class AuditoriaLogCard extends StatelessWidget {
               currencyIso,
               currencySymbol,
             ),
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 15,
               color: Colors.white,
@@ -114,7 +114,7 @@ class AuditoriaLogCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   '${log.usuarioNombre ?? "Usuario"} (${log.rolNombre.toLowerCase()})',
-                  style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.white70),
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.white70),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -122,7 +122,7 @@ class AuditoriaLogCard extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 AuditoriaFormatters.formatModulo(log.modulo),
-                style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.white70),
+                style: GoogleFonts.poppins(fontSize: 12, color: Colors.white70),
               ),
             ],
           ),
@@ -139,7 +139,7 @@ class AuditoriaLogCard extends StatelessWidget {
                         : (log.barId.isNotEmpty
                             ? 'BAR: ${log.barId.length > 8 ? log.barId.substring(0, 8) : log.barId}'
                             : 'GLOBAL'),
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF00F0FF),
@@ -160,7 +160,7 @@ class AuditoriaLogCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       log.dispositivo!,
-                      style: GoogleFonts.plusJakartaSans(fontSize: 11, color: Colors.white38),
+                      style: GoogleFonts.poppins(fontSize: 11, color: Colors.white38),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -171,7 +171,7 @@ class AuditoriaLogCard extends StatelessWidget {
                   const SizedBox(width: 4),
                   Text(
                     AuditoriaFormatters.formatIpAddress(log.ipAddress),
-                    style: GoogleFonts.plusJakartaSans(fontSize: 11, color: Colors.white38),
+                    style: GoogleFonts.poppins(fontSize: 11, color: Colors.white38),
                   ),
                 ],
               ],

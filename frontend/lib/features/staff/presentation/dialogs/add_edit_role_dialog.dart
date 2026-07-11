@@ -34,7 +34,7 @@ Future<void> showAddEditRoleDialog({
             children: [
               Text(
                 'NOMBRE DEL ROL',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -49,7 +49,7 @@ Future<void> showAddEditRoleDialog({
               const SizedBox(height: 16),
               Text(
                 'ASIGNAR PERMISOS DE ACCESO',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -94,7 +94,7 @@ Future<void> showAddEditRoleDialog({
                           child: Center(
                             child: Text(
                               'No hay permisos disponibles',
-                              style: GoogleFonts.inter(color: Colors.white30, fontSize: 13),
+                              style: GoogleFonts.poppins(color: Colors.white30, fontSize: 13),
                             ),
                           ),
                         );
@@ -118,7 +118,7 @@ Future<void> showAddEditRoleDialog({
                               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                               title: Text(
                                 perm.nombre,
-                                style: GoogleFonts.inter(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontSize: 13,
                                   fontWeight: isChecked ? FontWeight.bold : FontWeight.normal,
@@ -163,7 +163,7 @@ Future<void> showAddEditRoleDialog({
           ),
           child: Text(
             'Cancelar',
-            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(width: 12),
@@ -239,7 +239,7 @@ Future<void> showAddEditRoleDialog({
                 )
               : Text(
                   isEdit ? 'GUARDAR ROL' : 'CREAR ROL',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFF0c0e12),
                   ),

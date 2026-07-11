@@ -18,7 +18,7 @@ class ExitBarConfirmationDialog extends StatelessWidget {
       title: Text(
         'Salir de la Sucursal',
         textAlign: TextAlign.center,
-        style: GoogleFonts.plusJakartaSans(
+        style: GoogleFonts.poppins(
           color: Colors.white,
           fontWeight: FontWeight.w900,
           fontSize: 16,
@@ -44,7 +44,7 @@ class ExitBarConfirmationDialog extends StatelessWidget {
           Text(
             '¿Estás seguro de que deseas salir de la sucursal actual para volver a la consola de administración?',
             textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white70,
               fontSize: 13.0,
               height: 1.4,
@@ -65,7 +65,7 @@ class ExitBarConfirmationDialog extends StatelessWidget {
           ),
           child: Text(
             'Cancelar',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 12.0,
             ),
@@ -85,7 +85,7 @@ class ExitBarConfirmationDialog extends StatelessWidget {
           ),
           child: Text(
             'Salir del Bar',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
               fontSize: 12.0,
             ),

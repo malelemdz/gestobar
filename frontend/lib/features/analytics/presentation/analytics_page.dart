@@ -53,7 +53,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
         ),
         child: Text(
           label,
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             fontSize: 12,
@@ -102,7 +102,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
           children: [
             Text(
               label,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 fontSize: 12,
@@ -193,7 +193,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
             const SizedBox(width: 12),
             Text(
               label,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: isActive ? Colors.black : Colors.white30,
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
@@ -256,7 +256,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                           children: [
                             Text(
                               'FILTROS DE TIEMPO',
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white30,
                                 fontSize: 9,
                                 fontWeight: FontWeight.w900,
@@ -267,7 +267,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                             const SizedBox(height: 24),
                             Text(
                               'SECCIONES DE ANÁLISIS',
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white30,
                                 fontSize: 9,
                                 fontWeight: FontWeight.w900,
@@ -411,7 +411,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
         ),
         child: Text(
           label,
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             fontSize: 12,
@@ -459,7 +459,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
           children: [
             Text(
               label,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 fontSize: 12,
@@ -524,7 +524,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
             Flexible(
               child: Text(
                 label,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: isActive ? Colors.black : Colors.white30,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -721,7 +721,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
           const SizedBox(height: 16.0),
           Text(
             title,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontSize: 12.0,
               fontWeight: FontWeight.w600,
               color: Colors.white.withOpacity(0.5),
@@ -730,7 +730,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
           const SizedBox(height: 4.0),
           Text(
             value,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontSize: 16.0,
               fontWeight: FontWeight.w800,
               color: Colors.white,

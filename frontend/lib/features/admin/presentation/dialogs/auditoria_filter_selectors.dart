@@ -43,7 +43,7 @@ void showUserSelector(BuildContext context, WidgetRef ref) {
               if (!isDialog) const SizedBox(height: 20),
               Text(
                 'Filtrar por Usuario',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Colors.white,
@@ -179,7 +179,7 @@ void showActionSelector(BuildContext context, WidgetRef ref) {
               if (!isDialog) const SizedBox(height: 20),
               Text(
                 'Filtrar por Acción',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Colors.white,
@@ -305,7 +305,7 @@ void showModuleSelector(BuildContext context, WidgetRef ref) {
               if (!isDialog) const SizedBox(height: 20),
               Text(
                 'Filtrar por Módulo',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Colors.white,
@@ -405,7 +405,7 @@ Widget _buildSelectorItem({
       contentPadding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 0.0),
       title: Text(
         title,
-        style: GoogleFonts.plusJakartaSans(
+        style: GoogleFonts.poppins(
           color: Colors.white,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
           fontSize: 13,
@@ -414,7 +414,7 @@ Widget _buildSelectorItem({
       subtitle: subtitle != null
           ? Text(
               subtitle,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: isSelected ? AppTheme.liquidPrimary.withOpacity(0.7) : Colors.white54,
                 fontSize: 11,
               ),

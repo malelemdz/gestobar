@@ -57,7 +57,7 @@ class PaymentMethodsChart extends ConsumerWidget {
         child: Center(
           child: Text(
             'Sin desglose de pagos disponible',
-            style: GoogleFonts.plusJakartaSans(color: Colors.white38, fontSize: 13),
+            style: GoogleFonts.poppins(color: Colors.white38, fontSize: 13),
           ),
         ),
       );
@@ -77,7 +77,7 @@ class PaymentMethodsChart extends ConsumerWidget {
         children: [
           Text(
             'Distribución por Método de Pago',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
               fontSize: 14.0,
               color: Colors.white70,
@@ -111,7 +111,7 @@ class PaymentMethodsChart extends ConsumerWidget {
                           children: [
                             Text(
                               item.metodo.toUpperCase(),
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontSize: 13.0,
                                 fontWeight: FontWeight.bold,
@@ -119,7 +119,7 @@ class PaymentMethodsChart extends ConsumerWidget {
                             ),
                             Text(
                               '${CurrencyHelper.formatWithSymbol(item.total, currencySymbol, currencyIso)} (${(percent * 100).toStringAsFixed(1)}%)',
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white70,
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.w600,

@@ -119,7 +119,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                                             padding: const EdgeInsets.only(bottom: 12.0),
                                             child: Text(
                                               'HISTORIAL DE CAJAS CERRADAS',
-                                              style: GoogleFonts.plusJakartaSans(
+                                              style: GoogleFonts.poppins(
                                                 color: Colors.white54,
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.w900,
@@ -212,13 +212,13 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                   children: [
                     Text(
                       'Error al cargar estado de caja',
-                      style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.poppins(color: Colors.redAccent, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton(
                       onPressed: () => ref.read(cajaStateProvider.notifier).refreshEstado(),
                       style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7000FF)),
-                      child: Text('Reintentar', style: GoogleFonts.plusJakartaSans(color: Colors.white)),
+                      child: Text('Reintentar', style: GoogleFonts.poppins(color: Colors.white)),
                     ),
                   ],
                 ),
@@ -505,7 +505,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                 children: [
                   Text(
                     'Comisiones del Turno por Dama',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontWeight: FontWeight.w900,
                       fontSize: 15,
@@ -520,7 +520,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
               const SizedBox(height: 6),
               Text(
                 'Corresponde a la suma individual de todas las ventas al precio de compañía en este turno.',
-                style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 11),
+                style: GoogleFonts.poppins(color: Colors.white30, fontSize: 11),
               ),
               const SizedBox(height: 20),
 
@@ -540,7 +540,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                       child: Center(
                         child: Text(
                           'Error al obtener desglose: ${snapshot.error}',
-                          style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontSize: 12),
+                          style: GoogleFonts.poppins(color: Colors.redAccent, fontSize: 12),
                         ),
                       ),
                     );
@@ -553,7 +553,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                       child: Center(
                         child: Text(
                           'No hay comisiones de damas generadas en este turno.',
-                          style: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 12),
+                          style: GoogleFonts.poppins(color: Colors.white24, fontSize: 12),
                         ),
                       ),
                     );
@@ -586,7 +586,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                             Expanded(
                               child: Text(
                                 name,
-                                style: GoogleFonts.plusJakartaSans(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
@@ -595,7 +595,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                             ),
                             Text(
                               '$currencySymbol $formattedCom',
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFFFF00D6),
                                 fontWeight: FontWeight.w900,
                                 fontSize: 13,
@@ -693,7 +693,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
               const SizedBox(width: 8),
               Text(
                 label,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: isActive ? Colors.white : Colors.white30,
                   fontSize: 11,
                   fontWeight: FontWeight.bold,

@@ -118,7 +118,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   '¡Hola, ${user.nombre.split(' ').first}!',
-                                  style: GoogleFonts.plusJakartaSans(
+                                  style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 28.0,
@@ -228,7 +228,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
                           padding: const EdgeInsets.symmetric(vertical: 24.0),
                           child: Text(
                             'No hay registros de actividad recientes',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: Colors.white54,
                               fontSize: 14.0,
                             ),
@@ -309,7 +309,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: GoogleFonts.plusJakartaSans(
+      style: GoogleFonts.poppins(
         fontSize: 15.0,
         fontWeight: FontWeight.w800,
         color: Colors.white,
@@ -342,7 +342,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
               Flexible(
                 child: Text(
                   title,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white54,
                     fontWeight: FontWeight.w600,
                     fontSize: 11.0,
@@ -356,7 +356,7 @@ class _SuperAdminDashboardPageState extends ConsumerState<SuperAdminDashboardPag
           ),
           Text(
             value,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 24.0,

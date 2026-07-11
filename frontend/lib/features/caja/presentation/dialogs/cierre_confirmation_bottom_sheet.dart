@@ -51,7 +51,7 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
             children: [
               Text(
                 'Confirmar Cierre de Turno',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,
                   fontSize: 16,
@@ -66,7 +66,7 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
           const SizedBox(height: 12),
           Text(
             'Esta acción dará por finalizado el turno activo actual de la caja. El sistema registrará los balances y comisiones generadas de forma automática.',
-            style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 12),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 12),
           ),
           const SizedBox(height: 12.0),
 
@@ -89,7 +89,7 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
                       Expanded(
                         child: Text(
                           'BLOQUEO DE SEGURIDAD',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: AppTheme.colorDanger,
                             fontWeight: FontWeight.w900,
                             fontSize: 11,
@@ -101,7 +101,7 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
                   const SizedBox(height: 8),
                   Text(
                     'Tienes ${syncBox.length} pedido(s) cobrados localmente que aún no suben al servidor. Debes estar conectado a internet y sincronizarlos antes de poder cerrar el turno.',
-                    style: GoogleFonts.plusJakartaSans(color: Colors.white70, fontSize: 11),
+                    style: GoogleFonts.poppins(color: Colors.white70, fontSize: 11),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
@@ -142,7 +142,7 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
                 children: [
                   Expanded(
                     child: TextButton(
-                      child: Text('CANCELAR', style: GoogleFonts.plusJakartaSans(color: Colors.white60, fontWeight: FontWeight.bold)),
+                      child: Text('CANCELAR', style: GoogleFonts.poppins(color: Colors.white60, fontWeight: FontWeight.bold)),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
@@ -161,7 +161,7 @@ class _CierreConfirmationBottomSheetState extends ConsumerState<CierreConfirmati
                               Navigator.pop(context); // Cerrar bottom sheet
                               widget.onConfirm();
                             },
-                      child: Text('CONFIRMAR CIERRE', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold)),
+                      child: Text('CONFIRMAR CIERRE', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],

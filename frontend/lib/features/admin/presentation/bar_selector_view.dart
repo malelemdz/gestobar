@@ -110,11 +110,11 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
                     ),
                   ),
                   child: TextField(
-                    style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
+                    style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.search, color: Color(0xFF00F0FF), size: 20),
                       hintText: 'Buscar sucursal',
-                      hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 14),
+                      hintStyle: GoogleFonts.poppins(color: Colors.white30, fontSize: 14),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(vertical: 14),
                     ),
@@ -415,7 +415,7 @@ class _BarSelectorViewState extends ConsumerState<BarSelectorView> {
             child: Center(
               child: Text(
                 label,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: isSelected ? const Color(0xFF00F0FF) : Colors.white54,
                   fontSize: 12,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,

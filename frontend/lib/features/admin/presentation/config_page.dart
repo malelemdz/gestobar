@@ -279,7 +279,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                           ? 'Migrando precios...\nEsto puede tomar unos segundos.'
                           : 'Guardando configuración...',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -642,13 +642,13 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                     const SizedBox(height: 16),
                     Text(
                       'CONFIGURACIÓN DESACTIVADA',
-                      style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                      style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'El SuperAdmin ha desactivado las secciones de configuración para este bar.',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(color: Colors.white54, fontSize: 13),
+                      style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
                     ),
                   ],
                 ),
@@ -693,7 +693,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                         children: [
                           Text(
                             'CONFIGURACIÓN',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFFB9CACB),
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -740,7 +740,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                                         Expanded(
                                           child: Text(
                                             tab['text'] as String,
-                                            style: GoogleFonts.plusJakartaSans(
+                                            style: GoogleFonts.poppins(
                                               color: isActive ? Colors.white : Colors.white38,
                                               fontSize: 13,
                                               fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
@@ -801,7 +801,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                       labelColor: const Color(0xFF00F0FF),
                       unselectedLabelColor: Colors.white54,
                       indicatorColor: const Color(0xFF00F0FF),
-                      labelStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+                      labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.bold),
                       tabs: tabs.map((t) => Tab(text: t['text'] as String)).toList(),
                     ),
                     Expanded(

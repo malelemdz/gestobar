@@ -160,7 +160,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
     return DropdownButtonFormField<T>(
       value: value,
       dropdownColor: dropdownColor,
-      style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+      style: GoogleFonts.poppins(color: Colors.white, fontSize: 13),
       decoration: InputDecoration(
         filled: true,
         fillColor: const Color(0xFF22252A),
@@ -214,7 +214,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
             ),
             child: Text(
               'Cancelar',
-              style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+              style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 12),
@@ -235,7 +235,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
                   )
                 : Text(
                     widget.admin == null ? 'REGISTRAR' : 'GUARDAR CAMBIOS',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -251,7 +251,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('DATOS PERSONALES', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+                    Text('DATOS PERSONALES', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                     const SizedBox(height: 12),
                     
                     if (isTablet)
@@ -395,7 +395,7 @@ class _AddEditAdminDialogState extends ConsumerState<AddEditAdminDialog> {
                     ),
                     const SizedBox(height: 24),
 
-                    Text('DATOS DE ACCESO', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+                    Text('DATOS DE ACCESO', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                     const SizedBox(height: 12),
 
                     StyledTextField(

@@ -88,7 +88,7 @@ class PermisosTab extends StatelessWidget {
                               children: [
                                 Text(
                                   title,
-                                  style: GoogleFonts.plusJakartaSans(
+                                  style: GoogleFonts.poppins(
                                     color: isEnabled ? Colors.white : Colors.white30,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
@@ -97,7 +97,7 @@ class PermisosTab extends StatelessWidget {
                                 const SizedBox(height: 4),
                                 Text(
                                   description,
-                                  style: GoogleFonts.inter(
+                                  style: GoogleFonts.poppins(
                                     color: isEnabled ? Colors.white54 : Colors.white24,
                                     fontSize: 11,
                                   ),
@@ -135,7 +135,7 @@ class PermisosTab extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Nota: Los cambios son específicos para esta sucursal. Los administradores locales no tendrán acceso a las secciones que deshabilites.',
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF00F0FF),
                           fontSize: 11,
                           fontWeight: FontWeight.w500,

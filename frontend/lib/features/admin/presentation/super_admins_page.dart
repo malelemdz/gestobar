@@ -167,7 +167,7 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
             child: Center(
               child: Text(
                 label,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: isActive ? const Color(0xFF00F0FF) : Colors.white54,
                   fontSize: 12,
                   fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
@@ -252,11 +252,11 @@ class _SuperAdminsPageState extends ConsumerState<SuperAdminsPage> {
                   ),
                   child: TextField(
                     controller: _searchCtrl,
-                    style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
+                    style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.search, color: Color(0xFF00F0FF), size: 20),
                       hintText: 'Buscar administradores por nombre o usuario...',
-                      hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 14),
+                      hintStyle: GoogleFonts.poppins(color: Colors.white30, fontSize: 14),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(vertical: 14),
                       suffixIcon: _searchQuery.isNotEmpty

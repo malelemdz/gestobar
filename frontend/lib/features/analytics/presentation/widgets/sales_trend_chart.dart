@@ -65,7 +65,7 @@ class SalesTrendChart extends ConsumerWidget {
             const SizedBox(height: 16.0),
             Text(
               'No hay datos de ventas disponibles',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: Colors.white.withOpacity(0.6),
                 fontWeight: FontWeight.bold,
                 fontSize: 15.0,
@@ -75,7 +75,7 @@ class SalesTrendChart extends ConsumerWidget {
             const SizedBox(height: 8.0),
             Text(
               'Prueba seleccionando un rango de fechas diferente o verifica que se hayan registrado ventas.',
-              style: GoogleFonts.inter(
+              style: GoogleFonts.poppins(
                 color: Colors.white.withOpacity(0.3),
                 fontSize: 12.0,
               ),
@@ -122,7 +122,7 @@ class SalesTrendChart extends ConsumerWidget {
                 padding: const EdgeInsets.only(left: 12.0, bottom: 16.0),
                 child: Text(
                   'Picos de Ingresos Diarios',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 14.0,
                     color: Colors.white70,
@@ -214,14 +214,14 @@ class SalesTrendChart extends ConsumerWidget {
                               final formattedDate = DateFormat('dd MMM, yyyy').format(date);
                               return LineTooltipItem(
                                 '$formattedDate\n',
-                                GoogleFonts.plusJakartaSans(
+                                GoogleFonts.poppins(
                                   color: Colors.white70,
                                   fontSize: 10.0,
                                 ),
                                 children: [
                                   TextSpan(
                                     text: CurrencyHelper.formatWithSymbol(item.total, currencySymbol, currencyIso),
-                                    style: GoogleFonts.plusJakartaSans(
+                                    style: GoogleFonts.poppins(
                                       color: const Color(0xFF00F0FF),
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12.0,
@@ -294,7 +294,7 @@ class SalesTrendChart extends ConsumerWidget {
                     children: [
                       Text(
                         'Día de Mayor Venta',
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: Colors.white38,
                           fontSize: 11.0,
                           fontWeight: FontWeight.bold,
@@ -303,7 +303,7 @@ class SalesTrendChart extends ConsumerWidget {
                       const SizedBox(height: 2.0),
                       Text(
                         peakDayName,
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 18.0,
                           fontWeight: FontWeight.w800,
@@ -314,7 +314,7 @@ class SalesTrendChart extends ConsumerWidget {
                 ),
                 Text(
                   CurrencyHelper.formatWithSymbol(maxDayVal, currencySymbol, currencyIso),
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF00F0FF),
                     fontSize: 18.0,
                     fontWeight: FontWeight.w900,
@@ -339,7 +339,7 @@ class SalesTrendChart extends ConsumerWidget {
             children: [
               Text(
                 'Ventas por Día de la Semana',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 14.0,
                   color: Colors.white70,
@@ -362,7 +362,7 @@ class SalesTrendChart extends ConsumerWidget {
                         children: [
                           Text(
                             dayName,
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: Colors.white70,
                               fontSize: 12.0,
                               fontWeight: FontWeight.w600,
@@ -370,7 +370,7 @@ class SalesTrendChart extends ConsumerWidget {
                           ),
                           Text(
                             CurrencyHelper.formatWithSymbol(revenue, currencySymbol, currencyIso),
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: Colors.white70,
                               fontSize: 12.0,
                               fontWeight: FontWeight.bold,

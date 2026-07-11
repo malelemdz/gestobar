@@ -198,7 +198,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
         children: [
           Text(
             'FILTRAR POR SUCURSAL',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white30,
               fontSize: 9,
               fontWeight: FontWeight.w900,
@@ -219,7 +219,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
           const SizedBox(height: 16),
           Text(
             'FILTRAR POR USUARIO',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white30,
               fontSize: 9,
               fontWeight: FontWeight.w900,
@@ -240,7 +240,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
           const SizedBox(height: 16),
           Text(
             'FILTRAR POR ACCIÓN',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white30,
               fontSize: 9,
               fontWeight: FontWeight.w900,
@@ -261,7 +261,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
           const SizedBox(height: 16),
           Text(
             'FILTRAR POR MÓDULO',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white30,
               fontSize: 9,
               fontWeight: FontWeight.w900,
@@ -282,7 +282,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
           const SizedBox(height: 16),
           Text(
             'FILTRAR POR RANGO DE FECHAS',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white30,
               fontSize: 9,
               fontWeight: FontWeight.w900,
@@ -330,7 +330,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                       const SizedBox(width: 8),
                       Text(
                         'LIMPIAR TODOS LOS FILTROS',
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: AppTheme.colorDanger,
                           fontSize: 10,
                           fontWeight: FontWeight.w900,
@@ -372,7 +372,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: isActive ? Colors.white : Colors.white70,
                   fontSize: 11.5,
                   fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
@@ -430,7 +430,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                 const SizedBox(height: 16),
                 Text(
                   'Error al cargar la auditoría',
-                  style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                  style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 8),
                 Padding(
@@ -438,7 +438,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                   child: Text(
                     state.errorMessage!,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(color: Colors.white60, fontSize: 13),
+                    style: GoogleFonts.poppins(color: Colors.white60, fontSize: 13),
                   ),
                 ),
               ],
@@ -459,7 +459,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                 const SizedBox(height: 16),
                 Text(
                   'No hay registros de auditoría',
-                  style: GoogleFonts.plusJakartaSans(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.w600),
+                  style: GoogleFonts.poppins(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -554,7 +554,7 @@ void _showBarSelector(BuildContext context, WidgetRef ref) {
               if (!isDialog) const SizedBox(height: 20),
               Text(
                 'Filtrar por Sucursal',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Colors.white,
@@ -688,7 +688,7 @@ void _showUserSelector(BuildContext context, WidgetRef ref) {
               if (!isDialog) const SizedBox(height: 20),
               Text(
                 'Filtrar por Usuario',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Colors.white,
@@ -825,7 +825,7 @@ void _showActionSelector(BuildContext context, WidgetRef ref) {
               if (!isDialog) const SizedBox(height: 20),
               Text(
                 'Filtrar por Acción',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Colors.white,
@@ -952,7 +952,7 @@ void _showModuleSelector(BuildContext context, WidgetRef ref) {
               if (!isDialog) const SizedBox(height: 20),
               Text(
                 'Filtrar por Módulo',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Colors.white,
@@ -1053,7 +1053,7 @@ Widget _buildSelectorItem({
       contentPadding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 0.0),
       title: Text(
         title,
-        style: GoogleFonts.plusJakartaSans(
+        style: GoogleFonts.poppins(
           color: Colors.white,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
           fontSize: 13,
@@ -1062,7 +1062,7 @@ Widget _buildSelectorItem({
       subtitle: subtitle != null
           ? Text(
               subtitle,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: isSelected ? AppTheme.liquidPrimary.withOpacity(0.7) : Colors.white54,
                 fontSize: 11,
               ),
@@ -1241,7 +1241,7 @@ class SuperAuditoriaFilterCapsules extends ConsumerWidget {
                     const SizedBox(width: 4),
                     Text(
                       'LIMPIAR',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: AppTheme.colorDanger,
                         fontSize: 10,
                         fontWeight: FontWeight.w800,
@@ -1303,7 +1303,7 @@ class SuperAuditoriaFilterCapsules extends ConsumerWidget {
           children: [
             Text(
               label,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: isActive ? Colors.white : Colors.white70,
                 fontSize: 10.5,
                 fontWeight: isActive ? FontWeight.bold : FontWeight.w500,

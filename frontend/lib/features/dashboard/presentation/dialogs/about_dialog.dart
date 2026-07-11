@@ -38,7 +38,7 @@ class AboutDialogWidget extends StatelessWidget {
                       Text(
                         'Acerca de',
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
                           fontSize: 16,
@@ -83,7 +83,7 @@ class AboutDialogWidget extends StatelessWidget {
                   Text(
                     'Gestobar v$version',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
@@ -93,7 +93,7 @@ class AboutDialogWidget extends StatelessWidget {
                   Text(
                     'Plataforma de Alta Velocidad para Hostelería',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white30,
                       fontSize: 10.0,
                       fontWeight: FontWeight.w500,
@@ -105,7 +105,7 @@ class AboutDialogWidget extends StatelessWidget {
                   Text(
                     'Gestobar es la plataforma definitiva para la gestión inteligente de bares, pubs y discotecas. Optimiza el control de inventario, registro de ventas POS, control de turnos de caja y comisiones en tiempo real, garantizando la máxima velocidad y eficiencia en entornos de alta exigencia.',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: Colors.white70,
                       fontSize: 12.0,
                       height: 1.4,
@@ -115,7 +115,7 @@ class AboutDialogWidget extends StatelessWidget {
                   Text(
                     '© ${DateTime.now().year} Desarrollado por Oliver Malele.\nTodos los derechos reservados.',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       fontSize: 9.0,
                       color: Colors.white30,
                       height: 1.3,
@@ -137,7 +137,7 @@ class AboutDialogWidget extends StatelessWidget {
                     ),
                     child: Text(
                       'Entendido',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         fontWeight: FontWeight.bold,
                         fontSize: 12.0,
                       ),

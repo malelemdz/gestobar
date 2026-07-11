@@ -29,7 +29,7 @@ Future<void> showResetPasswordBottomSheet({
           children: [
             Text(
               'Escribe una nueva contraseña para ${user.nombre}. El usuario deberá usar esta clave para ingresar en su siguiente inicio de sesión.',
-              style: GoogleFonts.inter(
+              style: GoogleFonts.poppins(
                 color: Colors.white70,
                 fontSize: 13,
               ),
@@ -37,7 +37,7 @@ Future<void> showResetPasswordBottomSheet({
             const SizedBox(height: 24),
             Text(
               'NUEVA CONTRASEÑA',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFFB9CACB),
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
@@ -62,7 +62,7 @@ Future<void> showResetPasswordBottomSheet({
             const SizedBox(height: 16),
             Text(
               'CONFIRMAR NUEVA CONTRASEÑA',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: const Color(0xFFB9CACB),
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
@@ -101,7 +101,7 @@ Future<void> showResetPasswordBottomSheet({
           ),
           child: Text(
             'Cancelar',
-            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(width: 12),
@@ -156,7 +156,7 @@ Future<void> showResetPasswordBottomSheet({
                 )
               : Text(
                   'RESTABLECER',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFF0c0e12),
                   ),

@@ -57,7 +57,7 @@ class CierreSummaryDialog extends StatelessWidget {
                       children: [
                         Text(
                           'TURNO CERRADO',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
                             fontSize: 15,
@@ -65,7 +65,7 @@ class CierreSummaryDialog extends StatelessWidget {
                         ),
                         Text(
                           'Resumen Financiero del Sistema',
-                          style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 11),
+                          style: GoogleFonts.poppins(color: Colors.white30, fontSize: 11),
                         ),
                       ],
                     ),
@@ -97,7 +97,7 @@ class CierreSummaryDialog extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: () => Navigator.pop(context),
-                child: Text('ENTENDIDO', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 13)),
+                child: Text('ENTENDIDO', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 13)),
               ),
             ],
           ),
@@ -114,7 +114,7 @@ class CierreSummaryDialog extends StatelessWidget {
         children: [
           Text(
             label,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: isTotal ? Colors.white : Colors.white30,
               fontSize: isTotal ? 13 : 12,
               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
@@ -122,7 +122,7 @@ class CierreSummaryDialog extends StatelessWidget {
           ),
           Text(
             value,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: valColor,
               fontWeight: FontWeight.w900,
               fontSize: isTotal ? 15 : 13,

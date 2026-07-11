@@ -42,7 +42,7 @@ class DashboardPage extends ConsumerWidget {
       child: Center(
         child: Text(
           'Error $label',
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             color: Colors.redAccent,
             fontSize: 11,
             fontWeight: FontWeight.bold,
@@ -239,7 +239,7 @@ class DashboardPage extends ConsumerWidget {
                       children: [
                         Text(
                           'Sucursal Deshabilitada',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 14.0,
                             fontWeight: FontWeight.bold,
@@ -248,7 +248,7 @@ class DashboardPage extends ConsumerWidget {
                         const SizedBox(height: 4),
                         Text(
                           'Tu bar se encuentra suspendido. Comunícate con soporte para reactivar operaciones.',
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.poppins(
                             color: Colors.white70,
                             fontSize: 11.5,
                           ),
@@ -265,7 +265,7 @@ class DashboardPage extends ConsumerWidget {
           if (allowedBentoItems.isNotEmpty) ...[
             Text(
               'Accesos Directos',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
@@ -289,7 +289,7 @@ class DashboardPage extends ConsumerWidget {
           if (canSeeAnalytics && statsAsync != null && rankingAsync != null) ...[
             Text(
               'Estadísticas Rápidas',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
@@ -386,7 +386,7 @@ class DashboardPage extends ConsumerWidget {
           if (canSeeAudit && recentAuditAsync != null) ...[
             Text(
               'Actividad Reciente',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
@@ -417,7 +417,7 @@ class DashboardPage extends ConsumerWidget {
                 ),
                 child: Text(
                   'No se pudo conectar con los registros de auditoría en vivo.',
-                  style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontSize: 13),
+                  style: GoogleFonts.poppins(color: Colors.redAccent, fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -432,7 +432,7 @@ class DashboardPage extends ConsumerWidget {
                     child: Center(
                       child: Text(
                         'No hay registros de actividad recientes',
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: Colors.white.withOpacity(0.4),
                           fontSize: 13,
                           fontWeight: FontWeight.w500,

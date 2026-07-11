@@ -68,7 +68,7 @@ class OperacionesTab extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 'Existe una caja abierta actualmente. Para evitar descuadres en el arqueo, debes cerrarla antes de modificar la Moneda o Zona Horaria.',
-                                style: GoogleFonts.inter(
+                                style: GoogleFonts.poppins(
                                   color: AppTheme.colorDanger,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
@@ -213,7 +213,7 @@ class OperacionesTab extends StatelessWidget {
               children: [
                 Text(
                   'VISTA PREVIA DEL FORMATO',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white54,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -222,7 +222,7 @@ class OperacionesTab extends StatelessWidget {
                 const SizedBox(height: 6),
                 RichText(
                   text: TextSpan(
-                    style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
+                    style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
                     children: [
                       TextSpan(text: 'Los cobros de $sourceText se verán como: '),
                       TextSpan(
@@ -239,7 +239,7 @@ class OperacionesTab extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   'La moneda $currentIso usa $decimals decimales.',
-                  style: GoogleFonts.inter(color: Colors.white30, fontSize: 12),
+                  style: GoogleFonts.poppins(color: Colors.white30, fontSize: 12),
                 ),
               ],
             ),

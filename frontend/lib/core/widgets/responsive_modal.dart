@@ -90,7 +90,7 @@ class ResponsiveModalContainer extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -100,7 +100,7 @@ class ResponsiveModalContainer extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                               subtitle!,
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white54,
                                 fontSize: 12,
                               ),

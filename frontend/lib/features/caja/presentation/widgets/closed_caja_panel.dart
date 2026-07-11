@@ -58,7 +58,7 @@ class ClosedCajaPanel extends StatelessWidget {
                   children: [
                     Text(
                       'CAJA CERRADA',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
                         fontSize: 16,
@@ -66,7 +66,7 @@ class ClosedCajaPanel extends StatelessWidget {
                     ),
                     Text(
                       'Debe abrir un turno para iniciar ventas y comisiones.',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white.withOpacity(0.5),
                         fontSize: 12,
                       ),
@@ -81,7 +81,7 @@ class ClosedCajaPanel extends StatelessWidget {
           // Entrada de dinero inicial obligatoria
           Text(
             'Efectivo inicial en gaveta.',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white.withOpacity(0.6),
               fontWeight: FontWeight.bold,
               fontSize: 12,
@@ -101,16 +101,16 @@ class ClosedCajaPanel extends StatelessWidget {
               inputFormatters: [
                 CurrencyInputFormatter(iso: currencyIso),
               ],
-              style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
               decoration: InputDecoration(
                 hintText: 'Ingresa 0 si abres con gaveta vacía',
-                hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 13),
+                hintStyle: GoogleFonts.poppins(color: Colors.white24, fontSize: 13),
                 prefixIcon: Container(
                   width: 48,
                   alignment: Alignment.center,
                   child: Text(
                     currencySymbol,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF00F0FF),
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -157,7 +157,7 @@ class ClosedCajaPanel extends StatelessWidget {
                       )
                     : Text(
                         'Abrir caja',
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF14161A),
                           fontWeight: FontWeight.bold,
                           fontSize: 13,

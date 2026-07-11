@@ -42,48 +42,48 @@ class AppTheme {
       ),
       textTheme: TextTheme(
         // display-lg (Montos y métricas en Bento Grid)
-        displayLarge: GoogleFonts.plusJakartaSans(
+        displayLarge: GoogleFonts.poppins(
           fontSize: 48.0,
           fontWeight: FontWeight.w800,
           color: liquidOnSurface,
         ),
         // headline-lg (Títulos primarios de páginas)
-        headlineLarge: GoogleFonts.plusJakartaSans(
+        headlineLarge: GoogleFonts.poppins(
           fontSize: 32.0,
           fontWeight: FontWeight.w700,
           color: liquidOnSurface,
         ),
         // headline-md (Títulos de componentes y Bento widgets)
-        headlineMedium: GoogleFonts.plusJakartaSans(
+        headlineMedium: GoogleFonts.poppins(
           fontSize: 24.0,
           fontWeight: FontWeight.w700,
           color: liquidOnSurface,
         ),
         // headline-sm (Nombres de productos / tragos en tarjetas)
-        headlineSmall: GoogleFonts.plusJakartaSans(
+        headlineSmall: GoogleFonts.poppins(
           fontSize: 20.0,
           fontWeight: FontWeight.w700,
           color: liquidOnSurface,
         ),
         // body-lg (Texto de cuerpo extendido)
-        bodyLarge: GoogleFonts.inter(
+        bodyLarge: GoogleFonts.poppins(
           fontSize: 16.0,
           fontWeight: FontWeight.w400,
           color: liquidOnSurface,
         ),
         // body-md (Textos estándar generales / body-sm)
-        bodyMedium: GoogleFonts.inter(
+        bodyMedium: GoogleFonts.poppins(
           fontSize: 14.0,
           fontWeight: FontWeight.w400,
           color: liquidOnSurface,
         ),
         // label-caps (Inter para etiquetas y metadatos)
-        labelLarge: GoogleFonts.inter(
+        labelLarge: GoogleFonts.poppins(
           fontSize: 12.0,
           fontWeight: FontWeight.w600,
           color: liquidOnSurface,
         ),
-        labelSmall: GoogleFonts.inter(
+        labelSmall: GoogleFonts.poppins(
           fontSize: 10.0,
           fontWeight: FontWeight.w600,
           color: liquidOnSurfaceVariant,
@@ -101,7 +101,7 @@ class AppTheme {
         backgroundColor: liquidBg,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: GoogleFonts.plusJakartaSans(
+        titleTextStyle: GoogleFonts.poppins(
           color: liquidPrimary,
           fontSize: 22.0,
           fontWeight: FontWeight.w800,
@@ -112,8 +112,8 @@ class AppTheme {
         backgroundColor: liquidSurface,
         selectedItemColor: liquidPrimary,
         unselectedItemColor: liquidOnSurfaceVariant,
-        selectedLabelStyle: GoogleFonts.inter(fontSize: 12.0, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: GoogleFonts.inter(fontSize: 12.0, fontWeight: FontWeight.w500),
+        selectedLabelStyle: GoogleFonts.poppins(fontSize: 12.0, fontWeight: FontWeight.w600),
+        unselectedLabelStyle: GoogleFonts.poppins(fontSize: 12.0, fontWeight: FontWeight.w500),
       ),
     );
   }

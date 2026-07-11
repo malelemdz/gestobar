@@ -160,10 +160,10 @@ class _MenuPageState extends ConsumerState<MenuPage> {
               child: TextField(
                 controller: _searchController,
                 onChanged: (val) => setState(() => _searchQuery = val),
-                style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
+                style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
                 decoration: InputDecoration(
                   hintText: 'Buscar productos...',
-                  hintStyle: GoogleFonts.plusJakartaSans(
+                  hintStyle: GoogleFonts.poppins(
                     color: Colors.white.withOpacity(0.3),
                     fontSize: 14,
                   ),

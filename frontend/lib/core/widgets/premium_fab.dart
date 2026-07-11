@@ -34,7 +34,7 @@ class PremiumFAB extends StatelessWidget {
       icon: Icon(icon, color: isEnabled ? const Color(0xFF0C0E12) : Colors.white30, size: 20),
       label: Text(
         label,
-        style: GoogleFonts.plusJakartaSans(
+        style: GoogleFonts.poppins(
           color: isEnabled ? const Color(0xFF0C0E12) : Colors.white30,
           fontWeight: FontWeight.bold,
           fontSize: 14,

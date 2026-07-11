@@ -24,7 +24,7 @@ class ConfigDropdownField<T> extends StatelessWidget {
       children: [
         Text(
           label.toUpperCase(),
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             fontSize: 10.0,
             fontWeight: FontWeight.w700,
             color: AppTheme.liquidOnSurfaceVariant,

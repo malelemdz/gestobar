@@ -68,7 +68,7 @@ class TarifasTab extends StatelessWidget {
                                 children: [
                                   Text(
                                     tarifa.nombre,
-                                    style: GoogleFonts.plusJakartaSans(
+                                    style: GoogleFonts.poppins(
                                       color: tarifa.activo ? Colors.white : Colors.white30,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
@@ -85,7 +85,7 @@ class TarifasTab extends StatelessWidget {
                                       ),
                                       child: Text(
                                         'Default',
-                                        style: GoogleFonts.inter(
+                                        style: GoogleFonts.poppins(
                                           color: const Color(0xFF00F0FF),
                                           fontWeight: FontWeight.bold,
                                           fontSize: 10,
@@ -103,7 +103,7 @@ class TarifasTab extends StatelessWidget {
                                       ),
                                       child: Text(
                                         'Dama',
-                                        style: GoogleFonts.inter(
+                                        style: GoogleFonts.poppins(
                                           color: Colors.pinkAccent,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 10,
@@ -147,7 +147,7 @@ class TarifasTab extends StatelessWidget {
                   icon: const Icon(Icons.add, size: 16, color: Color(0xFF0c0e12)),
                   label: Text(
                     'Nueva Tarifa',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF0c0e12),
                     ),

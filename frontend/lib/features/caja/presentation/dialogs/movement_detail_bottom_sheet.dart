@@ -58,7 +58,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
           ],
           Text(
             isVenta ? 'TICKET DE COMPRA' : 'DETALLE DE CAJA CHICA',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: isVenta
                   ? const Color(0xFF00F0FF)
                   : (ev.tipo == 'INGRESO' ? const Color(0xFF00FF66) : Colors.redAccent),
@@ -91,7 +91,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
                 ),
                 child: Text(
                   'CERRAR TICKET',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white70,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
@@ -137,7 +137,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
 
         Text(
           'ARTÍCULOS CONSUMIDOS',
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             color: Colors.white54,
             fontSize: 10,
             fontWeight: FontWeight.w900,
@@ -171,7 +171,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           name,
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
@@ -180,12 +180,12 @@ class MovementDetailBottomSheet extends ConsumerWidget {
                       ),
                       Text(
                         '${d.cantidad}x $symbol $formattedPrice',
-                        style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 11),
+                        style: GoogleFonts.poppins(color: Colors.white54, fontSize: 11),
                       ),
                       const SizedBox(width: 16),
                       Text(
                         '$symbol $formattedSubtotal',
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
@@ -207,7 +207,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
                           d.esInvitacion
                               ? 'Invitación Especial (Sin comisión)'
                               : 'Asignado a: ${d.dama!.nombre} (Comisión: $symbol ${CurrencyHelper.formatAmount(d.comisionDama * d.cantidad, iso)})',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: d.esInvitacion ? const Color(0xFF00FF66) : const Color(0xFFFF00D6),
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -247,7 +247,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
             children: [
               Text(
                 'TOTAL COBRADO:',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFF00F0FF),
                   fontWeight: FontWeight.w900,
                   fontSize: 12,
@@ -255,7 +255,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
               ),
               Text(
                 '$symbol ${CurrencyHelper.formatAmount(venta.total, iso)}',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFF00F0FF),
                   fontWeight: FontWeight.w900,
                   fontSize: 15,
@@ -297,7 +297,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
                 const SizedBox(width: 8),
                 Text(
                   isIngreso ? 'INGRESO DE CAJA CHICA' : 'EGRESO DE CAJA CHICA',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: isIngreso ? const Color(0xFF00FF66) : Colors.redAccent,
                     fontWeight: FontWeight.w900,
                     fontSize: 11,
@@ -330,7 +330,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
 
         Text(
           'CONCEPTO / DESCRIPCIÓN',
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             color: Colors.white54,
             fontSize: 10,
             fontWeight: FontWeight.w900,
@@ -347,7 +347,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
           ),
           child: Text(
             m.concepto.isNotEmpty ? m.concepto : 'Sin descripción registrada.',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 12,
               height: 1.4,
@@ -368,7 +368,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
             children: [
               Text(
                 'MONTO OPERACIÓN:',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: isIngreso ? const Color(0xFF00FF66) : Colors.redAccent,
                   fontWeight: FontWeight.w900,
                   fontSize: 12,
@@ -376,7 +376,7 @@ class MovementDetailBottomSheet extends ConsumerWidget {
               ),
               Text(
                 '${isIngreso ? '+' : '-'} $symbol ${CurrencyHelper.formatAmount(m.monto, iso)}',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: isIngreso ? const Color(0xFF00FF66) : Colors.redAccent,
                   fontWeight: FontWeight.w900,
                   fontSize: 15,
@@ -395,14 +395,14 @@ class MovementDetailBottomSheet extends ConsumerWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             color: Colors.white30,
             fontSize: 11,
           ),
         ),
         Text(
           value,
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             color: valueColor,
             fontWeight: FontWeight.bold,
             fontSize: 11,

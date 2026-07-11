@@ -53,7 +53,7 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
         ),
         title: Text(
           widget.tarifa == null ? 'Nueva Tarifa' : 'Editar Tarifa',
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
@@ -67,7 +67,7 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
             children: [
               Text(
                 'NOMBRE',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: AppTheme.liquidOnSurfaceVariant,
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -82,7 +82,7 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
                 ),
                 child: TextField(
                   controller: _nameController,
-                  style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+                  style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
                   decoration: InputDecoration(
                     hintText: 'Ej. VIP, Especial...',
                     hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
@@ -97,7 +97,7 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
                 children: [
                   Text(
                     'TARIFA POR DEFECTO',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: AppTheme.liquidOnSurfaceVariant,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -122,7 +122,7 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
                 children: [
                   Text(
                     'TARIFA ACTIVA',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: AppTheme.liquidOnSurfaceVariant,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -147,7 +147,7 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar', style: GoogleFonts.inter(color: Colors.white60)),
+            child: Text('Cancelar', style: GoogleFonts.poppins(color: Colors.white60)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -199,7 +199,7 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
             ),
             child: Text(
               'Guardar',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFF0c0e12),
               ),

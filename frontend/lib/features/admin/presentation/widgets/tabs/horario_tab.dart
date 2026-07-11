@@ -59,7 +59,7 @@ class HorarioTab extends StatelessWidget {
                                 children: [
                                   Text(
                                     dia.toUpperCase(),
-                                    style: GoogleFonts.plusJakartaSans(
+                                    style: GoogleFonts.poppins(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w700,
                                       color: data['abierto']
@@ -132,7 +132,7 @@ class HorarioTab extends StatelessWidget {
                                         const SizedBox(width: 8),
                                         Text(
                                           dia.toUpperCase(),
-                                          style: GoogleFonts.plusJakartaSans(
+                                          style: GoogleFonts.poppins(
                                             fontSize: 13,
                                             fontWeight: FontWeight.w700,
                                             color: data['abierto']

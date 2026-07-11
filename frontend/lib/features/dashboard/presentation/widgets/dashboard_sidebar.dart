@@ -79,7 +79,7 @@ class DashboardSidebar extends StatelessWidget {
                         children: [
                           Text(
                             'Gestobar',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w800,
                               fontSize: 22.0,
                               color: const Color(0xFFDBFCFF),
@@ -281,7 +281,7 @@ class DashboardSidebar extends StatelessWidget {
                   Expanded(
                     child: Text(
                       label,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         fontSize: 13.5,
                         fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                         color: isSelected ? const Color(0xFF00F0FF) : Colors.white.withOpacity(0.4),
@@ -340,7 +340,7 @@ class DashboardSidebar extends StatelessWidget {
                   Expanded(
                     child: Text(
                       label,
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         fontSize: 13.0,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                         color: isSelected ? activeColor : inactiveColor,

@@ -47,7 +47,7 @@ class _AddEditCategoryDialogState extends ConsumerState<AddEditCategoryDialog> {
         children: [
           Text(
             'NOMBRE',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: AppTheme.liquidOnSurfaceVariant,
               fontSize: 10,
               fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class _AddEditCategoryDialogState extends ConsumerState<AddEditCategoryDialog> {
           ),
           child: Text(
             'Cancelar',
-            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(width: 12),
@@ -118,7 +118,7 @@ class _AddEditCategoryDialogState extends ConsumerState<AddEditCategoryDialog> {
           ),
           child: Text(
             'Guardar',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
               color: const Color(0xFF0c0e12),
             ),

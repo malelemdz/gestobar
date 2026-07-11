@@ -89,7 +89,7 @@ class DashboardSessionCard extends ConsumerWidget {
                               return Center(
                                 child: Text(
                                   (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
-                                  style: GoogleFonts.plusJakartaSans(
+                                  style: GoogleFonts.poppins(
                                     color: const Color(0xFF14161A),
                                     fontSize: 16.0,
                                     fontWeight: FontWeight.bold,
@@ -101,7 +101,7 @@ class DashboardSessionCard extends ConsumerWidget {
                         : Center(
                             child: Text(
                               (user.nombre.isNotEmpty ? user.nombre.substring(0, 1) : 'U').toUpperCase(),
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFF14161A),
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
@@ -122,7 +122,7 @@ class DashboardSessionCard extends ConsumerWidget {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           'Hola, ${user.nombre.split(' ').first}',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 16.0,
                             fontWeight: FontWeight.w800,
@@ -182,7 +182,7 @@ class DashboardSessionCard extends ConsumerWidget {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           activeBarId != null ? barName : 'Consola global',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 15.0,
                             color: AppTheme.liquidPrimary,
@@ -207,7 +207,7 @@ class DashboardSessionCard extends ConsumerWidget {
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                   list.join(', '),
-                                  style: GoogleFonts.plusJakartaSans(
+                                  style: GoogleFonts.poppins(
                                     fontSize: 10.5,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.white.withOpacity(0.4),
@@ -285,7 +285,7 @@ class _LocalTimeClockState extends ConsumerState<LocalTimeClock> {
           children: [
             Text(
               _getFormattedDate(barTime).toUpperCase(),
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 fontSize: 9.5,
                 fontWeight: FontWeight.bold,
                 color: Colors.white38,
@@ -294,7 +294,7 @@ class _LocalTimeClockState extends ConsumerState<LocalTimeClock> {
             const SizedBox(height: 4.0),
             Text(
               timeStr,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w800,
                 color: const Color(0xFF00F0FF),
@@ -330,7 +330,7 @@ class _LocalTimeClockState extends ConsumerState<LocalTimeClock> {
           children: [
             Text(
               _getFormattedDate(barTime).toUpperCase(),
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 fontSize: 9.5,
                 fontWeight: FontWeight.bold,
                 color: Colors.white38,
@@ -339,7 +339,7 @@ class _LocalTimeClockState extends ConsumerState<LocalTimeClock> {
             const SizedBox(height: 4.0),
             Text(
               timeStr,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w800,
                 color: const Color(0xFF00F0FF),

@@ -54,7 +54,7 @@ class TechnicalSection extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text(
                   title.toUpperCase(),
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -118,7 +118,7 @@ class TechnicalRow extends StatelessWidget {
                   children: [
                     Text(
                       label.toUpperCase(),
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.white.withOpacity(0.4),
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
@@ -127,7 +127,7 @@ class TechnicalRow extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       value,
-                      style: GoogleFonts.inter(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 13,
                         fontWeight: FontWeight.w600,

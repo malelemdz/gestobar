@@ -68,7 +68,7 @@ class _StyledTextFieldState extends State<StyledTextField> {
       readOnly: widget.readOnly,
       onTap: widget.onTap,
       onChanged: widget.onChanged,
-      style: GoogleFonts.inter(
+      style: GoogleFonts.poppins(
         color: widget.enabled ? Colors.white : Colors.white54,
         fontSize: 13,
       ),

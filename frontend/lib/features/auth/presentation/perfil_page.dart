@@ -118,7 +118,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
             children: [
               Text(
                 'CONTRASEÑA ACTUAL',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -143,7 +143,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
 
               Text(
                 'NUEVA CONTRASEÑA',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -169,7 +169,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
 
               Text(
                 'CONFIRMAR NUEVA CONTRASEÑA',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -207,7 +207,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
             ),
             child: Text(
               'Cancelar',
-              style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+              style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 12),
@@ -260,7 +260,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                   )
                 : Text(
                     'ACTUALIZAR',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF0c0e12),
                     ),
@@ -436,7 +436,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
 
               Text(
                 'NOMBRE',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -456,7 +456,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
 
               Text(
                 'APELLIDO',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -476,7 +476,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
 
               Text(
                 'NOMBRE DE USUARIO',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -496,7 +496,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
 
               Text(
                 'IDENTIFICACIÓN / CÉDULA',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -512,7 +512,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
 
               Text(
                 'CELULAR / TELÉFONO',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -528,7 +528,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
 
               Text(
                 'NACIONALIDAD',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -544,7 +544,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
 
               Text(
                 'GÉNERO',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -554,7 +554,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
               DropdownButtonFormField<String>(
                 value: selectedGenero,
                 dropdownColor: const Color(0xFF22252A),
-                style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+                style: GoogleFonts.poppins(color: Colors.white, fontSize: 13),
                 decoration: InputDecoration(
                   prefixIcon: const Padding(
                     padding: EdgeInsets.only(left: 12.0, right: 8.0),
@@ -597,7 +597,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
 
               Text(
                 'DIRECCIÓN DOMICILIARIA',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: const Color(0xFFB9CACB),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -626,7 +626,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
             ),
             child: Text(
               'Cancelar',
-              style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+              style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 12),
@@ -687,7 +687,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
                   )
                 : Text(
                     'GUARDAR',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF0c0e12),
                     ),

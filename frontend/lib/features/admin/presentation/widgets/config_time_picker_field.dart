@@ -22,7 +22,7 @@ class ConfigTimePickerField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.plusJakartaSans(
+          style: GoogleFonts.poppins(
             fontSize: 10.0,
             fontWeight: FontWeight.w600,
             color: AppTheme.liquidOnSurfaceVariant,

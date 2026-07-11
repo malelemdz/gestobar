@@ -98,7 +98,7 @@ class ProductRankingList extends ConsumerWidget {
                 const SizedBox(height: 16.0),
                 Text(
                   'No hay ventas registradas',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: Colors.white.withOpacity(0.5),
                     fontWeight: FontWeight.bold,
                   ),
@@ -148,7 +148,7 @@ class ProductRankingList extends ConsumerWidget {
                         child: Center(
                           child: Text(
                             '$rank',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: rankColor,
                               fontWeight: FontWeight.bold,
                               fontSize: 12.0,
@@ -169,7 +169,7 @@ class ProductRankingList extends ConsumerWidget {
                           children: [
                             Text(
                               p.productoNombre,
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14.0,
@@ -199,7 +199,7 @@ class ProductRankingList extends ConsumerWidget {
                         children: [
                           Text(
                             '${p.cantidadVendida} unid.',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 13.0,
@@ -208,7 +208,7 @@ class ProductRankingList extends ConsumerWidget {
                           const SizedBox(height: 2.0),
                           Text(
                             CurrencyHelper.formatWithSymbol(p.totalRecaudado, currencySymbol, currencyIso),
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFF00F0FF),
                               fontWeight: FontWeight.bold,
                               fontSize: 12.0,

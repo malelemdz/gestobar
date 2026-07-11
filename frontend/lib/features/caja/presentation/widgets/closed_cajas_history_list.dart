@@ -34,7 +34,7 @@ class ClosedCajasHistoryList extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 40.0),
               child: Text(
                 'No hay turnos de caja cerrados registrados.',
-                style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 13),
+                style: GoogleFonts.poppins(color: Colors.white30, fontSize: 13),
               ),
             ),
           );
@@ -99,7 +99,7 @@ class ClosedCajasHistoryList extends ConsumerWidget {
                                 const SizedBox(width: 4),
                                 Text(
                                   'CERRADA',
-                                  style: GoogleFonts.plusJakartaSans(
+                                  style: GoogleFonts.poppins(
                                     color: Colors.white30,
                                     fontSize: 9,
                                     fontWeight: FontWeight.w900,
@@ -110,7 +110,7 @@ class ClosedCajasHistoryList extends ConsumerWidget {
                           ),
                           Text(
                             '$currencySymbol $formattedFinal',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFF00FF66),
                               fontWeight: FontWeight.w900,
                               fontSize: 14,
@@ -135,11 +135,11 @@ class ClosedCajasHistoryList extends ConsumerWidget {
                         children: [
                           Text(
                             'Fondo Inicial:',
-                            style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 11),
+                            style: GoogleFonts.poppins(color: Colors.white30, fontSize: 11),
                           ),
                           Text(
                             '$currencySymbol $formattedInicial',
-                            style: GoogleFonts.plusJakartaSans(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+                            style: GoogleFonts.poppins(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -167,7 +167,7 @@ class ClosedCajasHistoryList extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 40.0),
           child: Text(
             'Error al cargar historial: $err',
-            style: GoogleFonts.plusJakartaSans(color: Colors.redAccent, fontSize: 12),
+            style: GoogleFonts.poppins(color: Colors.redAccent, fontSize: 12),
           ),
         ),
       ),
@@ -182,7 +182,7 @@ class ClosedCajasHistoryList extends ConsumerWidget {
         const SizedBox(width: 8),
         Text(
           label,
-          style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 11, fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(color: Colors.white30, fontSize: 11, fontWeight: FontWeight.bold),
         ),
         const SizedBox(width: 4),
         Expanded(
@@ -190,7 +190,7 @@ class ClosedCajasHistoryList extends ConsumerWidget {
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.plusJakartaSans(color: Colors.white70, fontSize: 11),
+            style: GoogleFonts.poppins(color: Colors.white70, fontSize: 11),
           ),
         ),
       ],

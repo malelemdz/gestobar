@@ -75,7 +75,7 @@ class MovimientosList extends ConsumerWidget {
         child: Center(
           child: Text(
             'Sin eventos ni movimientos registrados en este turno.',
-            style: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 11),
+            style: GoogleFonts.poppins(color: Colors.white24, fontSize: 11),
           ),
         ),
       );
@@ -93,7 +93,7 @@ class MovimientosList extends ConsumerWidget {
         children: [
           Text(
             'BITÁCORA UNIFICADA DE EVENTOS (TIEMPO REAL)',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white54,
               fontSize: 10,
               fontWeight: FontWeight.w900,
@@ -160,7 +160,7 @@ class MovimientosList extends ConsumerWidget {
                           children: [
                             Text(
                               isVenta ? 'VENTA POS • TICKET' : ev.concepto,
-                              style: GoogleFonts.plusJakartaSans(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
@@ -171,13 +171,13 @@ class MovimientosList extends ConsumerWidget {
                             if (isVenta)
                               Text(
                                 ev.concepto,
-                                style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 11),
+                                style: GoogleFonts.poppins(color: Colors.white30, fontSize: 11),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             Text(
                               'Vía ${ev.metodoPago} • $time por ${ev.cajero}',
-                              style: GoogleFonts.plusJakartaSans(color: Colors.white30, fontSize: 10),
+                              style: GoogleFonts.poppins(color: Colors.white30, fontSize: 10),
                             ),
                           ],
                         ),
@@ -185,7 +185,7 @@ class MovimientosList extends ConsumerWidget {
                       const SizedBox(width: 8),
                       Text(
                         '${(isIngreso || isVenta) ? '+' : '-'} $currencySymbol $formattedMonto',
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: isIngreso ? const Color(0xFF00FF66) : (isVenta ? const Color(0xFF00F0FF) : Colors.redAccent),
                           fontWeight: FontWeight.w900,
                           fontSize: 13,

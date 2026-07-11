@@ -18,7 +18,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
       title: Text(
         'Cerrar Sesión',
         textAlign: TextAlign.center,
-        style: GoogleFonts.plusJakartaSans(
+        style: GoogleFonts.poppins(
           color: Colors.white,
           fontWeight: FontWeight.w900,
           fontSize: 16,
@@ -44,7 +44,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
           Text(
             '¿Estás seguro de que deseas salir de tu cuenta?',
             textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white70,
               fontSize: 13.0,
               height: 1.4,
@@ -65,7 +65,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
           ),
           child: Text(
             'Cancelar',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 12.0,
             ),
@@ -85,7 +85,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
           ),
           child: Text(
             'Cerrar Sesión',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
               fontSize: 12.0,
             ),

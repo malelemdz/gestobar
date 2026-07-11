@@ -202,7 +202,7 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                       padding: const EdgeInsets.symmetric(vertical: 14.0),
                       child: Text(
                         widget.message,
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.poppins(
                           color: Colors.white.withOpacity(0.95),
                           fontSize: 13,
                           fontWeight: FontWeight.w500,

@@ -118,7 +118,7 @@ Future<void> showAddEditStaffDialog({
                           // Line 1: Nombre
                           Text(
                             'NOMBRE',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFFB9CACB),
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -142,7 +142,7 @@ Future<void> showAddEditStaffDialog({
                           // Line 2: Apellido
                           Text(
                             'APELLIDO',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFFB9CACB),
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -166,7 +166,7 @@ Future<void> showAddEditStaffDialog({
                           // Line 3: ROL
                           Text(
                             'ROL',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFFB9CACB),
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -206,7 +206,7 @@ Future<void> showAddEditStaffDialog({
                                   children: [
                                     Text(
                                       'NOMBRE DE USUARIO',
-                                      style: GoogleFonts.plusJakartaSans(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFFB9CACB),
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -236,7 +236,7 @@ Future<void> showAddEditStaffDialog({
                                   children: [
                                     Text(
                                       'CONTRASEÑA',
-                                      style: GoogleFonts.plusJakartaSans(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFFB9CACB),
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -287,7 +287,7 @@ Future<void> showAddEditStaffDialog({
                                   children: [
                                     Text(
                                       'CELULAR',
-                                      style: GoogleFonts.plusJakartaSans(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFFB9CACB),
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -316,7 +316,7 @@ Future<void> showAddEditStaffDialog({
                                   children: [
                                     Text(
                                       'CÉDULA / DNI',
-                                      style: GoogleFonts.plusJakartaSans(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFFB9CACB),
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -351,7 +351,7 @@ Future<void> showAddEditStaffDialog({
                                   children: [
                                     Text(
                                       'NACIONALIDAD',
-                                      style: GoogleFonts.plusJakartaSans(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFFB9CACB),
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -380,7 +380,7 @@ Future<void> showAddEditStaffDialog({
                                   children: [
                                     Text(
                                       'GÉNERO',
-                                      style: GoogleFonts.plusJakartaSans(
+                                      style: GoogleFonts.poppins(
                                         color: const Color(0xFFB9CACB),
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -420,7 +420,7 @@ Future<void> showAddEditStaffDialog({
                           // Line 7: Dirección
                           Text(
                             'DIRECCIÓN',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFFB9CACB),
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -456,7 +456,7 @@ Future<void> showAddEditStaffDialog({
           ),
           child: Text(
             'Cancelar',
-            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(width: 12),
@@ -558,7 +558,7 @@ Future<void> showAddEditStaffDialog({
                 )
               : Text(
                   isEdit ? 'GUARDAR CAMBIOS' : 'REGISTRAR USUARIO',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -596,7 +596,7 @@ Widget _buildDropdownField<T>({
   return DropdownButtonFormField<T>(
     value: value,
     dropdownColor: dropdownColor,
-    style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+    style: GoogleFonts.poppins(color: Colors.white, fontSize: 13),
     decoration: InputDecoration(
       filled: true,
       fillColor: const Color(0xFF22252A),

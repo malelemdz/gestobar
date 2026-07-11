@@ -156,7 +156,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                 children: [
                   Text(
                     'FOTO EN PORTADA',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: AppTheme.liquidOnSurfaceVariant,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -201,7 +201,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                     const SizedBox(height: 6),
                                     Text(
                                       'Foto no disponible (Toca para cambiar)',
-                                      style: GoogleFonts.inter(
+                                      style: GoogleFonts.poppins(
                                         color: Colors.white30,
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -266,7 +266,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
             const SizedBox(height: 20),
             Text(
               'NOMBRE DEL PRODUCTO',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: AppTheme.liquidOnSurfaceVariant,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
@@ -283,7 +283,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
 
             Text(
               'DESCRIPCIÓN',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: AppTheme.liquidOnSurfaceVariant,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
@@ -299,7 +299,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
 
             Text(
               'CATEGORÍA',
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: AppTheme.liquidOnSurfaceVariant,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
@@ -316,7 +316,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
               child: DropdownButtonFormField<String>(
                 value: _selectedCategoryId,
                 dropdownColor: const Color(0xFF1E2024),
-                style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+                style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
                 decoration: const InputDecoration(border: InputBorder.none),
                 hint: const Text('Selecciona una categoría...', style: TextStyle(color: Colors.white30, fontSize: 14)),
                 items: categories.map((cat) {
@@ -343,7 +343,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
               children: [
                 Text(
                   'VARIANTES',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFF00F0FF),
                     fontSize: 11.0,
                     fontWeight: FontWeight.bold,
@@ -354,7 +354,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                   icon: const Icon(Icons.add_circle_outline, color: Color(0xFF00F0FF), size: 16),
                   label: Text(
                     'Agregar Variante',
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF00F0FF),
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
@@ -371,7 +371,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                 child: Center(
                   child: Text(
                     'No se han configurado variantes. Agrega una para establecer precios.',
-                    style: GoogleFonts.inter(color: Colors.white30, fontSize: 13),
+                    style: GoogleFonts.poppins(color: Colors.white30, fontSize: 13),
                   ),
                 ),
               )
@@ -406,7 +406,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                 children: [
                                   Text(
                                     'NOMBRE DE LA VARIANTE',
-                                    style: GoogleFonts.plusJakartaSans(
+                                    style: GoogleFonts.poppins(
                                       color: AppTheme.liquidOnSurfaceVariant,
                                       fontSize: 9,
                                       fontWeight: FontWeight.bold,
@@ -415,7 +415,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                   const SizedBox(height: 4),
                                   TextFormField(
                                     initialValue: variant['nombre'],
-                                    style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+                                    style: GoogleFonts.poppins(color: Colors.white, fontSize: 13),
                                     decoration: InputDecoration(
                                       filled: true,
                                       fillColor: const Color(0xFF22252A),
@@ -450,7 +450,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                               children: [
                                 Text(
                                   'DISPONIBLE',
-                                  style: GoogleFonts.plusJakartaSans(
+                                  style: GoogleFonts.poppins(
                                     color: AppTheme.liquidOnSurfaceVariant,
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
@@ -484,7 +484,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
 
                         Text(
                           'MATRIZ DE PRECIOS POR TARIFA',
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: AppTheme.liquidOnSurfaceVariant,
                             fontSize: 9,
                             fontWeight: FontWeight.bold,
@@ -516,7 +516,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
                                     children: [
                                       Text(
                                         tariff.nombre.toUpperCase(),
-                                        style: GoogleFonts.plusJakartaSans(
+                                        style: GoogleFonts.poppins(
                                           color: tariff.esDefault
                                               ? const Color(0xFF00F0FF)
                                               : Colors.white60,
@@ -596,7 +596,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
           ),
           child: Text(
             'Cancelar',
-            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(width: 12),
@@ -609,7 +609,7 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
           ),
           child: Text(
             'Guardar Producto',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
               color: const Color(0xFF0C0E12),
             ),

@@ -108,7 +108,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
         children: [
           Text(
             'FILTRAR POR USUARIO',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white30,
               fontSize: 9,
               fontWeight: FontWeight.w900,
@@ -129,7 +129,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
           const SizedBox(height: 16),
           Text(
             'FILTRAR POR ACCIÓN',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white30,
               fontSize: 9,
               fontWeight: FontWeight.w900,
@@ -150,7 +150,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
           const SizedBox(height: 16),
           Text(
             'FILTRAR POR MÓDULO',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white30,
               fontSize: 9,
               fontWeight: FontWeight.w900,
@@ -171,7 +171,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
           const SizedBox(height: 16),
           Text(
             'FILTRAR POR RANGO DE FECHAS',
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               color: Colors.white30,
               fontSize: 9,
               fontWeight: FontWeight.w900,
@@ -218,7 +218,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                       const SizedBox(width: 8),
                       Text(
                         'LIMPIAR TODOS LOS FILTROS',
-                        style: GoogleFonts.plusJakartaSans(
+                        style: GoogleFonts.poppins(
                           color: AppTheme.colorDanger,
                           fontSize: 10,
                           fontWeight: FontWeight.w900,
@@ -260,7 +260,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: isActive ? Colors.white : Colors.white70,
                   fontSize: 12,
                   fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
@@ -386,7 +386,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                 const SizedBox(height: 16),
                 Text(
                   'Error al cargar la auditoría',
-                  style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                  style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 8),
                 Padding(
@@ -394,7 +394,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                   child: Text(
                     state.errorMessage!,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(color: Colors.white60, fontSize: 13),
+                    style: GoogleFonts.poppins(color: Colors.white60, fontSize: 13),
                   ),
                 ),
               ],
@@ -415,7 +415,7 @@ class _AuditoriaPageState extends ConsumerState<AuditoriaPage> {
                 const SizedBox(height: 16),
                 Text(
                   'No hay registros de auditoría',
-                  style: GoogleFonts.plusJakartaSans(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.w600),
+                  style: GoogleFonts.poppins(color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.w600),
                 ),
               ],
             ),

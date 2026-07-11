@@ -82,7 +82,7 @@ void showLogDetail(BuildContext context, AuditoriaModel log, String currencyIso,
                     currencyIso,
                     currencySymbol,
                   ),
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
                     color: Colors.white,
@@ -134,7 +134,7 @@ void showLogDetail(BuildContext context, AuditoriaModel log, String currencyIso,
                   if (log.detalles != null && log.detalles!['cambios'] != null) ...[
                     Text(
                       'CAMBIOS REALIZADOS',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w800,
                         fontSize: 12,
                         color: AppTheme.liquidPrimary,
@@ -282,7 +282,7 @@ Widget _buildLogMetadataDetail(AuditoriaModel log, String currencyIso, String cu
     children: [
       Text(
         title,
-        style: GoogleFonts.plusJakartaSans(
+        style: GoogleFonts.poppins(
           fontWeight: FontWeight.w800,
           fontSize: 12,
           color: AppTheme.liquidPrimary,
@@ -317,7 +317,7 @@ Widget _buildMetadataItem(String label, String value, {bool isHighlight = false,
         Expanded(
           child: Text(
             label,
-            style: GoogleFonts.plusJakartaSans(
+            style: GoogleFonts.poppins(
               fontSize: 13,
               color: Colors.white70,
               fontWeight: FontWeight.w500,
@@ -326,7 +326,7 @@ Widget _buildMetadataItem(String label, String value, {bool isHighlight = false,
         ),
         Text(
           value,
-          style: GoogleFonts.inter(
+          style: GoogleFonts.poppins(
             fontSize: 13,
             fontWeight: isHighlight ? FontWeight.bold : FontWeight.w600,
             color: isHighlight ? (highlightColor ?? AppTheme.liquidPrimary) : (highlightColor ?? Colors.white),
@@ -351,7 +351,7 @@ Widget _buildDetailRow(IconData icon, String label, String value) {
             children: [
               Text(
                 label.toUpperCase(),
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 10,
                   color: AppTheme.liquidOnSurfaceVariant.withOpacity(0.5),
@@ -360,7 +360,7 @@ Widget _buildDetailRow(IconData icon, String label, String value) {
               const SizedBox(height: 2),
               Text(
                 value,
-                style: GoogleFonts.inter(
+                style: GoogleFonts.poppins(
                   fontSize: 14,
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
@@ -415,7 +415,7 @@ Widget _buildChangesList(Map<String, dynamic> cambios, String currencyIso, Strin
             children: [
               Text(
                 AuditoriaFormatters.formatFieldKey(field),
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
                   color: Colors.white,
@@ -434,7 +434,7 @@ Widget _buildChangesList(Map<String, dynamic> cambios, String currencyIso, Strin
                       ),
                       child: Text(
                         de,
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.poppins(
                           fontSize: 12,
                           color: AppTheme.colorDanger,
                           decoration: TextDecoration.lineThrough,
@@ -457,7 +457,7 @@ Widget _buildChangesList(Map<String, dynamic> cambios, String currencyIso, Strin
                       ),
                       child: Text(
                         a,
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.poppins(
                           fontSize: 12,
                           color: AppTheme.colorSuccess,
                         ),

@@ -56,10 +56,10 @@ class _CatalogSectionState extends ConsumerState<CatalogSection> {
             child: TextField(
               controller: _searchController,
               onChanged: (val) => setState(() => _searchQuery = val),
-              style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
+              style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
               decoration: InputDecoration(
                 hintText: 'Buscar productos...',
-                hintStyle: GoogleFonts.plusJakartaSans(
+                hintStyle: GoogleFonts.poppins(
                   color: Colors.white.withOpacity(0.3),
                   fontSize: 14,
                 ),
@@ -119,7 +119,7 @@ class _CatalogSectionState extends ConsumerState<CatalogSection> {
                           ),
                           child: Text(
                             nombre,
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: isSelected ? const Color(0xFF14161A) : Colors.white.withOpacity(0.6),
                               fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                               fontSize: 13,
@@ -163,7 +163,7 @@ class _CatalogSectionState extends ConsumerState<CatalogSection> {
                               const SizedBox(height: 12),
                               Text(
                                 'No hay bebidas disponibles',
-                                style: GoogleFonts.plusJakartaSans(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white.withOpacity(0.4),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
@@ -219,7 +219,7 @@ class _CatalogSectionState extends ConsumerState<CatalogSection> {
                     child: Center(
                       child: Text(
                         'Error al cargar catálogo: $err',
-                        style: GoogleFonts.plusJakartaSans(color: Colors.redAccent),
+                        style: GoogleFonts.poppins(color: Colors.redAccent),
                       ),
                     ),
                   ),

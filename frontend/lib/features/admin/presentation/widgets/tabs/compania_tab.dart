@@ -45,7 +45,7 @@ class CompaniaTab extends StatelessWidget {
                   children: [
                     Text(
                       'Activar',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,

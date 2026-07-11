@@ -141,7 +141,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
             const SizedBox(width: 12),
             Text(
               label,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: isActive ? Colors.black : Colors.white30,
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
@@ -382,7 +382,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
               const SizedBox(width: 8),
               Text(
                 label,
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: isActive ? Colors.black : Colors.white30,
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
@@ -444,7 +444,7 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
                           const SizedBox(height: 20),
                           Text(
                             'SECCIONES',
-                            style: GoogleFonts.plusJakartaSans(
+                            style: GoogleFonts.poppins(
                               color: Colors.white30,
                               fontSize: 9,
                               fontWeight: FontWeight.w900,

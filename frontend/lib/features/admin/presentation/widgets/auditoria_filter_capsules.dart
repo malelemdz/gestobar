@@ -172,7 +172,7 @@ class AuditoriaFilterCapsules extends ConsumerWidget {
           children: [
             Text(
               label,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: isSelected ? const Color(0xFF14161A) : Colors.white.withOpacity(0.6),
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 fontSize: 12,

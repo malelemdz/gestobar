@@ -61,7 +61,7 @@ class _ConfigWarningSheetState extends State<ConfigWarningSheet> {
               const SizedBox(height: 16),
               Text(
                 'CAMBIOS CRÍTICOS DETECTADOS',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -71,18 +71,18 @@ class _ConfigWarningSheetState extends State<ConfigWarningSheet> {
               if (widget.changedCurrency)
                 Text(
                   'Has cambiado la Moneda. El sistema migrará matemáticamente TODOS los precios de tu Menú para ajustarlos a la escala correcta (Ej: 27.42 a 27.420).',
-                  style: GoogleFonts.inter(color: Colors.white70, fontSize: 14),
+                  style: GoogleFonts.poppins(color: Colors.white70, fontSize: 14),
                 ),
               if (widget.changedCurrency && widget.changedTimezone) const SizedBox(height: 12),
               if (widget.changedTimezone)
                 Text(
                   'Has cambiado la Zona Horaria. Los reportes de ventas históricos podrían desfasarse en tiempo.',
-                  style: GoogleFonts.inter(color: Colors.white70, fontSize: 14),
+                  style: GoogleFonts.poppins(color: Colors.white70, fontSize: 14),
                 ),
               const SizedBox(height: 24),
               Text(
                 'Escribe "CONFIRMAR" para proceder:',
-                style: GoogleFonts.inter(color: Colors.white54, fontSize: 12),
+                style: GoogleFonts.poppins(color: Colors.white54, fontSize: 12),
               ),
               const SizedBox(height: 8),
               TextField(
@@ -105,7 +105,7 @@ class _ConfigWarningSheetState extends State<ConfigWarningSheet> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, false),
-                    child: Text('Cancelar', style: GoogleFonts.inter(color: Colors.white54)),
+                    child: Text('Cancelar', style: GoogleFonts.poppins(color: Colors.white54)),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -119,7 +119,7 @@ class _ConfigWarningSheetState extends State<ConfigWarningSheet> {
                     ),
                     child: Text(
                       'Entendido, Cambiar',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: GoogleFonts.poppins(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                       ),

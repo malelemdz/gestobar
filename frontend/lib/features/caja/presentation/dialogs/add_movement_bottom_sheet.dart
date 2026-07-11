@@ -99,7 +99,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
           children: [
             Text(
               metodo,
-              style: GoogleFonts.plusJakartaSans(
+              style: GoogleFonts.poppins(
                 color: isSelected ? const Color(0xFF00F0FF) : Colors.white30,
                 fontSize: 8,
                 fontWeight: FontWeight.bold,
@@ -110,7 +110,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
               fit: BoxFit.scaleDown,
               child: Text(
                 '${widget.currencySymbol} $formatted',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: balance > 0 
                       ? (isSelected ? const Color(0xFF00F0FF) : Colors.white70)
                       : Colors.redAccent.withOpacity(0.8),
@@ -152,7 +152,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
             children: [
               Text(
                 'Registrar ${widget.tipo == 'INGRESO' ? 'Ingreso de Caja Chica' : 'Egreso / Pago de Turno'}',
-                style: GoogleFonts.plusJakartaSans(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,
                   fontSize: 15,
@@ -169,7 +169,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
           // Input de Monto
           Text(
             'Monto del Movimiento',
-            style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 6),
           Container(
@@ -185,16 +185,16 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
               inputFormatters: [
                 CurrencyInputFormatter(iso: widget.currencyIso),
               ],
-              style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+              style: GoogleFonts.poppins(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
               decoration: InputDecoration(
                 hintText: CurrencyHelper.formatAmount(0.00, widget.currencyIso),
-                hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 15, fontWeight: FontWeight.bold),
+                hintStyle: GoogleFonts.poppins(color: Colors.white24, fontSize: 15, fontWeight: FontWeight.bold),
                 prefixIcon: Container(
                   width: 48,
                   alignment: Alignment.center,
                   child: Text(
                     widget.currencySymbol,
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFF00F0FF),
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
@@ -218,7 +218,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
           // Selector de Método de Pago
           Text(
             'Método de Pago / Canal',
-            style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 6),
           Row(
@@ -247,7 +247,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
                       child: Center(
                         child: Text(
                           metodo,
-                          style: GoogleFonts.plusJakartaSans(
+                          style: GoogleFonts.poppins(
                             color: isSelected ? const Color(0xFF00F0FF) : Colors.white54,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -264,7 +264,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
           if (widget.tipo == 'EGRESO' && widget.caja != null) ...[
             Text(
               'Saldos Disponibles en Caja:',
-              style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
+              style: GoogleFonts.poppins(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 6),
             Row(
@@ -282,7 +282,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
           // Input de Concepto / Motivo
           Text(
             'Concepto / Descripción del Movimiento',
-            style: GoogleFonts.plusJakartaSans(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 6),
           Container(
@@ -293,10 +293,10 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
             ),
             child: TextField(
               controller: _movConceptoCtrl,
-              style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 14),
+              style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
               decoration: InputDecoration(
                 hintText: 'Ej. Compra de limones, Pago de luz, Cambio...',
-                hintStyle: GoogleFonts.plusJakartaSans(color: Colors.white24, fontSize: 12),
+                hintStyle: GoogleFonts.poppins(color: Colors.white24, fontSize: 12),
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
@@ -372,7 +372,7 @@ class _AddMovementBottomSheetState extends State<AddMovementBottomSheet> {
                       )
                     : Text(
                         'CONFIRMAR MOVIMIENTO',
-                        style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 13),
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 13),
                       ),
               ),
             ),

@@ -243,7 +243,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
           value: _selectedCurrencyIso,
           isExpanded: true,
           dropdownColor: const Color(0xFF1E2024),
-          style: GoogleFonts.inter(
+          style: GoogleFonts.poppins(
             color: blockDropdown ? Colors.white30 : Colors.white,
             fontSize: 13,
           ),
@@ -290,7 +290,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
           value: _selectedTimezone,
           isExpanded: true,
           dropdownColor: const Color(0xFF1E2024),
-          style: GoogleFonts.inter(
+          style: GoogleFonts.poppins(
             color: blockDropdown ? Colors.white30 : Colors.white,
             fontSize: 13,
           ),
@@ -402,7 +402,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
             Expanded(
               child: Text(
                 'No hay administradores creados. Crea uno primero en la pestaña de Administradores.',
-                style: GoogleFonts.inter(color: Colors.white70, fontSize: 12),
+                style: GoogleFonts.poppins(color: Colors.white70, fontSize: 12),
               ),
             ),
           ],
@@ -422,7 +422,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
           value: _selectedOwnerId,
           isExpanded: true,
           dropdownColor: const Color(0xFF1E2024),
-          style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+          style: GoogleFonts.poppins(color: Colors.white, fontSize: 13),
           decoration: const InputDecoration(
             icon: Icon(Icons.person, color: Colors.white30, size: 16),
             border: InputBorder.none,
@@ -466,7 +466,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
             ),
             child: Text(
               'Cancelar',
-              style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold),
+              style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 12),
@@ -487,7 +487,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                   )
                 : Text(
                     widget.bar == null ? 'REGISTRAR' : 'GUARDAR CAMBIOS',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -520,7 +520,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                             Expanded(
                               child: Text(
                                 'Existe una caja abierta actualmente en esta sucursal. Para evitar descuadres en el arqueo, debes cerrarla antes de modificar la Moneda o Zona Horaria.',
-                                style: GoogleFonts.inter(
+                                style: GoogleFonts.poppins(
                                   color: Colors.redAccent,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
@@ -532,7 +532,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                       ),
                     ],
 
-                    Text('DATOS GENERALES DE LA SUCURSAL', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+                    Text('DATOS GENERALES DE LA SUCURSAL', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                     const SizedBox(height: 12),
                     
                     _buildNombreField(),
@@ -542,7 +542,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                     const SizedBox(height: 20),
 
                     // Divisa y Zona Horaria (Visibles en creación y edición)
-                    Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+                    Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                     const SizedBox(height: 12),
 
                     if (isTablet)
@@ -560,7 +560,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
                     ],
                     const SizedBox(height: 20),
 
-                    Text('CONFIGURACIÓN OPERATIVA', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+                    Text('CONFIGURACIÓN OPERATIVA', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                     const SizedBox(height: 12),
 
                     _buildModuloDamasToggle(),
@@ -571,7 +571,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
 
                     // Dropdown de Dueño / Admin del Bar (Únicamente en creación)
                     if (widget.bar == null) ...[
-                      Text('ADMINISTRADOR / DUEÑO DEL BAR', style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+                      Text('ADMINISTRADOR / DUEÑO DEL BAR', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
                       const SizedBox(height: 12),
                       _buildOwnerDropdown(),
                     ],
