@@ -103,7 +103,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                 // Columna izquierda (ancho 280px): filtros fijos
                 Container(
                   width: 280,
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                   decoration: BoxDecoration(
                     border: Border(
                       right: BorderSide(color: Colors.white.withOpacity(0.03)),
