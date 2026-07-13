@@ -406,7 +406,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
     if (state.isLoading) {
       listWidget = ListView.builder(
         padding: isTabletLandscape
-            ? const EdgeInsets.fromLTRB(16, 16, 16, 16)
+            ? const EdgeInsets.fromLTRB(16, 8, 16, 16)
             : const EdgeInsets.fromLTRB(16, 0, 16, 24),
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 6,
@@ -472,7 +472,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
       listWidget = ListView.builder(
         controller: _scrollController,
         padding: isTabletLandscape
-            ? const EdgeInsets.fromLTRB(16, 16, 16, 16)
+            ? const EdgeInsets.fromLTRB(16, 8, 16, 16)
             : const EdgeInsets.fromLTRB(16, 0, 16, 24),
         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         itemCount: state.logs.length + (state.hasMore ? 1 : 0),

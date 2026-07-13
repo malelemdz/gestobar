@@ -54,7 +54,7 @@ class PermisosTab extends StatelessWidget {
       child: Align(
         alignment: Alignment.topLeft,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: 1000),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

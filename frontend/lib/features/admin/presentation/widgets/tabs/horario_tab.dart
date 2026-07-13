@@ -28,7 +28,7 @@ class HorarioTab extends StatelessWidget {
       child: Align(
         alignment: Alignment.topLeft,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: 1000),
           child: ConfigBentoCard(
             title: 'Horario Semanal',
             description: 'Gestiona los días de apertura y horas de atención.',

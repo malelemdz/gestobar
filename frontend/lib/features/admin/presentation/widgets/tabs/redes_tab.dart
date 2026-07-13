@@ -16,40 +16,88 @@ class RedesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24.0),
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: ConfigBentoCard(
-            title: 'Redes Sociales',
-            description: 'Añade los enlaces de tus redes para compartirlos con tus clientes.',
-            icon: Icons.link_rounded,
-            child: Column(
-              children: [
-                ConfigTextField(
+    final bool isTabletLandscape = MediaQuery.of(context).size.width >= 1000;
+
+    Widget formContent;
+    if (isTabletLandscape) {
+      formContent = Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: ConfigTextField(
                   label: 'Facebook',
                   controller: facebookCtrl,
                   hintText: 'https://facebook.com/lounge...',
                   prefixIcon: Icons.facebook,
                 ),
-                const SizedBox(height: 12),
-                ConfigTextField(
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: ConfigTextField(
                   label: 'Instagram',
                   controller: instagramCtrl,
                   hintText: 'https://instagram.com/lounge...',
                   prefixIcon: Icons.camera_alt_outlined,
                 ),
-                const SizedBox(height: 12),
-                ConfigTextField(
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: ConfigTextField(
                   label: 'TikTok',
                   controller: tiktokCtrl,
                   hintText: 'https://tiktok.com/@lounge...',
                   prefixIcon: Icons.music_note,
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 16),
+              const Expanded(child: SizedBox()), // Empty slot for visual balance
+            ],
+          ),
+        ],
+      );
+    } else {
+      formContent = Column(
+        children: [
+          ConfigTextField(
+            label: 'Facebook',
+            controller: facebookCtrl,
+            hintText: 'https://facebook.com/lounge...',
+            prefixIcon: Icons.facebook,
+          ),
+          const SizedBox(height: 12),
+          ConfigTextField(
+            label: 'Instagram',
+            controller: instagramCtrl,
+            hintText: 'https://instagram.com/lounge...',
+            prefixIcon: Icons.camera_alt_outlined,
+          ),
+          const SizedBox(height: 12),
+          ConfigTextField(
+            label: 'TikTok',
+            controller: tiktokCtrl,
+            hintText: 'https://tiktok.com/@lounge...',
+            prefixIcon: Icons.music_note,
+          ),
+        ],
+      );
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: ConfigBentoCard(
+            title: 'Redes Sociales',
+            description: 'Añade los enlaces de tus redes para compartirlos con tus clientes.',
+            icon: Icons.link_rounded,
+            child: formContent,
           ),
         ),
       ),

@@ -44,7 +44,7 @@ class OperacionesTab extends StatelessWidget {
       child: Align(
         alignment: Alignment.topLeft,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: 1000),
           child: Column(
             children: [
               ConfigBentoCard(
@@ -190,7 +190,7 @@ class OperacionesTab extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(maxWidth: 600),
+      constraints: const BoxConstraints(maxWidth: 1000),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFF1E2024),

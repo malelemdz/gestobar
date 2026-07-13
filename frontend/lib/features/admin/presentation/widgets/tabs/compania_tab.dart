@@ -33,7 +33,7 @@ class CompaniaTab extends StatelessWidget {
       child: Align(
         alignment: Alignment.topLeft,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: 1000),
           child: ConfigBentoCard(
             title: 'Damas de Compañía',
             description: 'Habilita tickets y comisiones.',

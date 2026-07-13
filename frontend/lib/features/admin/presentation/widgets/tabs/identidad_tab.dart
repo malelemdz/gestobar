@@ -29,52 +29,57 @@ class IdentidadTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24.0),
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: ConfigBentoCard(
-            title: 'Identidad',
-            description: 'Sube el logo de tu local y actualiza toda la información.',
-            icon: Icons.storefront_outlined,
+    final bool isTabletLandscape = MediaQuery.of(context).size.width >= 1000;
+
+    Widget formContent;
+    if (isTabletLandscape) {
+      formContent = Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Columna izquierda: Logo
+          Column(
+            children: [
+              const SizedBox(height: 12),
+              GestureDetector(
+                onTap: isUploading ? null : onPickImage,
+                child: Container(
+                  height: 110,
+                  width: 110,
+                  decoration: BoxDecoration(
+                    color: AppTheme.liquidSurfaceContainerHigh,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppTheme.liquidOutline),
+                  ),
+                  child: isUploading
+                      ? const Center(child: CircularProgressIndicator())
+                      : logoUrl != null && logoUrl!.isNotEmpty
+                          ? ClipOval(
+                              child: Image.network(
+                                ApiConstants.resolveImageUrl(logoUrl)!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Icon(
+                                  Icons.image,
+                                  size: 44,
+                                  color: AppTheme.liquidOnSurfaceVariant,
+                                ),
+                              ),
+                            )
+                          : Icon(
+                              Icons.add_a_photo,
+                              size: 44,
+                              color: AppTheme.liquidOnSurfaceVariant,
+                            ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text('Logo (Toca para cambiar)', style: theme.textTheme.labelSmall),
+            ],
+          ),
+          const SizedBox(width: 32),
+          // Columna derecha: Formularios
+          Expanded(
             child: Column(
               children: [
-                GestureDetector(
-                  onTap: isUploading ? null : onPickImage,
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color: AppTheme.liquidSurfaceContainerHigh,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppTheme.liquidOutline),
-                    ),
-                    child: isUploading
-                        ? const Center(child: CircularProgressIndicator())
-                        : logoUrl != null && logoUrl!.isNotEmpty
-                            ? ClipOval(
-                                child: Image.network(
-                                  ApiConstants.resolveImageUrl(logoUrl)!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Icon(
-                                    Icons.image,
-                                    size: 40,
-                                    color: AppTheme.liquidOnSurfaceVariant,
-                                  ),
-                                ),
-                              )
-                            : Icon(
-                                Icons.add_a_photo,
-                                size: 40,
-                                color: AppTheme.liquidOnSurfaceVariant,
-                              ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text('Logo (Toca para cambiar)', style: theme.textTheme.labelSmall),
-                const SizedBox(height: 24),
                 ConfigTextField(
                   label: 'Nombre Comercial',
                   controller: nombreCtrl,
@@ -82,36 +87,142 @@ class IdentidadTab extends StatelessWidget {
                   prefixIcon: Icons.storefront,
                   validator: (v) => v != null && v.isEmpty ? 'Requerido' : null,
                 ),
-                const SizedBox(height: 12),
-                ConfigTextField(
-                  label: 'Ciudad',
-                  controller: ciudadCtrl,
-                  hintText: 'ej. Santa Cruz',
-                  prefixIcon: Icons.location_city,
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ConfigTextField(
+                        label: 'Ciudad',
+                        controller: ciudadCtrl,
+                        hintText: 'ej. Santa Cruz',
+                        prefixIcon: Icons.location_city,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ConfigTextField(
+                        label: 'Dirección Física',
+                        controller: direccionCtrl,
+                        hintText: 'ej. Av. Bush 2do Anillo',
+                        prefixIcon: Icons.map,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 12),
-                ConfigTextField(
-                  label: 'Dirección Física',
-                  controller: direccionCtrl,
-                  hintText: 'ej. Av. Bush 2do Anillo',
-                  prefixIcon: Icons.map,
-                ),
-                const SizedBox(height: 12),
-                ConfigTextField(
-                  label: 'Enlace Google Maps',
-                  controller: ubicacionCtrl,
-                  hintText: 'https://maps.google.com/...',
-                  prefixIcon: Icons.link,
-                ),
-                const SizedBox(height: 12),
-                ConfigTextField(
-                  label: 'WhatsApp',
-                  controller: whatsappCtrl,
-                  hintText: 'ej. +59170000000',
-                  prefixIcon: Icons.phone,
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ConfigTextField(
+                        label: 'Enlace Google Maps',
+                        controller: ubicacionCtrl,
+                        hintText: 'https://maps.google.com/...',
+                        prefixIcon: Icons.link,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ConfigTextField(
+                        label: 'WhatsApp',
+                        controller: whatsappCtrl,
+                        hintText: 'ej. +59170000000',
+                        prefixIcon: Icons.phone,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
+          ),
+        ],
+      );
+    } else {
+      formContent = Column(
+        children: [
+          GestureDetector(
+            onTap: isUploading ? null : onPickImage,
+            child: Container(
+              height: 100,
+              width: 100,
+              decoration: BoxDecoration(
+                color: AppTheme.liquidSurfaceContainerHigh,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppTheme.liquidOutline),
+              ),
+              child: isUploading
+                  ? const Center(child: CircularProgressIndicator())
+                  : logoUrl != null && logoUrl!.isNotEmpty
+                      ? ClipOval(
+                          child: Image.network(
+                            ApiConstants.resolveImageUrl(logoUrl)!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Icon(
+                              Icons.image,
+                              size: 40,
+                              color: AppTheme.liquidOnSurfaceVariant,
+                            ),
+                          ),
+                        )
+                      : Icon(
+                          Icons.add_a_photo,
+                          size: 40,
+                          color: AppTheme.liquidOnSurfaceVariant,
+                        ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text('Logo (Toca para cambiar)', style: theme.textTheme.labelSmall),
+          const SizedBox(height: 24),
+          ConfigTextField(
+            label: 'Nombre Comercial',
+            controller: nombreCtrl,
+            hintText: 'ej. Neon Lounge',
+            prefixIcon: Icons.storefront,
+            validator: (v) => v != null && v.isEmpty ? 'Requerido' : null,
+          ),
+          const SizedBox(height: 12),
+          ConfigTextField(
+            label: 'Ciudad',
+            controller: ciudadCtrl,
+            hintText: 'ej. Santa Cruz',
+            prefixIcon: Icons.location_city,
+          ),
+          const SizedBox(height: 12),
+          ConfigTextField(
+            label: 'Dirección Física',
+            controller: direccionCtrl,
+            hintText: 'ej. Av. Bush 2do Anillo',
+            prefixIcon: Icons.map,
+          ),
+          const SizedBox(height: 12),
+          ConfigTextField(
+            label: 'Enlace Google Maps',
+            controller: ubicacionCtrl,
+            hintText: 'https://maps.google.com/...',
+            prefixIcon: Icons.link,
+          ),
+          const SizedBox(height: 12),
+          ConfigTextField(
+            label: 'WhatsApp',
+            controller: whatsappCtrl,
+            hintText: 'ej. +59170000000',
+            prefixIcon: Icons.phone,
+          ),
+        ],
+      );
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: ConfigBentoCard(
+            title: 'Identidad',
+            description: 'Sube el logo de tu local y actualiza toda la información.',
+            icon: Icons.storefront_outlined,
+            child: formContent,
           ),
         ),
       ),

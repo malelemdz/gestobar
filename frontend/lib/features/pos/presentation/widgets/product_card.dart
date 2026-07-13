@@ -46,12 +46,6 @@ class ProductCard extends ConsumerWidget {
         precioUnitario: precioFinal,
         splitSameVariants: splitSameVariants,
       );
-      CustomToast.show(
-        context,
-        message: '✓ ${product.nombre} añadido al ticket.',
-        type: ToastType.success,
-        duration: const Duration(seconds: 1),
-      );
     } else {
       final bool isTabletLandscape = MediaQuery.of(context).size.width >= 720;
 
@@ -112,12 +106,6 @@ class ProductCard extends ConsumerWidget {
                         splitSameVariants: splitSameVariants,
                       );
                       Navigator.pop(context);
-                      CustomToast.show(
-                        context,
-                        message: '✓ ${product.nombre} (${variant.nombre}) añadido.',
-                        type: ToastType.success,
-                        duration: const Duration(seconds: 1),
-                      );
                     },
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
