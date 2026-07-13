@@ -682,7 +682,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                     // Left Column: Navigation sidebar
                     Container(
                       width: 320,
-                      padding: const EdgeInsets.fromLTRB(24, 24, 12, 16),
+                      padding: const EdgeInsets.fromLTRB(24, 8, 12, 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -788,7 +788,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                     // Right Column: Active Tab Content
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 24, 24, 16),
+                        padding: const EdgeInsets.fromLTRB(12, 8, 24, 16),
                         child: tabs[_selectedTabIndex]['widget'] as Widget,
                       ),
                     ),

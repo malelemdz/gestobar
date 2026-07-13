@@ -978,7 +978,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
           // Left side: User profile header summary card
           Container(
             width: 320,
-            padding: const EdgeInsets.fromLTRB(24, 24, 12, 24),
+            padding: const EdgeInsets.fromLTRB(24, 8, 12, 24),
             child: SingleChildScrollView(
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 24.0),
@@ -1006,7 +1006,7 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
           // Right side: Profile data sheets
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(12, 24, 24, 24),
+              padding: const EdgeInsets.fromLTRB(12, 8, 24, 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: rightColumnChildren,
