@@ -702,6 +702,33 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                               itemBuilder: (context, index) {
                                 final tab = tabs[index];
                                 final bool isActive = _selectedTabIndex == index;
+                                IconData icon;
+                                switch (tab['id'] as String) {
+                                  case 'identidad':
+                                    icon = Icons.storefront_outlined;
+                                    break;
+                                  case 'redes':
+                                    icon = Icons.link_rounded;
+                                    break;
+                                  case 'operaciones':
+                                    icon = Icons.settings_applications_outlined;
+                                    break;
+                                  case 'horario':
+                                    icon = Icons.access_time_outlined;
+                                    break;
+                                  case 'compania':
+                                    icon = Icons.business_outlined;
+                                    break;
+                                  case 'tarifas':
+                                    icon = Icons.monetization_on_outlined;
+                                    break;
+                                  case 'permisos':
+                                    icon = Icons.security_outlined;
+                                    break;
+                                  default:
+                                    icon = Icons.settings;
+                                }
+
                                 return GestureDetector(
                                   onTap: () {
                                     setState(() {
@@ -710,42 +737,38 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                                   },
                                   child: AnimatedContainer(
                                     duration: const Duration(milliseconds: 150),
+                                    height: 42,
                                     margin: const EdgeInsets.only(bottom: 8.0),
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                     decoration: BoxDecoration(
-                                      color: isActive ? const Color(0xFF00F0FF).withOpacity(0.06) : Colors.transparent,
+                                      color: isActive ? const Color(0xFF00F0FF) : const Color(0xFF1E2024),
                                       borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: isActive ? const Color(0xFF00F0FF).withOpacity(0.3) : Colors.transparent,
-                                        width: 1.0,
-                                      ),
+                                      border: Border.all(color: Colors.white.withOpacity(isActive ? 0.0 : 0.04)),
+                                      boxShadow: isActive
+                                          ? [
+                                              BoxShadow(
+                                                color: const Color(0xFF00F0FF).withOpacity(0.3),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ]
+                                          : null,
                                     ),
                                     child: Row(
                                       children: [
-                                        AnimatedContainer(
-                                          duration: const Duration(milliseconds: 150),
-                                          width: 3,
-                                          height: isActive ? 16 : 0,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFF00F0FF),
-                                            borderRadius: BorderRadius.circular(1.5),
-                                          ),
-                                        ),
-                                        if (isActive) const SizedBox(width: 8),
-                                        Expanded(
-                                          child: Text(
-                                            tab['text'] as String,
-                                            style: GoogleFonts.poppins(
-                                              color: isActive ? Colors.white : Colors.white38,
-                                              fontSize: 13,
-                                              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                                            ),
-                                          ),
-                                        ),
                                         Icon(
-                                          Icons.chevron_right,
+                                          icon,
                                           size: 16,
-                                          color: isActive ? const Color(0xFF00F0FF) : Colors.white10,
+                                          color: isActive ? Colors.black : Colors.white30,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          (tab['text'] as String).toUpperCase(),
+                                          style: GoogleFonts.poppins(
+                                            color: isActive ? Colors.black : Colors.white30,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -765,7 +788,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                     // Right Column: Active Tab Content
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 0, 24, 16),
+                        padding: const EdgeInsets.fromLTRB(12, 24, 24, 16),
                         child: tabs[_selectedTabIndex]['widget'] as Widget,
                       ),
                     ),

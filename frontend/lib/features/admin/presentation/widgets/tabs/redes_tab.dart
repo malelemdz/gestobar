@@ -88,7 +88,9 @@ class RedesTab extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24.0),
+      padding: MediaQuery.of(context).size.width >= 1000
+          ? const EdgeInsets.fromLTRB(0, 0, 0, 24)
+          : const EdgeInsets.all(24.0),
       child: Align(
         alignment: Alignment.topLeft,
         child: ConstrainedBox(
