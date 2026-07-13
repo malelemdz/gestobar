@@ -241,15 +241,10 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Columna izquierda (ancho fijo 280px)
+                    // Columna izquierda (ancho fijo 320px)
                     Container(
-                      width: 280,
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          right: BorderSide(color: Colors.white.withOpacity(0.03)),
-                        ),
-                      ),
+                      width: 320,
+                      padding: const EdgeInsets.fromLTRB(24, 16, 12, 16),
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -283,11 +278,19 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                         ),
                       ),
                     ),
+                    // Standardized 1px vertical divider
+                    Container(
+                      width: 1,
+                      color: Colors.white.withOpacity(0.04),
+                    ),
                     // Columna derecha (Expanded)
                     Expanded(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 250),
-                        child: _buildActiveView(activeTab, currencySymbol, currencyIso, showStaffDamas),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 16, 24, 16),
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          child: _buildActiveView(activeTab, currencySymbol, currencyIso, showStaffDamas),
+                        ),
                       ),
                     ),
                   ],
@@ -559,7 +562,9 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
 
     return resumenAsync.when(
       loading: () => ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        padding: MediaQuery.of(context).size.width >= 850
+            ? const EdgeInsets.fromLTRB(0, 8, 0, 12)
+            : const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         children: [
           Row(
             children: [
@@ -619,7 +624,9 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
             );
 
             return ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              padding: MediaQuery.of(context).size.width >= 850
+                  ? const EdgeInsets.fromLTRB(0, 8, 0, 12)
+                  : const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
               physics: const BouncingScrollPhysics(),
               children: [
                 if (isWide)

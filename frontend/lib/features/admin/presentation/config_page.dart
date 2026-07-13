@@ -681,13 +681,8 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                   children: [
                     // Left Column: Navigation sidebar
                     Container(
-                      width: 260,
-                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          right: BorderSide(color: Colors.white.withOpacity(0.04), width: 1.0),
-                        ),
-                      ),
+                      width: 320,
+                      padding: const EdgeInsets.fromLTRB(24, 24, 12, 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -762,10 +757,15 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                         ],
                       ),
                     ),
+                    // Standardized 1px vertical divider
+                    Container(
+                      width: 1,
+                      color: Colors.white.withOpacity(0.04),
+                    ),
                     // Right Column: Active Tab Content
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.zero,
+                        padding: const EdgeInsets.fromLTRB(12, 0, 24, 16),
                         child: tabs[_selectedTabIndex]['widget'] as Widget,
                       ),
                     ),

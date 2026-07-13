@@ -63,43 +63,45 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
   }
 
   Widget _buildSearchField(ThemeData theme) {
-    return TextField(
-      controller: _searchController,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      decoration: InputDecoration(
-        hintText: _activeTab == 0
-            ? 'Buscar por nombre, apellido o usuario...'
-            : 'Buscar roles...',
-        hintStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
-        prefixIcon: Icon(Icons.search, color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5), size: 20),
-        suffixIcon: _searchQuery.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear, size: 18, color: Colors.white),
-                onPressed: () {
-                  _searchController.clear();
-                  setState(() {
-                    _searchQuery = '';
-                  });
-                },
-              )
-            : null,
-        filled: true,
-        fillColor: theme.colorScheme.onSurface.withOpacity(0.03),
-        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: theme.colorScheme.onSurface.withOpacity(0.08)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF00F0FF), width: 1.0),
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E2024),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.05),
+          width: 1,
         ),
       ),
-      onChanged: (val) {
-        setState(() {
-          _searchQuery = val.trim();
-        });
-      },
+      child: TextField(
+        controller: _searchController,
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+        decoration: InputDecoration(
+          hintText: _activeTab == 0
+              ? 'Buscar por nombre, apellido o usuario...'
+              : 'Buscar roles...',
+          hintStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.3), fontSize: 14),
+          prefixIcon: const Icon(Icons.search, color: Color(0xFF00F0FF), size: 20),
+          suffixIcon: _searchQuery.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear, size: 18, color: Colors.white),
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() {
+                      _searchQuery = '';
+                    });
+                  },
+                )
+              : null,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(vertical: 14),
+        ),
+        onChanged: (val) {
+          setState(() {
+            _searchQuery = val.trim();
+          });
+        },
+      ),
     );
   }
 
@@ -162,7 +164,9 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
       },
       child: staffState.when(
         loading: () => GridView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: MediaQuery.of(context).size.width >= 900
+              ? const EdgeInsets.fromLTRB(0, 8, 0, 12)
+              : const EdgeInsets.fromLTRB(16, 12, 16, 12),
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 420,
             mainAxisExtent: MediaQuery.of(context).size.width >= 720 ? 78 : 84,
@@ -219,7 +223,9 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
           }
 
           return GridView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            padding: MediaQuery.of(context).size.width >= 900
+                ? const EdgeInsets.fromLTRB(0, 8, 0, 12)
+                : const EdgeInsets.fromLTRB(16, 12, 16, 12),
             physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 420,
@@ -267,7 +273,9 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
       },
       child: rolesState.when(
         loading: () => ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: MediaQuery.of(context).size.width >= 900
+              ? const EdgeInsets.fromLTRB(0, 8, 0, 12)
+              : const EdgeInsets.fromLTRB(16, 12, 16, 12),
           itemCount: 5,
           itemBuilder: (context, index) => const Padding(
             padding: EdgeInsets.only(bottom: 12.0),
@@ -314,7 +322,9 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            padding: MediaQuery.of(context).size.width >= 900
+                ? const EdgeInsets.fromLTRB(0, 8, 0, 12)
+                : const EdgeInsets.fromLTRB(16, 12, 16, 12),
             physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
             itemCount: roles.length,
             itemBuilder: (context, index) {
@@ -422,90 +432,105 @@ class _StaffPageState extends ConsumerState<StaffPage> with SingleTickerProvider
           bottom: false,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final bool isTabletLandscape = constraints.maxWidth >= 720;
+              final bool isTablet = constraints.maxWidth >= 900;
 
-              if (isTabletLandscape) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Columna izquierda (ancho fijo 300px)
-                    Container(
-                      width: 300,
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          right: BorderSide(color: Colors.white.withOpacity(0.03)),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _buildSearchField(theme),
-                          const SizedBox(height: 20),
-                          Text(
-                            'SECCIONES',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white30,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                          const SizedBox(height: 8.0),
-                          _buildVerticalTabButton(0, 'PERSONAL / USUARIOS', Icons.people_outline),
-                          _buildVerticalTabButton(1, 'ROLES Y PERMISOS', Icons.security_outlined),
-                        ],
-                      ),
-                    ),
-                    // Columna derecha (Expanded)
-                    Expanded(
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: [
-                          _buildPersonalTab(theme, staffState),
-                          _buildRolesTab(theme, rolesState),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              }
-
-              // Diseño Móvil / Portrait
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Unified Header
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isTablet ? 24.0 : 16.0,
+                      vertical: 12.0,
+                    ),
+                    child: Row(
                       children: [
-                        _buildSearchField(theme),
-                        const SizedBox(height: 12),
-                        Container(
-                          height: 46,
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF181A1E),
-                            borderRadius: BorderRadius.circular(23),
-                            border: Border.all(color: Colors.white.withOpacity(0.03)),
-                          ),
-                          child: Row(
-                            children: [
-                              _buildTabButton(0, 'USUARIOS', Icons.people_outline),
-                              _buildTabButton(1, 'ROLES', Icons.security_outlined),
-                            ],
-                          ),
+                        Expanded(
+                          child: _buildSearchField(theme),
                         ),
                       ],
                     ),
                   ),
+
                   Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        _buildPersonalTab(theme, staffState),
-                        _buildRolesTab(theme, rolesState),
-                      ],
-                    ),
+                    child: isTablet
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Left Bento Pane: Categories (320px)
+                              Container(
+                                width: 320,
+                                padding: const EdgeInsets.fromLTRB(24, 0, 12, 12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Text(
+                                      'SECCIONES',
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white30,
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    _buildVerticalTabButton(0, 'PERSONAL / USUARIOS', Icons.people_outline),
+                                    _buildVerticalTabButton(1, 'ROLES Y PERMISOS', Icons.security_outlined),
+                                  ],
+                                ),
+                              ),
+                              // Elegant vertical divider line
+                              Container(
+                                width: 1,
+                                color: Colors.white.withOpacity(0.04),
+                              ),
+                              // Right Bento Pane: Tab Content
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(12, 0, 24, 12),
+                                  child: TabBarView(
+                                    controller: _tabController,
+                                    children: [
+                                      _buildPersonalTab(theme, staffState),
+                                      _buildRolesTab(theme, rolesState),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Column(
+                            children: [
+                              // Mobile Tab Button Selector
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Container(
+                                  height: 46,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF181A1E),
+                                    borderRadius: BorderRadius.circular(23),
+                                    border: Border.all(color: Colors.white.withOpacity(0.03)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      _buildTabButton(0, 'USUARIOS', Icons.people_outline),
+                                      _buildTabButton(1, 'ROLES', Icons.security_outlined),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Expanded(
+                                child: TabBarView(
+                                  controller: _tabController,
+                                  children: [
+                                    _buildPersonalTab(theme, staffState),
+                                    _buildRolesTab(theme, rolesState),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                   ),
                 ],
               );

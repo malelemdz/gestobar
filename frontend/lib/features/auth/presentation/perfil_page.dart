@@ -972,46 +972,48 @@ class _PerfilPageState extends ConsumerState<PerfilPage> {
     ];
 
     if (isTablet) {
-      return SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 1100),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Left side: User profile header summary card
-                SizedBox(
-                  width: 320,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 24.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF16181C),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.05), width: 1.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: roleColor.withOpacity(0.02),
-                          blurRadius: 10,
-                          spreadRadius: 1,
-                        ),
-                      ],
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Left side: User profile header summary card
+          Container(
+            width: 320,
+            padding: const EdgeInsets.fromLTRB(24, 24, 12, 24),
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 24.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF16181C),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.white.withOpacity(0.05), width: 1.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: roleColor.withOpacity(0.02),
+                      blurRadius: 10,
+                      spreadRadius: 1,
                     ),
-                    child: buildAvatarAndName(showChangePassword: true),
-                  ),
+                  ],
                 ),
-                const SizedBox(width: 32),
-                // Right side: Profile data sheets
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: rightColumnChildren,
-                  ),
-                ),
-              ],
+                child: buildAvatarAndName(showChangePassword: true),
+              ),
             ),
           ),
-        ),
+          // Standardized 1px vertical divider
+          Container(
+            width: 1,
+            color: Colors.white.withOpacity(0.04),
+          ),
+          // Right side: Profile data sheets
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(12, 24, 24, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: rightColumnChildren,
+              ),
+            ),
+          ),
+        ],
       );
     }
 

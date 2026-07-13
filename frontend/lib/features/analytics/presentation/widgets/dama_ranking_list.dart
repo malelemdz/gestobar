@@ -32,7 +32,9 @@ class DamaRankingList extends ConsumerWidget {
 
     return rankingAsync.when(
       loading: () => ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        padding: MediaQuery.of(context).size.width >= 900
+            ? const EdgeInsets.fromLTRB(0, 8, 0, 12)
+            : const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         itemCount: 6,
         itemBuilder: (context, index) => Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
@@ -79,7 +81,9 @@ class DamaRankingList extends ConsumerWidget {
         final double maxCommissions = damas.first.comisionesAcumuladas;
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          padding: MediaQuery.of(context).size.width >= 900
+              ? const EdgeInsets.fromLTRB(0, 8, 0, 12)
+              : const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           physics: const BouncingScrollPhysics(),
           itemCount: damas.length,
           itemBuilder: (context, index) {
