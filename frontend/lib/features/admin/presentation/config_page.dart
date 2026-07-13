@@ -765,7 +765,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                     // Right Column: Active Tab Content
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                        padding: EdgeInsets.zero,
                         child: tabs[_selectedTabIndex]['widget'] as Widget,
                       ),
                     ),
