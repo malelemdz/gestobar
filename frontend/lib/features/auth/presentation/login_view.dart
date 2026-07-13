@@ -165,7 +165,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 24.0),
+                    const SizedBox(height: 16.0),
 
                     // Input de Contraseña
                     Text(
