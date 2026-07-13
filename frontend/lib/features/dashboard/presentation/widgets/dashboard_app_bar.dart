@@ -37,12 +37,9 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    Widget leadingWidget;
+    Widget? leadingWidget;
     if (isTablet) {
-      leadingWidget = Padding(
-        padding: const EdgeInsets.only(left: 24.0),
-        child: Icon(Icons.blur_on, color: AppTheme.liquidPrimary, size: 28.0),
-      );
+      leadingWidget = null;
     } else {
       final bool isDeepView = activeView == 'perfil' || activeView == 'config';
       if (isDeepView) {
@@ -123,9 +120,9 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
     return AppBar(
       leading: leadingWidget,
-      leadingWidth: isTablet ? 64.0 : 56.0,
+      leadingWidth: isTablet ? 0.0 : 56.0,
       automaticallyImplyLeading: false,
-      titleSpacing: isTablet ? 16.0 : 0.0,
+      titleSpacing: isTablet ? 24.0 : 0.0,
       title: Text(
         pageLabel,
         style: GoogleFonts.poppins(

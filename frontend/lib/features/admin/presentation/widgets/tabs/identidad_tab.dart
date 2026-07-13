@@ -31,7 +31,8 @@ class IdentidadTab extends StatelessWidget {
     final theme = Theme.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
-      child: Center(
+      child: Align(
+        alignment: Alignment.topLeft,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 600),
           child: ConfigBentoCard(

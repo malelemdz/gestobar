@@ -405,7 +405,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
 
     if (state.isLoading) {
       listWidget = ListView.builder(
-        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: isTabletLandscape ? 12.0 : 24.0),
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: isTabletLandscape ? 16.0 : 0.0, bottom: isTabletLandscape ? 12.0 : 24.0),
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 6,
         itemBuilder: (context, index) => Padding(
@@ -469,7 +469,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
     } else {
       listWidget = ListView.builder(
         controller: _scrollController,
-        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: isTabletLandscape ? 12.0 : 24.0),
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: isTabletLandscape ? 16.0 : 0.0, bottom: isTabletLandscape ? 12.0 : 24.0),
         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         itemCount: state.logs.length + (state.hasMore ? 1 : 0),
         itemBuilder: (context, index) {
