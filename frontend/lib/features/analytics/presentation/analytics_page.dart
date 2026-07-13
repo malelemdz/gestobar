@@ -244,7 +244,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                     // Columna izquierda (ancho fijo 320px)
                     Container(
                       width: 320,
-                      padding: const EdgeInsets.fromLTRB(24, 16, 12, 16),
+                      padding: const EdgeInsets.fromLTRB(24, 12, 12, 16),
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -286,7 +286,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                     // Columna derecha (Expanded)
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 16, 24, 16),
+                        padding: const EdgeInsets.fromLTRB(12, 12, 24, 16),
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 250),
                           child: _buildActiveView(activeTab, currencySymbol, currencyIso, showStaffDamas),
@@ -563,7 +563,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     return resumenAsync.when(
       loading: () => ListView(
         padding: MediaQuery.of(context).size.width >= 850
-            ? const EdgeInsets.fromLTRB(0, 8, 0, 12)
+            ? const EdgeInsets.fromLTRB(0, 0, 0, 12)
             : const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         children: [
           Row(
@@ -625,7 +625,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
 
             return ListView(
               padding: MediaQuery.of(context).size.width >= 850
-                  ? const EdgeInsets.fromLTRB(0, 8, 0, 12)
+                  ? const EdgeInsets.fromLTRB(0, 0, 0, 12)
                   : const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
               physics: const BouncingScrollPhysics(),
               children: [

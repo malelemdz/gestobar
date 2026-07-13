@@ -103,7 +103,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
                 // Columna izquierda (ancho 320px): filtros fijos
                 Container(
                   width: 320,
-                  padding: const EdgeInsets.fromLTRB(24, 8, 12, 16),
+                  padding: const EdgeInsets.fromLTRB(24, 12, 12, 16),
                   child: _buildVerticalFiltersPanel(context, filters, staffAsync, barMap),
                 ),
                 // Standardized 1px vertical divider
@@ -406,7 +406,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
     if (state.isLoading) {
       listWidget = ListView.builder(
         padding: isTabletLandscape
-            ? const EdgeInsets.fromLTRB(12, 8, 24, 16)
+            ? const EdgeInsets.fromLTRB(12, 12, 24, 16)
             : const EdgeInsets.fromLTRB(16, 0, 16, 24),
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 6,
@@ -472,7 +472,7 @@ class _SuperAuditoriaPageState extends ConsumerState<SuperAuditoriaPage> {
       listWidget = ListView.builder(
         controller: _scrollController,
         padding: isTabletLandscape
-            ? const EdgeInsets.fromLTRB(12, 8, 24, 16)
+            ? const EdgeInsets.fromLTRB(12, 12, 24, 16)
             : const EdgeInsets.fromLTRB(16, 0, 16, 24),
         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         itemCount: state.logs.length + (state.hasMore ? 1 : 0),
