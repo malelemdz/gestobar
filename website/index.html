@@ -182,7 +182,7 @@
                             <!-- Phone Notch -->
                             <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-4 bg-black rounded-b-2xl z-30"></div>
                             <!-- Screenshot Image -->
-                            <img src="assets/screenshot/movil.PNG?v=2" alt="Gestobar Mobile App Interface" class="w-full h-full object-cover" />
+                            <img src="assets/mockups/movil.png?v=3" alt="Gestobar Mobile App Interface" class="w-full h-full object-cover" />
                         </div>
                     </div>
                 </div>
@@ -239,37 +239,33 @@
         </div>
     </section>
 
-    <!-- Productivity Section -->
+    <!-- Productivity Section (Stacked layout: tablet mockup on top, text below) -->
     <section class="py-section-gap" id="productivity">
         <div class="max-w-7xl mx-auto px-margin-lg">
-            <div class="glass-card p-margin-lg rounded-lg flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
-                <div class="absolute -right-24 -top-24 w-96 h-96 bg-primary/5 blur-[120px] rounded-full"></div>
-                <div class="flex-1 space-y-6">
+            <div class="glass-card p-8 md:p-12 rounded-lg flex flex-col items-center gap-12 overflow-hidden relative text-center">
+                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
+                
+                <!-- Tablet Mockup (Large & Center) -->
+                <div class="relative w-full max-w-[850px] aspect-[16/10] bg-black rounded-[32px] md:rounded-[48px] p-[10px] md:p-[14px] shadow-2xl border-4 border-outline/30 flex items-center justify-center z-10">
+                    <!-- Inner screen -->
+                    <div class="w-full h-full bg-surface-low rounded-[20px] md:rounded-[32px] overflow-hidden relative border border-outline/10">
+                        <!-- Screenshot Image -->
+                        <img src="assets/mockups/tablet.png?v=3" alt="Gestobar Tablet App Interface" class="w-full h-full object-cover" />
+                    </div>
+                </div>
+
+                <!-- Text Block below mockup -->
+                <div class="max-w-3xl space-y-6 relative z-10">
                     <h2 class="text-headline-lg font-headline-lg md:text-5xl">Velocidad para horas pico</h2>
                     <p class="text-body-lg text-on-surface-variant">La velocidad en barra define el éxito de la noche. Gestobar está construido con almacenamiento local reactivo y sincronización silenciosa de fondo en menos de 90ms.</p>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="space-y-2">
+                    <div class="flex justify-center gap-12 pt-4">
+                        <div class="space-y-1 text-center">
                             <span class="text-display-lg font-display-lg text-primary block">&lt;90ms</span>
                             <span class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-wider">Latencia de Red</span>
                         </div>
-                        <div class="space-y-2">
+                        <div class="space-y-1 text-center">
                             <span class="text-display-lg font-display-lg text-primary block">100%</span>
                             <span class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-wider">Offline Ready (POS)</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Right Column: Premium Tablet Mockup Frame -->
-                <div class="flex-1 relative flex justify-center w-full md:w-auto">
-                    <!-- Ambient glowing background behind the tablet -->
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-primary/10 blur-3xl rounded-full z-0 pointer-events-none"></div>
-                    <!-- Tablet Mockup Container -->
-                    <div class="relative z-10 w-full max-w-[500px] aspect-[4/3] bg-black rounded-[36px] p-[12px] shadow-2xl border-4 border-outline/35 flex items-center justify-center">
-                        <!-- Inner screen -->
-                        <div class="w-full h-full bg-surface-low rounded-[24px] overflow-hidden relative border border-outline/10">
-                            <!-- Camera dot / sensor -->
-                            <div class="absolute top-1/2 left-1 transform -translate-y-1/2 w-2 h-2 bg-[#1A1A1A] rounded-full z-30"></div>
-                            <!-- Screenshot Image -->
-                            <img src="assets/screenshot/tablet.png?v=2" alt="Gestobar Tablet App Interface" class="w-full h-full object-cover" />
                         </div>
                     </div>
                 </div>
