@@ -49,28 +49,17 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    // FAQ Accordion Toggle
     window.toggleFaq = function(element) {
-        const answer = element.querySelector('.faq-answer');
-        const icon = element.querySelector('.faq-icon');
-        if (answer.classList.contains('max-h-0')) {
-            // Close all other FAQs first
-            document.querySelectorAll('.faq-answer').forEach(el => {
-                el.classList.add('max-h-0', 'opacity-0');
-                el.classList.remove('max-h-96', 'opacity-100');
-            });
-            document.querySelectorAll('.faq-icon').forEach(ic => {
-                ic.classList.remove('rotate-180');
-            });
-            
-            // Open this one
-            answer.classList.remove('max-h-0', 'opacity-0');
-            answer.classList.add('max-h-96', 'opacity-100');
-            icon.classList.add('rotate-180');
-        } else {
-            answer.classList.add('max-h-0', 'opacity-0');
-            answer.classList.remove('max-h-96', 'opacity-100');
-            icon.classList.remove('rotate-180');
+        const isActive = element.classList.contains('active');
+        
+        // Close all other FAQ items first
+        document.querySelectorAll('.faq-item').forEach(el => {
+            el.classList.remove('active');
+        });
+        
+        // If it wasn't active, open it
+        if (!isActive) {
+            element.classList.add('active');
         }
     };
 });
