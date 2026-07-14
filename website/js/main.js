@@ -58,7 +58,7 @@ window.scrollToSection = function(event, targetId) {
             }
         });
 
-        const headerOffset = 85; // navbar height (80px) + 5px breathing room
+        const headerOffset = 65; // navbar height (64px) + 1px breathing room
         const elementPosition = targetElement.offsetTop;
         const offsetPosition = elementPosition - headerOffset;
         
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Scroll Spy for Navbar highlighting
-    const headerOffset = 100; // Trigger threshold
+    const headerOffset = 80; // Trigger threshold
     const navLinks = document.querySelectorAll('nav a[href^="#"]');
     
     function scrollSpy() {
