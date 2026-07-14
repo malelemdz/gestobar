@@ -134,7 +134,7 @@
             <div class="flex items-center gap-12">
                 <div class="flex items-center gap-3">
                     <img src="assets/isotipo.png" alt="Gestobar Logo" class="w-8 h-8 object-contain" />
-                    <span class="text-headline-md font-headline-md font-bold text-primary tracking-wide">Gestobar</span>
+                    <span class="text-headline-md font-headline-md font-bold text-primary">Gestobar</span>
                 </div>
                 <div class="hidden md:flex gap-8">
                     <a class="text-primary font-bold border-b-2 border-primary pb-1 text-label-lg" href="#features">Módulos</a>
@@ -396,31 +396,60 @@
                 <h2 class="text-headline-lg font-headline-lg md:text-5xl">Preguntas frecuentes</h2>
                 <p class="text-body-lg text-on-surface-variant">Todo lo que necesitas saber sobre Gestobar y sus planes de contratación.</p>
             </div>
-            <div class="space-y-6">
+            <div class="space-y-4">
                 <!-- FAQ Item 1 -->
-                <div class="glass-card p-6 space-y-2">
-                    <h3 class="text-headline-sm font-semibold text-primary">¿Importa el tamaño de mi staff o la cantidad de dispositivos para la suscripción?</h3>
-                    <p class="text-body-md text-on-surface-variant">No. Gestobar ofrece usuarios (staff), impresoras térmicas y dispositivos móviles/tablets <strong>ilimitados</strong>. El plan es de tarifa plana, por lo que no pagarás montos extras al agregar más personal o máquinas.</p>
+                <div class="glass-card p-6 space-y-2 faq-item cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center gap-4">
+                        <h3 class="text-headline-sm font-semibold text-primary">¿Cómo empiezo a usar Gestobar?</h3>
+                        <span class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
+                    </div>
+                    <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out opacity-0">
+                        <p class="text-body-md text-on-surface-variant pt-2">Es muy sencillo. Al pagar tu suscripción, te entregamos una cuenta de administrador con un bar en blanco totalmente funcional. Desde el panel administrativo podrás configurar el nombre, logotipo y datos de tu local, crear tu menú cargando productos y categorías, y dar de alta a tus barmans y cajeros asignándoles códigos PIN para acceso rápido en barra.</p>
+                    </div>
                 </div>
+
                 <!-- FAQ Item 2 -->
-                <div class="glass-card p-6 space-y-2">
-                    <h3 class="text-headline-sm font-semibold text-primary">¿En qué plataformas y dispositivos funciona?</h3>
-                    <p class="text-body-md text-on-surface-variant">Por ahora, la aplicación está diseñada y optimizada para funcionar de manera nativa en teléfonos inteligentes y tablets (sistemas compatibles con Android y iOS). Esto facilita que tanto tu personal en barra como la administración puedan operar en cualquier rincón del local de manera ágil.</p>
+                <div class="glass-card p-6 space-y-2 faq-item cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center gap-4">
+                        <h3 class="text-headline-sm font-semibold text-primary">¿Importa el tamaño de mi staff o la cantidad de dispositivos para la suscripción?</h3>
+                        <span class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
+                    </div>
+                    <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out opacity-0">
+                        <p class="text-body-md text-on-surface-variant pt-2">No. Gestobar ofrece usuarios (staff) y dispositivos móviles (teléfonos celulares y tablets) <strong>ilimitados</strong>. El plan es de tarifa plana, por lo que no pagarás montos extras al agregar más personal o terminales en barra.</p>
+                    </div>
                 </div>
+
                 <!-- FAQ Item 3 -->
-                <div class="glass-card p-6 space-y-2">
-                    <h3 class="text-headline-sm font-semibold text-primary">¿En qué países se puede usar Gestobar y qué monedas soporta?</h3>
-                    <p class="text-body-md text-on-surface-variant">Se puede utilizar en cualquier país. Gestobar viene preconfigurado con soporte oficial para divisas como el Dólar (USD), Boliviano (BOB), Real Brasileño (BRL), Peso Chileno (CLP), Peso Colombiano (COP), Peso Dominicano (DOP), Peso Mexicano (MXN), Sol Peruano (PEN), Euro (EUR) y la gran mayoría de monedas de América Latina, configurables al instante desde el panel del administrador.</p>
+                <div class="glass-card p-6 space-y-2 faq-item cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center gap-4">
+                        <h3 class="text-headline-sm font-semibold text-primary">¿En qué plataformas y dispositivos funciona?</h3>
+                        <span class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
+                    </div>
+                    <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out opacity-0">
+                        <p class="text-body-md text-on-surface-variant pt-2">La aplicación está diseñada y optimizada para funcionar de manera nativa en teléfonos inteligentes y tablets (sistemas compatibles con Android y iOS), facilitando que tanto tu personal en barra como la administración puedan operar de manera ágil.</p>
+                    </div>
                 </div>
+
                 <!-- FAQ Item 4 -->
-                <div class="glass-card p-6 space-y-2">
-                    <h3 class="text-headline-sm font-semibold text-primary">¿Cómo se realiza el despliegue del servidor y la base de datos?</h3>
-                    <p class="text-body-md text-on-surface-variant">Te brindamos asistencia técnica completa para desplegar el servidor y la base de datos de Gestobar (por ejemplo, usando Coolify o contenedores Docker en tu propio servidor). Esto garantiza que la información de tus ventas, personal y reportes confidenciales permanezca 100% bajo tu control y propiedad.</p>
+                <div class="glass-card p-6 space-y-2 faq-item cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center gap-4">
+                        <h3 class="text-headline-sm font-semibold text-primary">¿En qué países se puede usar Gestobar y qué monedas soporta?</h3>
+                        <span class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
+                    </div>
+                    <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out opacity-0">
+                        <p class="text-body-md text-on-surface-variant pt-2">Se puede utilizar en cualquier país. Gestobar viene preconfigurado con soporte oficial para divisas como el Dólar (USD), Boliviano (BOB), Real Brasileño (BRL), Peso Chileno (CLP), Peso Colombiano (COP), Peso Dominicano (DOP), Peso Mexicano (MXN), Sol Peruano (PEN), Euro (EUR) y la gran mayoría de monedas de América Latina, configurables al instante desde el panel del administrador.</p>
+                    </div>
                 </div>
+
                 <!-- FAQ Item 5 -->
-                <div class="glass-card p-6 space-y-2">
-                    <h3 class="text-headline-sm font-semibold text-primary">¿Puedo cancelar la suscripción en cualquier momento?</h3>
-                    <p class="text-body-md text-on-surface-variant">Sí, no hay contratos forzosos ni plazos mínimos de permanencia. Puedes suspender o cancelar tu suscripción mensual en cualquier momento y conservar tu base de datos histórica.</p>
+                <div class="glass-card p-6 space-y-2 faq-item cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="flex justify-between items-center gap-4">
+                        <h3 class="text-headline-sm font-semibold text-primary">¿Puedo cancelar la suscripción en cualquier momento?</h3>
+                        <span class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
+                    </div>
+                    <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300 ease-in-out opacity-0">
+                        <p class="text-body-md text-on-surface-variant pt-2">Sí, no hay contratos forzosos ni plazos mínimos de permanencia. Puedes suspender o cancelar tu suscripción mensual en cualquier momento, reactivarla cuando quieras conservando toda tu base de datos histórica y seguir operando sin problemas.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -430,8 +459,8 @@
     <footer class="bg-surface-dim border-t border-outline/40 py-12">
         <div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-lg max-w-7xl mx-auto gap-8">
             <div class="flex flex-col items-center md:items-start gap-4">
-                <span class="text-headline-sm font-headline-sm font-bold text-on-surface tracking-wider">Gestobar</span>
-                <p class="text-body-md text-on-surface-variant">© 2026 Gestobar Nightlife Management. Todos los derechos reservados.</p>
+                <span class="text-headline-sm font-headline-sm font-bold text-on-surface">Gestobar</span>
+                <p class="text-body-md text-on-surface-variant">© 2026 Gestobar. Todos los derechos reservados.</p>
             </div>
             <div class="flex flex-wrap justify-center gap-8">
                 <a class="text-on-surface-variant hover:text-primary transition-colors text-label-sm" href="privacy.html">Política de Privacidad</a>

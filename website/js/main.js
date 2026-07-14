@@ -48,4 +48,29 @@ document.addEventListener('DOMContentLoaded', () => {
         el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-8');
         observer.observe(el);
     });
+
+    // FAQ Accordion Toggle
+    window.toggleFaq = function(element) {
+        const answer = element.querySelector('.faq-answer');
+        const icon = element.querySelector('.faq-icon');
+        if (answer.classList.contains('max-h-0')) {
+            // Close all other FAQs first
+            document.querySelectorAll('.faq-answer').forEach(el => {
+                el.classList.add('max-h-0', 'opacity-0');
+                el.classList.remove('max-h-96', 'opacity-100');
+            });
+            document.querySelectorAll('.faq-icon').forEach(ic => {
+                ic.classList.remove('rotate-180');
+            });
+            
+            // Open this one
+            answer.classList.remove('max-h-0', 'opacity-0');
+            answer.classList.add('max-h-96', 'opacity-100');
+            icon.classList.add('rotate-180');
+        } else {
+            answer.classList.add('max-h-0', 'opacity-0');
+            answer.classList.remove('max-h-96', 'opacity-100');
+            icon.classList.remove('rotate-180');
+        }
+    };
 });
