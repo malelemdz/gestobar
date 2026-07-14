@@ -93,6 +93,8 @@ export class ProductsService implements OnModuleInit {
       queryBuilder.andWhere('product.categoria_id = :categoryId', { categoryId });
     }
 
+    queryBuilder.orderBy('product.nombre', 'ASC');
+
     return await queryBuilder.getMany();
   }
 

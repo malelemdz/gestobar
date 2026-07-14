@@ -44,7 +44,7 @@ export class CategoriesService {
 
     let categories = await this.categoryRepository.find({
       where: whereClause,
-      order: { orden: 'ASC', nombre: 'ASC' },
+      order: { nombre: 'ASC' },
     });
 
     return categories;
