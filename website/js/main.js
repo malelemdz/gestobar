@@ -52,9 +52,9 @@ window.scrollToSection = function(event, targetId) {
             if (link.classList.contains('bg-primary')) return;
 
             if (href === targetId) {
-                link.className = "text-primary font-bold border-b-2 border-primary pb-1 text-label-lg";
+                link.className = "text-primary font-medium border-b-2 border-primary pb-1 text-body-lg";
             } else {
-                link.className = "text-on-surface-variant hover:text-on-surface transition-colors text-label-lg";
+                link.className = "text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg";
             }
         });
 
@@ -133,9 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (link.classList.contains('bg-primary')) return;
             
             if (href === `#${activeSectionId}`) {
-                link.className = "text-primary font-bold border-b-2 border-primary pb-1 text-label-lg";
+                link.className = "text-primary font-medium border-b-2 border-primary pb-1 text-body-lg";
             } else {
-                link.className = "text-on-surface-variant hover:text-on-surface transition-colors text-label-lg";
+                link.className = "text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg";
             }
         });
     }
