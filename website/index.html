@@ -119,7 +119,7 @@
             </div>
             <div class="space-y-2">
                 <h3 class="text-headline-sm font-headline-sm">Continuar a WhatsApp</h3>
-                <p class="text-body-md text-on-surface-variant">Estás saliendo de la web para ir a WhatsApp y hablar con nuestro equipo de soporte.</p>
+                <p class="text-body-md text-on-surface-variant">Estás saliendo del sitio de Gestobar y serás llevado a WhatsApp para continuar.</p>
             </div>
             <div class="flex gap-4 w-full">
                 <button class="flex-1 py-3 px-4 border border-outline/40 rounded-full text-label-lg font-label-lg hover:bg-surface-high transition-colors" onclick="closeModal()">Cancelar</button>
@@ -143,7 +143,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-6">
-                <button class="bg-primary text-on-primary px-6 py-2.5 rounded-full text-label-lg font-bold hover:scale-95 transition-transform duration-150 shadow-lg shadow-primary/20" onclick="triggerWhatsApp('https://wa.me/support')">Empezar Ahora</button>
+                <a href="#pricing" class="bg-primary text-on-primary px-6 py-2.5 rounded-full text-label-lg font-bold hover:scale-95 transition-transform duration-150 shadow-lg shadow-primary/20 flex items-center justify-center">Empezar Ahora</a>
             </div>
         </div>
     </nav>
@@ -162,8 +162,8 @@
                         <span class="block mt-4 text-headline-sm opacity-80 text-primary">Una solución unificada y robusta para la operación y administración de tu negocio.</span>
                     </p>
                     <div class="flex flex-col sm:flex-row items-center justify-start gap-4 pt-4">
-                        <button class="w-full sm:w-auto px-8 py-4 bg-primary text-black rounded-full text-label-lg font-bold hover:brightness-110 shadow-lg shadow-primary/25 transition-all" onclick="triggerWhatsApp('https://wa.me/start')">Empezar Ahora</button>
-                        <button class="w-full sm:w-auto px-8 py-4 bg-surface-high text-on-surface border border-outline/40 rounded-full text-label-lg font-bold hover:bg-surface-bright transition-all" onclick="triggerWhatsApp('https://wa.me/consultant')">Probar Demo</button>
+                        <a href="#pricing" class="w-full sm:w-auto px-8 py-4 bg-primary text-black rounded-full text-label-lg font-bold hover:brightness-110 shadow-lg shadow-primary/25 transition-all text-center flex items-center justify-center">Empezar Ahora</a>
+                        <button class="w-full sm:w-auto px-8 py-4 bg-surface-high text-on-surface border border-outline/40 rounded-full text-label-lg font-bold hover:bg-surface-bright transition-all" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20solicito%20una%20demo%20de%20Gestobar.')">Solicitar demo</button>
                     </div>
                 </div>
 
@@ -247,74 +247,54 @@
     </section>
 
     <!-- Bento Features Section -->
-    <section class="py-section-gap bg-surface-container-lowest">
+    <section class="py-section-gap bg-surface-container-lowest" id="features">
         <div class="max-w-7xl mx-auto px-margin-lg">
             <div class="text-center mb-16">
-                <h2 class="text-headline-lg font-headline-lg">Módulos Especializados en Discotecas</h2>
+                <h2 class="text-headline-lg font-headline-lg">Módulos especializados</h2>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Ventas -->
+                <!-- POS Rápido -->
+                <div class="glass-card p-8 space-y-6 md:col-span-1">
+                    <div class="w-12 h-12 bg-primary/10 flex items-center justify-center rounded-xl text-primary">
+                        <span class="material-symbols-outlined text-3xl">point_of_sale</span>
+                    </div>
+                    <h3 class="text-headline-md font-headline-md">Punto de Venta Rápido (POS)</h3>
+                    <p class="text-body-md text-on-surface-variant">Diseñado para la velocidad extrema que exige la barra. Añade productos, gestiona variantes de precios e imprime comandas de preparación al instante.</p>
+                </div>
+
+                <!-- Arqueo y Control de Cajas -->
                 <div class="glass-card p-8 space-y-6 md:col-span-2">
                     <div class="flex justify-between items-start gap-4">
                         <div class="space-y-4">
-                            <h3 class="text-headline-md font-headline-md">Arqueo y Control de Cajas</h3>
-                            <p class="text-body-lg text-on-surface-variant max-w-md">Control total de tus flujos de caja en tiempo real. Registra egresos, depósitos y propinas automáticamente con auditoría estricta para evitar robos y discrepancias.</p>
+                            <h3 class="text-headline-md font-headline-md">Arqueo y Control de Caja</h3>
+                            <p class="text-body-md text-on-surface-variant">Registra aperturas, ingresos manuales, egresos y depósitos. Realiza cierres de caja (cuadraturas) al finalizar cada turno con reportes claros en PDF.</p>
                         </div>
-                        <span class="material-symbols-outlined text-4xl text-primary" data-icon="monitoring">monitoring</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-surface-low p-4 rounded-xl border border-outline/10">
-                            <span class="text-label-lg text-primary block mb-1">Cierre de Caja</span>
-                            <span class="text-body-md text-on-surface-variant">Generación instantánea de reportes de cuadratura.</span>
-                        </div>
-                        <div class="bg-surface-low p-4 rounded-xl border border-outline/10">
-                            <span class="text-label-lg text-primary block mb-1">Auditoría Estricta</span>
-                            <span class="text-body-md text-on-surface-variant">Cada depósito y egreso requiere firma y queda logueado.</span>
+                        <div class="w-12 h-12 bg-primary/10 flex items-center justify-center rounded-xl text-primary flex-shrink-0">
+                            <span class="material-symbols-outlined text-3xl">account_balance_wallet</span>
                         </div>
                     </div>
                 </div>
-                <!-- Menú -->
-                <div class="glass-card p-8 space-y-6">
-                    <div class="w-12 h-12 bg-primary/10 flex items-center justify-center rounded-xl text-primary">
-                        <span class="material-symbols-outlined">menu_book</span>
-                    </div>
-                    <h3 class="text-headline-md font-headline-md">Carta Digital Dinámica</h3>
-                    <p class="text-body-md text-on-surface-variant">Modifica precios, añade variantes y activa o desactiva productos al instante desde el celular del administrador.</p>
-                    <ul class="space-y-3">
-                        <li class="flex items-center gap-3 text-label-lg">
-                            <span class="material-symbols-outlined text-success text-[20px]">check_circle</span>
-                            Variantes Dinámicas
-                        </li>
-                        <li class="flex items-center gap-3 text-label-lg">
-                            <span class="material-symbols-outlined text-success text-[20px]">check_circle</span>
-                            Control de Stock Crítico
-                        </li>
-                    </ul>
-                </div>
-                <!-- PR & Hostess -->
-                <div class="glass-card p-8 space-y-6 md:col-span-3 border-t-2 border-t-primary/40 relative overflow-hidden">
+
+                <!-- Fichas y Comisiones -->
+                <div class="glass-card p-8 space-y-6 md:col-span-2 border-t-2 border-t-primary/40 relative overflow-hidden">
                     <div class="absolute right-0 bottom-0 opacity-5">
                         <span class="material-symbols-outlined text-[200px]">stars</span>
                     </div>
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
                         <div class="space-y-4 flex-1">
-                            <div class="inline-flex px-3 py-1 bg-primary text-on-primary text-[10px] font-bold uppercase rounded-full">Exclusivo</div>
-                            <h3 class="text-headline-md font-headline-md">Módulo de PR, Promotores y Fichas</h3>
-                            <p class="text-body-lg text-on-surface-variant max-w-2xl">Controla comisiones automáticas de promotores de puerta, y el conteo de fichas/bebidas del staff de damas de compañía. Genera liquidaciones al final de la noche en 3 clics sin hojas de cálculo.</p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div class="glass-card p-6 border-primary/20 space-y-4 bg-surface-low">
-                                <div class="flex items-center justify-between gap-12">
-                                    <span class="text-label-lg font-bold">Fichas Staff (Turno)</span>
-                                    <span class="text-headline-sm text-primary">248 Fichas</span>
-                                </div>
-                                <div class="w-full bg-surface-high h-2 rounded-full overflow-hidden">
-                                    <div class="bg-primary h-full w-[82%]"></div>
-                                </div>
-                                <button class="w-full py-2 text-label-lg font-bold border border-primary/40 rounded-full hover:bg-primary/5 transition-colors">Generar Liquidación</button>
-                            </div>
+                            <h3 class="text-headline-md font-headline-md">Fichas y Comisiones (PR / Staff)</h3>
+                            <p class="text-body-md text-on-surface-variant">Control automatizado para liquidaciones de relaciones públicas (promotores de puerta) y el staff de damas de compañía. Registra consumos de fichas y comisiones en tiempo real de forma segura.</p>
                         </div>
                     </div>
+                </div>
+
+                <!-- Auditoría en Vivo -->
+                <div class="glass-card p-8 space-y-6 md:col-span-1">
+                    <div class="w-12 h-12 bg-primary/10 flex items-center justify-center rounded-xl text-primary">
+                        <span class="material-symbols-outlined text-3xl">security</span>
+                    </div>
+                    <h3 class="text-headline-md font-headline-md">Auditoría Contable</h3>
+                    <p class="text-body-md text-on-surface-variant">Registro inalterable de cada acción del personal. Cada modificación de producto, egreso o cierre queda registrado con hora exacta y usuario responsable para evitar mermas o fraudes.</p>
                 </div>
             </div>
         </div>
@@ -323,43 +303,117 @@
     <!-- Pricing Section -->
     <section class="py-section-gap" id="pricing">
         <div class="max-w-7xl mx-auto px-margin-lg">
-            <div class="max-w-2xl mx-auto text-center space-y-12">
+            <div class="max-w-4xl mx-auto text-center space-y-12">
                 <div class="space-y-4">
                     <h2 class="text-headline-lg font-headline-lg md:text-5xl">Todo incluido, un solo precio</h2>
-                    <p class="text-body-lg text-on-surface-variant">Sin sorpresas, sin cargos extra por usuarios o dispositivos. Accede al potencial completo de Gestobar en un único plan.</p>
+                    <p class="text-body-lg text-on-surface-variant">Sin sorpresas, sin cargos extra por usuarios o dispositivos. Accede al potencial completo de Gestobar en el plan que prefieras.</p>
                 </div>
-                <div class="glass-card p-12 rounded-lg border-2 border-primary space-y-8 relative overflow-hidden bg-surface-low">
-                    <div class="absolute top-6 right-6">
-                        <div class="bg-primary text-black px-4 py-1.5 rounded-full text-label-lg font-bold">15% DESCUENTO</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-8 max-w-3xl mx-auto">
+                    <!-- Plan Mensual -->
+                    <div class="glass-card p-8 rounded-lg border border-outline/20 space-y-8 relative overflow-hidden bg-surface-low flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <span class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-widest block">Plan Mensual</span>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-display-lg font-display-lg text-primary">US$ 10</span>
+                                <span class="text-headline-sm text-on-surface-variant">/ mes</span>
+                            </div>
+                            <p class="text-body-md text-on-surface-variant">Ideal para comenzar y escalar a tu ritmo.</p>
+                            <ul class="space-y-3 pt-4 border-t border-outline/10">
+                                <li class="flex items-center gap-3 text-body-md">
+                                    <span class="material-symbols-outlined text-primary text-xl">check</span>
+                                    <span>Personal e Impresoras Ilimitadas</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-body-md">
+                                    <span class="material-symbols-outlined text-primary text-xl">check</span>
+                                    <span>Módulo de Fichas/PR Integrado</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-body-md">
+                                    <span class="material-symbols-outlined text-primary text-xl">check</span>
+                                    <span>Soporte 24/7 vía WhatsApp</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-body-md">
+                                    <span class="material-symbols-outlined text-primary text-xl">check</span>
+                                    <span>Auditoría Estricta Contable</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <button class="w-full py-4 bg-surface-high text-on-surface border border-outline/40 rounded-full text-label-lg font-bold hover:bg-surface-bright transition-all shadow-md mt-6" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20estoy%20interesado%20en%20el%20plan%20Mensual%20de%20Gestobar.')">Contratar mensual</button>
                     </div>
-                    <div class="space-y-2">
-                        <span class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-widest">Suscripción Anual</span>
-                        <div class="flex items-baseline justify-center gap-1">
-                            <span class="text-display-lg font-display-lg text-primary">US$ 100</span>
-                            <span class="text-headline-sm text-on-surface-variant">/ año</span>
+
+                    <!-- Plan Anual -->
+                    <div class="glass-card p-8 rounded-lg border-2 border-primary space-y-8 relative overflow-hidden bg-surface-low flex flex-col justify-between">
+                        <div class="absolute top-4 right-4">
+                            <div class="bg-primary text-black px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Ahorra 15%</div>
                         </div>
-                        <p class="text-body-md text-primary font-bold italic">O paga mensualmente US$ 10</p>
+                        <div class="space-y-4">
+                            <span class="text-label-lg font-label-lg text-primary uppercase tracking-widest block">Plan Anual</span>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-display-lg font-display-lg text-primary">US$ 100</span>
+                                <span class="text-headline-sm text-on-surface-variant">/ año</span>
+                            </div>
+                            <p class="text-body-md text-on-surface-variant">La opción recomendada para el máximo ahorro.</p>
+                            <ul class="space-y-3 pt-4 border-t border-outline/10">
+                                <li class="flex items-center gap-3 text-body-md">
+                                    <span class="material-symbols-outlined text-primary text-xl">check</span>
+                                    <span class="font-bold text-on-surface">2 meses gratis incluidos</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-body-md">
+                                    <span class="material-symbols-outlined text-primary text-xl">check</span>
+                                    <span>Personal e Impresoras Ilimitadas</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-body-md">
+                                    <span class="material-symbols-outlined text-primary text-xl">check</span>
+                                    <span>Módulo de Fichas/PR Integrado</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-body-md">
+                                    <span class="material-symbols-outlined text-primary text-xl">check</span>
+                                    <span>Soporte 24/7 vía WhatsApp</span>
+                                </li>
+                                <li class="flex items-center gap-3 text-body-md">
+                                    <span class="material-symbols-outlined text-primary text-xl">check</span>
+                                    <span>Auditoría Estricta Contable</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <button class="w-full py-4 bg-primary text-black rounded-full text-label-lg font-bold hover:brightness-110 transition-all shadow-xl shadow-primary/20 mt-6" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20estoy%20interesado%20en%20el%20plan%20Anual%20de%20Gestobar.')">Contratar anual</button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left border-y border-outline/20 py-8">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary text-xl">check</span>
-                            <span class="text-body-md">Personal e Impresoras Ilimitadas</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary text-xl">check</span>
-                            <span class="text-body-md">Módulo de Fichas/PR Integrado</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary text-xl">check</span>
-                            <span class="text-body-md">Soporte 24/7 vía WhatsApp</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary text-xl">check</span>
-                            <span class="text-body-md">Auditoría Estricta Contable</span>
-                        </div>
-                    </div>
-                    <button class="w-full py-5 bg-primary text-black rounded-full text-headline-sm font-bold hover:scale-[1.02] transition-all shadow-xl shadow-primary/30" onclick="triggerWhatsApp('https://wa.me/subscribe')">Adquirir Licencia</button>
-                    <p class="text-label-sm text-on-surface-variant">Cancela cuando quieras. Soporte de despliegue en servidor propio incluido.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-section-gap bg-surface-dim" id="faq">
+        <div class="max-w-4xl mx-auto px-margin-lg">
+            <div class="text-center mb-12 space-y-2">
+                <h2 class="text-headline-lg font-headline-lg md:text-5xl">Preguntas frecuentes</h2>
+                <p class="text-body-lg text-on-surface-variant">Todo lo que necesitas saber sobre Gestobar y sus planes de contratación.</p>
+            </div>
+            <div class="space-y-6">
+                <!-- FAQ Item 1 -->
+                <div class="glass-card p-6 space-y-2">
+                    <h3 class="text-headline-sm font-semibold text-primary">¿Importa el tamaño de mi staff o la cantidad de dispositivos para la suscripción?</h3>
+                    <p class="text-body-md text-on-surface-variant">No. Gestobar ofrece usuarios (staff), impresoras térmicas y dispositivos móviles/tablets <strong>ilimitados</strong>. El plan es de tarifa plana, por lo que no pagarás montos extras al agregar más personal o máquinas.</p>
+                </div>
+                <!-- FAQ Item 2 -->
+                <div class="glass-card p-6 space-y-2">
+                    <h3 class="text-headline-sm font-semibold text-primary">¿En qué plataformas y dispositivos funciona?</h3>
+                    <p class="text-body-md text-on-surface-variant">Por ahora, la aplicación está diseñada y optimizada para funcionar de manera nativa en teléfonos inteligentes y tablets (sistemas compatibles con Android y iOS). Esto facilita que tanto tu personal en barra como la administración puedan operar en cualquier rincón del local de manera ágil.</p>
+                </div>
+                <!-- FAQ Item 3 -->
+                <div class="glass-card p-6 space-y-2">
+                    <h3 class="text-headline-sm font-semibold text-primary">¿En qué países se puede usar Gestobar y qué monedas soporta?</h3>
+                    <p class="text-body-md text-on-surface-variant">Se puede utilizar en cualquier país. Gestobar viene preconfigurado con soporte oficial para divisas como el Dólar (USD), Boliviano (BOB), Real Brasileño (BRL), Peso Chileno (CLP), Peso Colombiano (COP), Peso Dominicano (DOP), Peso Mexicano (MXN), Sol Peruano (PEN), Euro (EUR) y la gran mayoría de monedas de América Latina, configurables al instante desde el panel del administrador.</p>
+                </div>
+                <!-- FAQ Item 4 -->
+                <div class="glass-card p-6 space-y-2">
+                    <h3 class="text-headline-sm font-semibold text-primary">¿Cómo se realiza el despliegue del servidor y la base de datos?</h3>
+                    <p class="text-body-md text-on-surface-variant">Te brindamos asistencia técnica completa para desplegar el servidor y la base de datos de Gestobar (por ejemplo, usando Coolify o contenedores Docker en tu propio servidor). Esto garantiza que la información de tus ventas, personal y reportes confidenciales permanezca 100% bajo tu control y propiedad.</p>
+                </div>
+                <!-- FAQ Item 5 -->
+                <div class="glass-card p-6 space-y-2">
+                    <h3 class="text-headline-sm font-semibold text-primary">¿Puedo cancelar la suscripción en cualquier momento?</h3>
+                    <p class="text-body-md text-on-surface-variant">Sí, no hay contratos forzosos ni plazos mínimos de permanencia. Puedes suspender o cancelar tu suscripción mensual en cualquier momento y conservar tu base de datos histórica.</p>
                 </div>
             </div>
         </div>
@@ -375,7 +429,7 @@
             <div class="flex flex-wrap justify-center gap-8">
                 <a class="text-on-surface-variant hover:text-primary transition-colors text-label-sm" href="privacy.html">Política de Privacidad</a>
                 <a class="text-on-surface-variant hover:text-primary transition-colors text-label-sm" href="terms.html">Términos de Servicio</a>
-                <button class="text-primary hover:text-primary-container transition-colors text-label-sm font-bold" onclick="triggerWhatsApp('https://wa.me/support')">Soporte WhatsApp</button>
+                <button class="text-primary hover:text-primary-container transition-colors text-label-sm font-bold" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20tengo%20una%20consulta%20sobre%20Gestobar.')">Soporte WhatsApp</button>
             </div>
         </div>
     </footer>

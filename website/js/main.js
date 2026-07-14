@@ -24,6 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (modalBtn) {
+        modalBtn.addEventListener('click', () => {
+            window.closeModal();
+        });
+    }
+
     // Scroll reveal animation for grid cards
     const observerOptions = {
         threshold: 0.05
