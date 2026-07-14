@@ -34,6 +34,22 @@ window.toggleFaq = function(element) {
     }
 };
 
+// Global precise smooth scroll
+window.scrollToSection = function(event, targetId) {
+    event.preventDefault();
+    const targetElement = document.querySelector(targetId);
+    if (targetElement) {
+        const headerOffset = 100; // navbar height (80px) + 20px margin offset
+        const elementPosition = targetElement.offsetTop;
+        const offsetPosition = elementPosition - headerOffset;
+        
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('whatsappModal');
     const modalBtn = document.getElementById('modalConfirmBtn');
@@ -49,27 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
             window.closeModal();
         });
     }
-
-    // Precise Smooth Scroll for all anchors
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                const headerOffset = 80; // height of top nav bar
-                const elementPosition = targetElement.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
 
     // Scroll reveal animation for grid cards
     const observerOptions = {
@@ -89,4 +84,36 @@ document.addEventListener('DOMContentLoaded', () => {
         el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-8');
         observer.observe(el);
     });
+
+    // Scroll Spy for Navbar highlighting
+    const headerOffset = 120;
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+    
+    function scrollSpy() {
+        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+        let activeSectionId = '';
+        
+        document.querySelectorAll('section[id]').forEach(section => {
+            const sectionTop = section.offsetTop - headerOffset;
+            const sectionHeight = section.offsetHeight;
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                activeSectionId = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            // Skip the Empezar Ahora button
+            if (link.classList.contains('bg-primary')) return;
+            
+            if (href === `#${activeSectionId}`) {
+                link.className = "text-primary font-bold border-b-2 border-primary pb-1 text-label-lg";
+            } else {
+                link.className = "text-on-surface-variant hover:text-on-surface transition-colors text-label-lg";
+            }
+        });
+    }
+
+    window.addEventListener('scroll', scrollSpy);
+    scrollSpy(); // run once on load
 });
