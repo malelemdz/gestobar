@@ -41,7 +41,7 @@ class CatalogRepository {
 
   List<CategoryModel> _getCategoriesSorted(Box<CategoryHive> box) {
     final list = box.values.toList();
-    list.sort((a, b) => a.orden.compareTo(b.orden));
+    list.sort((a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()));
     return list.map((e) => e.toDomain()).toList();
   }
 
@@ -86,6 +86,7 @@ class CatalogRepository {
 
   List<ProductModel> _getFilteredProducts(Box<ProductHive> box, String? categoryId) {
     final domainList = box.values.map((e) => e.toDomain()).toList();
+    domainList.sort((a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()));
     if (categoryId != null) {
       return domainList.where((p) => p.categoriaId == categoryId).toList();
     }
