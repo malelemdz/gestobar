@@ -26,6 +26,7 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
   late TextEditingController _nameController;
   late bool _esDefault;
   late bool _activo;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -146,64 +147,77 @@ class _TarifaDialogState extends ConsumerState<TarifaDialog> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: _isSaving ? null : () => Navigator.pop(context),
             child: Text('Cancelar', style: GoogleFonts.poppins(color: Colors.white60)),
           ),
           ElevatedButton(
-            onPressed: () async {
-              if (_nameController.text.trim().isEmpty) return;
+            onPressed: _isSaving
+                ? null
+                : () async {
+                    if (_nameController.text.trim().isEmpty) return;
 
-              final repo = ref.read(tarifasRepositoryProvider);
-              try {
-                if (widget.tarifa == null) {
-                  await repo.createTarifa(
-                    widget.barId,
-                    _nameController.text.trim(),
-                    _esDefault,
-                    _activo,
-                  );
-                } else {
-                  await repo.updateTarifa(
-                    widget.tarifa!.id,
-                    _nameController.text.trim(),
-                    _esDefault,
-                    _activo,
-                  );
-                }
-                ref.invalidate(barTarifasProvider);
-                if (context.mounted) {
-                  CustomToast.show(
-                    context,
-                    message: widget.tarifa == null
-                        ? 'Tarifa creada con éxito'
-                        : 'Tarifa actualizada con éxito',
-                    type: ToastType.success,
-                  );
-                  Navigator.pop(context);
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  CustomToast.show(
-                    context,
-                    message: 'Error al guardar tarifa: $e',
-                    type: ToastType.error,
-                  );
-                }
-              }
-            },
+                    setState(() => _isSaving = true);
+                    final repo = ref.read(tarifasRepositoryProvider);
+                    try {
+                      if (widget.tarifa == null) {
+                        await repo.createTarifa(
+                          widget.barId,
+                          _nameController.text.trim(),
+                          _esDefault,
+                          _activo,
+                        );
+                      } else {
+                        await repo.updateTarifa(
+                          widget.tarifa!.id,
+                          _nameController.text.trim(),
+                          _esDefault,
+                          _activo,
+                        );
+                      }
+                      ref.invalidate(barTarifasProvider);
+                      if (context.mounted) {
+                        CustomToast.show(
+                          context,
+                          message: widget.tarifa == null
+                              ? 'Tarifa creada con éxito'
+                              : 'Tarifa actualizada con éxito',
+                          type: ToastType.success,
+                        );
+                        Navigator.pop(context);
+                      }
+                    } catch (e) {
+                      setState(() => _isSaving = false);
+                      if (context.mounted) {
+                        CustomToast.show(
+                          context,
+                          message: 'Error al guardar tarifa: $e',
+                          type: ToastType.error,
+                        );
+                      }
+                    }
+                  },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF00F0FF),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
-            child: Text(
-              'Guardar',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF0c0e12),
-              ),
-            ),
+            child: _isSaving
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF0c0e12)),
+                    ),
+                  )
+                : Text(
+                    'Guardar',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF0c0e12),
+                    ),
+                  ),
           ),
         ],
       ),

@@ -584,11 +584,14 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
       ),
     );
 
+    final menuAdminState = ref.watch(menuAdminProvider);
+    final isLoading = menuAdminState.isLoading;
+
     final Widget footer = Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         OutlinedButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: isLoading ? null : () => Navigator.pop(context),
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Colors.white10),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -601,19 +604,28 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
         ),
         const SizedBox(width: 12),
         ElevatedButton(
-          onPressed: _saveProduct,
+          onPressed: isLoading ? null : _saveProduct,
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF00F0FF),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
           ),
-          child: Text(
-            'Guardar Producto',
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF0C0E12),
-            ),
-          ),
+          child: isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF0C0E12)),
+                  ),
+                )
+              : Text(
+                  'Guardar Producto',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF0C0E12),
+                  ),
+                ),
         ),
       ],
     );
