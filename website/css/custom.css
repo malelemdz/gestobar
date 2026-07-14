@@ -1,8 +1,4 @@
 /* Override custom styles for Gestobar Website */
-html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 100px;
-}
 
 body {
     font-family: 'Poppins', sans-serif;
