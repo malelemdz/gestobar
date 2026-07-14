@@ -1,22 +1,42 @@
 // Gestobar Web interactions and animations
+
+// Global WhatsApp triggers
+window.triggerWhatsApp = function(url) {
+    const modalBtn = document.getElementById('modalConfirmBtn');
+    const modal = document.getElementById('whatsappModal');
+    if (modalBtn) modalBtn.href = url;
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+window.closeModal = function() {
+    const modal = document.getElementById('whatsappModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+};
+
+// Global FAQ Toggle
+window.toggleFaq = function(element) {
+    const isActive = element.classList.contains('active');
+    
+    // Close all other FAQ items first
+    document.querySelectorAll('.faq-item').forEach(el => {
+        el.classList.remove('active');
+    });
+    
+    // If it wasn't active, open it
+    if (!isActive) {
+        element.classList.add('active');
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('whatsappModal');
     const modalBtn = document.getElementById('modalConfirmBtn');
-
-    window.triggerWhatsApp = function(url) {
-        if (modalBtn) modalBtn.href = url;
-        if (modal) {
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-    };
-
-    window.closeModal = function() {
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-    };
 
     if (modal) {
         modal.addEventListener('click', (e) => {
@@ -48,18 +68,4 @@ document.addEventListener('DOMContentLoaded', () => {
         el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-8');
         observer.observe(el);
     });
-
-    window.toggleFaq = function(element) {
-        const isActive = element.classList.contains('active');
-        
-        // Close all other FAQ items first
-        document.querySelectorAll('.faq-item').forEach(el => {
-            el.classList.remove('active');
-        });
-        
-        // If it wasn't active, open it
-        if (!isActive) {
-            element.classList.add('active');
-        }
-    };
 });
