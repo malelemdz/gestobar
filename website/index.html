@@ -1,129 +1,140 @@
 <!DOCTYPE html>
 <html class="dark" lang="es">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Gestobar | Sistema de Gestión para la Barra del Bar</title>
-    <meta name="description" content="Controla ventas, gestión de caja, administra el menú, usuarios, comisiones y auditoría en tiempo real de la barra del bar con Gestobar."/>
-    <link rel="icon" type="image/png" href="assets/isotipo.png"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Gestobar | Gestiona tu Bar</title>
+    <meta name="description"
+        content="Controla ventas, gestión de caja, administra el menú, usuarios, comisiones y auditoría en tiempo real de la barra del bar con Gestobar." />
+    <link rel="icon" type="image/png" href="assets/isotipo.png" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
     <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "primary-fixed": "#E0FBFC",
-                    "surface-low": "#1E2024",
-                    "surface": "#24262A",
-                    "primary": "#00F0FF",
-                    "on-secondary-fixed": "#07006c",
-                    "surface-bright": "#37393e",
-                    "on-tertiary-fixed-variant": "#8c0053",
-                    "warning": "#F59E0B",
-                    "outline-variant": "#3c494b",
-                    "inverse-primary": "#006874",
-                    "secondary-fixed": "#e1e0ff",
-                    "surface-tint": "#00F0FF",
-                    "tertiary-fixed-dim": "#ffb0cd",
-                    "primary-container": "#00BCCF",
-                    "on-secondary-fixed-variant": "#2f2ebe",
-                    "on-error": "#690005",
-                    "on-secondary": "#1000a9",
-                    "danger": "#EF4444",
-                    "on-tertiary": "#640039",
-                    "on-primary-container": "#00464e",
-                    "on-surface-variant": "#bbc9cb",
-                    "success": "#10B981",
-                    "on-primary": "#00363d",
-                    "surface-container": "#1e2024",
-                    "inverse-on-surface": "#2f3035",
-                    "on-background": "#e2e2e8",
-                    "surface-dim": "#111317",
-                    "inverse-surface": "#e2e2e8",
-                    "surface-container-lowest": "#0c0e12",
-                    "secondary-container": "#3131c0",
-                    "surface-high": "#2E3035",
-                    "surface-variant": "#333539",
-                    "surface-container-low": "#1a1c20",
-                    "surface-container-highest": "#333539",
-                    "on-surface": "#EBEBEF",
-                    "tertiary-container": "#ff81b7",
-                    "tertiary": "#ffb0cd",
-                    "error-container": "#93000a",
-                    "on-primary-fixed": "#001f24",
-                    "background": "#111317",
-                    "secondary-fixed-dim": "#c0c1ff",
-                    "on-tertiary-container": "#7e004a",
-                    "error": "#ffb4ab",
-                    "secondary": "#c0c1ff",
-                    "primary-fixed-dim": "#00F0FF",
-                    "on-error-container": "#ffdad6",
-                    "on-tertiary-fixed": "#3e0022",
-                    "on-primary-fixed-variant": "#004f57",
-                    "surface-container-high": "#282a2e",
-                    "outline": "#4A5657",
-                    "tertiary-fixed": "#ffd9e4",
-                    "on-secondary-container": "#b0b2ff"
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#E0FBFC",
+                        "surface-low": "#1E2024",
+                        "surface": "#24262A",
+                        "primary": "#00F0FF",
+                        "on-secondary-fixed": "#07006c",
+                        "surface-bright": "#37393e",
+                        "on-tertiary-fixed-variant": "#8c0053",
+                        "warning": "#F59E0B",
+                        "outline-variant": "#3c494b",
+                        "inverse-primary": "#006874",
+                        "secondary-fixed": "#e1e0ff",
+                        "surface-tint": "#00F0FF",
+                        "tertiary-fixed-dim": "#ffb0cd",
+                        "primary-container": "#00BCCF",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "on-error": "#690005",
+                        "on-secondary": "#1000a9",
+                        "danger": "#EF4444",
+                        "on-tertiary": "#640039",
+                        "on-primary-container": "#00464e",
+                        "on-surface-variant": "#bbc9cb",
+                        "success": "#10B981",
+                        "on-primary": "#00363d",
+                        "surface-container": "#1e2024",
+                        "inverse-on-surface": "#2f3035",
+                        "on-background": "#e2e2e8",
+                        "surface-dim": "#111317",
+                        "inverse-surface": "#e2e2e8",
+                        "surface-container-lowest": "#0c0e12",
+                        "secondary-container": "#3131c0",
+                        "surface-high": "#2E3035",
+                        "surface-variant": "#333539",
+                        "surface-container-low": "#1a1c20",
+                        "surface-container-highest": "#333539",
+                        "on-surface": "#EBEBEF",
+                        "tertiary-container": "#ff81b7",
+                        "tertiary": "#ffb0cd",
+                        "error-container": "#93000a",
+                        "on-primary-fixed": "#001f24",
+                        "background": "#111317",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "on-tertiary-container": "#7e004a",
+                        "error": "#ffb4ab",
+                        "secondary": "#c0c1ff",
+                        "primary-fixed-dim": "#00F0FF",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#3e0022",
+                        "on-primary-fixed-variant": "#004f57",
+                        "surface-container-high": "#282a2e",
+                        "outline": "#4A5657",
+                        "tertiary-fixed": "#ffd9e4",
+                        "on-secondary-container": "#b0b2ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-lg": "2.5rem",
+                        "gutter-md": "1.5rem",
+                        "margin-sm": "1rem",
+                        "margin-md": "1.5rem",
+                        "section-gap": "4rem"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Poppins"],
+                        "label-sm": ["Poppins"],
+                        "body-md": ["Poppins"],
+                        "headline-lg-mobile": ["Poppins"],
+                        "display-lg": ["Poppins"],
+                        "headline-md": ["Poppins"],
+                        "body-lg": ["Poppins"],
+                        "headline-lg": ["Poppins"],
+                        "label-lg": ["Poppins"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-sm": ["10px", { "lineHeight": "14px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-lg": ["12px", { "lineHeight": "16px", "fontWeight": "600" }]
+                    }
+                },
             },
-            "borderRadius": {
-                    "DEFAULT": "1rem",
-                    "lg": "2rem",
-                    "xl": "3rem",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "margin-lg": "2.5rem",
-                    "gutter-md": "1.5rem",
-                    "margin-sm": "1rem",
-                    "margin-md": "1.5rem",
-                    "section-gap": "4rem"
-            },
-            "fontFamily": {
-                    "headline-sm": ["Poppins"],
-                    "label-sm": ["Poppins"],
-                    "body-md": ["Poppins"],
-                    "headline-lg-mobile": ["Poppins"],
-                    "display-lg": ["Poppins"],
-                    "headline-md": ["Poppins"],
-                    "body-lg": ["Poppins"],
-                    "headline-lg": ["Poppins"],
-                    "label-lg": ["Poppins"]
-            },
-            "fontSize": {
-                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                    "label-sm": ["10px", {"lineHeight": "14px", "fontWeight": "600"}],
-                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
-                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
-                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
-                    "label-lg": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
-            }
-          },
-        },
-      }
+        }
     </script>
-    <link rel="stylesheet" href="css/custom.css?v=2.6"/>
+    <link rel="stylesheet" href="css/custom.css?v=2.6" />
     <script src="js/main.js?v=2.6" defer></script>
 </head>
+
 <body class="bg-background text-on-surface selection:bg-primary selection:text-on-primary">
     <!-- WhatsApp Redirect Modal -->
-    <div class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm" id="whatsappModal">
+    <div class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+        id="whatsappModal">
         <div class="glass-card p-margin-lg rounded-lg max-w-sm w-full flex flex-col items-center text-center space-y-6">
             <div class="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center text-success">
                 <span class="material-symbols-outlined text-4xl">chat</span>
             </div>
             <div class="space-y-2">
                 <h3 class="text-headline-sm font-headline-sm">Continuar a WhatsApp</h3>
-                <p class="text-body-md text-on-surface-variant">Estás saliendo del sitio de Gestobar y serás llevado a WhatsApp para continuar.</p>
+                <p class="text-body-md text-on-surface-variant">Estás saliendo del sitio de Gestobar y serás llevado a
+                    WhatsApp para continuar.</p>
             </div>
             <div class="flex gap-4 w-full">
-                <button class="flex-1 py-3 px-4 border border-outline/40 rounded-full text-label-lg font-label-lg hover:bg-surface-high transition-colors" onclick="closeModal()">Cancelar</button>
-                <a class="flex-1 py-3 px-4 bg-primary text-on-primary rounded-full text-label-lg font-label-lg text-center hover:brightness-110 transition-all font-bold" href="#" id="modalConfirmBtn" target="_blank">Continuar</a>
+                <button
+                    class="flex-1 py-3 px-4 border border-outline/40 rounded-full text-label-lg font-label-lg hover:bg-surface-high transition-colors"
+                    onclick="closeModal()">Cancelar</button>
+                <a class="flex-1 py-3 px-4 bg-primary text-on-primary rounded-full text-label-lg font-label-lg text-center hover:brightness-110 transition-all font-bold"
+                    href="#" id="modalConfirmBtn" target="_blank">Continuar</a>
             </div>
         </div>
     </div>
@@ -132,21 +143,28 @@
     <nav class="sticky top-0 z-50 bg-background border-b border-outline/40 h-16 flex items-center">
         <div class="flex justify-between items-center w-full px-margin-lg h-16 max-w-7xl mx-auto">
             <div class="flex items-center gap-12">
-                <a href="#" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); event.preventDefault();" class="hover:opacity-80 transition-opacity cursor-pointer">
+                <a href="#" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); event.preventDefault();"
+                    class="hover:opacity-80 transition-opacity cursor-pointer">
                     <div class="flex items-center gap-3">
                         <img src="assets/isotipo.png" alt="Gestobar Logo" class="w-8 h-8 object-contain" />
                         <span class="text-headline-md font-headline-md font-bold text-primary">Gestobar</span>
                     </div>
                 </a>
                 <div class="hidden md:flex gap-8">
-                    <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg" href="#productivity" onclick="scrollToSection(event, '#productivity')">Velocidad</a>
-                    <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg" href="#features" onclick="scrollToSection(event, '#features')">Módulos</a>
-                    <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg" href="#pricing" onclick="scrollToSection(event, '#pricing')">Precios</a>
-                    <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg" href="#faq" onclick="scrollToSection(event, '#faq')">Preguntas</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg"
+                        href="#productivity" onclick="scrollToSection(event, '#productivity')">Velocidad</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg"
+                        href="#features" onclick="scrollToSection(event, '#features')">Módulos</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg"
+                        href="#pricing" onclick="scrollToSection(event, '#pricing')">Precios</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg"
+                        href="#faq" onclick="scrollToSection(event, '#faq')">Preguntas</a>
                 </div>
             </div>
             <div class="flex items-center gap-6">
-                <a href="#pricing" onclick="scrollToSection(event, '#pricing')" class="bg-primary text-on-primary px-5 py-2 rounded-full text-body-md font-medium hover:scale-95 transition-transform duration-150 shadow-lg shadow-primary/20 flex items-center justify-center">Empezar ahora</a>
+                <a href="#pricing" onclick="scrollToSection(event, '#pricing')"
+                    class="bg-primary text-on-primary px-5 py-2 rounded-full text-body-md font-medium hover:scale-95 transition-transform duration-150 shadow-lg shadow-primary/20 flex items-center justify-center">Empezar
+                    ahora</a>
             </div>
         </div>
     </nav>
@@ -154,7 +172,8 @@
     <!-- Hero Section (Full-screen Cover Page - Cabalito) -->
     <section class="relative min-h-[calc(100vh-64px)] flex items-center overflow-hidden py-12">
         <!-- Background Image layer with opacity -->
-        <div class="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none z-0" style="background-image: url('assets/background.jpg');"></div>
+        <div class="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none z-0"
+            style="background-image: url('assets/background.jpg');"></div>
         <div class="max-w-7xl mx-auto px-margin-lg w-full relative z-10">
             <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
                 <!-- Left Column: Hero Text (Left-aligned) -->
@@ -164,19 +183,28 @@
                     </h1>
                     <p class="text-headline-md font-headline-md text-on-surface-variant leading-relaxed">
                         Controla ventas, gestión de caja, administra el menú, usuarios, comisiones y auditoría.
-                        <span class="block mt-4 text-headline-sm font-normal opacity-80 text-primary">Una solución unificada y robusta para la operación y administración de tu negocio.</span>
+                        <span class="block mt-4 text-headline-sm font-normal opacity-80 text-primary">Una solución
+                            unificada y robusta para la operación y administración de tu negocio.</span>
                     </p>
                     <div class="flex flex-col sm:flex-row items-center justify-start gap-4 pt-4">
-                        <a href="#pricing" onclick="scrollToSection(event, '#pricing')" class="w-full sm:w-auto px-6 py-3 bg-primary text-black rounded-full text-body-md font-medium hover:brightness-110 shadow-lg shadow-primary/25 transition-all text-center flex items-center justify-center">Empezar ahora</a>
-                        <button class="w-full sm:w-auto px-6 py-3 bg-surface-high text-on-surface border border-outline/40 rounded-full text-body-md font-medium hover:bg-surface-bright transition-all" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20solicito%20una%20demo%20de%20Gestobar.')">Solicitar demo</button>
+                        <a href="#pricing" onclick="scrollToSection(event, '#pricing')"
+                            class="w-full sm:w-auto px-6 py-3 bg-primary text-black rounded-full text-body-md font-medium hover:brightness-110 shadow-lg shadow-primary/25 transition-all text-center flex items-center justify-center">Empezar
+                            ahora</a>
+                        <button
+                            class="w-full sm:w-auto px-6 py-3 bg-surface-high text-on-surface border border-outline/40 rounded-full text-body-md font-medium hover:bg-surface-bright transition-all"
+                            onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20solicito%20una%20demo%20de%20Gestobar.')">Solicitar
+                            demo</button>
                     </div>
                 </div>
 
                 <!-- Right Column: Professional Mobile Mockup -->
                 <div class="flex-1 flex justify-center lg:justify-end relative w-full lg:w-auto">
                     <!-- Ambient glowing background behind the device -->
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-primary/10 blur-3xl rounded-full z-0 pointer-events-none"></div>
-                    <img src="assets/mockups/movil.png?v=3" alt="Gestobar Mobile Mockup" class="w-full max-w-[380px] object-contain relative z-10" />
+                    <div
+                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-primary/10 blur-3xl rounded-full z-0 pointer-events-none">
+                    </div>
+                    <img src="assets/mockups/movil.png?v=3" alt="Gestobar Mobile Mockup"
+                        class="w-full max-w-[380px] object-contain relative z-10" />
                 </div>
             </div>
         </div>
@@ -187,42 +215,55 @@
         <div class="max-w-7xl mx-auto px-margin-lg">
             <div class="text-center mb-12 space-y-2">
                 <h2 class="text-headline-lg font-headline-lg">Una sola aplicación para cada rol</h2>
-                <p class="text-body-lg text-on-surface-variant max-w-xl mx-auto">Gestobar sincroniza a todo tu equipo en tiempo real, desde los barman en barra hasta la gerencia.</p>
+                <p class="text-body-lg text-on-surface-variant max-w-xl mx-auto">Gestobar sincroniza a todo tu equipo en
+                    tiempo real, desde los barman en barra hasta la gerencia.</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-gutter-md">
                 <!-- App Tiles -->
-                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
-                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <div
+                    class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-4xl">point_of_sale</span>
                     </div>
                     <span class="text-label-lg font-bold">Punto de Venta (POS)</span>
                 </div>
-                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
-                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <div
+                    class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-4xl">account_balance_wallet</span>
                     </div>
                     <span class="text-label-lg font-bold">Cajas y Arqueos</span>
                 </div>
-                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
-                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <div
+                    class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-4xl">local_bar</span>
                     </div>
                     <span class="text-label-lg font-bold">Menú Digital</span>
                 </div>
-                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
-                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <div
+                    class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-4xl">group</span>
                     </div>
                     <span class="text-label-lg font-bold">Staff y Roles</span>
                 </div>
-                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
-                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <div
+                    class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-4xl">monitoring</span>
                     </div>
                     <span class="text-label-lg font-bold">Métricas</span>
                 </div>
-                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
-                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                <div
+                    class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-4xl">security</span>
                     </div>
                     <span class="text-label-lg font-bold">Auditoría en Vivo</span>
@@ -234,18 +275,26 @@
     <!-- Productivity Section (Stacked layout: tablet mockup on top, text below) -->
     <section class="py-section-gap" id="productivity">
         <div class="max-w-7xl mx-auto px-margin-lg">
-            <div class="glass-card p-8 md:p-12 rounded-lg flex flex-col items-center gap-12 overflow-hidden relative text-center">
-                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
-                
+            <div
+                class="glass-card p-8 md:p-12 rounded-lg flex flex-col items-center gap-12 overflow-hidden relative text-center">
+                <div
+                    class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full pointer-events-none">
+                </div>
+
                 <!-- Tablet Mockup (Large & Center) -->
                 <div class="relative w-full max-w-[850px] flex justify-center z-10">
-                    <img src="assets/mockups/tablet.png?v=3" alt="Gestobar Tablet Mockup" class="w-full object-contain" />
+                    <img src="assets/mockups/tablet.png?v=3" alt="Gestobar Tablet Mockup"
+                        class="w-full object-contain" />
                 </div>
 
                 <!-- Text Block below mockup -->
                 <div class="max-w-3xl space-y-6 relative z-10">
                     <h2 class="text-headline-lg font-headline-lg md:text-5xl">Velocidad para horas pico</h2>
-                    <p class="text-body-lg text-on-surface-variant">La velocidad en la barra define el éxito de la noche. Gestobar está diseñado con almacenamiento local reactivo y sincronización silenciosa de fondo. La aplicación sigue funcionando y registrando ventas incluso si la conexión a internet se interrumpe temporalmente, garantizando que el servicio nunca se detenga en los momentos de mayor afluencia.</p>
+                    <p class="text-body-lg text-on-surface-variant">La velocidad en la barra define el éxito de la
+                        noche. Gestobar está diseñado con almacenamiento local reactivo y sincronización silenciosa de
+                        fondo. La aplicación sigue funcionando y registrando ventas incluso si la conexión a internet se
+                        interrumpe temporalmente, garantizando que el servicio nunca se detenga en los momentos de mayor
+                        afluencia.</p>
                 </div>
             </div>
         </div>
@@ -265,7 +314,9 @@
                             <span class="material-symbols-outlined text-3xl">point_of_sale</span>
                         </div>
                         <h3 class="text-headline-md font-headline-md">POS de barra</h3>
-                        <p class="text-body-md text-on-surface-variant">Punto de venta ultra rápido optimizado para barra. Añade productos, gestiona variantes y procesa cobros en efectivo, tarjeta, transferencia o QR al instante.</p>
+                        <p class="text-body-md text-on-surface-variant">Punto de venta ultra rápido optimizado para
+                            barra. Añade productos, gestiona variantes y procesa cobros en efectivo, tarjeta,
+                            transferencia o QR al instante.</p>
                     </div>
                 </div>
 
@@ -276,7 +327,9 @@
                             <span class="material-symbols-outlined text-3xl">account_balance_wallet</span>
                         </div>
                         <h3 class="text-headline-md font-headline-md">Control de caja</h3>
-                        <p class="text-body-md text-on-surface-variant">Monitorea aperturas, cierres y reportes por turno. Registra ingresos o egresos manuales y analiza las ventas diarias ordenadas por método de pago.</p>
+                        <p class="text-body-md text-on-surface-variant">Monitorea aperturas, cierres y reportes por
+                            turno. Registra ingresos o egresos manuales y analiza las ventas diarias ordenadas por
+                            método de pago.</p>
                     </div>
                 </div>
 
@@ -287,7 +340,9 @@
                             <span class="material-symbols-outlined text-3xl">group</span>
                         </div>
                         <h3 class="text-headline-md font-headline-md">Usuarios y permisos</h3>
-                        <p class="text-body-md text-on-surface-variant">Administra tu personal con accesos seguros por PIN. Habilita o deshabilita usuarios al instante y configura roles personalizados según sus funciones.</p>
+                        <p class="text-body-md text-on-surface-variant">Administra tu personal con accesos seguros por
+                            PIN. Habilita o deshabilita usuarios al instante y configura roles personalizados según sus
+                            funciones.</p>
                     </div>
                 </div>
 
@@ -298,7 +353,9 @@
                             <span class="material-symbols-outlined text-3xl">security</span>
                         </div>
                         <h3 class="text-headline-md font-headline-md">Auditoría en vivo</h3>
-                        <p class="text-body-md text-on-surface-variant">Registro continuo de actividad en tiempo real. Supervisa inicios de sesión, ventas generadas y cualquier modificación de productos de forma inalterable.</p>
+                        <p class="text-body-md text-on-surface-variant">Registro continuo de actividad en tiempo real.
+                            Supervisa inicios de sesión, ventas generadas y cualquier modificación de productos de forma
+                            inalterable.</p>
                     </div>
                 </div>
             </div>
@@ -311,22 +368,29 @@
             <div class="max-w-4xl mx-auto text-center space-y-12">
                 <div class="space-y-4">
                     <h2 class="text-headline-lg font-headline-lg md:text-5xl">Todo incluido, un solo precio</h2>
-                    <p class="text-body-lg text-on-surface-variant">Sin sorpresas, sin cargos extra por usuarios o dispositivos. Accede al potencial completo de Gestobar en el plan que prefieras.</p>
+                    <p class="text-body-lg text-on-surface-variant">Sin sorpresas, sin cargos extra por usuarios o
+                        dispositivos. Accede al potencial completo de Gestobar en el plan que prefieras.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-8 max-w-3xl mx-auto items-stretch">
                     <!-- Plan Mensual -->
-                    <div class="glass-card p-8 rounded-lg border-2 border-outline/10 relative overflow-hidden bg-surface-low flex flex-col justify-between min-h-[500px]">
+                    <div
+                        class="glass-card p-8 rounded-lg border-2 border-outline/10 relative overflow-hidden bg-surface-low flex flex-col justify-between min-h-[500px]">
                         <div class="space-y-6">
                             <div class="flex justify-between items-center h-8">
-                                <span class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-widest block">Plan Mensual</span>
-                                <div class="bg-surface-high border border-outline/20 text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Estándar</div>
+                                <span
+                                    class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-widest block">Plan
+                                    Mensual</span>
+                                <div
+                                    class="bg-surface-high border border-outline/20 text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                    Estándar</div>
                             </div>
                             <div class="space-y-2">
                                 <div class="flex items-baseline gap-1">
                                     <span class="text-display-lg font-display-lg text-primary">US$ 10</span>
                                     <span class="text-headline-sm text-on-surface-variant">/ mes</span>
                                 </div>
-                                <p class="text-body-md text-on-surface-variant">Ideal para comenzar y escalar a tu ritmo.</p>
+                                <p class="text-body-md text-on-surface-variant">Ideal para comenzar y escalar a tu
+                                    ritmo.</p>
                             </div>
                             <ul class="space-y-3 pt-6 border-t border-outline/10">
                                 <li class="flex items-center gap-3 text-body-md">
@@ -347,22 +411,31 @@
                                 </li>
                             </ul>
                         </div>
-                        <button class="w-full py-4 bg-surface-high text-on-surface border border-outline/40 rounded-full text-label-lg font-bold transition-all text-center mt-8 cursor-pointer" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20estoy%20interesado%20en%20el%20plan%20Mensual%20de%20Gestobar.')">Contratar mensual</button>
+                        <button
+                            class="w-full py-4 bg-surface-high text-on-surface border border-outline/40 rounded-full text-label-lg font-bold transition-all text-center mt-8 cursor-pointer"
+                            onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20estoy%20interesado%20en%20el%20plan%20Mensual%20de%20Gestobar.')">Contratar
+                            mensual</button>
                     </div>
 
                     <!-- Plan Anual -->
-                    <div class="glass-card p-8 rounded-lg border-2 border-primary relative overflow-hidden bg-surface-low flex flex-col justify-between min-h-[500px]">
+                    <div
+                        class="glass-card p-8 rounded-lg border-2 border-primary relative overflow-hidden bg-surface-low flex flex-col justify-between min-h-[500px]">
                         <div class="space-y-6">
                             <div class="flex justify-between items-center h-8">
-                                <span class="text-label-lg font-label-lg text-primary uppercase tracking-widest block">Plan Anual</span>
-                                <div class="bg-primary text-black px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Ahorra 15%</div>
+                                <span
+                                    class="text-label-lg font-label-lg text-primary uppercase tracking-widest block">Plan
+                                    Anual</span>
+                                <div
+                                    class="bg-primary text-black px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                    Ahorra 15%</div>
                             </div>
                             <div class="space-y-2">
                                 <div class="flex items-baseline gap-1">
                                     <span class="text-display-lg font-display-lg text-primary">US$ 100</span>
                                     <span class="text-headline-sm text-on-surface-variant">/ año</span>
                                 </div>
-                                <p class="text-body-md text-on-surface-variant">La opción recomendada para el máximo ahorro.</p>
+                                <p class="text-body-md text-on-surface-variant">La opción recomendada para el máximo
+                                    ahorro.</p>
                             </div>
                             <ul class="space-y-3 pt-6 border-t border-outline/10">
                                 <li class="flex items-center gap-3 text-body-md">
@@ -387,7 +460,10 @@
                                 </li>
                             </ul>
                         </div>
-                        <button class="w-full py-4 bg-primary text-black rounded-full text-label-lg font-bold transition-all text-center mt-8 cursor-pointer" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20estoy%20interesado%20en%20el%20plan%20Anual%20de%20Gestobar.')">Contratar anual</button>
+                        <button
+                            class="w-full py-4 bg-primary text-black rounded-full text-label-lg font-bold transition-all text-center mt-8 cursor-pointer"
+                            onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20estoy%20interesado%20en%20el%20plan%20Anual%20de%20Gestobar.')">Contratar
+                            anual</button>
                     </div>
                 </div>
             </div>
@@ -399,61 +475,88 @@
         <div class="max-w-4xl mx-auto px-margin-lg">
             <div class="text-center mb-12 space-y-2">
                 <h2 class="text-headline-lg font-headline-lg md:text-5xl">Preguntas frecuentes</h2>
-                <p class="text-body-lg text-on-surface-variant">Todo lo que necesitas saber sobre Gestobar y sus planes de contratación.</p>
+                <p class="text-body-lg text-on-surface-variant">Todo lo que necesitas saber sobre Gestobar y sus planes
+                    de contratación.</p>
             </div>
             <div class="space-y-4">
                 <!-- FAQ Item 1 -->
                 <div class="glass-card p-6 space-y-2 faq-item cursor-pointer" onclick="toggleFaq(this)">
                     <div class="flex justify-between items-center gap-4">
                         <h3 class="text-headline-sm font-semibold text-primary">¿Cómo empiezo a usar Gestobar?</h3>
-                        <span class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
+                        <span
+                            class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
                     </div>
                     <div class="faq-answer">
-                        <p class="text-body-md text-on-surface-variant pt-2">Es muy sencillo. Al pagar tu suscripción, te entregamos una cuenta de administrador con un bar en blanco totalmente funcional. Desde el panel administrativo podrás configurar el nombre, logotipo y datos de tu local, crear tu menú cargando productos y categorías, y dar de alta a tus barmans y cajeros asignándoles códigos PIN para acceso rápido en barra.</p>
+                        <p class="text-body-md text-on-surface-variant pt-2">Es muy sencillo. Al pagar tu suscripción,
+                            te entregamos una cuenta de administrador con un bar en blanco totalmente funcional. Desde
+                            el panel administrativo podrás configurar el nombre, logotipo y datos de tu local, crear tu
+                            menú cargando productos y categorías, y dar de alta a tus barmans y cajeros asignándoles
+                            códigos PIN para acceso rápido en barra.</p>
                     </div>
                 </div>
 
                 <!-- FAQ Item 2 -->
                 <div class="glass-card p-6 space-y-2 faq-item cursor-pointer" onclick="toggleFaq(this)">
                     <div class="flex justify-between items-center gap-4">
-                        <h3 class="text-headline-sm font-semibold text-primary">¿Importa el tamaño de mi staff o la cantidad de dispositivos para la suscripción?</h3>
-                        <span class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
+                        <h3 class="text-headline-sm font-semibold text-primary">¿Importa el tamaño de mi staff o la
+                            cantidad de dispositivos para la suscripción?</h3>
+                        <span
+                            class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
                     </div>
                     <div class="faq-answer">
-                        <p class="text-body-md text-on-surface-variant pt-2">No. Gestobar ofrece usuarios (staff) y dispositivos móviles (teléfonos celulares y tablets) <strong>ilimitados</strong>. El plan es de tarifa plana, por lo que no pagarás montos extras al agregar más personal o terminales en barra.</p>
+                        <p class="text-body-md text-on-surface-variant pt-2">No. Gestobar ofrece usuarios (staff) y
+                            dispositivos móviles (teléfonos celulares y tablets) <strong>ilimitados</strong>. El plan es
+                            de tarifa plana, por lo que no pagarás montos extras al agregar más personal o terminales en
+                            barra.</p>
                     </div>
                 </div>
 
                 <!-- FAQ Item 3 -->
                 <div class="glass-card p-6 space-y-2 faq-item cursor-pointer" onclick="toggleFaq(this)">
                     <div class="flex justify-between items-center gap-4">
-                        <h3 class="text-headline-sm font-semibold text-primary">¿En qué plataformas y dispositivos funciona?</h3>
-                        <span class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
+                        <h3 class="text-headline-sm font-semibold text-primary">¿En qué plataformas y dispositivos
+                            funciona?</h3>
+                        <span
+                            class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
                     </div>
                     <div class="faq-answer">
-                        <p class="text-body-md text-on-surface-variant pt-2">La aplicación está diseñada y optimizada para funcionar de manera nativa en teléfonos inteligentes y tablets (sistemas compatibles con Android y iOS), facilitando que tanto tu personal en barra como la administración puedan operar de manera ágil.</p>
+                        <p class="text-body-md text-on-surface-variant pt-2">La aplicación está diseñada y optimizada
+                            para funcionar de manera nativa en teléfonos inteligentes y tablets (sistemas compatibles
+                            con Android y iOS), facilitando que tanto tu personal en barra como la administración puedan
+                            operar de manera ágil.</p>
                     </div>
                 </div>
 
                 <!-- FAQ Item 4 -->
                 <div class="glass-card p-6 space-y-2 faq-item cursor-pointer" onclick="toggleFaq(this)">
                     <div class="flex justify-between items-center gap-4">
-                        <h3 class="text-headline-sm font-semibold text-primary">¿En qué países se puede usar Gestobar y qué monedas soporta?</h3>
-                        <span class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
+                        <h3 class="text-headline-sm font-semibold text-primary">¿En qué países se puede usar Gestobar y
+                            qué monedas soporta?</h3>
+                        <span
+                            class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
                     </div>
                     <div class="faq-answer">
-                        <p class="text-body-md text-on-surface-variant pt-2">Se puede utilizar en cualquier país. Gestobar viene preconfigurado con soporte oficial para divisas como el Dólar (USD), Boliviano (BOB), Real Brasileño (BRL), Peso Chileno (CLP), Peso Colombiano (COP), Peso Dominicano (DOP), Peso Mexicano (MXN), Sol Peruano (PEN), Euro (EUR) y la gran mayoría de monedas de América Latina, configurables al instante desde el panel del administrador.</p>
+                        <p class="text-body-md text-on-surface-variant pt-2">Se puede utilizar en cualquier país.
+                            Gestobar viene preconfigurado con soporte oficial para divisas como el Dólar (USD),
+                            Boliviano (BOB), Real Brasileño (BRL), Peso Chileno (CLP), Peso Colombiano (COP), Peso
+                            Dominicano (DOP), Peso Mexicano (MXN), Sol Peruano (PEN), Euro (EUR) y la gran mayoría de
+                            monedas de América Latina, configurables al instante desde el panel del administrador.</p>
                     </div>
                 </div>
 
                 <!-- FAQ Item 5 -->
                 <div class="glass-card p-6 space-y-2 faq-item cursor-pointer" onclick="toggleFaq(this)">
                     <div class="flex justify-between items-center gap-4">
-                        <h3 class="text-headline-sm font-semibold text-primary">¿Puedo cancelar la suscripción en cualquier momento?</h3>
-                        <span class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
+                        <h3 class="text-headline-sm font-semibold text-primary">¿Puedo cancelar la suscripción en
+                            cualquier momento?</h3>
+                        <span
+                            class="material-symbols-outlined text-primary transition-transform duration-200 faq-icon">expand_more</span>
                     </div>
                     <div class="faq-answer">
-                        <p class="text-body-md text-on-surface-variant pt-2">Sí, no hay contratos forzosos ni plazos mínimos de permanencia. Puedes suspender o cancelar tu suscripción mensual en cualquier momento, reactivarla cuando quieras conservando toda tu base de datos histórica y seguir operando sin problemas.</p>
+                        <p class="text-body-md text-on-surface-variant pt-2">Sí, no hay contratos forzosos ni plazos
+                            mínimos de permanencia. Puedes suspender o cancelar tu suscripción mensual en cualquier
+                            momento, reactivarla cuando quieras conservando toda tu base de datos histórica y seguir
+                            operando sin problemas.</p>
                     </div>
                 </div>
             </div>
@@ -467,32 +570,50 @@
                 <!-- Brand Column -->
                 <div class="md:col-span-2 space-y-4 text-center md:text-left">
                     <span class="text-headline-md font-bold text-primary">Gestobar</span>
-                    <p class="text-body-md text-on-surface-variant max-w-sm mx-auto md:mx-0">Sistema unificado de control de caja, POS y administración en tiempo real para la barra del bar.</p>
+                    <p class="text-body-md text-on-surface-variant max-w-sm mx-auto md:mx-0">Sistema unificado de
+                        control de caja, POS y administración en tiempo real para la barra del bar.</p>
                 </div>
                 <!-- Navigation Column -->
                 <div class="space-y-4 text-center md:text-left">
                     <h4 class="text-label-lg font-bold text-primary uppercase tracking-wider">Navegación</h4>
                     <ul class="space-y-2">
-                        <li><a href="#productivity" onclick="scrollToSection(event, '#productivity')" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Velocidad</a></li>
-                        <li><a href="#features" onclick="scrollToSection(event, '#features')" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Módulos</a></li>
-                        <li><a href="#pricing" onclick="scrollToSection(event, '#pricing')" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Precios</a></li>
-                        <li><a href="#faq" onclick="scrollToSection(event, '#faq')" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Preguntas</a></li>
+                        <li><a href="#productivity" onclick="scrollToSection(event, '#productivity')"
+                                class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Velocidad</a>
+                        </li>
+                        <li><a href="#features" onclick="scrollToSection(event, '#features')"
+                                class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Módulos</a>
+                        </li>
+                        <li><a href="#pricing" onclick="scrollToSection(event, '#pricing')"
+                                class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Precios</a>
+                        </li>
+                        <li><a href="#faq" onclick="scrollToSection(event, '#faq')"
+                                class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Preguntas</a>
+                        </li>
                     </ul>
                 </div>
                 <!-- Legal Column -->
                 <div class="space-y-4 text-center md:text-left">
                     <h4 class="text-label-lg font-bold text-primary uppercase tracking-wider">Soporte y Legal</h4>
                     <ul class="space-y-2">
-                        <li><a href="privacy.html" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Política de Privacidad</a></li>
-                        <li><a href="terms.html" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Términos de Servicio</a></li>
-                        <li><button onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20tengo%20una%20consulta%20sobre%20Gestobar.')" class="text-body-md text-on-surface-variant hover:text-primary transition-colors text-center md:text-left w-full md:w-auto">Soporte WhatsApp</button></li>
+                        <li><a href="privacy.html"
+                                class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Política
+                                de Privacidad</a></li>
+                        <li><a href="terms.html"
+                                class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Términos
+                                de Servicio</a></li>
+                        <li><button
+                                onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20tengo%20una%20consulta%20sobre%20Gestobar.')"
+                                class="text-body-md text-on-surface-variant hover:text-primary transition-colors text-center md:text-left w-full md:w-auto">Soporte
+                                WhatsApp</button></li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-outline/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <div
+                class="border-t border-outline/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
                 <p class="text-body-md text-on-surface-variant">© 2026 Gestobar. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 </body>
+
 </html>
