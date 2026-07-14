@@ -1,5 +1,9 @@
 // Gestobar Web interactions and animations
 
+// Scroll lock state flag for Scroll Spy
+let isScrollingToSection = false;
+let scrollTimeout = null;
+
 // Global WhatsApp triggers
 window.triggerWhatsApp = function(url) {
     const modalBtn = document.getElementById('modalConfirmBtn');
@@ -39,7 +43,22 @@ window.scrollToSection = function(event, targetId) {
     event.preventDefault();
     const targetElement = document.querySelector(targetId);
     if (targetElement) {
-        const headerOffset = 100; // navbar height (80px) + 20px margin offset
+        isScrollingToSection = true;
+        clearTimeout(scrollTimeout);
+
+        // Highlight active navbar link immediately on click
+        document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+            const href = link.getAttribute('href');
+            if (link.classList.contains('bg-primary')) return;
+
+            if (href === targetId) {
+                link.className = "text-primary font-bold border-b-2 border-primary pb-1 text-label-lg";
+            } else {
+                link.className = "text-on-surface-variant hover:text-on-surface transition-colors text-label-lg";
+            }
+        });
+
+        const headerOffset = 85; // navbar height (80px) + 5px breathing room
         const elementPosition = targetElement.offsetTop;
         const offsetPosition = elementPosition - headerOffset;
         
@@ -47,6 +66,11 @@ window.scrollToSection = function(event, targetId) {
             top: offsetPosition,
             behavior: 'smooth'
         });
+
+        // Release the scroll lock flag after scroll completion
+        scrollTimeout = setTimeout(() => {
+            isScrollingToSection = false;
+        }, 800);
     }
 };
 
@@ -86,10 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Scroll Spy for Navbar highlighting
-    const headerOffset = 120;
+    const headerOffset = 100; // Trigger threshold
     const navLinks = document.querySelectorAll('nav a[href^="#"]');
     
     function scrollSpy() {
+        if (isScrollingToSection) return; // Disable scroll detection during programmatic smooth scroll
+        
         const scrollPosition = window.scrollY || document.documentElement.scrollTop;
         let activeSectionId = '';
         
