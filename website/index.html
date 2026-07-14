@@ -456,16 +456,36 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-surface-dim border-t border-outline/40 py-12">
-        <div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-lg max-w-7xl mx-auto gap-8">
-            <div class="flex flex-col items-center md:items-start gap-4">
-                <span class="text-headline-sm font-headline-sm font-bold text-on-surface">Gestobar</span>
-                <p class="text-body-md text-on-surface-variant">© 2026 Gestobar. Todos los derechos reservados.</p>
+    <footer class="bg-surface-dim border-t border-outline/40 pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-margin-lg space-y-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand Column -->
+                <div class="md:col-span-2 space-y-4 text-center md:text-left">
+                    <span class="text-headline-md font-bold text-on-surface">Gestobar</span>
+                    <p class="text-body-md text-on-surface-variant max-w-sm mx-auto md:mx-0">Sistema unificado de control de caja, POS y administración en tiempo real para bares y discotecas.</p>
+                </div>
+                <!-- Navigation Column -->
+                <div class="space-y-4 text-center md:text-left">
+                    <h4 class="text-label-lg font-bold text-primary uppercase tracking-wider">Navegación</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#features" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Módulos</a></li>
+                        <li><a href="#productivity" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Velocidad</a></li>
+                        <li><a href="#pricing" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Precios</a></li>
+                        <li><a href="#faq" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Preguntas frecuentes</a></li>
+                    </ul>
+                </div>
+                <!-- Legal Column -->
+                <div class="space-y-4 text-center md:text-left">
+                    <h4 class="text-label-lg font-bold text-primary uppercase tracking-wider">Soporte y Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="privacy.html" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Política de Privacidad</a></li>
+                        <li><a href="terms.html" class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Términos de Servicio</a></li>
+                        <li><button onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20tengo%20una%20consulta%20sobre%20Gestobar.')" class="text-body-md text-on-surface-variant hover:text-primary transition-colors text-center md:text-left w-full md:w-auto">Soporte WhatsApp</button></li>
+                    </ul>
+                </div>
             </div>
-            <div class="flex flex-wrap justify-center gap-8">
-                <a class="text-on-surface-variant hover:text-primary transition-colors text-label-sm" href="privacy.html">Política de Privacidad</a>
-                <a class="text-on-surface-variant hover:text-primary transition-colors text-label-sm" href="terms.html">Términos de Servicio</a>
-                <button class="text-primary hover:text-primary-container transition-colors text-label-sm font-bold" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20tengo%20una%20consulta%20sobre%20Gestobar.')">Soporte WhatsApp</button>
+            <div class="border-t border-outline/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <p class="text-body-md text-on-surface-variant">© 2026 Gestobar. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
