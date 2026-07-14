@@ -139,6 +139,25 @@
         </div>
     </div>
 
+    <!-- App Store Coming Soon Modal -->
+    <div class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+        id="appStoreModal">
+        <div class="glass-card p-margin-lg rounded-lg max-w-sm w-full flex flex-col items-center text-center space-y-6">
+            <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-4xl">phone_iphone</span>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-headline-sm font-headline-sm">Próximamente disponible</h3>
+                <p class="text-body-md text-on-surface-variant font-light">Gestobar para dispositivos iOS (iPhone y iPad) se encuentra en fase de revisión final y estará disponible muy pronto en la App Store.</p>
+            </div>
+            <div class="flex w-full">
+                <button
+                    class="flex-grow py-3 px-4 bg-primary text-black rounded-full text-label-lg font-label-lg hover:brightness-110 transition-all font-bold cursor-pointer"
+                    onclick="closeAppStoreModal()">Entendido</button>
+            </div>
+        </div>
+    </div>
+
     <!-- TopNavBar (Solid dark background, no glass/blur) -->
     <nav class="sticky top-0 z-50 bg-background border-b border-outline/40 h-16 flex items-center">
         <div class="flex justify-between items-center w-full px-margin-lg h-16 max-w-7xl mx-auto">
@@ -157,6 +176,8 @@
                         href="#features" onclick="scrollToSection(event, '#features')">Módulos</a>
                     <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg"
                         href="#pricing" onclick="scrollToSection(event, '#pricing')">Precios</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg"
+                        href="#download" onclick="scrollToSection(event, '#download')">Descarga</a>
                     <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg"
                         href="#faq" onclick="scrollToSection(event, '#faq')">Preguntas</a>
                 </div>
@@ -470,6 +491,31 @@
         </div>
     </section>
 
+    <!-- Download Section -->
+    <section class="py-section-gap bg-background" id="download">
+        <div class="max-w-4xl mx-auto px-margin-lg text-center space-y-12">
+            <div class="space-y-4">
+                <h2 class="text-headline-lg font-headline-lg md:text-5xl">Descarga la aplicación</h2>
+                <p class="text-body-lg text-on-surface-variant max-w-xl mx-auto font-light leading-relaxed">
+                    Controla el servicio, registra ventas y administra tu barra directamente desde tu dispositivo móvil.
+                    Disponible de forma gratuita para <strong class="text-primary font-medium">teléfonos celulares y tablets</strong>.
+                </p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6 max-w-md mx-auto">
+                <!-- Play Store -->
+                <a href="https://play.google.com/store/apps/details?id=com.gestobar.com" target="_blank" class="w-full sm:w-auto hover:scale-105 transition-transform duration-200 cursor-pointer">
+                    <img src="assets/play-store.png" alt="Descárgalo en Google Play" class="h-14 object-contain mx-auto" />
+                </a>
+                
+                <!-- App Store -->
+                <button onclick="showAppStoreSoon()" class="w-full sm:w-auto hover:scale-105 transition-transform duration-200 cursor-pointer bg-transparent border-0 p-0 focus:outline-none">
+                    <img src="assets/app-store.png" alt="Descárgalo en la App Store" class="h-14 object-contain mx-auto" />
+                </button>
+            </div>
+        </div>
+    </section>
+
     <!-- FAQ Section -->
     <section class="py-section-gap bg-surface-dim" id="faq">
         <div class="max-w-4xl mx-auto px-margin-lg">
@@ -585,6 +631,9 @@
                         </li>
                         <li><a href="#pricing" onclick="scrollToSection(event, '#pricing')"
                                 class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Precios</a>
+                        </li>
+                        <li><a href="#download" onclick="scrollToSection(event, '#download')"
+                                class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Descarga</a>
                         </li>
                         <li><a href="#faq" onclick="scrollToSection(event, '#faq')"
                                 class="text-body-md text-on-surface-variant hover:text-primary transition-colors">Preguntas</a>

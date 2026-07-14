@@ -23,6 +23,23 @@ window.closeModal = function() {
     }
 };
 
+// Global App Store Coming Soon Modal
+window.showAppStoreSoon = function() {
+    const modal = document.getElementById('appStoreModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+window.closeAppStoreModal = function() {
+    const modal = document.getElementById('appStoreModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+};
+
 // Global FAQ Toggle
 window.toggleFaq = function(element) {
     const isActive = element.classList.contains('active');
@@ -87,6 +104,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalBtn) {
         modalBtn.addEventListener('click', () => {
             window.closeModal();
+        });
+    }
+
+    const appStoreModal = document.getElementById('appStoreModal');
+    if (appStoreModal) {
+        appStoreModal.addEventListener('click', (e) => {
+            if (e.target === appStoreModal) window.closeAppStoreModal();
         });
     }
 
