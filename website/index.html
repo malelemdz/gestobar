@@ -132,10 +132,10 @@
     <nav class="sticky top-0 z-50 bg-background border-b border-outline/40 h-16 flex items-center">
         <div class="flex justify-between items-center w-full px-margin-lg h-16 max-w-7xl mx-auto">
             <div class="flex items-center gap-12">
-                <div class="flex items-center gap-3">
+                <a href="#" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); event.preventDefault();" class="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer">
                     <img src="assets/isotipo.png" alt="Gestobar Logo" class="w-8 h-8 object-contain" />
                     <span class="text-headline-md font-headline-md font-bold text-primary">Gestobar</span>
-                </div>
+                </a>
                 <div class="hidden md:flex gap-8">
                     <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg" href="#productivity" onclick="scrollToSection(event, '#productivity')">Velocidad</a>
                     <a class="text-on-surface-variant hover:text-on-surface transition-colors font-medium text-body-lg" href="#features" onclick="scrollToSection(event, '#features')">Módulos</a>
@@ -203,7 +203,7 @@
                 </div>
                 <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
                     <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                        <span class="material-symbols-outlined text-4xl">restaurant_menu</span>
+                        <span class="material-symbols-outlined text-4xl">local_bar</span>
                     </div>
                     <span class="text-label-lg font-bold">Menú Digital</span>
                 </div>
@@ -215,9 +215,9 @@
                 </div>
                 <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
                     <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                        <span class="material-symbols-outlined text-4xl">stars</span>
+                        <span class="material-symbols-outlined text-4xl">monitoring</span>
                     </div>
-                    <span class="text-label-lg font-bold">PR &amp; Fichas (Damas)</span>
+                    <span class="text-label-lg font-bold">Métricas</span>
                 </div>
                 <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
                     <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
