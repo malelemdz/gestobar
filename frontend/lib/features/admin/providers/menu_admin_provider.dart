@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../pos/providers/catalog_provider.dart';
 import '../data/repositories/menu_admin_repository.dart';
@@ -85,7 +86,20 @@ class MenuAdminNotifier extends StateNotifier<MenuAdminState> {
       state = state.copyWith(isLoading: false, successMessage: 'Categoría eliminada con éxito');
       return true;
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      String msg = 'Ocurrió un error al eliminar la categoría';
+      if (e is DioException) {
+        final statusCode = e.response?.statusCode;
+        if (statusCode == 500) {
+          msg = 'No se puede eliminar una categoría que contiene productos vinculados.';
+        } else if (e.response?.data != null && e.response?.data['message'] != null) {
+          msg = e.response!.data['message'].toString();
+        } else {
+          msg = 'Error del servidor (${statusCode ?? 'desconocido'}) al intentar eliminar la categoría.';
+        }
+      } else {
+        msg = e.toString();
+      }
+      state = state.copyWith(isLoading: false, errorMessage: msg);
       return false;
     }
   }

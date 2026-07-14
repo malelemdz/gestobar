@@ -575,6 +575,53 @@ void _toggleCategoryVisibility(BuildContext context, WidgetRef ref, CategoryMode
 }
 
 void _confirmDeleteCategory(BuildContext context, WidgetRef ref, CategoryModel category) async {
+  final productsAsync = ref.read(productsProvider);
+  final bool hasProducts = productsAsync.maybeWhen(
+    data: (products) => products.any((p) => p.categoriaId == category.id),
+    orElse: () => false,
+  );
+
+  if (hasProducts) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1E2024),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            const Icon(Icons.warning_amber_rounded, color: Color(0xFF00F0FF)),
+            const SizedBox(width: 8),
+            Text(
+              'Categoría ocupada',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'No se puede eliminar la categoría "${category.nombre}" porque contiene productos vinculados. Por favor, elimina o reasigna los productos primero.',
+          style: GoogleFonts.poppins(color: Colors.white70, fontSize: 13),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Entendido',
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF00F0FF),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    return;
+  }
+
   final bool? confirm = await BottomConfirmationSheet.show(
     context: context,
     title: '¿Eliminar ${category.nombre}?',
