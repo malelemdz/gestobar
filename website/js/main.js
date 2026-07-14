@@ -47,7 +47,7 @@ window.scrollToSection = function(event, targetId) {
         clearTimeout(scrollTimeout);
 
         // Highlight active navbar link immediately on click
-        document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+        document.querySelectorAll('nav a[href^="#"]:not([href="#"])').forEach(link => {
             const href = link.getAttribute('href');
             if (link.classList.contains('bg-primary')) return;
 
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Scroll Spy for Navbar highlighting
     const headerOffset = 80; // Trigger threshold
-    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+    const navLinks = document.querySelectorAll('nav a[href^="#"]:not([href="#"])');
     
     function scrollSpy() {
         if (isScrollingToSection) return; // Disable scroll detection during programmatic smooth scroll
