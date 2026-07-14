@@ -259,15 +259,15 @@
                         <span class="material-symbols-outlined text-3xl">point_of_sale</span>
                     </div>
                     <h3 class="text-headline-md font-headline-md">Punto de Venta Rápido (POS)</h3>
-                    <p class="text-body-md text-on-surface-variant">Diseñado para la velocidad extrema que exige la barra. Añade productos, gestiona variantes de precios e imprime comandas de preparación al instante.</p>
+                    <p class="text-body-md text-on-surface-variant">Diseñado para la velocidad extrema que exige la barra. Añade productos al instante, gestiona variantes de precios y registra pagos en Efectivo, Tarjeta, Transferencia Bancaria o código QR.</p>
                 </div>
 
-                <!-- Arqueo y Control de Cajas -->
+                <!-- Control de Caja -->
                 <div class="glass-card p-8 space-y-6 md:col-span-2">
                     <div class="flex justify-between items-start gap-4">
                         <div class="space-y-4">
-                            <h3 class="text-headline-md font-headline-md">Arqueo y Control de Caja</h3>
-                            <p class="text-body-md text-on-surface-variant">Registra aperturas, ingresos manuales, egresos y depósitos. Realiza cierres de caja (cuadraturas) al finalizar cada turno con reportes claros en PDF.</p>
+                            <h3 class="text-headline-md font-headline-md">Control de Caja</h3>
+                            <p class="text-body-md text-on-surface-variant">Registra aperturas y cierres de caja por turno. Controla ingresos y egresos manuales, consulta el historial de cajas y el registro de ventas del día, con reportes detallados clasificados por métodos de pago (Efectivo, Tarjeta, Transferencia o QR).</p>
                         </div>
                         <div class="w-12 h-12 bg-primary/10 flex items-center justify-center rounded-xl text-primary flex-shrink-0">
                             <span class="material-symbols-outlined text-3xl">account_balance_wallet</span>
@@ -275,15 +275,15 @@
                     </div>
                 </div>
 
-                <!-- Fichas y Comisiones -->
+                <!-- Gestión de Usuarios y Roles -->
                 <div class="glass-card p-8 space-y-6 md:col-span-2 border-t-2 border-t-primary/40 relative overflow-hidden">
                     <div class="absolute right-0 bottom-0 opacity-5">
-                        <span class="material-symbols-outlined text-[200px]">stars</span>
+                        <span class="material-symbols-outlined text-[200px]">group</span>
                     </div>
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
                         <div class="space-y-4 flex-1">
-                            <h3 class="text-headline-md font-headline-md">Fichas y Comisiones (PR / Staff)</h3>
-                            <p class="text-body-md text-on-surface-variant">Control automatizado para liquidaciones de relaciones públicas (promotores de puerta) y el staff de damas de compañía. Registra consumos de fichas y comisiones en tiempo real de forma segura.</p>
+                            <h3 class="text-headline-md font-headline-md">Gestión de Usuarios</h3>
+                            <p class="text-body-md text-on-surface-variant">Crea y administra usuarios con accesos protegidos por código PIN. Habilita o deshabilita cuentas del personal al instante, y diseña roles y permisos personalizados según las necesidades operativas de tu bar.</p>
                         </div>
                     </div>
                 </div>
@@ -293,8 +293,8 @@
                     <div class="w-12 h-12 bg-primary/10 flex items-center justify-center rounded-xl text-primary">
                         <span class="material-symbols-outlined text-3xl">security</span>
                     </div>
-                    <h3 class="text-headline-md font-headline-md">Auditoría Contable</h3>
-                    <p class="text-body-md text-on-surface-variant">Registro inalterable de cada acción del personal. Cada modificación de producto, egreso o cierre queda registrado con hora exacta y usuario responsable para evitar mermas o fraudes.</p>
+                    <h3 class="text-headline-md font-headline-md">Auditoría en Vivo</h3>
+                    <p class="text-body-md text-on-surface-variant">Un registro de actividad en tiempo real que monitorea todo lo que sucede en el bar o discoteca. Registra inicios de sesión del staff, ventas realizadas y modificaciones de productos de forma instantánea.</p>
                 </div>
             </div>
         </div>
@@ -308,17 +308,22 @@
                     <h2 class="text-headline-lg font-headline-lg md:text-5xl">Todo incluido, un solo precio</h2>
                     <p class="text-body-lg text-on-surface-variant">Sin sorpresas, sin cargos extra por usuarios o dispositivos. Accede al potencial completo de Gestobar en el plan que prefieras.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-8 max-w-3xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-8 max-w-3xl mx-auto items-stretch">
                     <!-- Plan Mensual -->
-                    <div class="glass-card p-8 rounded-lg border border-outline/20 space-y-8 relative overflow-hidden bg-surface-low flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <span class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-widest block">Plan Mensual</span>
-                            <div class="flex items-baseline gap-1">
-                                <span class="text-display-lg font-display-lg text-primary">US$ 10</span>
-                                <span class="text-headline-sm text-on-surface-variant">/ mes</span>
+                    <div class="glass-card p-8 rounded-lg border-2 border-outline/10 relative overflow-hidden bg-surface-low flex flex-col justify-between min-h-[500px]">
+                        <div class="space-y-6">
+                            <div class="flex justify-between items-center h-8">
+                                <span class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-widest block">Plan Mensual</span>
+                                <div class="bg-surface-high border border-outline/20 text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Estándar</div>
                             </div>
-                            <p class="text-body-md text-on-surface-variant">Ideal para comenzar y escalar a tu ritmo.</p>
-                            <ul class="space-y-3 pt-4 border-t border-outline/10">
+                            <div class="space-y-2">
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-display-lg font-display-lg text-primary">US$ 10</span>
+                                    <span class="text-headline-sm text-on-surface-variant">/ mes</span>
+                                </div>
+                                <p class="text-body-md text-on-surface-variant">Ideal para comenzar y escalar a tu ritmo.</p>
+                            </div>
+                            <ul class="space-y-3 pt-6 border-t border-outline/10">
                                 <li class="flex items-center gap-3 text-body-md">
                                     <span class="material-symbols-outlined text-primary text-xl">check</span>
                                     <span>Personal e Impresoras Ilimitadas</span>
@@ -333,26 +338,28 @@
                                 </li>
                                 <li class="flex items-center gap-3 text-body-md">
                                     <span class="material-symbols-outlined text-primary text-xl">check</span>
-                                    <span>Auditoría Estricta Contable</span>
+                                    <span>Auditoría en Vivo Integrada</span>
                                 </li>
                             </ul>
                         </div>
-                        <button class="w-full py-4 bg-surface-high text-on-surface border border-outline/40 rounded-full text-label-lg font-bold hover:bg-surface-bright transition-all shadow-md mt-6" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20estoy%20interesado%20en%20el%20plan%20Mensual%20de%20Gestobar.')">Contratar mensual</button>
+                        <button class="w-full py-4 bg-surface-high text-on-surface border border-outline/40 rounded-full text-label-lg font-bold transition-all text-center mt-8 cursor-pointer" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20estoy%20interesado%20en%20el%20plan%20Mensual%20de%20Gestobar.')">Contratar mensual</button>
                     </div>
 
                     <!-- Plan Anual -->
-                    <div class="glass-card p-8 rounded-lg border-2 border-primary space-y-8 relative overflow-hidden bg-surface-low flex flex-col justify-between">
-                        <div class="absolute top-4 right-4">
-                            <div class="bg-primary text-black px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Ahorra 15%</div>
-                        </div>
-                        <div class="space-y-4">
-                            <span class="text-label-lg font-label-lg text-primary uppercase tracking-widest block">Plan Anual</span>
-                            <div class="flex items-baseline gap-1">
-                                <span class="text-display-lg font-display-lg text-primary">US$ 100</span>
-                                <span class="text-headline-sm text-on-surface-variant">/ año</span>
+                    <div class="glass-card p-8 rounded-lg border-2 border-primary relative overflow-hidden bg-surface-low flex flex-col justify-between min-h-[500px]">
+                        <div class="space-y-6">
+                            <div class="flex justify-between items-center h-8">
+                                <span class="text-label-lg font-label-lg text-primary uppercase tracking-widest block">Plan Anual</span>
+                                <div class="bg-primary text-black px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Ahorra 15%</div>
                             </div>
-                            <p class="text-body-md text-on-surface-variant">La opción recomendada para el máximo ahorro.</p>
-                            <ul class="space-y-3 pt-4 border-t border-outline/10">
+                            <div class="space-y-2">
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-display-lg font-display-lg text-primary">US$ 100</span>
+                                    <span class="text-headline-sm text-on-surface-variant">/ año</span>
+                                </div>
+                                <p class="text-body-md text-on-surface-variant">La opción recomendada para el máximo ahorro.</p>
+                            </div>
+                            <ul class="space-y-3 pt-6 border-t border-outline/10">
                                 <li class="flex items-center gap-3 text-body-md">
                                     <span class="material-symbols-outlined text-primary text-xl">check</span>
                                     <span class="font-bold text-on-surface">2 meses gratis incluidos</span>
@@ -369,13 +376,9 @@
                                     <span class="material-symbols-outlined text-primary text-xl">check</span>
                                     <span>Soporte 24/7 vía WhatsApp</span>
                                 </li>
-                                <li class="flex items-center gap-3 text-body-md">
-                                    <span class="material-symbols-outlined text-primary text-xl">check</span>
-                                    <span>Auditoría Estricta Contable</span>
-                                </li>
                             </ul>
                         </div>
-                        <button class="w-full py-4 bg-primary text-black rounded-full text-label-lg font-bold hover:brightness-110 transition-all shadow-xl shadow-primary/20 mt-6" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20estoy%20interesado%20en%20el%20plan%20Anual%20de%20Gestobar.')">Contratar anual</button>
+                        <button class="w-full py-4 bg-primary text-black rounded-full text-label-lg font-bold transition-all text-center mt-8 cursor-pointer" onclick="triggerWhatsApp('https://wa.me/59176988846?text=Hola%2C%20estoy%20interesado%20en%20el%20plan%20Anual%20de%20Gestobar.')">Contratar anual</button>
                     </div>
                 </div>
             </div>
