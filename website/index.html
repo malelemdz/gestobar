@@ -148,22 +148,43 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="relative min-h-[80vh] flex items-center overflow-hidden pt-12 pb-24 hero-gradient">
+    <!-- Hero Section (Full-screen Cover Page) -->
+    <section class="relative min-h-screen flex items-center overflow-hidden pt-28 pb-20 hero-gradient">
         <div class="max-w-7xl mx-auto px-margin-lg w-full">
-            <div class="max-w-4xl mx-auto text-center space-y-8">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-high border border-outline/20 text-primary">
-                    <span class="material-symbols-outlined text-[18px]">verified</span>
-                    <span class="text-label-lg font-label-lg font-semibold uppercase tracking-wider">Bar Management Suite v2.0</span>
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+                <!-- Left Column: Hero Text (Left-aligned) -->
+                <div class="flex-1 text-left space-y-8 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-high border border-outline/20 text-primary">
+                        <span class="material-symbols-outlined text-[18px]">verified</span>
+                        <span class="text-label-lg font-label-lg font-semibold uppercase tracking-wider">Bar Management Suite v2.0</span>
+                    </div>
+                    <h1 class="text-display-lg font-display-lg tracking-tight md:text-6xl lg:text-7xl leading-tight">
+                        Lleva tu Bar o Discoteca al <span class="text-primary">siguiente nivel</span>
+                    </h1>
+                    <p class="text-headline-md font-headline-md text-on-surface-variant leading-relaxed">
+                        Controla ventas, POS, arqueos de caja, comisiones de damas/relaciones públicas y auditoría en tiempo real.
+                        <span class="block mt-4 text-headline-sm opacity-80 text-primary">Desde solo US$ 10/mes por todas las aplicaciones de tu staff.</span>
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-start gap-4 pt-4">
+                        <button class="w-full sm:w-auto px-8 py-4 bg-primary text-black rounded-full text-label-lg font-bold hover:brightness-110 shadow-lg shadow-primary/25 transition-all" onclick="triggerWhatsApp('https://wa.me/start')">Empezar ahora (Gratis)</button>
+                        <button class="w-full sm:w-auto px-8 py-4 bg-surface-high text-on-surface border border-outline/40 rounded-full text-label-lg font-bold hover:bg-surface-bright transition-all" onclick="triggerWhatsApp('https://wa.me/consultant')">Contactar Consultor</button>
+                    </div>
                 </div>
-                <h1 class="text-display-lg font-display-lg tracking-tight md:text-7xl">Lleva tu Bar o Discoteca al <span class="text-primary">siguiente nivel</span></h1>
-                <p class="text-headline-md font-headline-md text-on-surface-variant max-w-2xl mx-auto">
-                    Controla ventas, POS, arqueos de caja, comisiones de damas/relaciones públicas y auditoría en tiempo real.
-                    <span class="block mt-4 text-headline-sm opacity-80 text-primary">Desde solo US$ 10/mes por todas las aplicaciones de tu staff.</span>
-                </p>
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-                    <button class="w-full sm:w-auto px-8 py-4 bg-primary text-on-primary rounded-full text-label-lg font-bold hover:brightness-110 shadow-lg shadow-primary/25 transition-all" onclick="triggerWhatsApp('https://wa.me/start')">Empezar ahora (Gratis)</button>
-                    <button class="w-full sm:w-auto px-8 py-4 bg-surface-high text-on-surface border border-outline/40 rounded-full text-label-lg font-bold hover:bg-surface-bright transition-all" onclick="triggerWhatsApp('https://wa.me/consultant')">Contactar Consultor</button>
+
+                <!-- Right Column: Premium Mobile Mockup -->
+                <div class="flex-1 flex justify-center lg:justify-end relative w-full lg:w-auto">
+                    <!-- Ambient glowing background behind the device -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-primary/10 blur-3xl rounded-full z-0 pointer-events-none"></div>
+                    <!-- Phone Mockup Container -->
+                    <div class="relative z-10 w-[280px] h-[570px] bg-black rounded-[46px] p-[10px] shadow-2xl border-4 border-outline/30 flex items-center justify-center">
+                        <!-- Inner screen -->
+                        <div class="w-full h-full bg-surface-low rounded-[36px] overflow-hidden relative border border-outline/10">
+                            <!-- Phone Notch -->
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-4 bg-black rounded-b-2xl z-30"></div>
+                            <!-- Screenshot Image -->
+                            <img src="assets/screenshot/movil.PNG" alt="Gestobar Mobile App Interface" class="w-full h-full object-cover" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -238,7 +259,7 @@
                     </div>
                 </div>
                 <div class="flex-1 relative">
-                    <img class="w-full rounded-2xl border border-outline/20" alt="Gestobar dashboard interface dark sleek modernist aesthetic" src="assets/screen.png"/>
+                    <img class="w-full rounded-2xl border border-outline/20" alt="Gestobar dashboard interface dark sleek modernist aesthetic" src="assets/screenshot/tablet.png"/>
                 </div>
             </div>
         </div>
