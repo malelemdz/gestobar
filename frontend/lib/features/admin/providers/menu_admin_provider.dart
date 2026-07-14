@@ -146,6 +146,44 @@ class MenuAdminNotifier extends StateNotifier<MenuAdminState> {
     }
   }
 
+  Future<bool> updateProductWithVariants({
+    required String productId,
+    required Map<String, dynamic> updates,
+    required List<Map<String, dynamic>> variantsToAdd,
+    required List<Map<String, dynamic>> variantsToUpdate,
+    required List<String> variantIdsToDelete,
+  }) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      // 1. Actualizar producto principal
+      await _repository.updateProduct(productId, updates);
+
+      // 2. Agregar nuevas variantes
+      for (final v in variantsToAdd) {
+        await _repository.addVariant(productId, v);
+      }
+
+      // 3. Actualizar variantes existentes
+      for (final v in variantsToUpdate) {
+        final String variantId = v['id'] as String;
+        final Map<String, dynamic> vPayload = Map.from(v)..remove('id');
+        await _repository.updateVariant(variantId, vPayload);
+      }
+
+      // 4. Eliminar variantes removidas
+      for (final String variantId in variantIdsToDelete) {
+        await _repository.deleteVariant(variantId);
+      }
+
+      _ref.invalidate(productsProvider);
+      state = state.copyWith(isLoading: false, successMessage: 'Producto actualizado con éxito');
+      return true;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      return false;
+    }
+  }
+
   Future<bool> deleteProduct(String id) async {
     state = state.copyWith(isLoading: true);
     try {

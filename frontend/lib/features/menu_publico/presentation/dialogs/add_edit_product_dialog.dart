@@ -681,61 +681,56 @@ class _AddEditProductDialogState extends ConsumerState<AddEditProductDialog> {
         'categoria_id': _selectedCategoryId,
       };
 
-      overallSuccess = await notifier.updateProduct(widget.product!.id, updates);
+      final List<Map<String, dynamic>> variantsToAdd = [];
+      final List<Map<String, dynamic>> variantsToUpdate = [];
+      final List<String> dialogVariantIds = [];
 
-      if (overallSuccess) {
-        final List<String> dialogVariantIds = [];
+      for (final v in _localVariants) {
+        final String? variantId = v['id'] as String?;
+        final pricesPayload = <Map<String, dynamic>>[];
+        final pricesMap = v['precios'] as Map<String, double>;
 
-        for (final v in _localVariants) {
-          final String? variantId = v['id'] as String?;
-          final pricesPayload = <Map<String, dynamic>>[];
-          final pricesMap = v['precios'] as Map<String, double>;
-
-          pricesMap.forEach((tariffId, priceVal) {
-            pricesPayload.add({
-              'tarifa_id': tariffId,
-              'precio_unitario': priceVal,
-            });
+        pricesMap.forEach((tariffId, priceVal) {
+          pricesPayload.add({
+            'tarifa_id': tariffId,
+            'precio_unitario': priceVal,
           });
+        });
 
-          final Map<String, dynamic> vPayload = {
-            'nombre': v['nombre'],
-            'disponible': v['disponible'],
-            'precios': pricesPayload,
-          };
+        final Map<String, dynamic> vPayload = {
+          'nombre': v['nombre'],
+          'disponible': v['disponible'],
+          'precios': pricesPayload,
+        };
 
-          if (variantId == null) {
-            await notifier.addVariant(widget.product!.id, vPayload);
-          } else {
-            await notifier.updateVariant(variantId, vPayload);
-            dialogVariantIds.add(variantId);
-          }
-        }
-
-        for (final originalV in widget.product!.variantes) {
-          if (!dialogVariantIds.contains(originalV.id)) {
-            await notifier.deleteVariant(originalV.id);
-          }
+        if (variantId == null) {
+          variantsToAdd.add(vPayload);
+        } else {
+          vPayload['id'] = variantId;
+          variantsToUpdate.add(vPayload);
+          dialogVariantIds.add(variantId);
         }
       }
+
+      final List<String> variantIdsToDelete = [];
+      for (final originalV in widget.product!.variantes) {
+        if (!dialogVariantIds.contains(originalV.id)) {
+          variantIdsToDelete.add(originalV.id);
+        }
+      }
+
+      overallSuccess = await notifier.updateProductWithVariants(
+        productId: widget.product!.id,
+        updates: updates,
+        variantsToAdd: variantsToAdd,
+        variantsToUpdate: variantsToUpdate,
+        variantIdsToDelete: variantIdsToDelete,
+      );
     }
 
     if (mounted) {
       if (overallSuccess) {
-        CustomToast.show(
-          context,
-          message: widget.product == null
-              ? 'Producto registrado con éxito'
-              : 'Producto actualizado con éxito',
-          type: ToastType.success,
-        );
         Navigator.pop(context);
-      } else {
-        CustomToast.show(
-          context,
-          message: 'Error al guardar el producto',
-          type: ToastType.error,
-        );
       }
     }
   }
