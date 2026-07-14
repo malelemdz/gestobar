@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Gestobar | Software de Gestión Integral para Discotecas y Bares</title>
     <meta name="description" content="Controla tus ventas, POS, cajas, inventario, comisiones de damas/relaciones públicas y auditoría en tiempo real con Gestobar."/>
+    <link rel="icon" type="image/png" href="assets/isotipo.png"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -106,12 +107,8 @@
         },
       }
     </script>
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .glass-card { background: #24262A; border: 1px solid rgba(74, 86, 87, 0.4); }
-        .hero-gradient { background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.12) 0%, transparent 60%); }
-    </style>
+    <link rel="stylesheet" href="css/custom.css"/>
+    <script src="js/main.js" defer></script>
 </head>
 <body class="bg-background text-on-surface selection:bg-primary selection:text-on-primary">
     <!-- WhatsApp Redirect Modal -->
@@ -131,11 +128,14 @@
         </div>
     </div>
 
-    <!-- TopNavBar -->
-    <nav class="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-outline/40 h-20 flex items-center">
+    <!-- TopNavBar (Solid dark background, no glass/blur) -->
+    <nav class="sticky top-0 z-50 bg-background border-b border-outline/40 h-20 flex items-center">
         <div class="flex justify-between items-center w-full px-margin-lg h-20 max-w-7xl mx-auto">
             <div class="flex items-center gap-12">
-                <span class="text-headline-md font-headline-md font-extrabold text-primary tracking-wide">Gestobar</span>
+                <div class="flex items-center gap-3">
+                    <img src="assets/isotipo.png" alt="Gestobar Logo" class="w-8 h-8 object-contain" />
+                    <span class="text-headline-md font-headline-md font-extrabold text-primary tracking-wide">Gestobar</span>
+                </div>
                 <div class="hidden md:flex gap-8">
                     <a class="text-primary font-bold border-b-2 border-primary pb-1 text-label-lg" href="#features">Módulos</a>
                     <a class="text-on-surface-variant hover:text-on-surface transition-colors text-label-lg" href="#productivity">Velocidad</a>
@@ -238,7 +238,7 @@
                     </div>
                 </div>
                 <div class="flex-1 relative">
-                    <img class="w-full rounded-2xl border border-outline/20" alt="Gestobar dashboard interface dark sleek modernist aesthetic" src="screen.png"/>
+                    <img class="w-full rounded-2xl border border-outline/20" alt="Gestobar dashboard interface dark sleek modernist aesthetic" src="assets/screen.png"/>
                 </div>
             </div>
         </div>
@@ -377,45 +377,5 @@
             </div>
         </div>
     </footer>
-
-    <!-- Scripts for micro-interactions -->
-    <script>
-        const modal = document.getElementById('whatsappModal');
-        const modalBtn = document.getElementById('modalConfirmBtn');
-
-        function triggerWhatsApp(url) {
-            modalBtn.href = url;
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
-
-        // Scroll reveal animation
-        const observerOptions = {
-            threshold: 0.05
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('opacity-100', 'translate-y-0');
-                    entry.target.classList.remove('opacity-0', 'translate-y-8');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.glass-card').forEach(el => {
-            el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-8');
-            observer.observe(el);
-        });
-    </script>
 </body>
 </html>

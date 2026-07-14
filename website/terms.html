@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Términos de Servicio | Gestobar</title>
+    <link rel="icon" type="image/png" href="assets/isotipo.png"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -30,19 +31,16 @@
         }
       }
     </script>
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .glass-card { background: #24262A; border: 1px solid rgba(74, 86, 87, 0.4); }
-        .hero-gradient { background: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.08) 0%, transparent 50%); }
-    </style>
+    <link rel="stylesheet" href="css/custom.css"/>
 </head>
 <body class="bg-background text-on-surface hero-gradient min-h-screen flex flex-col justify-between">
-    <!-- Navbar -->
-    <nav class="bg-background/95 backdrop-blur-md border-b border-outline/40 h-20 flex items-center">
+    <!-- Navbar (Solid dark background, no glass/blur) -->
+    <nav class="bg-background border-b border-outline/40 h-20 flex items-center">
         <div class="flex justify-between items-center w-full px-8 max-w-7xl mx-auto">
             <div class="flex items-center gap-4">
-                <a href="index.html" class="flex items-center gap-2 text-on-surface hover:text-primary transition-colors">
+                <a href="index.html" class="flex items-center gap-3 text-on-surface hover:text-primary transition-colors">
                     <span class="material-symbols-outlined">arrow_back</span>
+                    <img src="assets/isotipo.png" alt="Gestobar Logo" class="w-8 h-8 object-contain" />
                     <span class="text-headline-md font-extrabold text-primary tracking-wide">Gestobar</span>
                 </a>
             </div>
