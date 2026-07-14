@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Política de Privacidad | Gestobar</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-low": "#1E2024",
+                    "surface": "#24262A",
+                    "primary": "#00F0FF",
+                    "surface-bright": "#37393e",
+                    "on-surface-variant": "#bbc9cb",
+                    "success": "#10B981",
+                    "background": "#111317",
+                    "on-surface": "#EBEBEF",
+                    "outline": "#4A5657"
+            },
+            "fontFamily": {
+                    "body": ["Poppins"]
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .glass-card { background: #24262A; border: 1px solid rgba(74, 86, 87, 0.4); }
+        .hero-gradient { background: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.08) 0%, transparent 50%); }
+    </style>
+</head>
+<body class="bg-background text-on-surface hero-gradient min-h-screen flex flex-col justify-between">
+    <!-- Navbar -->
+    <nav class="bg-background/95 backdrop-blur-md border-b border-outline/40 h-20 flex items-center">
+        <div class="flex justify-between items-center w-full px-8 max-w-7xl mx-auto">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="flex items-center gap-2 text-on-surface hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    <span class="text-headline-md font-extrabold text-primary tracking-wide">Gestobar</span>
+                </a>
+            </div>
+            <div class="text-label-lg font-bold text-on-surface-variant uppercase tracking-wider hidden sm:block">
+                Política de Privacidad
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content Container -->
+    <main class="max-w-4xl mx-auto px-6 py-12 w-full flex-grow">
+        <div class="glass-card p-8 md:p-12 rounded-lg space-y-8 bg-surface-low">
+            <div class="space-y-4 border-b border-outline/20 pb-6">
+                <h1 class="text-3xl md:text-4xl font-bold text-primary">Política de Privacidad</h1>
+                <p class="text-sm text-on-surface-variant">Última actualización: 14 de Julio de 2026</p>
+            </div>
+
+            <section class="space-y-4">
+                <p class="text-body-lg text-on-surface-variant leading-relaxed">
+                    En <strong>Gestobar</strong> ("nosotros", "nuestro"), valoramos la privacidad de los usuarios que interactúan con nuestra plataforma de gestión para discotecas y bares. Esta Política de Privacidad describe cómo recopilamos, usamos, almacenamos y protegemos la información personal en cumplimiento con las políticas de las tiendas de aplicaciones (Google Play y App Store).
+                </p>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-xl font-semibold text-primary">1. Información que Recopilamos</h2>
+                <p class="text-body-md text-on-surface-variant leading-relaxed">
+                    Para el funcionamiento adecuado del sistema Gestobar en tu local, recopilamos los siguientes datos:
+                </p>
+                <ul class="list-disc pl-6 space-y-2 text-body-md text-on-surface-variant leading-relaxed">
+                    <li><strong>Información de Cuenta del Personal:</strong> Nombres, números de teléfono y contraseñas creadas por el administrador para autenticar a los meseros, bartenders, cajeros y personal de relaciones públicas (PR).</li>
+                    <li><strong>Registros de Actividad (Auditoría):</strong> Registramos las acciones de inicio de sesión, ventas realizadas, cobros, depósitos y egresos de caja para fines contables y de seguridad interna del local.</li>
+                    <li><strong>Datos de Localización (Opcional):</strong> Si el administrador habilita el control de sucursales, la aplicación móvil puede verificar la IP o red de conexión para asegurar que el personal está operando dentro de las instalaciones del bar.</li>
+                </ul>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-xl font-semibold text-primary">2. Uso de la Información</h2>
+                <p class="text-body-md text-on-surface-variant leading-relaxed">
+                    Los datos recopilados se utilizan única y exclusivamente para:
+                </p>
+                <ul class="list-disc pl-6 space-y-2 text-body-md text-on-surface-variant leading-relaxed">
+                    <li>Autenticar usuarios e impedir accesos no autorizados al panel de administración.</li>
+                    <li>Procesar órdenes de venta a través del Punto de Venta (POS) y gestionar el flujo de caja.</li>
+                    <li>Calcular comisiones por barra, promotores y fichas de damas de compañía del staff.</li>
+                    <li>Proporcionar un registro de auditoría estricto para evitar fraudes internos dentro del negocio.</li>
+                </ul>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-xl font-semibold text-primary">3. Compartición y Divulgación de Datos</h2>
+                <p class="text-body-md text-on-surface-variant leading-relaxed">
+                    <strong>No vendemos, alquilamos ni comercializamos tu información personal con terceros.</strong> Los datos residen en la base de datos exclusiva del local provista y controlada bajo el servidor del propietario (Coolify / VPS propio). Solo se compartirán datos bajo requerimiento judicial en estricto cumplimiento con la legislación local correspondiente.
+                </p>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-xl font-semibold text-primary">4. Seguridad y Retención</h2>
+                <p class="text-body-md text-on-surface-variant leading-relaxed">
+                    Implementamos medidas de seguridad técnicas como encriptación HTTPS/TLS y hash de contraseñas de personal para asegurar los datos contra accesos no autorizados, pérdida o alteración. 
+                    Los datos de actividad se retienen mientras la cuenta del bar permanezca activa en nuestro software, o hasta que el administrador solicite la purga completa de datos de auditoría de su local.
+                </p>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-xl font-semibold text-primary">5. Derechos del Usuario y Eliminación de Cuentas</h2>
+                <p class="text-body-md text-on-surface-variant leading-relaxed">
+                    De acuerdo con los lineamientos de Google Play y Apple Store, cualquier miembro del staff de un local tiene derecho a solicitar la eliminación de su cuenta y sus datos personales de nuestro sistema.
+                </p>
+                <p class="text-body-md text-on-surface-variant leading-relaxed">
+                    Para iniciar el proceso de eliminación de datos de personal, ponte en contacto con el administrador asignado a tu sucursal o escríbenos directamente a través de los canales de soporte autorizados detallados abajo.
+                </p>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-xl font-semibold text-primary">6. Cambios a esta Política</h2>
+                <p class="text-body-md text-on-surface-variant leading-relaxed">
+                    Podemos actualizar esta política ocasionalmente para reflejar mejoras en la aplicación o cambios legales. Publicaremos cualquier cambio en esta misma página con una nueva fecha de actualización.
+                </p>
+            </section>
+
+            <section class="space-y-4 border-t border-outline/20 pt-6">
+                <h2 class="text-xl font-semibold text-primary">Contacto y Soporte</h2>
+                <p class="text-body-md text-on-surface-variant leading-relaxed">
+                    Si tienes dudas sobre esta Política de Privacidad o deseas ejercer tus derechos de datos personales, puedes contactar a nuestro equipo de soporte técnico Gestobar a través de:
+                </p>
+                <p class="text-body-md text-primary font-semibold">
+                    Email: soporte@gestobar.com <br/>
+                    WhatsApp: Soporte Técnico Autorizado (Gestobar Suite)
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-surface-dim border-t border-outline/40 py-8">
+        <div class="flex flex-col sm:flex-row justify-between items-center w-full px-8 max-w-7xl mx-auto gap-4">
+            <span class="text-label-lg font-bold text-on-surface tracking-wider">Gestobar</span>
+            <span class="text-xs text-on-surface-variant">© 2026 Gestobar. Todos los derechos reservados.</span>
+        </div>
+    </footer>
+</body>
+</html>

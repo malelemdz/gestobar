@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Gestobar | Software de Gestión Integral para Discotecas y Bares</title>
+    <meta name="description" content="Controla tus ventas, POS, cajas, inventario, comisiones de damas/relaciones públicas y auditoría en tiempo real con Gestobar."/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#E0FBFC",
+                    "surface-low": "#1E2024",
+                    "surface": "#24262A",
+                    "primary": "#00F0FF",
+                    "on-secondary-fixed": "#07006c",
+                    "surface-bright": "#37393e",
+                    "on-tertiary-fixed-variant": "#8c0053",
+                    "warning": "#F59E0B",
+                    "outline-variant": "#3c494b",
+                    "inverse-primary": "#006874",
+                    "secondary-fixed": "#e1e0ff",
+                    "surface-tint": "#00F0FF",
+                    "tertiary-fixed-dim": "#ffb0cd",
+                    "primary-container": "#00BCCF",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "on-error": "#690005",
+                    "on-secondary": "#1000a9",
+                    "danger": "#EF4444",
+                    "on-tertiary": "#640039",
+                    "on-primary-container": "#00464e",
+                    "on-surface-variant": "#bbc9cb",
+                    "success": "#10B981",
+                    "on-primary": "#00363d",
+                    "surface-container": "#1e2024",
+                    "inverse-on-surface": "#2f3035",
+                    "on-background": "#e2e2e8",
+                    "surface-dim": "#111317",
+                    "inverse-surface": "#e2e2e8",
+                    "surface-container-lowest": "#0c0e12",
+                    "secondary-container": "#3131c0",
+                    "surface-high": "#2E3035",
+                    "surface-variant": "#333539",
+                    "surface-container-low": "#1a1c20",
+                    "surface-container-highest": "#333539",
+                    "on-surface": "#EBEBEF",
+                    "tertiary-container": "#ff81b7",
+                    "tertiary": "#ffb0cd",
+                    "error-container": "#93000a",
+                    "on-primary-fixed": "#001f24",
+                    "background": "#111317",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "on-tertiary-container": "#7e004a",
+                    "error": "#ffb4ab",
+                    "secondary": "#c0c1ff",
+                    "primary-fixed-dim": "#00F0FF",
+                    "on-error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#3e0022",
+                    "on-primary-fixed-variant": "#004f57",
+                    "surface-container-high": "#282a2e",
+                    "outline": "#4A5657",
+                    "tertiary-fixed": "#ffd9e4",
+                    "on-secondary-container": "#b0b2ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-lg": "2.5rem",
+                    "gutter-md": "1.5rem",
+                    "margin-sm": "1rem",
+                    "margin-md": "1.5rem",
+                    "section-gap": "4rem"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Poppins"],
+                    "label-sm": ["Poppins"],
+                    "body-md": ["Poppins"],
+                    "headline-lg-mobile": ["Poppins"],
+                    "display-lg": ["Poppins"],
+                    "headline-md": ["Poppins"],
+                    "body-lg": ["Poppins"],
+                    "headline-lg": ["Poppins"],
+                    "label-lg": ["Poppins"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "label-sm": ["10px", {"lineHeight": "14px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "label-lg": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: #24262A; border: 1px solid rgba(74, 86, 87, 0.4); }
+        .hero-gradient { background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.12) 0%, transparent 60%); }
+    </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary selection:text-on-primary">
+    <!-- WhatsApp Redirect Modal -->
+    <div class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm" id="whatsappModal">
+        <div class="glass-card p-margin-lg rounded-lg max-w-sm w-full flex flex-col items-center text-center space-y-6">
+            <div class="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center text-success">
+                <span class="material-symbols-outlined text-4xl">chat</span>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-headline-sm font-headline-sm">Continuar a WhatsApp</h3>
+                <p class="text-body-md text-on-surface-variant">Estás saliendo de la web para ir a WhatsApp y hablar con nuestro equipo de soporte.</p>
+            </div>
+            <div class="flex gap-4 w-full">
+                <button class="flex-1 py-3 px-4 border border-outline/40 rounded-full text-label-lg font-label-lg hover:bg-surface-high transition-colors" onclick="closeModal()">Cancelar</button>
+                <a class="flex-1 py-3 px-4 bg-primary text-on-primary rounded-full text-label-lg font-label-lg text-center hover:brightness-110 transition-all font-bold" href="#" id="modalConfirmBtn" target="_blank">Continuar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- TopNavBar -->
+    <nav class="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-outline/40 h-20 flex items-center">
+        <div class="flex justify-between items-center w-full px-margin-lg h-20 max-w-7xl mx-auto">
+            <div class="flex items-center gap-12">
+                <span class="text-headline-md font-headline-md font-extrabold text-primary tracking-wide">Gestobar</span>
+                <div class="hidden md:flex gap-8">
+                    <a class="text-primary font-bold border-b-2 border-primary pb-1 text-label-lg" href="#features">Módulos</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors text-label-lg" href="#productivity">Velocidad</a>
+                    <a class="text-on-surface-variant hover:text-on-surface transition-colors text-label-lg" href="#pricing">Precios</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <button class="bg-primary text-on-primary px-6 py-2.5 rounded-full text-label-lg font-bold hover:scale-95 transition-transform duration-150 shadow-lg shadow-primary/20" onclick="triggerWhatsApp('https://wa.me/support')">Empezar Ahora</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-[80vh] flex items-center overflow-hidden pt-12 pb-24 hero-gradient">
+        <div class="max-w-7xl mx-auto px-margin-lg w-full">
+            <div class="max-w-4xl mx-auto text-center space-y-8">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-high border border-outline/20 text-primary">
+                    <span class="material-symbols-outlined text-[18px]">verified</span>
+                    <span class="text-label-lg font-label-lg font-semibold uppercase tracking-wider">Bar Management Suite v2.0</span>
+                </div>
+                <h1 class="text-display-lg font-display-lg tracking-tight md:text-7xl">Lleva tu Bar o Discoteca al <span class="text-primary">siguiente nivel</span></h1>
+                <p class="text-headline-md font-headline-md text-on-surface-variant max-w-2xl mx-auto">
+                    Controla ventas, POS, arqueos de caja, comisiones de damas/relaciones públicas y auditoría en tiempo real.
+                    <span class="block mt-4 text-headline-sm opacity-80 text-primary">Desde solo US$ 10/mes por todas las aplicaciones de tu staff.</span>
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+                    <button class="w-full sm:w-auto px-8 py-4 bg-primary text-on-primary rounded-full text-label-lg font-bold hover:brightness-110 shadow-lg shadow-primary/25 transition-all" onclick="triggerWhatsApp('https://wa.me/start')">Empezar ahora (Gratis)</button>
+                    <button class="w-full sm:w-auto px-8 py-4 bg-surface-high text-on-surface border border-outline/40 rounded-full text-label-lg font-bold hover:bg-surface-bright transition-all" onclick="triggerWhatsApp('https://wa.me/consultant')">Contactar Consultor</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Grid Section (Features) -->
+    <section class="py-section-gap bg-surface-dim" id="features">
+        <div class="max-w-7xl mx-auto px-margin-lg">
+            <div class="text-center mb-12 space-y-2">
+                <h2 class="text-headline-lg font-headline-lg">Una suite integral para cada rol</h2>
+                <p class="text-body-lg text-on-surface-variant max-w-xl mx-auto">Gestobar sincroniza a todo tu equipo en tiempo real, desde los meseros en mesa hasta la gerencia.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-gutter-md">
+                <!-- App Tiles -->
+                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-4xl">point_of_sale</span>
+                    </div>
+                    <span class="text-label-lg font-bold">Punto de Venta (POS)</span>
+                </div>
+                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-4xl">account_balance_wallet</span>
+                    </div>
+                    <span class="text-label-lg font-bold">Cajas y Arqueos</span>
+                </div>
+                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-4xl">restaurant_menu</span>
+                    </div>
+                    <span class="text-label-lg font-bold">Menú Digital</span>
+                </div>
+                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-4xl">group</span>
+                    </div>
+                    <span class="text-label-lg font-bold">Staff y Roles</span>
+                </div>
+                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-4xl">stars</span>
+                    </div>
+                    <span class="text-label-lg font-bold">PR &amp; Fichas (Damas)</span>
+                </div>
+                <div class="glass-card p-6 flex flex-col items-center text-center space-y-4 hover:border-primary/60 transition-all group cursor-pointer">
+                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-4xl">security</span>
+                    </div>
+                    <span class="text-label-lg font-bold">Auditoría en Vivo</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Productivity Section -->
+    <section class="py-section-gap" id="productivity">
+        <div class="max-w-7xl mx-auto px-margin-lg">
+            <div class="glass-card p-margin-lg rounded-lg flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
+                <div class="absolute -right-24 -top-24 w-96 h-96 bg-primary/5 blur-[120px] rounded-full"></div>
+                <div class="flex-1 space-y-6">
+                    <h2 class="text-headline-lg font-headline-lg md:text-5xl">Velocidad para horas pico</h2>
+                    <p class="text-body-lg text-on-surface-variant">La velocidad en barra define el éxito de la noche. Gestobar está construido con almacenamiento local reactivo y sincronización silenciosa de fondo en menos de 90ms.</p>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <span class="text-display-lg font-display-lg text-primary block">&lt;90ms</span>
+                            <span class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-wider">Latencia de Red</span>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="text-display-lg font-display-lg text-primary block">100%</span>
+                            <span class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-wider">Offline Ready (POS)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 relative">
+                    <img class="w-full rounded-2xl border border-outline/20" alt="Gestobar dashboard interface dark sleek modernist aesthetic" src="screen.png"/>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bento Features Section -->
+    <section class="py-section-gap bg-surface-container-lowest">
+        <div class="max-w-7xl mx-auto px-margin-lg">
+            <div class="text-center mb-16">
+                <h2 class="text-headline-lg font-headline-lg">Módulos Especializados en Discotecas</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Ventas -->
+                <div class="glass-card p-8 space-y-6 md:col-span-2">
+                    <div class="flex justify-between items-start gap-4">
+                        <div class="space-y-4">
+                            <h3 class="text-headline-md font-headline-md">Arqueo y Control de Cajas</h3>
+                            <p class="text-body-lg text-on-surface-variant max-w-md">Control total de tus flujos de caja en tiempo real. Registra egresos, depósitos y propinas automáticamente con auditoría estricta para evitar robos y discrepancias.</p>
+                        </div>
+                        <span class="material-symbols-outlined text-4xl text-primary" data-icon="monitoring">monitoring</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-surface-low p-4 rounded-xl border border-outline/10">
+                            <span class="text-label-lg text-primary block mb-1">Cierre de Caja</span>
+                            <span class="text-body-md text-on-surface-variant">Generación instantánea de reportes de cuadratura.</span>
+                        </div>
+                        <div class="bg-surface-low p-4 rounded-xl border border-outline/10">
+                            <span class="text-label-lg text-primary block mb-1">Auditoría Estricta</span>
+                            <span class="text-body-md text-on-surface-variant">Cada depósito y egreso requiere firma y queda logueado.</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Menú -->
+                <div class="glass-card p-8 space-y-6">
+                    <div class="w-12 h-12 bg-primary/10 flex items-center justify-center rounded-xl text-primary">
+                        <span class="material-symbols-outlined">menu_book</span>
+                    </div>
+                    <h3 class="text-headline-md font-headline-md">Carta Digital Dinámica</h3>
+                    <p class="text-body-md text-on-surface-variant">Modifica precios, añade variantes y activa o desactiva productos al instante desde el celular del administrador.</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-label-lg">
+                            <span class="material-symbols-outlined text-success text-[20px]">check_circle</span>
+                            Variantes Dinámicas
+                        </li>
+                        <li class="flex items-center gap-3 text-label-lg">
+                            <span class="material-symbols-outlined text-success text-[20px]">check_circle</span>
+                            Control de Stock Crítico
+                        </li>
+                    </ul>
+                </div>
+                <!-- PR & Hostess -->
+                <div class="glass-card p-8 space-y-6 md:col-span-3 border-t-2 border-t-primary/40 relative overflow-hidden">
+                    <div class="absolute right-0 bottom-0 opacity-5">
+                        <span class="material-symbols-outlined text-[200px]">stars</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
+                        <div class="space-y-4 flex-1">
+                            <div class="inline-flex px-3 py-1 bg-primary text-on-primary text-[10px] font-bold uppercase rounded-full">Exclusivo</div>
+                            <h3 class="text-headline-md font-headline-md">Módulo de PR, Promotores y Fichas</h3>
+                            <p class="text-body-lg text-on-surface-variant max-w-2xl">Controla comisiones automáticas de promotores de puerta, y el conteo de fichas/bebidas del staff de damas de compañía. Genera liquidaciones al final de la noche en 3 clics sin hojas de cálculo.</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="glass-card p-6 border-primary/20 space-y-4 bg-surface-low">
+                                <div class="flex items-center justify-between gap-12">
+                                    <span class="text-label-lg font-bold">Fichas Staff (Turno)</span>
+                                    <span class="text-headline-sm text-primary">248 Fichas</span>
+                                </div>
+                                <div class="w-full bg-surface-high h-2 rounded-full overflow-hidden">
+                                    <div class="bg-primary h-full w-[82%]"></div>
+                                </div>
+                                <button class="w-full py-2 text-label-lg font-bold border border-primary/40 rounded-full hover:bg-primary/5 transition-colors">Generar Liquidación</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="py-section-gap" id="pricing">
+        <div class="max-w-7xl mx-auto px-margin-lg">
+            <div class="max-w-2xl mx-auto text-center space-y-12">
+                <div class="space-y-4">
+                    <h2 class="text-headline-lg font-headline-lg md:text-5xl">Todo incluido, un solo precio</h2>
+                    <p class="text-body-lg text-on-surface-variant">Sin sorpresas, sin cargos extra por usuarios o dispositivos. Accede al potencial completo de Gestobar en un único plan.</p>
+                </div>
+                <div class="glass-card p-12 rounded-lg border-2 border-primary space-y-8 relative overflow-hidden bg-surface-low">
+                    <div class="absolute top-6 right-6">
+                        <div class="bg-primary text-black px-4 py-1.5 rounded-full text-label-lg font-bold">15% DESCUENTO</div>
+                    </div>
+                    <div class="space-y-2">
+                        <span class="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-widest">Suscripción Anual</span>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span class="text-display-lg font-display-lg text-primary">US$ 100</span>
+                            <span class="text-headline-sm text-on-surface-variant">/ año</span>
+                        </div>
+                        <p class="text-body-md text-primary font-bold italic">O paga mensualmente US$ 10</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left border-y border-outline/20 py-8">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check</span>
+                            <span class="text-body-md">Personal e Impresoras Ilimitadas</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check</span>
+                            <span class="text-body-md">Módulo de Fichas/PR Integrado</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check</span>
+                            <span class="text-body-md">Soporte 24/7 vía WhatsApp</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check</span>
+                            <span class="text-body-md">Auditoría Estricta Contable</span>
+                        </div>
+                    </div>
+                    <button class="w-full py-5 bg-primary text-black rounded-full text-headline-sm font-bold hover:scale-[1.02] transition-all shadow-xl shadow-primary/30" onclick="triggerWhatsApp('https://wa.me/subscribe')">Adquirir Licencia</button>
+                    <p class="text-label-sm text-on-surface-variant">Cancela cuando quieras. Soporte de despliegue en servidor propio incluido.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-surface-dim border-t border-outline/40 py-12">
+        <div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-lg max-w-7xl mx-auto gap-8">
+            <div class="flex flex-col items-center md:items-start gap-4">
+                <span class="text-headline-sm font-headline-sm font-bold text-on-surface tracking-wider">Gestobar</span>
+                <p class="text-body-md text-on-surface-variant">© 2026 Gestobar Nightlife Management. Todos los derechos reservados.</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-8">
+                <a class="text-on-surface-variant hover:text-primary transition-colors text-label-sm" href="privacy.html">Política de Privacidad</a>
+                <a class="text-on-surface-variant hover:text-primary transition-colors text-label-sm" href="terms.html">Términos de Servicio</a>
+                <button class="text-primary hover:text-primary-container transition-colors text-label-sm font-bold" onclick="triggerWhatsApp('https://wa.me/support')">Soporte WhatsApp</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts for micro-interactions -->
+    <script>
+        const modal = document.getElementById('whatsappModal');
+        const modalBtn = document.getElementById('modalConfirmBtn');
+
+        function triggerWhatsApp(url) {
+            modalBtn.href = url;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.05
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-8');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.glass-card').forEach(el => {
+            el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-8');
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
