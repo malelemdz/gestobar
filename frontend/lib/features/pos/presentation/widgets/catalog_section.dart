@@ -84,7 +84,7 @@ class _CatalogSectionState extends ConsumerState<CatalogSection> {
           categoriesAsync.when(
             data: (categories) {
               final sortedCategories = List.from(categories)
-                ..sort((a, b) => a.orden.compareTo(b.orden));
+                ..sort((a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()));
 
               return SizedBox(
                 height: 38,

@@ -57,7 +57,7 @@ class CategoriesPanel extends ConsumerWidget {
             child: categoriesAsync.when(
               data: (categories) {
                 final sortedCategories = List<CategoryModel>.from(categories)
-                  ..sort((a, b) => a.orden.compareTo(b.orden));
+                  ..sort((a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()));
 
                 return ListView.builder(
                   itemCount: sortedCategories.length + 1,
@@ -295,7 +295,7 @@ class MobileCategoriesCarousel extends ConsumerWidget {
     return categoriesAsync.when(
       data: (categories) {
         final sortedCategories = List<CategoryModel>.from(categories)
-          ..sort((a, b) => a.orden.compareTo(b.orden));
+          ..sort((a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()));
 
         return Row(
           children: [
