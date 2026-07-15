@@ -500,7 +500,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      title.toUpperCase(),
+                      title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
