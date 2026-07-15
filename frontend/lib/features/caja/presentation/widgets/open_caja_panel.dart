@@ -155,7 +155,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                   const Icon(Icons.add_circle, size: 16, color: Color(0xFF121214)),
                   const SizedBox(width: 8),
                   Text(
-                    'REG. INGRESO',
+                    'Registrar ingreso',
                     style: GoogleFonts.poppins(
                       color: const Color(0xFF121214),
                       fontWeight: FontWeight.w900,
@@ -191,7 +191,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                   const Icon(Icons.remove_circle, size: 16, color: Color(0xFF121214)),
                   const SizedBox(width: 8),
                   Text(
-                    'REG. EGRESO',
+                    'Registrar egreso',
                     style: GoogleFonts.poppins(
                       color: const Color(0xFF121214),
                       fontWeight: FontWeight.w900,
@@ -314,15 +314,15 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
 
     // Bento Grid setup
     final List<Widget> cards = [
-      _buildFinancieraCard('Fondo de Caja (Inicial)', widget.caja.montoInicial, widget.currencySymbol, const Color(0xFF00F0FF), widget.currencyIso, Icons.account_balance_wallet_outlined),
-      _buildFinancieraCard('Total Esperado en Gaveta', widget.caja.totalEsperadoGaveta, widget.currencySymbol, const Color(0xFF00F0FF), widget.currencyIso, Icons.move_to_inbox_outlined),
-      _buildFinancieraCard('Ventas Efectivo POS', widget.caja.totalVentasEfectivo, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.payments_outlined),
-      _buildFinancieraCard('Ventas Tarjeta POS', widget.caja.totalVentasTarjeta, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.credit_card_outlined),
-      _buildFinancieraCard('Ventas TR / QR POS', widget.caja.totalVentasTrQr, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.mobile_friendly_outlined),
-      _buildFinancieraCard('Ventas Totales POS', totalVentasPos, widget.currencySymbol, const Color(0xFF00FF66), widget.currencyIso, Icons.analytics_outlined),
-      _buildFinancieraCard('Ganancia Neta del Bar', widget.caja.gananciaNetaBar, widget.currencySymbol, const Color(0xFF7000FF), widget.currencyIso, Icons.trending_up_outlined),
+      _buildFinancieraCard('Fondo de caja', widget.caja.montoInicial, widget.currencySymbol, const Color(0xFF00F0FF), widget.currencyIso, Icons.account_balance_wallet_outlined),
+      _buildFinancieraCard('Total esperado', widget.caja.totalEsperadoGaveta, widget.currencySymbol, const Color(0xFF00F0FF), widget.currencyIso, Icons.move_to_inbox_outlined),
+      _buildFinancieraCard('Ventas en efectivo', widget.caja.totalVentasEfectivo, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.payments_outlined),
+      _buildFinancieraCard('Ventas con tarjeta', widget.caja.totalVentasTarjeta, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.credit_card_outlined),
+      _buildFinancieraCard('Ventas con transferencia / QR', widget.caja.totalVentasTrQr, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.mobile_friendly_outlined),
+      _buildFinancieraCard('Ventas totales', totalVentasPos, widget.currencySymbol, const Color(0xFF00FF66), widget.currencyIso, Icons.analytics_outlined),
+      _buildFinancieraCard('Ganancia neta del bar', widget.caja.gananciaNetaBar, widget.currencySymbol, const Color(0xFF7000FF), widget.currencyIso, Icons.trending_up_outlined),
       _buildFinancieraCard(
-        'Comisiones Damas',
+        'Comisiones damas',
         widget.caja.totalComisionesDamas,
         widget.currencySymbol,
         const Color(0xFFFF00D6),
@@ -330,8 +330,8 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
         Icons.female_outlined,
         onTap: () => widget.onDamasBreakdown(widget.caja.id),
       ),
-      _buildFinancieraCard('Ingresos Manuales', widget.caja.totalIngresosManuales, widget.currencySymbol, const Color(0xFF00FFCC), widget.currencyIso, Icons.add_circle_outline),
-      _buildFinancieraCard('Egresos Caja Chica', widget.caja.totalEgresosManuales, widget.currencySymbol, Colors.redAccent, widget.currencyIso, Icons.remove_circle_outline),
+      _buildFinancieraCard('Ingresos manuales', widget.caja.totalIngresosManuales, widget.currencySymbol, const Color(0xFF00FFCC), widget.currencyIso, Icons.add_circle_outline),
+      _buildFinancieraCard('Egresos caja chica', widget.caja.totalEgresosManuales, widget.currencySymbol, Colors.redAccent, widget.currencyIso, Icons.remove_circle_outline),
     ];
 
     return LayoutBuilder(
@@ -353,7 +353,7 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                     _buildCajaChicaButtons(),
                     const SizedBox(height: 16.0),
                     Text(
-                      'SECCIONES',
+                      'Secciones',
                       style: GoogleFonts.poppins(
                         color: Colors.white30,
                         fontSize: 9,
@@ -361,10 +361,10 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                       ),
                     ),
                     const SizedBox(height: 8.0),
-                    _buildVerticalTabButton(0, 'BALANCE GENERAL', Icons.analytics_outlined),
-                    _buildVerticalTabButton(1, 'REGISTRO DE MOVIMIENTOS', Icons.swap_vert_outlined),
+                    _buildVerticalTabButton(0, 'Balance general', Icons.analytics_outlined),
+                    _buildVerticalTabButton(1, 'Registro de movimientos', Icons.swap_vert_outlined),
                     if (widget.showHistorialTab)
-                      _buildVerticalTabButton(2, 'HISTORIAL DE CAJAS', Icons.history),
+                      _buildVerticalTabButton(2, 'Historial de cajas', Icons.history),
                   ],
                 ),
               ),
@@ -396,10 +396,10 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
               ),
               child: Row(
                 children: [
-                  _buildTabButton(0, 'BALANCE', Icons.analytics_outlined),
-                  _buildTabButton(1, 'MOVIMIENTOS', Icons.swap_vert_outlined),
+                  _buildTabButton(0, 'Balance', Icons.analytics_outlined),
+                  _buildTabButton(1, 'Movimientos', Icons.swap_vert_outlined),
                   if (widget.showHistorialTab)
-                    _buildTabButton(2, 'HISTORIAL', Icons.history),
+                    _buildTabButton(2, 'Historial', Icons.history),
                 ],
               ),
             ),

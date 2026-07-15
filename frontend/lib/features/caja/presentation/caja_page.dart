@@ -118,7 +118,7 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                                           Padding(
                                             padding: const EdgeInsets.only(bottom: 12.0),
                                             child: Text(
-                                              'HISTORIAL DE CAJAS CERRADAS',
+                                              'Historial de cajas cerradas',
                                               style: GoogleFonts.poppins(
                                                 color: Colors.white54,
                                                 fontSize: 10,
@@ -148,8 +148,8 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                                           ),
                                           child: Row(
                                             children: [
-                                              _buildClosedTabButton(0, 'ABRIR CAJA', Icons.lock_open_outlined),
-                                              _buildClosedTabButton(1, 'HISTORIAL', Icons.history),
+                                              _buildClosedTabButton(0, 'Abrir caja', Icons.lock_open_outlined),
+                                              _buildClosedTabButton(1, 'Historial', Icons.history),
                                             ],
                                           ),
                                         ),
