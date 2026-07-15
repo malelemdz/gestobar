@@ -40,7 +40,7 @@ export class VentasController {
   }
 
   @Get('caja/activa')
-  @Permissions('reportes.ver')
+  @Permissions('caja.gestionar')
   getActiveVentas(@ActiveBarId() barId: string) {
     return this.ventasService.getActiveVentas(barId);
   }
