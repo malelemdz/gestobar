@@ -316,9 +316,9 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
     final List<Widget> cards = [
       _buildFinancieraCard('Fondo de caja', widget.caja.montoInicial, widget.currencySymbol, const Color(0xFF00F0FF), widget.currencyIso, Icons.account_balance_wallet_outlined),
       _buildFinancieraCard('Total esperado', widget.caja.totalEsperadoGaveta, widget.currencySymbol, const Color(0xFF00F0FF), widget.currencyIso, Icons.move_to_inbox_outlined),
-      _buildFinancieraCard('Ventas en efectivo', widget.caja.totalVentasEfectivo, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.payments_outlined),
-      _buildFinancieraCard('Ventas con tarjeta', widget.caja.totalVentasTarjeta, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.credit_card_outlined),
-      _buildFinancieraCard('Ventas con transferencia / QR', widget.caja.totalVentasTrQr, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.mobile_friendly_outlined),
+      _buildFinancieraCard('Ventas en Efectivo', widget.caja.totalVentasEfectivo, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.payments_outlined),
+      _buildFinancieraCard('Ventas con Tarjeta', widget.caja.totalVentasTarjeta, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.credit_card_outlined),
+      _buildFinancieraCard('Ventas con TR / QR', widget.caja.totalVentasTrQr, widget.currencySymbol, Colors.white70, widget.currencyIso, Icons.mobile_friendly_outlined),
       _buildFinancieraCard('Ventas totales', totalVentasPos, widget.currencySymbol, const Color(0xFF00FF66), widget.currencyIso, Icons.analytics_outlined),
       _buildFinancieraCard('Ganancia neta del bar', widget.caja.gananciaNetaBar, widget.currencySymbol, const Color(0xFF7000FF), widget.currencyIso, Icons.trending_up_outlined),
       _buildFinancieraCard(
