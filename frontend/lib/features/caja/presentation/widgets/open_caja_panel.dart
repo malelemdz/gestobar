@@ -361,10 +361,10 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
                       ),
                     ),
                     const SizedBox(height: 8.0),
-                    _buildVerticalTabButton(0, 'Balance general', Icons.analytics_outlined),
-                    _buildVerticalTabButton(1, 'Registro de movimientos', Icons.swap_vert_outlined),
+                    _buildVerticalTabButton(0, 'BALANCE GENERAL', Icons.analytics_outlined),
+                    _buildVerticalTabButton(1, 'REGISTRO DE MOVIMIENTOS', Icons.swap_vert_outlined),
                     if (widget.showHistorialTab)
-                      _buildVerticalTabButton(2, 'Historial de cajas', Icons.history),
+                      _buildVerticalTabButton(2, 'HISTORIAL DE CAJAS', Icons.history),
                   ],
                 ),
               ),
@@ -396,10 +396,10 @@ class _OpenCajaPanelState extends ConsumerState<OpenCajaPanel> {
               ),
               child: Row(
                 children: [
-                  _buildTabButton(0, 'Balance', Icons.analytics_outlined),
-                  _buildTabButton(1, 'Movimientos', Icons.swap_vert_outlined),
+                  _buildTabButton(0, 'BALANCE', Icons.analytics_outlined),
+                  _buildTabButton(1, 'MOVIMIENTOS', Icons.swap_vert_outlined),
                   if (widget.showHistorialTab)
-                    _buildTabButton(2, 'Historial', Icons.history),
+                    _buildTabButton(2, 'HISTORIAL', Icons.history),
                 ],
               ),
             ),

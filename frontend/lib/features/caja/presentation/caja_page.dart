@@ -148,8 +148,8 @@ class _CajaPageState extends ConsumerState<CajaPage> {
                                           ),
                                           child: Row(
                                             children: [
-                                              _buildClosedTabButton(0, 'Abrir caja', Icons.lock_open_outlined),
-                                              _buildClosedTabButton(1, 'Historial', Icons.history),
+                                              _buildClosedTabButton(0, 'ABRIR CAJA', Icons.lock_open_outlined),
+                                              _buildClosedTabButton(1, 'HISTORIAL', Icons.history),
                                             ],
                                           ),
                                         ),
