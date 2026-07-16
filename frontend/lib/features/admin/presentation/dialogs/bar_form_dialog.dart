@@ -34,6 +34,8 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
   bool _estado = true;
   String? _selectedOwnerId;
 
+  final Map<String, bool> _permittedTabs = {};
+
   // Divisas soportadas oficiales (Sincronizadas con OperacionesTab)
   final List<String> _currenciesIso = [
     'USD', 'BOB', 'BRL', 'CLP', 'COP', 'CRC', 'CUP', 'DOP', 'EUR', 'GTQ',
@@ -78,6 +80,28 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
       _selectedCurrencySymbol = widget.bar!.monedaSimbolo;
       _selectedTimezone = widget.bar!.timezone;
       _checkCajaStatus();
+    }
+
+    final defaultTabs = {
+      'identidad': true,
+      'redes': true,
+      'operaciones': true,
+      'horario': true,
+      'compania': true,
+      'tarifas': true,
+    };
+
+    if (widget.bar != null && widget.bar!.configuracionTabsPermitidas != null) {
+      widget.bar!.configuracionTabsPermitidas!.forEach((key, val) {
+        _permittedTabs[key] = val == true;
+      });
+      defaultTabs.forEach((key, val) {
+        _permittedTabs.putIfAbsent(key, () => val);
+      });
+    } else {
+      defaultTabs.forEach((key, val) {
+        _permittedTabs[key] = val;
+      });
     }
 
     _loadAdmins();
@@ -174,6 +198,7 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
         'moneda_simbolo': _selectedCurrencySymbol,
         'moneda_iso': _selectedCurrencyIso,
         'timezone': _selectedTimezone,
+        'configuracion_tabs_permitidas': _permittedTabs,
         if (widget.bar == null) ...{
           // Valores por defecto únicamente en creación
           'direccion': '',
@@ -496,89 +521,239 @@ class _BarFormDialogState extends ConsumerState<BarFormDialog> {
       ),
       child: (_isLoadingAdmins || _isLoadingCajaState)
           ? const Center(child: Padding(padding: EdgeInsets.all(40.0), child: CircularProgressIndicator(color: Color(0xFF00F0FF))))
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Banner de Advertencia si la caja está abierta (Edición)
-                    if (widget.bar != null && _isCajaAbierta) ...[
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.redAccent.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.redAccent.withOpacity(0.3)),
+          : DefaultTabController(
+              length: 2,
+              child: Column(
+                children: [
+                  TabBar(
+                    labelColor: const Color(0xFF00F0FF),
+                    unselectedLabelColor: Colors.white30,
+                    indicatorColor: const Color(0xFF00F0FF),
+                    dividerColor: Colors.transparent,
+                    labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 13),
+                    unselectedLabelStyle: GoogleFonts.poppins(fontSize: 13),
+                    tabs: const [
+                      Tab(text: 'General'),
+                      Tab(text: 'Pestañas Permitidas'),
+                    ],
+                  ),
+                  const Divider(color: Colors.white10, height: 1),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        // Tab 1: General Form
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Banner de Advertencia si la caja está abierta (Edición)
+                                if (widget.bar != null && _isCajaAbierta) ...[
+                                  Container(
+                                    margin: const EdgeInsets.only(bottom: 20),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.redAccent.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(color: Colors.redAccent.withOpacity(0.3)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.lock_clock, color: Colors.redAccent, size: 20),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            'Existe una caja abierta actualmente en esta sucursal. Para evitar descuadres en el arqueo, debes cerrarla antes de modificar la Moneda o Zona Horaria.',
+                                            style: GoogleFonts.poppins(
+                                              color: Colors.redAccent,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+
+                                Text('DATOS GENERALES DE LA SUCURSAL', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+                                const SizedBox(height: 12),
+                                
+                                _buildNombreField(),
+                                const SizedBox(height: 12),
+                                
+                                _buildCiudadField(),
+                                const SizedBox(height: 20),
+
+                                // Divisa y Zona Horaria (Visibles en creación y edición)
+                                Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+                                const SizedBox(height: 12),
+
+                                if (isTablet)
+                                  Row(
+                                    children: [
+                                      Expanded(child: _buildCurrencyDropdown()),
+                                      const SizedBox(width: 12),
+                                      Expanded(child: _buildTimezoneField()),
+                                    ],
+                                  )
+                                else ...[
+                                  _buildCurrencyDropdown(),
+                                  const SizedBox(height: 12),
+                                  _buildTimezoneField(),
+                                ],
+                                const SizedBox(height: 20),
+
+                                Text('CONFIGURACIÓN OPERATIVA', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+                                const SizedBox(height: 12),
+
+                                _buildModuloDamasToggle(),
+                                const SizedBox(height: 12),
+
+                                _buildEstadoToggle(),
+                                const SizedBox(height: 20),
+
+                                // Dropdown de Dueño / Admin del Bar (Únicamente en creación)
+                                if (widget.bar == null) ...[
+                                  Text('ADMINISTRADOR / DUEÑO DEL BAR', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
+                                  const SizedBox(height: 12),
+                                  _buildOwnerDropdown(),
+                                ],
+                              ],
+                            ),
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.lock_clock, color: Colors.redAccent, size: 20),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                'Existe una caja abierta actualmente en esta sucursal. Para evitar descuadres en el arqueo, debes cerrarla antes de modificar la Moneda o Zona Horaria.',
+                        // Tab 2: Permissions
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                'CONTROL DE ACCESO ADMINISTRATIVO',
                                 style: GoogleFonts.poppins(
-                                  color: Colors.redAccent,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF00F0FF),
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 4),
+                              Text(
+                                'Activa o desactiva qué secciones de configuración estarán visibles para los administradores locales de este bar.',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  color: Colors.white54,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              ..._buildPermissionsList(),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-
-                    Text('DATOS GENERALES DE LA SUCURSAL', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
-                    const SizedBox(height: 12),
-                    
-                    _buildNombreField(),
-                    const SizedBox(height: 12),
-                    
-                    _buildCiudadField(),
-                    const SizedBox(height: 20),
-
-                    // Divisa y Zona Horaria (Visibles en creación y edición)
-                    Text('DIVISA Y ZONA HORARIA', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
-                    const SizedBox(height: 12),
-
-                    if (isTablet)
-                      Row(
-                        children: [
-                          Expanded(child: _buildCurrencyDropdown()),
-                          const SizedBox(width: 12),
-                          Expanded(child: _buildTimezoneField()),
-                        ],
-                      )
-                    else ...[
-                      _buildCurrencyDropdown(),
-                      const SizedBox(height: 12),
-                      _buildTimezoneField(),
-                    ],
-                    const SizedBox(height: 20),
-
-                    Text('CONFIGURACIÓN OPERATIVA', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
-                    const SizedBox(height: 12),
-
-                    _buildModuloDamasToggle(),
-                    const SizedBox(height: 12),
-
-                    _buildEstadoToggle(),
-                    const SizedBox(height: 20),
-
-                    // Dropdown de Dueño / Admin del Bar (Únicamente en creación)
-                    if (widget.bar == null) ...[
-                      Text('ADMINISTRADOR / DUEÑO DEL BAR', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF00F0FF))),
-                      const SizedBox(height: 12),
-                      _buildOwnerDropdown(),
-                    ],
-                  ],
-                ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
     );
+  }
+
+  List<Widget> _buildPermissionsList() {
+    const tabMetadata = [
+      {
+        'id': 'identidad',
+        'title': 'Identidad',
+        'description': 'Logo, nombre comercial, dirección física, ubicación y contacto de WhatsApp.',
+      },
+      {
+        'id': 'redes',
+        'title': 'Redes Sociales',
+        'description': 'Enlaces a Facebook, Instagram y TikTok de la sucursal.',
+      },
+      {
+        'id': 'operaciones',
+        'title': 'Operaciones',
+        'description': 'Configuración de la moneda local, zona horaria y decimales de visualización.',
+      },
+      {
+        'id': 'horario',
+        'title': 'Horario Semanal',
+        'description': 'Días laborales de apertura y rangos horarios de atención.',
+      },
+      {
+        'id': 'compania',
+        'title': 'Damas de Compañía',
+        'description': 'Configuración del módulo, tarifas y porcentajes de comisiones por venta.',
+      },
+      {
+        'id': 'tarifas',
+        'title': 'Gestión de Precios',
+        'description': 'Administración de tarifas de precios ilimitadas (ej. General, VIP).',
+      },
+    ];
+
+    return tabMetadata.map((meta) {
+      final String id = meta['id']!;
+      final String title = meta['title']!;
+      final String description = meta['description']!;
+      final bool isEnabled = _permittedTabs[id] ?? true;
+
+      return Container(
+        margin: const EdgeInsets.only(bottom: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: const Color(0xFF22252A),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isEnabled
+                ? const Color(0xFF00F0FF).withOpacity(0.15)
+                : Colors.white.withOpacity(0.04),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      color: isEnabled ? Colors.white : Colors.white30,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: GoogleFonts.poppins(
+                      color: isEnabled ? Colors.white54 : Colors.white24,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            Transform.scale(
+              scale: 0.85,
+              child: Switch.adaptive(
+                value: isEnabled,
+                activeColor: const Color(0xFF00F0FF),
+                onChanged: (val) {
+                  setState(() {
+                    _permittedTabs[id] = val;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }).toList();
   }
 }

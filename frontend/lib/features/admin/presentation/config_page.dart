@@ -27,7 +27,6 @@ import 'widgets/tabs/operaciones_tab.dart';
 import 'widgets/tabs/horario_tab.dart';
 import 'widgets/tabs/compania_tab.dart';
 import 'widgets/tabs/tarifas_tab.dart';
-import 'widgets/tabs/permisos_tab.dart';
 
 // Importación de Diálogos
 import 'dialogs/tarifa_dialog.dart';
@@ -143,9 +142,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
         }
       });
 
-      // Pre-diseño de carga de permisos de pestañas (asociados al bar)
-      // En el futuro, esto se leerá desde un campo 'configuracion_tabs_permitidas' en el BarModel
-      _permittedTabs = {
+      final defaultTabs = {
         'identidad': true,
         'redes': true,
         'operaciones': true,
@@ -153,6 +150,18 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
         'compania': true,
         'tarifas': true,
       };
+
+      _permittedTabs = {};
+      if (bar.configuracionTabsPermitidas != null) {
+        bar.configuracionTabsPermitidas!.forEach((key, val) {
+          _permittedTabs[key] = val == true;
+        });
+        defaultTabs.forEach((key, val) {
+          _permittedTabs.putIfAbsent(key, () => val);
+        });
+      } else {
+        _permittedTabs = Map<String, bool>.from(defaultTabs);
+      }
       _initialPermittedTabs = Map<String, bool>.from(_permittedTabs);
 
       _initialized = true;
@@ -236,10 +245,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
       if (cur['cierre'] != init['cierre']) return true;
     }
 
-    // Comprobar cambios en permisos de pestañas (SuperAdmin)
-    for (var key in _permittedTabs.keys) {
-      if (_permittedTabs[key] != _initialPermittedTabs[key]) return true;
-    }
+    // Removido chequeo de cambios de permisos de pestañas ya que se administran desde Sucursales (SuperAdmin)
 
     return false;
   }
@@ -319,8 +325,6 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
         'tarifa_compania_id': _selectedTarifaCompaniaId,
         'horarios': _horarios,
         'tasa_conversion': conversionRate,
-        // Guardamos los permisos configurados para las pestañas de este bar
-        'configuracion_tabs_permitidas': _permittedTabs,
       };
 
       final success = await ref.read(currentBarProvider.notifier).updateBarInfo(updates);
@@ -519,17 +523,6 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                 tarifasState: tarifasState,
                 onOpenTarifaDialog: (t) => _openTarifaDialog(context, t),
                 onDeleteTarifa: (t) => _confirmDeleteTarifa(context, t),
-              ),
-            },
-            {
-              'id': 'permisos',
-              'text': 'Permisos Admin',
-              'widget': PermisosTab(
-                permittedTabs: _permittedTabs,
-                onTabToggle: (id, val) => setState(() {
-                  _permittedTabs[id] = val;
-                  _onInputChanged();
-                }),
               ),
             },
           ]);

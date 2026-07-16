@@ -20,6 +20,7 @@ class BarModel {
   final bool moduloDamasActivo;
   final String? tarifaCompaniaId;
   final Map<String, dynamic>? horarios;
+  final Map<String, dynamic>? configuracionTabsPermitidas;
 
   BarModel({
     required this.id,
@@ -41,6 +42,7 @@ class BarModel {
     required this.moduloDamasActivo,
     this.tarifaCompaniaId,
     this.horarios,
+    this.configuracionTabsPermitidas,
   });
 
   factory BarModel.fromJson(Map<String, dynamic> json) {
@@ -65,6 +67,7 @@ class BarModel {
       moduloDamasActivo: json['modulo_damas_activo'] ?? false,
       tarifaCompaniaId: json['tarifa_compania_id'],
       horarios: json['horarios'],
+      configuracionTabsPermitidas: json['configuracion_tabs_permitidas'],
     );
   }
 
@@ -86,6 +89,7 @@ class BarModel {
       'modulo_damas_activo': moduloDamasActivo,
       'tarifa_compania_id': tarifaCompaniaId,
       'horarios': horarios,
+      'configuracion_tabs_permitidas': configuracionTabsPermitidas,
     };
   }
 
@@ -106,6 +110,7 @@ class BarModel {
     bool? moduloDamasActivo,
     String? tarifaCompaniaId,
     Map<String, dynamic>? horarios,
+    Map<String, dynamic>? configuracionTabsPermitidas,
   }) {
     final String targetIso = monedaIso ?? this.monedaIso;
     return BarModel(
@@ -131,6 +136,7 @@ class BarModel {
       moduloDamasActivo: moduloDamasActivo ?? this.moduloDamasActivo,
       tarifaCompaniaId: tarifaCompaniaId ?? this.tarifaCompaniaId,
       horarios: horarios ?? this.horarios,
+      configuracionTabsPermitidas: configuracionTabsPermitidas ?? this.configuracionTabsPermitidas,
     );
   }
 }

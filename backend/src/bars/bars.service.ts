@@ -19,7 +19,19 @@ export class BarsService {
     if (existingBar) {
       throw new ConflictException('Un bar con este slug ya existe');
     }
-    const bar = this.barRepository.create(createBarDto);
+    const defaultTabs = {
+      identidad: true,
+      redes: true,
+      operaciones: true,
+      horario: true,
+      compania: true,
+      tarifas: true,
+    };
+
+    const bar = this.barRepository.create({
+      ...createBarDto,
+      configuracion_tabs_permitidas: createBarDto.configuracion_tabs_permitidas ?? defaultTabs,
+    });
     const savedBar = await this.barRepository.save(bar);
 
     // Vincular al usuario propietario con el bar creado
@@ -43,7 +55,7 @@ export class BarsService {
   }
 
   async update(id: string, updateBarDto: UpdateBarDto): Promise<Bar> {
-    const { tasa_conversion, configuracion_tabs_permitidas, ...rest } = updateBarDto;
+    const { tasa_conversion, ...rest } = updateBarDto;
     
     console.log('--- INTENTO DE ACTUALIZAR BAR ---');
     console.log('ID:', id);

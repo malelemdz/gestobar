@@ -77,4 +77,7 @@ export class CreateBarDto {
 
   @IsOptional()
   horarios?: any;
+
+  @IsOptional()
+  configuracion_tabs_permitidas?: any;
 }

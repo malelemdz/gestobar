@@ -69,6 +69,9 @@ export class Bar {
   @Column({ type: 'json', nullable: true })
   horarios: any;
 
+  @Column({ type: 'json', nullable: true })
+  configuracion_tabs_permitidas: any;
+
   @Column()
   owner_id: string;
 
