@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppController } from './app.controller';
@@ -88,4 +89,20 @@ import { SocketModule } from './socket/socket.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements OnApplicationBootstrap {
+  constructor(private readonly dataSource: DataSource) {}
+
+  async onApplicationBootstrap() {
+    try {
+      console.log('--- RUNNING DB INITIALIZATION QUERY FOR BAR CONFIG TABS ---');
+      await this.dataSource.query(`
+        UPDATE bares 
+        SET configuracion_tabs_permitidas = '{"identidad": true, "redes": true, "operaciones": true, "horario": true, "compania": true, "tarifas": true}'
+        WHERE configuracion_tabs_permitidas IS NULL;
+      `);
+      console.log('--- DB INITIALIZATION QUERY EXECUTED SUCCESSFULLY ---');
+    } catch (error) {
+      console.error('Error running DB initialization query:', error);
+    }
+  }
+}
